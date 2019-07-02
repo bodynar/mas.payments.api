@@ -1,32 +1,53 @@
+using MAS.Payments.Configuration;
+using MAS.Payments.DataBase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SimpleInjector;
 
 namespace mas.payments
 {
     public class Startup
     {
+        private Container Container { get; }
+
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Container = new Container();
         }
-
-        public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services
+                .AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(JsonConfiguration.Configure);
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/dist";
             });
+
+            services.AddSimpleInjector(Container, options =>
+            {
+                options.AddAspNetCore()
+                    .AddControllerActivation();
+            });
+
+            services.AddDbContext<DataBaseContext>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("DefaultConnection"),
+                    x => x.MigrationsAssembly("MAS.TransportCompany"))
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,8 +59,6 @@ namespace mas.payments
             }
             else
             {
-                app.UseExceptionHandler("/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
 
@@ -51,7 +70,7 @@ namespace mas.payments
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller}/{action=Index}/{id?}");
+                    template: "api/{controller}/{action}/{id?}");
             });
 
             app.UseSpa(spa =>
@@ -66,6 +85,11 @@ namespace mas.payments
                     spa.UseAngularCliServer(npmScript: "start");
                 }
             });
+
+            app.UseSimpleInjector(Container, options => { });
+
+            Container.Configure();
+            Container.Verify();
         }
     }
 }

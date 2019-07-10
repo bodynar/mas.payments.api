@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/mas.payments.csproj"
+                "${workspaceFolder}/MAS.Payments.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -17,7 +17,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/mas.payments.csproj"
+                "${workspaceFolder}/MAS.Payments.csproj"
             ],
             "problemMatcher": "$tsc"
         },
@@ -28,7 +28,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/mas.payments.csproj"
+                "${workspaceFolder}/MAS.Payments.csproj"
             ],
             "problemMatcher": "$tsc"
         }

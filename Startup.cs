@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
 
-namespace mas.payments
+namespace MAS.Payments
 {
     public class Startup
     {
@@ -46,7 +46,7 @@ namespace mas.payments
             services.AddDbContext<DataBaseContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("MAS.TransportCompany"))
+                    x => x.MigrationsAssembly("MAS.Payments"))
             );
         }
 

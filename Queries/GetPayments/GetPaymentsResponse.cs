@@ -2,7 +2,7 @@ using System;
 
 namespace MAS.Payments.Queries
 {
-    public class GetPaymentsQueryResponse
+    public class GetPaymentsResponse
     {
         public long Id { get; set; }
         

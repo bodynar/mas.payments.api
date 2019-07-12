@@ -7,7 +7,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsQueryResponse>>
+    internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsResponse>>
     {
         public GetPaymentsQueryHandler(
             IResolver resolver
@@ -15,12 +15,12 @@ namespace MAS.Payments.Queries
         {
         }
 
-        public override IEnumerable<GetPaymentsQueryResponse> Handle(GetPaymentsQuery Query)
+        public override IEnumerable<GetPaymentsResponse> Handle(GetPaymentsQuery Query)
         {
             return GetRepository<Payment>()
                    .GetAll()
                    .Where(Query.Filter)
-                   .Select(x => new GetPaymentsQueryResponse
+                   .Select(x => new GetPaymentsResponse
                    {
                        Id = x.Id,
                        Amount = x.Amount,

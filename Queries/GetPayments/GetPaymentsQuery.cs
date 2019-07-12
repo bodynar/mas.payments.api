@@ -5,7 +5,7 @@ using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Queries
 {
-    public class GetPaymentsQuery : IQuery<IEnumerable<GetPaymentsQueryResponse>>
+    public class GetPaymentsQuery : IQuery<IEnumerable<GetPaymentsResponse>>
     {
         public Specification<Payment> Filter { get; }
 

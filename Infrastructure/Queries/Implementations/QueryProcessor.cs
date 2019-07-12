@@ -1,9 +1,10 @@
+using System;
 namespace MAS.Payments.Infrastructure.Query
 {
     public class QueryProcessor : IQueryProcessor
     {
         private IResolver Resolver { get; }
-        
+
         public QueryProcessor(
             IResolver resolver
         )
@@ -13,6 +14,11 @@ namespace MAS.Payments.Infrastructure.Query
 
         public TResult Execute<TResult>(IQuery<TResult> query)
         {
+            if (query == null)
+            {
+                throw new ArgumentNullException(nameof(query));
+            }
+
             var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
 
             dynamic handler = Resolver.GetInstance(handlerType);

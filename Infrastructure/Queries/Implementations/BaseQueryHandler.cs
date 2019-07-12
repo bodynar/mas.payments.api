@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Infrastructure.Query
 {
-    internal class BaseQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    internal abstract class BaseQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult>
     {
         protected IResolver Resolver { get; }
@@ -26,10 +26,7 @@ namespace MAS.Payments.Infrastructure.Query
             Resolver = resolver;
         }
 
-        public virtual TResult Handle(TQuery Query)
-        {
-            return default(TResult);
-        }
+        public abstract TResult Handle(TQuery Query);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity: Entity

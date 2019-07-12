@@ -7,7 +7,7 @@ namespace MAS.Payments.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public class BaseApiController : Controller
+    public abstract class BaseApiController : Controller
     {
         protected ICommandProcessor CommandProcessor { get; }
 

@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Infrastructure.Command
 {
-    internal class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
+    internal abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
         where TCommand : ICommand
     {
         protected IResolver Resolver { get; }
@@ -27,10 +27,7 @@ namespace MAS.Payments.Infrastructure.Command
             Resolver = resolver;
         }
 
-        public virtual void Handle(TCommand command)
-        {
-
-        }
+        public abstract void Handle(TCommand command);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity : Entity

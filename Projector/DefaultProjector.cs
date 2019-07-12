@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace MAS.Payments.Projector
 {
@@ -16,6 +17,13 @@ namespace MAS.Payments.Projector
         {
             SourceType = typeof(TSource);
             DestinationType = typeof(TDestination);
+
+            var destinationTypeHasComplexProperties = CheckIfDestinationIsComplex();
+
+            if (destinationTypeHasComplexProperties)
+            {
+                throw new NotSupportedException($"Type {DestinationType.Name} contains some complex properties. Current mapper doesn't support mapping to complex properties.");
+            }
         }
 
         public TDestination Project(TSource src)
@@ -33,12 +41,17 @@ namespace MAS.Payments.Projector
 
         #region Not public API
 
+        private bool CheckIfDestinationIsComplex()
+        {
+            return DestinationType.GetProperties().Any(x => !x.PropertyType.IsPrimitive);
+        }
+
         private TDestination SetValues(TSource source)
         {
             // only primitives
 
-            var sourceProperties = SourceType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
-            var destinationProperties = DestinationType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
+            var sourceProperties = SourceType.GetProperties();
+            var destinationProperties = DestinationType.GetProperties();
 
             TDestination destination = Activator.CreateInstance<TDestination>();
 
@@ -49,10 +62,10 @@ namespace MAS.Payments.Projector
                 try
                 {
                     var destinationProperty =
-                        destinationProperties
-                            .FirstOrDefault(x =>
-                                x.Name.ToLower() == propertyName
-                                && x.PropertyType == sourceProperty.PropertyType);
+                            destinationProperties
+                                .FirstOrDefault(x =>
+                                    x.Name.ToLower() == propertyName
+                                    && x.PropertyType == sourceProperty.PropertyType);
 
                     if (destinationProperty != null)
                     {

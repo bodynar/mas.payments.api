@@ -33,31 +33,31 @@ namespace MAS.Payments.Projector
 
         #region Not public API
 
-        private TDestination SetValues(TSource src)
+        private TDestination SetValues(TSource source)
         {
             // only primitives
 
-            var srcProps = SourceType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
-            var destProprs = DestinationType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
+            var sourceProperties = SourceType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
+            var destinationProperties = DestinationType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
 
-            TDestination dest = Activator.CreateInstance<TDestination>();
+            TDestination destination = Activator.CreateInstance<TDestination>();
 
-            foreach (var destProperty in destProprs)
+            foreach (var sourceProperty in sourceProperties)
             {
-                var propName = destProperty.Name.ToLower();
+                var propertyName = sourceProperty.Name.ToLower();
 
                 try
                 {
-                    var srcProperty =
-                        srcProps
+                    var destinationProperty =
+                        destinationProperties
                             .FirstOrDefault(x =>
-                                x.Name.ToLower() == propName
-                                && x.PropertyType == destProperty.PropertyType);
+                                x.Name.ToLower() == propertyName
+                                && x.PropertyType == sourceProperty.PropertyType);
 
-                    if (srcProperty != null)
+                    if (destinationProperty != null)
                     {
-                        var srcValue = srcProperty.GetValue(src);
-                        destProperty.SetValue(dest, srcValue);
+                        var sourceValue = sourceProperty.GetValue(source);
+                        destinationProperty.SetValue(destination, sourceValue);
                     }
                 }
                 catch (Exception)
@@ -66,7 +66,7 @@ namespace MAS.Payments.Projector
                 }
             }
 
-            return dest;
+            return destination;
         }
 
         #endregion

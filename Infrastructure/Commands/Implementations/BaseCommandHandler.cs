@@ -1,3 +1,4 @@
+using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure.Query;
 
@@ -32,7 +33,7 @@ namespace MAS.Payments.Infrastructure.Command
         }
 
         protected IRepository<TEntity> GetRepository<TEntity>()
-            where TEntity : class
+            where TEntity : Entity
         {
             return Resolver.Resolve<IRepository<TEntity>>();
         }

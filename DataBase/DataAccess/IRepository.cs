@@ -1,18 +1,17 @@
 using System.Linq;
-using System;
 
 namespace MAS.Payments.DataBase.Access
 {
     public interface IRepository<TEntity>
-        where TEntity : class
+        where TEntity : Entity
     {
         void Add(TEntity entity);
 
-        void Update(Guid id, TEntity updatedEntity);
+        void Update(long id, TEntity updatedEntity);
 
-        void Delete(Guid id);
+        void Delete(long id);
 
-        TEntity Get(Guid id);
+        TEntity Get(long id);
 
         IQueryable<TEntity> GetAll();
     }

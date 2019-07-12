@@ -2,10 +2,8 @@ using System;
 
 namespace MAS.Payments.DataBase
 {
-    public class Payment
+    public class Payment : Entity
     {
-        public long Id { get; set; }
-
         public double Amount { get; set; }
 
         public DateTime? Date { get; set; }

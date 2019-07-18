@@ -25,6 +25,13 @@ namespace MAS.Payments.Controllers
                 new AddPaymentTypeCommand(request.Name, request.Description, request.Company));
         }
 
+        [HttpPost]
+        public void AddPayment([FromBody]AddPaymentRequest request)
+        {
+            CommandProcessor.Execute(
+                new AddPaymentCommand(request.PaymentTypeID, request.Amount, request.Date, request.Description));
+        }
+
         [HttpGet]
         public IEnumerable<GetPaymentTypesResponse> GetPaymentTypes()
         {

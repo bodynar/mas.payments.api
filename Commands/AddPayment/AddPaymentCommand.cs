@@ -6,13 +6,13 @@ namespace MAS.Payments.Commands
 {
     public class AddPaymentCommand : ICommand
     {
-        public double Amount { get; set; }
+        public double Amount { get; }
 
-        public DateTime? Date { get; set; }
+        public DateTime? Date { get; }
 
-        public string Description { get; set; }
+        public string Description { get; }
         
-        public long PaymentTypeID { get; set; }
+        public long PaymentTypeID { get; }
 
         public AddPaymentCommand(
             long paymentTypeID, double amount, DateTime? date,

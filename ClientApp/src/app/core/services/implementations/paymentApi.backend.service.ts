@@ -42,8 +42,9 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     response.map(paymentType => ({
                         id: paymentType['id'],
                         name: paymentType['name'],
-                        description: paymentType['description']
-                    }))),
+                        description: paymentType['description'],
+                        company: paymentType['company']
+                    }) as PaymentTypeResponse)),
                 catchError(error => of(error))
             );
     }
@@ -55,9 +56,11 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                 map((response: Array<any>) =>
                     response.map(payment => ({
                         id: payment['id'],
-                        name: payment['name'],
-                        description: payment['description']
-                    }))),
+                        amount: payment['amount'],
+                        date: payment['date'],
+                        description: payment['description'],
+                        paymentType: payment['paymentType']
+                    }) as PaymentResponse)),
                 catchError(error => of(error))
             );
     }

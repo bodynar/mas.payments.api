@@ -6,9 +6,9 @@ import { catchError, map } from 'rxjs/operators';
 
 import { IPaymentApiBackendService } from '../contracts/IPaymentApi.backend';
 
-import { AddPaymentRequest } from 'models/AddPaymentRequest';
+import { AddPaymentRequest } from 'models/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/PaymentResponse';
+import { PaymentResponse } from 'models/paymentResponse';
 import { PaymentTypeResponse } from 'models/paymentTypeResponse';
 
 @Injectable()

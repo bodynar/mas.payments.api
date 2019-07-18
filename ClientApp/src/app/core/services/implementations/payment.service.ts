@@ -8,9 +8,9 @@ import { isNullOrUndefined } from 'util';
 import { IPaymentApiBackendService } from 'services/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
-import { AddPaymentRequest } from 'models/AddPaymentRequest';
+import { AddPaymentRequest } from 'models/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/PaymentResponse';
+import { PaymentResponse } from 'models/paymentResponse';
 import { PaymentTypeResponse } from 'models/paymentTypeResponse';
 
 @Injectable()

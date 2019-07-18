@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 
-import { AddPaymentRequest } from 'models/AddPaymentRequest';
+import { AddPaymentRequest } from 'models/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/PaymentResponse';
+import { PaymentResponse } from 'models/paymentResponse';
 import { PaymentTypeResponse } from 'models/paymentTypeResponse';
 
 abstract class IPaymentService {

@@ -26,8 +26,7 @@ namespace MAS.Payments.Queries
                        Amount = x.Amount,
                        Description = x.Description,
                        Date = x.Date,
-                       PaymentType = x.PaymentType.Name,
-                       PaymentTypeId = x.PaymentType.Id
+                       PaymentType = x.PaymentType.Name
                    })
                    .ToList();
         }

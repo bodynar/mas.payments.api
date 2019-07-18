@@ -41,7 +41,7 @@ namespace MAS.Payments.Controllers
         [HttpGet]
         public IEnumerable<GetPaymentsResponse> GetPayments()
         {
-            return QueryProcessor.Execute(new GetPaymentsQuery(null));
+            return QueryProcessor.Execute(new GetPaymentsQuery());
         }
     }
 }

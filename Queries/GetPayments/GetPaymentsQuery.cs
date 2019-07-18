@@ -9,6 +9,9 @@ namespace MAS.Payments.Queries
     {
         public Specification<Payment> Filter { get; }
 
+
+        public GetPaymentsQuery() { }
+
         public GetPaymentsQuery(Specification<Payment> filter)
         {
             Filter = filter;

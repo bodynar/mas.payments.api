@@ -1,4 +1,5 @@
 using System;
+
 namespace MAS.Payments.Infrastructure.Query
 {
     public class QueryProcessor : IQueryProcessor

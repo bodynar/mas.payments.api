@@ -1,0 +1,10 @@
+doctype html
+
+div menu
+
+.menubar
+    .menubar-item(
+        *ngFor='let menuItem of menuItems',
+        [title]='menuItem.description',
+        [class]='menuItem.link'
+    ) {{ menuItem.name }}

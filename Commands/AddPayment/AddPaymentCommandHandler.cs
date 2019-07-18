@@ -1,7 +1,6 @@
 using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Queries;
 
 namespace MAS.Payments.Commands
 {
@@ -16,8 +15,7 @@ namespace MAS.Payments.Commands
         public override void Handle(AddPaymentCommand command)
         {
             var paymentType = 
-                QueryProcessor.Execute(
-                    new GetEntityQuery<PaymentType>(command.PaymentTypeID));
+                GetRepository<PaymentType>().Get(command.PaymentTypeID);
 
             var payment = new Payment
             {

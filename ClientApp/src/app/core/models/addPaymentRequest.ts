@@ -1,0 +1,5 @@
+interface AddPaymentRequest {
+
+}
+
+export { AddPaymentRequest };

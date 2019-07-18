@@ -1,0 +1,5 @@
+interface PaymentTypeResponse {
+
+}
+
+export { PaymentTypeResponse };

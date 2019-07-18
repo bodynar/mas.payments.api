@@ -1,0 +1,5 @@
+interface PaymentResponse {
+
+}
+
+export { PaymentResponse };

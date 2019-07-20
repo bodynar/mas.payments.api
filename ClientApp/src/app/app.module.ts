@@ -9,6 +9,9 @@ import { AppContainerComponent } from './component/appContainer.component';
 import { HomeComponent } from './components/home/home.component';
 import { MenuComponent } from './components/menu/menu.component';
 
+import { MeasurementModule } from './areas/measurement/measurement.module';
+import { PaymentsModule } from './areas/payments/payments.module';
+
 @NgModule({
   declarations: [
     AppContainerComponent,
@@ -19,7 +22,10 @@ import { MenuComponent } from './components/menu/menu.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    CoreModule
+    CoreModule,
+
+    PaymentsModule,
+    MeasurementModule
   ],
   providers: [],
   bootstrap: [AppContainerComponent]

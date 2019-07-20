@@ -10,8 +10,8 @@ import { IMeasurementService } from 'services/IMeasurementService';
 
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
-import { MeasurementResponse } from 'models/response/MeasurementResponse';
-import { MeasurementTypeResponse } from 'models/response/MeasurementTypeResponse';
+import { MeasurementResponse } from 'models/response/measurementResponse';
+import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 @Injectable()
 class MeasurementService implements IMeasurementService {

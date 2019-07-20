@@ -8,10 +8,10 @@ import { isNullOrUndefined } from 'util';
 import { IPaymentApiBackendService } from 'services/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
-import { AddPaymentRequest } from 'models/addPaymentRequest';
-import { AddPaymentTypeRequest } from 'models/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/paymentResponse';
-import { PaymentTypeResponse } from 'models/paymentTypeResponse';
+import { AddPaymentRequest } from 'models/request/addPaymentRequest';
+import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
+import { PaymentResponse } from 'models/response/paymentResponse';
+import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 
 @Injectable()
 class PaymentService implements IPaymentService {

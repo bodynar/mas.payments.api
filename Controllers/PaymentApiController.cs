@@ -9,9 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 namespace MAS.Payments.Controllers
 {
     [Route("api/payment")]
-    public class paymentController : BaseApiController
+    public class PaymentApiController : BaseApiController
     {
-        public paymentController(
+        public PaymentApiController(
             ICommandProcessor commandProcessor,
             IQueryProcessor queryProcessor
         ) : base(commandProcessor, queryProcessor)

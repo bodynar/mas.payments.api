@@ -12,13 +12,13 @@ namespace MAS.Payments.Commands
 
         public string Description { get; }
         
-        public long PaymentTypeID { get; }
+        public long PaymentTypeId { get; }
 
         public AddPaymentCommand(
-            long paymentTypeID, double amount, DateTime? date,
+            long paymentTypeId, double amount, DateTime? date,
             string description)
         {
-            PaymentTypeID = paymentTypeID;
+            PaymentTypeId = paymentTypeId;
             Amount = amount;
             Date = date;
             Description = description;

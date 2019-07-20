@@ -10,6 +10,6 @@ namespace MAS.Payments.Models
 
         public string Description { get; set; }
 
-        public long PaymentTypeID { get; set; }
+        public long PaymentTypeId { get; set; }
     }
 }

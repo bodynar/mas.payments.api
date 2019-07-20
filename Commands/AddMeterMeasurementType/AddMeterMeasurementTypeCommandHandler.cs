@@ -32,6 +32,15 @@ namespace MAS.Payments.Commands
                     $"Measurement type with name {command.Name} is already exist");
             }
 
+            var paymentType =
+                GetRepository<PaymentType>().Get(command.PaymentTypeId);
+
+            if (paymentType == null)
+            {
+                throw new CommandExecutionException(
+                    $"Payment type with id {command.PaymentTypeId} doesn't exist");
+            }
+
             var meterMeasurementType = new MeterMeasurementType
             {
                 Name = command.Name,

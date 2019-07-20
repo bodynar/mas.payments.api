@@ -5,6 +5,7 @@ using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Exceptions;
 using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Specification;
+using MAS.Payments.Queries;
 
 namespace MAS.Payments.Commands
 {
@@ -33,7 +34,7 @@ namespace MAS.Payments.Commands
             }
 
             var paymentType =
-                GetRepository<PaymentType>().Get(command.PaymentTypeId);
+                QueryProcessor.Execute(new GetEntityQuery<PaymentType>(command.PaymentTypeId));
 
             if (paymentType == null)
             {

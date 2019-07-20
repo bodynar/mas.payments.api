@@ -29,7 +29,7 @@ namespace MAS.Payments.Controllers
         public void AddPayment([FromBody]AddPaymentRequest request)
         {
             CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeID, request.Amount, request.Date, request.Description));
+                new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
         }
 
         [HttpGet]

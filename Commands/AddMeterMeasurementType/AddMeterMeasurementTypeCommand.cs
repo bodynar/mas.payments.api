@@ -5,11 +5,11 @@ namespace MAS.Payments.Commands
 {
     public class AddMeterMeasurementTypeCommand : ICommand
     {
-        public string Name { get; set; }
+        public string Name { get; }
 
-        public string Description { get; set; }
+        public string Description { get; }
 
-        public long PaymentTypeId { get; set; }
+        public long PaymentTypeId { get; }
 
         public AddMeterMeasurementTypeCommand(long paymentTypeId, string name, string description)
         {

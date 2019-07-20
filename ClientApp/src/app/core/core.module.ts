@@ -7,6 +7,12 @@ import { PaymentApiBackendService } from './services/implementations/paymentApi.
 import { IPaymentService } from 'services/IPaymentService';
 import { PaymentService } from './services/implementations/payment.service';
 
+import { IMeasurementApiBackendService } from 'services/IMeasurementApi.backend';
+import { MeasurementApiBackendService } from './services/implementations/measurementApi.backend.service';
+
+import { IMeasurementService } from 'services/IMeasurementService';
+import { MeasurementService } from './services/implementations/measurement.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -15,7 +21,12 @@ import { PaymentService } from './services/implementations/payment.service';
     declarations: [],
     providers: [
         { provide: IPaymentApiBackendService, useClass: PaymentApiBackendService },
-        { provide: IPaymentService, useClass: PaymentService }
+        { provide: IPaymentService, useClass: PaymentService },
+
+        { provide: IMeasurementApiBackendService, useClass: MeasurementApiBackendService },
+        { provide: IMeasurementService, useClass: MeasurementService },
     ],
 })
-export class CoreModule { }
+class CoreModule { }
+
+export { CoreModule };

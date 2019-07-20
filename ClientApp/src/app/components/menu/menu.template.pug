@@ -1,10 +1,18 @@
 doctype html
 
-div menu
-
-.menubar
-    .menubar-item(
-        *ngFor='let menuItem of menuItems',
-        [title]='menuItem.description',
-        [class]='menuItem.link'
-    ) {{ menuItem.name }}
+ul.menubar
+    li.menubar-logo
+        span MAS.Payments >
+        input.search(
+            type='text',
+            [(ngModel)]='this.searchPattern',
+            spellcheck='false',
+            (keydown.enter)='onStartSearch()'
+        )
+    li.menubar-links
+        ul.menu
+            li.menu-item(*ngFor='let menuItem of menuItems')
+                a([title]='menuItem.description',
+                    [href]='menuItem.link',
+                    [class.active]='menuItem.isActive'
+                ) {{ menuItem.name }}

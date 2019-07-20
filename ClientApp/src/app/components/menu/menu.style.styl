@@ -1,14 +1,43 @@
+@import '../../../common/colors.styl'
+
 .menubar
-    height 3em
-    padding 0.5em
-    background-color gray 
-    
+    position sticky
+    top 0
+
+    padding 0.6em 1em
+    background-color color-black-pearl
+
     display flex
+    justify-content space-between
     flex-direction row
-    justify-content right
-    align-items baseline
-    align-content center
-    &-item 
-        color black
-        &:hover
-            color red
+    align-items center
+
+    list-style none
+
+    &-logo
+        color white
+        padding-left 0.5em
+
+        & > .search
+            outline 0
+            border-width 0
+
+            margin-left 5px
+
+            background none
+            color white
+
+.menu
+    display flex
+    justify-content flex-end
+
+    &-item
+        list-style none
+        margin 0 0.5em
+        & > a
+            text-decoration none
+            color white
+            &.active
+                color color-blue-asphalt
+            &:hover
+                color color-blue-blue-sky

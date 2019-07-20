@@ -14,7 +14,8 @@ class MenuComponent {
             {
                 name: 'home',
                 link: '',
-                description: 'home sweet home'
+                description: 'home sweet home',
+                isActive: true
             },
             {
                 name: 'Payments',
@@ -22,7 +23,17 @@ class MenuComponent {
             }
         ];
 
+    public searchPattern: string =
+        '';
 
+    public onStartSearch() {
+
+        if (this.searchPattern.endsWith('.py')) {
+            alert('oh you little hacker');
+        } else {
+            console.log('Search will be available soon..');
+        }
+    }
 }
 
 export { MenuComponent };

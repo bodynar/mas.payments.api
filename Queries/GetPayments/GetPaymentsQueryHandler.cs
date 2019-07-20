@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using MAS.Payments.DataBase;
+using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Query;
@@ -9,15 +10,18 @@ namespace MAS.Payments.Queries
 {
     internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsResponse>>
     {
+        private IRepository<Payment> Repository { get; }
+
         public GetPaymentsQueryHandler(
             IResolver resolver
         ) : base(resolver)
         {
+            Repository = GetRepository<Payment>();
         }
 
         public override IEnumerable<GetPaymentsResponse> Handle(GetPaymentsQuery Query)
         {
-            return GetRepository<Payment>()
+            return Repository
                    .GetAll()
                    .Where(Query.Filter)
                    .Select(x => new GetPaymentsResponse

@@ -13,6 +13,9 @@ import { MeasurementApiBackendService } from './services/implementations/backend
 import { IMeasurementService } from 'services/IMeasurementService';
 import { MeasurementService } from './services/implementations/measurement.service';
 
+import { IRouterService } from 'services/IRouterService';
+import { RouterService } from './services/implementations/router.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -25,6 +28,8 @@ import { MeasurementService } from './services/implementations/measurement.servi
 
         { provide: IMeasurementApiBackendService, useClass: MeasurementApiBackendService },
         { provide: IMeasurementService, useClass: MeasurementService },
+
+        { provide: IRouterService, useClass: RouterService }
     ],
 })
 class CoreModule { }

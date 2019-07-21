@@ -2,7 +2,9 @@ doctype html
 
 ul.menubar
     li.menubar-logo
-        span MAS.Payments >
+        span(
+            (click)='onMenuItemClick("")'
+        ) MAS.Payments >
         input.search(
             type='text',
             [(ngModel)]='this.searchPattern',
@@ -12,7 +14,9 @@ ul.menubar
     li.menubar-links
         ul.menu
             li.menu-item(*ngFor='let menuItem of (menuItems$ | async)')
-                a([title]='menuItem.description',
-                    [attr.href]='!menuItem.isEnabled ? null : menuItem.link',
-                    [class.active]='menuItem.isActive'
+                a(
+                    [title]='menuItem.description',
+                    [attr.enabled]='!menuItem.isEnabled ? null : menuItem.link',
+                    [class.active]='menuItem.isActive',
+                    (click)='onMenuItemClick(menuItem.link)'
                 ) {{ menuItem.name }}

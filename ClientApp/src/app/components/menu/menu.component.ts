@@ -44,10 +44,10 @@ class MenuComponent implements OnInit, OnDestroy {
             )
             .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
 
-        const currentArea: string =
+        const currentRoute: string =
             this.routerService.getCurrentRoute();
 
-        this.highlightMenuItem(currentArea);
+        this.highlightMenuItem(currentRoute);
     }
 
     public ngOnDestroy(): void {
@@ -63,6 +63,9 @@ class MenuComponent implements OnInit, OnDestroy {
         }
     }
 
+    public onMenuItemClick(menuItemLink: string) {
+        this.routerService.navigate([menuItemLink]);
+    }
 
     private highlightMenuItem(menuItemName: string): void {
         this.menuItems.forEach(item => item.isActive = false);

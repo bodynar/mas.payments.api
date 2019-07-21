@@ -17,6 +17,7 @@
     &-logo
         color white
         padding-left 0.5em
+        cursor help
 
         & > .search
             outline 0
@@ -37,9 +38,12 @@
         & > a
             text-decoration none
             color white
-            &.active
+            cursor pointer
+
+            &:not([enabled])
+                cursor not-allowed
+                color color-gray-asphalt-wet
+            &.active[enabled]
                 color color-blue-asphalt
-            &:hover[href]
+            &:hover[enabled]
                 color color-blue-blue-sky
-        & > a:not([href])
-            cursor not-allowed

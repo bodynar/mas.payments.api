@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { IMeasurementApiBackendService } from 'services/IMeasurementApi.backend';
+import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';

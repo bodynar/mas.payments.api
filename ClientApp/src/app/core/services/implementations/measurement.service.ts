@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { IMeasurementApiBackendService } from 'services/IMeasurementApi.backend';
+import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';
 
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';

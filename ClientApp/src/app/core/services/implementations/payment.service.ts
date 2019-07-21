@@ -5,7 +5,7 @@ import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { IPaymentApiBackendService } from 'services/IPaymentApi.backend';
+import { IPaymentApiBackendService } from 'services/backend/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';

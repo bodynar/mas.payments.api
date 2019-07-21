@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { IPaymentApiBackendService } from '../contracts/IPaymentApi.backend';
+import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.backend';
 
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';

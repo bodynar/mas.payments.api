@@ -1,4 +1,4 @@
-import { NotificationType } from './NotificationType';
+import { NotificationType } from './notificationType';
 
 interface Notification {
     message: string;

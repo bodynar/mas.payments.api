@@ -4,8 +4,8 @@ import { Observable, ReplaySubject, Subject } from 'rxjs';
 
 import { INotificationService } from 'services/INotificationService';
 
-import { Notification } from 'models/Notification';
-import { NotificationType } from 'models/NotificationType';
+import { Notification } from 'models/notification';
+import { NotificationType } from 'models/notificationType';
 
 @Injectable()
 class NotificationService implements INotificationService {

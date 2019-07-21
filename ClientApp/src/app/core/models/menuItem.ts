@@ -3,6 +3,7 @@ interface MenuItem {
     description?: string;
     link: string;
     isActive?: boolean;
+    isEnabled: boolean;
 }
 
 export { MenuItem };

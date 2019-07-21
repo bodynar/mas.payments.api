@@ -11,8 +11,8 @@ ul.menubar
         )
     li.menubar-links
         ul.menu
-            li.menu-item(*ngFor='let menuItem of menuItems')
+            li.menu-item(*ngFor='let menuItem of (menuItems$ | async)')
                 a([title]='menuItem.description',
-                    [href]='menuItem.link',
+                    [attr.href]='!menuItem.isEnabled ? null : menuItem.link',
                     [class.active]='menuItem.isActive'
                 ) {{ menuItem.name }}

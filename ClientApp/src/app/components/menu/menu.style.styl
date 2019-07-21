@@ -39,5 +39,7 @@
             color white
             &.active
                 color color-blue-asphalt
-            &:hover
+            &:hover[href]
                 color color-blue-blue-sky
+        & > a:not([href])
+            cursor not-allowed

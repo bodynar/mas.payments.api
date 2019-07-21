@@ -46,10 +46,10 @@
             color white
             cursor pointer
 
-            &:not([enabled])
+            &[disabled]
                 cursor not-allowed
                 color color-gray-asphalt-wet
-            &.active[enabled]
+            &.active&:not([disabled])
                 color color-blue-asphalt
-            &:hover[enabled]
+            &:hover&:not([disabled])
                 color color-blue-blue-sky

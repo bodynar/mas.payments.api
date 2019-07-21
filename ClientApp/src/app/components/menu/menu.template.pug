@@ -15,8 +15,8 @@ ul.menubar
         ul.menu
             li.menu-item(*ngFor='let menuItem of (menuItems$ | async)')
                 a(
-                    [title]='menuItem.description',
-                    [attr.enabled]='!menuItem.isEnabled ? null : menuItem.link',
+                    [title]='menuItem.description === undefined ? "" : menuItem.description',
+                    [attr.disabled]='menuItem.isEnabled ? null : ""',
                     [class.active]='menuItem.isActive',
                     (click)='!menuItem.isEnabled ? null : onMenuItemClick(menuItem.link)'
                 ) {{ menuItem.name }}

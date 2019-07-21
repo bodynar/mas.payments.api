@@ -37,7 +37,7 @@ const routes: Routes = [
     },
     {
         path: '**',
-        redirectTo: 'pageNotFound'
+        redirectTo: '404'
     }
 ];
 

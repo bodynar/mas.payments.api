@@ -9,6 +9,7 @@ import { AppContainerComponent } from './component/appContainer.component';
 import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { MenuComponent } from './components/menu/menu.component';
+import { NotificatorComponent } from './components/notificator/notificator.component';
 
 import { MeasurementModule } from './areas/measurement/measurement.module';
 import { PaymentsModule } from './areas/payments/payments.module';
@@ -20,6 +21,7 @@ import { PagesModule } from './pages/pages.module';
     AppComponent,
     HomeComponent,
     MenuComponent,
+    NotificatorComponent
   ],
   imports: [
     BrowserModule,

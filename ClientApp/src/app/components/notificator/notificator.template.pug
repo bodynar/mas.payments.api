@@ -1,4 +1,12 @@
 doctype html
 
-.notification-container
-    .notification
+.notifications
+    .notification(
+        *ngFor='let notification of (notifications$ | async)',
+        [ngClass]='notification.type.toLower()'
+    )
+        .notification-header {{ notification.type }}
+            span.close(
+                (click)='removeNotification(notification.id)'
+            ) &times;
+        .notification-body {{ notification.message }}

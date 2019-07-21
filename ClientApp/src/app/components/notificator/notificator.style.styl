@@ -1,0 +1,39 @@
+@import '../../../common/colors.styl';
+
+background-opacity = 0.65
+
+.notifications
+    width 15vw
+        
+    position fixed
+    top 4em
+    right 1em
+
+.notification
+    color color-black-pearl
+    background-color rgba(176, 196, 201, background-opacity)// color-gray-asphalt-wet
+
+    padding 0.7em
+    margin-bottom 1em
+
+    border-radius 6px
+
+    display flex
+    flex-direction column
+
+    &-header
+        font-weight bold
+        font-size 14px
+
+    &.error
+        background-color rgba(226, 90, 83, background-opacity) // color-red-fiery-coral
+    &.warning
+        background-color rgba(255, 218, 119, background-opacity) // color-orange-honey
+    &.info
+        background-color rgba(65, 206, 226, background-opacity) // color-blue-sea-wave-light
+    &.success
+        background-color rgba(153, 216, 21, background-opacity) // color-green-slime
+
+.close
+    user-select none
+    cursor pointer

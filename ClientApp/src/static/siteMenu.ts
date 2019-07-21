@@ -3,17 +3,17 @@ import { MenuItem } from 'models/menuItem';
 const siteMenu: Array<MenuItem> = [
     {
         name: 'Payments',
-        link: 'payments',
+        link: 'app/payments',
         isEnabled: true
     },
     {
         name: 'Measurements',
-        link: 'measures',
+        link: 'app/measures',
         isEnabled: true
     },
     {
         name: 'Statistics',
-        link: 'stats',
+        link: 'app/stats',
         description: 'Payments statistics and predictions for next payments',
         isEnabled: false
     }

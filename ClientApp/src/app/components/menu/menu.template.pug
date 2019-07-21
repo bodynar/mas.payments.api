@@ -18,5 +18,5 @@ ul.menubar
                     [title]='menuItem.description',
                     [attr.enabled]='!menuItem.isEnabled ? null : menuItem.link',
                     [class.active]='menuItem.isActive',
-                    (click)='onMenuItemClick(menuItem.link)'
+                    (click)='!menuItem.isEnabled ? null : onMenuItemClick(menuItem.link)'
                 ) {{ menuItem.name }}

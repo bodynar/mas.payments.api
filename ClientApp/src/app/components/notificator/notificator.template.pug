@@ -3,7 +3,7 @@ doctype html
 .notifications
     .notification(
         *ngFor='let notification of (notifications$ | async)',
-        [ngClass]='notification.type.toLower()'
+        [ngClass]='notification.type.toLowerCase()'
     )
         .notification-header {{ notification.type }}
             span.close(

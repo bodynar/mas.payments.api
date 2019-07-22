@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { map, takeUntil, tap } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { INotificationService } from 'services/INotificationService';
 
 import { Notification } from 'models/notification';
@@ -35,7 +37,11 @@ class NotificatorComponent implements OnInit, OnDestroy {
     ) {
         this.whenNotificationRecieved$
             .pipe(
-                takeUntil(this.whenComponentDestroy$)
+                takeUntil(this.whenComponentDestroy$),
+                map(notification => ({
+                    ...notification,
+                    id: this.notifications.length
+                }))
             )
             .subscribe(notification => {
                 this.notifications.push(notification);
@@ -48,7 +54,6 @@ class NotificatorComponent implements OnInit, OnDestroy {
                 map(notifications =>
                     notifications.map(notification =>
                         ({
-                            id: this.notifications.length,
                             ...notification,
                             type: NotificationType[notification.type]
                         }))

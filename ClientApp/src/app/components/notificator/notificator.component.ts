@@ -67,25 +67,6 @@ class NotificatorComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        setTimeout(() => this.whenNotificationRecieved$.next({
-            message: 'You don\'t have an permission to execute operation.',
-            type: NotificationType.Error
-        }), 1 * 1000);
-
-        setTimeout(() => this.whenNotificationRecieved$.next({
-            message: 'Unauthorized persons will be executed.',
-            type: NotificationType.Warning
-        }), 1 * 3000);
-
-        setTimeout(() => this.whenNotificationRecieved$.next({
-            message: 'Your application have been accepted.',
-            type: NotificationType.Success
-        }), 1 * 5000);
-
-        setTimeout(() => this.whenNotificationRecieved$.next({
-            message: 'Remote databases has been restored.',
-            type: NotificationType.Info
-        }), 1 * 7000);
     }
 
     public ngOnDestroy(): void {

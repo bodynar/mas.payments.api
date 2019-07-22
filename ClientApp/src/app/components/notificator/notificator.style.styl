@@ -23,6 +23,11 @@ background-opacity = 0.65
 
     box-shadow 0 0 20px 2px rgba(0, 0, 0, 0.2)
 
+    &:last-of-type
+        -webkit-animation fadein 0.5s
+        animation fadein 0.5s
+        animation-iteration-count 1
+
     &-header
         font-weight bold
         font-size 14px
@@ -42,3 +47,17 @@ background-opacity = 0.65
 .close
     user-select none
     cursor pointer
+
+@-webkit-keyframes fadein
+  from 
+    opacity 0
+  to 
+    opacity 1
+
+@keyframes fadein 
+  from 
+    bottom 0
+    opacity 0
+  to 
+    bottom 30px
+    opacity 1

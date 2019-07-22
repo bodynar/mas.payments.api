@@ -1,9 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { map, takeUntil, tap } from 'rxjs/operators';
-
-import { isNullOrUndefined } from 'util';
+import { Subject } from 'rxjs';
+import { delay, map, takeUntil, tap } from 'rxjs/operators';
 
 import { INotificationService } from 'services/INotificationService';
 
@@ -18,13 +16,16 @@ import { NotificationType } from 'models/notificationType';
 class NotificatorComponent implements OnInit, OnDestroy {
 
     public notifications$: Subject<Array<Notification>> =
-        new ReplaySubject();
+        new Subject();
 
     private whenUpdateNotifications$: Subject<Array<Notification>> =
         new Subject();
 
     private whenNotificationRecieved$: Subject<Notification> =
-        new Subject<Notification>();
+        new Subject();
+
+    private whenNotificationDismissDelayed$: Subject<number> =
+        new Subject();
 
     private notifications: Array<Notification> =
         [];
@@ -35,17 +36,27 @@ class NotificatorComponent implements OnInit, OnDestroy {
     constructor(
         private notificationService: INotificationService
     ) {
+        this.whenNotificationDismissDelayed$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                delay(5 * 1000),
+            )
+            .subscribe(notificationIndex => {
+                this.removeNotification(notificationIndex);
+            });
+
         this.whenNotificationRecieved$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 map(notification => ({
                     ...notification,
                     id: this.notifications.length
-                }))
+                })),
+                tap(notification => this.notifications.push(notification))
             )
             .subscribe(notification => {
-                this.notifications.push(notification);
                 this.whenUpdateNotifications$.next(this.notifications);
+                this.whenNotificationDismissDelayed$.next(notification.id);
             });
 
         this.whenUpdateNotifications$

@@ -17,34 +17,32 @@ class NotificationService implements INotificationService {
     ) {
     }
 
-    public notify(message: string, notificationType: NotificationType, delay?: number): void {
+    public notify(message: string, notificationType: NotificationType): void {
         this.whenMessageRecieved$.next({
             message: message,
-            type: notificationType,
-            delay: delay
+            type: notificationType
         });
     }
 
-    public error(message: string, delay?: number): void {
-        this.notify(message, NotificationType.Error, delay);
+    public error(message: string): void {
+        this.notify(message, NotificationType.Error);
     }
 
-    public success(message: string, delay?: number): void {
-        this.notify(message, NotificationType.Success, delay);
+    public success(message: string): void {
+        this.notify(message, NotificationType.Success);
     }
 
-    public info(message: string, delay?: number): void {
-        this.notify(message, NotificationType.Info, delay);
+    public info(message: string): void {
+        this.notify(message, NotificationType.Info);
     }
 
-    public warning(message: string, delay?: number): void {
-        this.notify(message, NotificationType.Warning, delay);
+    public warning(message: string): void {
+        this.notify(message, NotificationType.Warning);
     }
 
     public whenMessageRecieved(): Observable<Notification> {
         return this.whenMessageRecieved$.asObservable();
     }
-
 }
 
 export { NotificationService };

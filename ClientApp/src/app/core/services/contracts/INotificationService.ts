@@ -5,15 +5,15 @@ import { NotificationType } from 'models/notificationType';
 
 abstract class INotificationService {
 
-    abstract notify(message: string, notificationType: NotificationType, delay?: number): void;
+    abstract notify(message: string, notificationType: NotificationType): void;
 
-    abstract error(message: string, delay?: number): void;
+    abstract error(message: string): void;
 
-    abstract success(message: string, delay?: number): void;
+    abstract success(message: string): void;
 
-    abstract info(message: string, delay?: number): void;
+    abstract info(message: string): void;
 
-    abstract warning(message: string, delay?: number): void;
+    abstract warning(message: string): void;
 
     abstract whenMessageRecieved(): Observable<Notification>;
 }

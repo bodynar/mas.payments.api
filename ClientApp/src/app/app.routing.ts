@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { MeasurementComponent } from './areas/measurement/component/measurement.component';
-import { PaymentsComponent } from './areas/payments/component/payments.component';
 import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './pages/notFound/notFound.component';
+
+import { PaymentsComponent } from './areas/payments/component/payments.component';
+
+import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
+import { AddMeasurementComponent } from './areas/measurement/components/addMeasurement/addMeasurement.component';
+import { AddMeasurementTypeComponent } from './areas/measurement/components/addMeasurementType/addMeasurementType.component';
+import { MeasurementListComponent } from './areas/measurement/components/measurementList/measurementList.component';
 
 const routes: Routes = [
     {
@@ -23,11 +28,39 @@ const routes: Routes = [
             },
             {
                 path: 'payments',
-                component: PaymentsComponent
+                component: PaymentsComponent,
+                // children: [
+                //     {
+                //         path: '',
+                //         component: PaymentListComponent
+                //     },
+                //     {
+                //         path: 'addPayment',
+                //         component: AddPaymentComponent
+                //     },
+                //     {
+                //         path: 'addPaymentType',
+                //         component: AddPaymentTypeComponent
+                //     }
+                // ]
             },
             {
                 path: 'measures',
-                component: MeasurementComponent
+                component: MeasurementsComponent,
+                children: [
+                    {
+                        path: '',
+                        component: MeasurementListComponent
+                    },
+                    {
+                        path: 'addMeasurement',
+                        component: AddMeasurementComponent
+                    },
+                    {
+                        path: 'addMeasurementType',
+                        component: AddMeasurementTypeComponent
+                    }
+                ]
             },
         ]
     },

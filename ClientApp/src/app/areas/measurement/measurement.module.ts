@@ -1,14 +1,23 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
-import { MeasurementComponent } from './component/measurement.component';
+import { MeasurementsComponent } from './component/measurement.component';
 import { AddMeasurementComponent } from './components/addMeasurement/addMeasurement.component';
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
+import { MeasurementComponent } from './components/measurement/measurement.component';
+import { MeasurementListComponent } from './components/measurementList/measurementList.component';
 
 @NgModule({
-    imports: [],
+    imports: [
+        CommonModule,
+        RouterModule
+    ],
     exports: [],
     declarations: [
-        MeasurementComponent, AddMeasurementComponent, AddMeasurementTypeComponent
+        MeasurementsComponent, AddMeasurementComponent, AddMeasurementTypeComponent,
+
+        MeasurementListComponent, MeasurementComponent
     ],
     providers: [],
 })

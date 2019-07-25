@@ -1,0 +1,15 @@
+doctype html
+
+.actions
+    button.btn.btn-outline-info(
+        *ngFor='let action of actions',
+        (click)='onActionClick(action)'
+    ) {{ action }}
+
+hr
+
+.measurement-list
+    app-measurement-item(
+        *ngFor='let measurement of (measurements$ | async)',
+        [measurement]='measurement'
+    )

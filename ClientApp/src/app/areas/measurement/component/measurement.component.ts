@@ -4,9 +4,9 @@ import { Component } from '@angular/core';
     templateUrl: 'measurement.template.pug',
     styleUrls: ['measurement.style.styl']
 })
-class MeasurementComponent {
+class MeasurementsComponent {
     constructor(
     ) { }
 }
 
-export { MeasurementComponent };
+export { MeasurementsComponent };

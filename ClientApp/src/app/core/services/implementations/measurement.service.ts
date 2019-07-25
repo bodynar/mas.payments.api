@@ -17,16 +17,16 @@ import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse
 class MeasurementService implements IMeasurementService {
 
     constructor(
-        private MeasurementApiBackend: IMeasurementApiBackendService,
+        private measurementApiBackend: IMeasurementApiBackendService,
         // private notificationService: INotificationService,
         // private loggingService: ILoggingService
     ) { }
 
-    public addMeasurementType(MeasurementTypeData: AddMeasurementTypeRequest): void {
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
         // data validation
 
-        this.MeasurementApiBackend
-            .addMeasurementType(MeasurementTypeData)
+        return this.measurementApiBackend
+            .addMeasurementType(measurementTypeData)
             .pipe(
                 tap(response => {
                     const hasError: boolean =
@@ -41,11 +41,11 @@ class MeasurementService implements IMeasurementService {
             );
     }
 
-    public addMeasurement(MeasurementData: AddMeasurementRequest): void {
+    public addMeasurement(measurementData: AddMeasurementRequest): Observable<boolean> {
         // data validation
 
-        this.MeasurementApiBackend
-            .addMeasurement(MeasurementData)
+        return this.measurementApiBackend
+            .addMeasurement(measurementData)
             .pipe(
                 tap(response => {
                     const hasError: boolean =
@@ -61,7 +61,7 @@ class MeasurementService implements IMeasurementService {
     }
 
     public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
-        return this.MeasurementApiBackend
+        return this.measurementApiBackend
             .getMeasurementTypes()
             .pipe(
                 map(response => {
@@ -79,7 +79,7 @@ class MeasurementService implements IMeasurementService {
     }
 
     public getMeasurements(): Observable<Array<MeasurementResponse>> {
-        return this.MeasurementApiBackend
+        return this.measurementApiBackend
             .getMeasurements()
             .pipe(
                 map(response => {

@@ -1,7 +1,7 @@
 interface AddMeasurementTypeRequest {
-    name: string;
+    name?: string;
     description?: string;
-    paymentTypeId: number;
+    paymentTypeId?: number;
 }
 
 export { AddMeasurementTypeRequest };

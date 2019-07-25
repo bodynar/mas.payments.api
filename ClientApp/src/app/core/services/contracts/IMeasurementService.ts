@@ -6,9 +6,9 @@ import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 abstract class IMeasurementService {
-    abstract addMeasurementType(MeasurementTypeData: AddMeasurementTypeRequest): void;
+    abstract addMeasurementType(MeasurementTypeData: AddMeasurementTypeRequest): Observable<boolean>;
 
-    abstract addMeasurement(MeasurementData: AddMeasurementRequest): void;
+    abstract addMeasurement(MeasurementData: AddMeasurementRequest): Observable<boolean>;
 
     abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
 

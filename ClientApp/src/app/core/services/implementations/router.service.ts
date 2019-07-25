@@ -44,6 +44,15 @@ class RouterService implements IRouterService {
             );
     }
 
+    public getAreaName(): string {
+        return this.router.url
+            .split('/')
+            .filter(routerPart => routerPart !== '')
+            .filter(routerPath => routerPath !== 'app')
+            .reverse()
+            .pop();
+    }
+
     public getCurrentRoute(withoutArgs: boolean = false): string {
         const currentRoute: string =
             this.router.url.substring(1);
@@ -64,6 +73,37 @@ class RouterService implements IRouterService {
             .navigate(path, extras)
             .then()
             .catch();
+    }
+
+    public navigateUp(): void {
+        const routeParams: Array<string> =
+            this.getRouteParams();
+
+        const split: Array<string> =
+            routeParams.slice(0, routeParams.length - 1);
+
+        this.router
+            .navigate(split)
+            .then()
+            .catch();
+    }
+
+    public navigateDeep(routeDefinition: string[], extras?: any): void {
+        const routeParams: Array<string> =
+            this.getRouteParams();
+
+        const mergedPath: Array<string> =
+            Array.from(new Set([...routeParams, ...routeDefinition]));
+
+        this.router
+            .navigate(mergedPath, extras)
+            .then().catch();
+    }
+
+    private getRouteParams(): Array<string> {
+        return this.router.url
+            .split('/')
+            .filter(routerPart => routerPart !== '');
     }
 }
 

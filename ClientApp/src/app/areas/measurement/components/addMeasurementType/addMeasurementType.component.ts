@@ -13,8 +13,7 @@ import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 import { IPaymentService } from 'services/IPaymentService';
 
 @Component({
-    templateUrl: 'addMeasurementType.template.pug',
-    styleUrls: ['addMeasurementType.style.styl']
+    templateUrl: 'addMeasurementType.template.pug'
 })
 class AddMeasurementTypeComponent implements OnInit, OnDestroy {
 
@@ -43,9 +42,9 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                 switchMap(_ => this.measurementService.addMeasurementType(this.addMeasurementTypeRequest)),
                 filter(hasError => {
                     if (hasError) {
-                        this.notificationService.error('Error due sending order. Please, try again later');
+                        this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
-                        this.notificationService.success('Order was successfully sent. Wait for call');
+                        this.notificationService.success('Measurement type was successfully added.');
                     }
 
                     return !hasError;

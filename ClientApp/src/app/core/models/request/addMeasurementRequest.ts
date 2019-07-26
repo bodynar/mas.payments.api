@@ -1,8 +1,8 @@
 interface AddMeasurementRequest {
-    date: Date;
-    measurement: number;
+    date?: Date;
+    measurement?: number;
     comment?: string;
-    meterMeasurementTypeId: number;
+    meterMeasurementTypeId?: number;
 }
 
 export { AddMeasurementRequest };

@@ -8,8 +8,46 @@ doctype html
 
 hr
 
+.accordion
+    input.accordion-switcher#filters-display(type='checkbox')
+    label.accordion-label(for='filters-display') Measurements filter
+    .accordion-tab
+        form.filters(
+            #filtersForm='ngForm',
+            (submit)='applyFilters(filtersForm)'
+        )
+            .filters-row
+                label.filters-row_label.col-form-label-sm Measurement for
+                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#month(
+                    name='month',
+                    [(ngModel)]='filters.month'
+                )
+                    option(
+                        *ngFor='let month of months',
+                        [value]='month.id'
+                    ) {{ month.name }}
+
+            .filters-row
+                label.filters-row_label.col-form-label-sm(for='measurementType') Measurement type
+                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#measurementType(
+                    name='measurementType',
+                    [(ngModel)]='filters.measurementTypeId'
+                )
+                    option(
+                        *ngFor='let measurementType of (measurementTypes$ | async)',
+                        [value]='measurementType.id'
+                    ) {{ measurementType.name }}
+
+            button.btn.btn-outline-primary(type='submit') Filter
+
 .measurement-list
     app-measurement-item(
         *ngFor='let measurement of (measurements$ | async)',
         [measurement]='measurement'
     )
+
+img.loading-indicator(
+    alt='loading..',
+    src='loading.svg',
+    *ngIf='isLoading$ | async'
+)

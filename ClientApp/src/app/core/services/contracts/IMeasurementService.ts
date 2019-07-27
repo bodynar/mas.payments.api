@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 
+import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import { MeasurementResponse } from 'models/response/measurementResponse';
@@ -12,7 +13,7 @@ abstract class IMeasurementService {
 
     abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
 
-    abstract getMeasurements(): Observable<Array<MeasurementResponse>>;
+    abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>>;
 }
 
 export { IMeasurementService };

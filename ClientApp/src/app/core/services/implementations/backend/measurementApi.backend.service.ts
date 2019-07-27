@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -6,10 +6,12 @@ import { catchError, map } from 'rxjs/operators';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 
+import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -50,9 +52,26 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             );
     }
 
-    public getMeasurements(): Observable<Array<MeasurementResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
+        let params: HttpParams =
+            new HttpParams();
+
+        if (!isNullOrUndefined(filter)) {
+            if (!isNullOrUndefined(filter.month)) {
+                params = params.set('month', `${filter.month}`);
+            }
+            if (!isNullOrUndefined(filter.measurementTypeId)) {
+                params = params.set('measurementTypeId', `${filter.measurementTypeId}`);
+            }
+        }
+
+        const headers: HttpHeaders =
+            new HttpHeaders({
+                'Content-Type': 'application/json'
+            });
+
         return this.http
-            .get(`${this.apiPrefix}/getMeasurements`)
+            .get(`${this.apiPrefix}/getMeasurements`, { headers, params })
             .pipe(
                 map((response: Array<any>) =>
                     response.map(measurement => ({

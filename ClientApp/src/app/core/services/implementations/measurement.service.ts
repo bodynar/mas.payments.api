@@ -8,6 +8,7 @@ import { isNullOrUndefined } from 'util';
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';
 
+import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import { MeasurementResponse } from 'models/response/measurementResponse';
@@ -78,9 +79,9 @@ class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(): Observable<Array<MeasurementResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
         return this.measurementApiBackend
-            .getMeasurements()
+            .getMeasurements(filter)
             .pipe(
                 map(response => {
                     const hasError: boolean =

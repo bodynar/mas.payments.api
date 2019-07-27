@@ -18,26 +18,26 @@ namespace MAS.Payments.Controllers
         {
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IEnumerable<GetMeterMeasurementTypesResponse> GetMeasurementTypes()
         {
             return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements()
         {
             return QueryProcessor.Execute(new GetMeterMeasurementsQuery());
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public void AddMeasurement(AddMeterMeasurementRequest request)
         {
             CommandProcessor.Execute(
                 new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment));
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
         {
             CommandProcessor.Execute(

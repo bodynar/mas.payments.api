@@ -18,27 +18,27 @@ namespace MAS.Payments.Controllers
         {
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public void AddPaymentType([FromBody]AddPaymentTypeRequest request)
         {
             CommandProcessor.Execute(
                 new AddPaymentTypeCommand(request.Name, request.Description, request.Company));
         }
 
-        [HttpPost]
+        [HttpPost("[action]")]
         public void AddPayment([FromBody]AddPaymentRequest request)
         {
             CommandProcessor.Execute(
                 new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IEnumerable<GetPaymentTypesResponse> GetPaymentTypes()
         {
             return QueryProcessor.Execute(new GetPaymentTypesQuery());
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IEnumerable<GetPaymentsResponse> GetPayments()
         {
             return QueryProcessor.Execute(new GetPaymentsQuery());

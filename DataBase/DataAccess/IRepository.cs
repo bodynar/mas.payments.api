@@ -1,4 +1,5 @@
 using System.Linq;
+using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.DataBase.Access
 {
@@ -14,5 +15,7 @@ namespace MAS.Payments.DataBase.Access
         TEntity Get(long id);
 
         IQueryable<TEntity> GetAll();
+
+        IQueryable<TEntity> Where(Specification<TEntity> filter);
     }
 }

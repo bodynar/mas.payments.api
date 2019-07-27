@@ -1,5 +1,7 @@
 using System;
 using System.Linq;
+using MAS.Payments.Infrastructure.Extensions;
+using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.DataBase.Access
 {
@@ -38,5 +40,8 @@ namespace MAS.Payments.DataBase.Access
 
             DataBaseContext.Update(updatedEntity);
         }
+
+        public IQueryable<TEntity> Where(Specification<TEntity> filter)
+            => DataBaseContext.Set<TEntity>().Where(filter);
     }
 }

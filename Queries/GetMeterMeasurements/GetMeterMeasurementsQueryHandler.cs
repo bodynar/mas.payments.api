@@ -3,7 +3,9 @@ using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
+using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Queries
 {
@@ -18,15 +20,29 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery Query)
+        public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
         {
+            Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
+
+            if (query.Month.HasValue)
+            {
+                // todo: check (sql)
+                filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date.Month == query.Month.Value);
+            }
+
+            if (query.MeterMeasurementTypeId.HasValue)
+            {
+                filter = filter && new CommonSpecification<MeterMeasurement>(x => x.MeterMeasurementTypeId == query.MeterMeasurementTypeId.Value);
+            }
+
             return Repository
                    .GetAll()
+                   .Where(filter)
                    .Select(x => new GetMeterMeasurementsResponse
                    {
                        Id = x.Id,
                        Measurement = x.Measurement,
-                       Comment = x.Comment, 
+                       Comment = x.Comment,
                        Date = x.Date,
                        MeterMeasurementTypeId = x.MeterMeasurementTypeId,
                        MeasurementTypeName = x.MeasurementType.Name

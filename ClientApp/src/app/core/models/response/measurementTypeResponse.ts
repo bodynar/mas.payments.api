@@ -1,9 +1,9 @@
 interface MeasurementTypeResponse {
-    id: number;
+    id?: number;
     name: string;
     description?: string;
-    paymentTypeId: number;
-    paymentTypeName: string;
+    paymentTypeId?: number;
+    paymentTypeName?: string;
 }
 
 export { MeasurementTypeResponse };

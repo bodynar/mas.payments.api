@@ -1,5 +1,5 @@
 interface PaymentTypeResponse {
-    id: number;
+    id?: number;
     name: string;
     description?: string;
     company?: string;

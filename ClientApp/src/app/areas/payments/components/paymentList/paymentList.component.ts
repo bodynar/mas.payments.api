@@ -16,7 +16,7 @@ import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 })
 class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
-        {};
+        { };
 
     public payments$: Subject<Array<PaymentResponse>> =
         new Subject();
@@ -117,7 +117,9 @@ class PaymentListComponent implements OnInit, OnDestroy {
         this.paymentService
             .getPaymentTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+            .subscribe(paymentTypes => this.paymentTypes$.next([{
+                name: ''
+            }, ...paymentTypes]));
     }
 
     public ngOnDestroy(): void {

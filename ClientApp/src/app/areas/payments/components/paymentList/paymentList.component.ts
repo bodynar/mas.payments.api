@@ -32,6 +32,9 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public actions: Array<string> =
         ['addPayment', 'addPaymentType'];
 
+    public amountFilterType$: BehaviorSubject<string> =
+        new BehaviorSubject('');
+
 
     private whenSubmitFilters$: Subject<null> =
         new Subject();
@@ -128,6 +131,18 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     public applyFilters(): void {
         this.whenSubmitFilters$.next();
+    }
+
+    public amountFilterChanged(filterType: string): void {
+        const availableTypes: Array<string> =
+            ['between', 'exactly'];
+
+        if (availableTypes.includes(filterType.toLowerCase())) {
+            this.filters.amount = { };
+        } else {
+            this.filters.amount = undefined;
+        }
+        this.amountFilterType$.next(filterType.toLowerCase());
     }
 }
 

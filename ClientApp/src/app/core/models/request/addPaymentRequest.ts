@@ -1,8 +1,8 @@
 interface AddPaymentRequest {
-    amount: number;
+    amount?: number;
     date?: Date;
     description?: string;
-    paymentTypeId: number;
+    paymentTypeId?: number;
 }
 
 export { AddPaymentRequest };

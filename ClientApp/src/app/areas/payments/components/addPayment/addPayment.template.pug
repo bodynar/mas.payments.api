@@ -1,0 +1,51 @@
+doctype html
+
+form.needs-validation(
+    #addMeasurementForm='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(addMeasurementForm)'
+)
+    .form-group
+        label(for='amount') Amount
+        input.form-control.m-form-control.form-control-sm#amount(
+            type='text',
+            placeholder='Enter amount',
+            name='amount',
+            [(ngModel)]='addPaymentRequest.amount',
+            #name='ngModel',
+            required='required',
+        )
+
+    .form-group
+        label(for='paymentTypeId') Payment type
+        select.custom-select.m-form-control.custom-select-sm#paymentTypeId(
+            required='required',
+            name='paymentTypeId',
+            [(ngModel)]='addPaymentRequest.paymentTypeId'
+        )
+            option(
+                *ngFor='let paymentType of (paymentTypes$ | async)',
+                [value]='paymentType.id'
+            ) {{ paymentType.name }}
+
+    .form-group
+        label(for='date') Date of payment
+        input.form-control.m-form-control#date(
+            type='date',
+            required='required',
+            name='date',
+            [(ngModel)]='addPaymentRequest.date',
+            #orderFor='ngModel'
+        )
+
+    .form-group
+        label(for='description') Description
+        input.form-control.m-form-control.form-control-sm#description(
+            type='text',
+            placeholder='Payment description',
+            name='description',
+            [(ngModel)]='addPaymentRequest.description',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Add

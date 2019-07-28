@@ -1,12 +1,90 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
+
+import { ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil } from 'rxjs/operators';
+
+import { isNullOrUndefined } from 'util';
+
+import { INotificationService } from 'services/INotificationService';
+import { IPaymentService } from 'services/IPaymentService';
+import { IRouterService } from 'services/IRouterService';
+
+import { AddPaymentRequest } from 'models/request/addPaymentRequest';
+import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 
 @Component({
-    templateUrl: 'addPayment.template.pug',
-    styleUrls: ['addPayment.style.styl']
+    templateUrl: 'addPayment.template.pug'
 })
-class AddPaymentComponent {
+class AddPaymentComponent implements OnInit, OnDestroy {
+
+    public addPaymentRequest: AddPaymentRequest =
+        {};
+
+    public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
+        new ReplaySubject(1);
+
+    public whenSubmittedForm$: Subject<NgForm> =
+        new ReplaySubject(1);
+
+    private whenComponentDestroy$: Subject<null> =
+        new Subject();
+
     constructor(
-    ) { }
+        private paymentService: IPaymentService,
+        private routerService: IRouterService,
+        private notificationService: INotificationService,
+    ) {
+        this.whenSubmittedForm$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(({ valid, value }) => valid && this.isFormValid(value)),
+                switchMap(_ => this.paymentService.addPayment(this.addPaymentRequest)),
+                filter(hasError => {
+                    if (hasError) {
+                        this.notificationService.error('Error due saving data. Please, try again later');
+                    } else {
+                        this.notificationService.success('Measurement was successfully added.');
+                    }
+
+                    return !hasError;
+                })
+            )
+            .subscribe(_ => this.routerService.navigateUp());
+    }
+
+
+    public ngOnInit(): void {
+        this.paymentService
+            .getPaymentTypes()
+            .pipe(takeUntil(this.whenComponentDestroy$))
+            .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+    }
+
+    public ngOnDestroy(): void {
+        this.whenComponentDestroy$.next(null);
+        this.whenComponentDestroy$.complete();
+    }
+
+    public onFormSubmit(form: NgForm): void {
+        this.whenSubmittedForm$.next(form);
+    }
+
+    private isFormValid({ value }: NgForm): boolean {
+        // todo: fix => make normal validator on field
+        let isFormValid: boolean =
+            true;
+
+        if (!isNullOrUndefined(this.addPaymentRequest.amount)) {
+            const measurementValue: number =
+                parseFloat(value['amount']);
+
+            if (Number.isNaN(measurementValue)) {
+                isFormValid = false;
+            }
+        }
+        return isFormValid;
+    }
 }
 
 export { AddPaymentComponent };

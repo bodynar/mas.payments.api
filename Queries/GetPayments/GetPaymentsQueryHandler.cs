@@ -3,7 +3,6 @@ using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
@@ -22,7 +21,6 @@ namespace MAS.Payments.Queries
         public override IEnumerable<GetPaymentsResponse> Handle(GetPaymentsQuery Query)
         {
             return Repository
-                   .GetAll()
                    .Where(Query.Filter)
                    .Select(x => new GetPaymentsResponse
                    {

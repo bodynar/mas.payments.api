@@ -24,7 +24,7 @@ hr
                 )
                     option(
                         *ngFor='let month of months',
-                        [value]='month.id'
+                        [ngValue]='month.id'
                     ) {{ month.name }}
 
             .filters-row
@@ -35,7 +35,7 @@ hr
                 )
                     option(
                         *ngFor='let paymentType of (paymentTypes$ | async)',
-                        [value]='paymentType.id'
+                        [ngValue]='paymentType.id'
                     ) {{ paymentType.name }}
 
             .filters-row
@@ -71,8 +71,7 @@ hr
                         #periodEnd='ngModel',
                         placeholder='Maximum'
                     )
-                
-                
+
             button.btn.btn-outline-primary(type='submit') Filter
 
 .payments-list

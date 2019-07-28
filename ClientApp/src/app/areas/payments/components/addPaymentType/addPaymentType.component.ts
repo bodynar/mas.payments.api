@@ -11,8 +11,7 @@ import { IRouterService } from 'services/IRouterService';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 
 @Component({
-    templateUrl: 'addPaymentType.template.pug',
-    styleUrls: ['addPaymentType.style.styl']
+    templateUrl: 'addPaymentType.template.pug'
 })
 class AddPaymentTypeComponent implements OnDestroy {
 

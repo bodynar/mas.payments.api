@@ -15,6 +15,16 @@ form.needs-validation(
             #name='ngModel',
             required='required'
         )
+
+    .form-group
+        label(for='name') Company
+        input.form-control.m-form-control.form-control-sm#company(
+            type='text',
+            placeholder='Enter payment type name',
+            name='company',
+            [(ngModel)]='addPaymentTypeRequest.company',
+            #name='ngModel'
+        )
         
     .form-group
         label(for='description') Description
@@ -22,8 +32,7 @@ form.needs-validation(
             placeholder='Enter description',
             name='description',
             [(ngModel)]='addPaymentTypeRequest.description',
-            #name='ngModel',
-            required='required'
+            #name='ngModel'
         )
     
     button.btn.btn-outline-primary(type='submit') Add

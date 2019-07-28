@@ -5,7 +5,6 @@ using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Exceptions;
 using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Specification;
-using MAS.Payments.Queries;
 
 namespace MAS.Payments.Commands
 {
@@ -13,18 +12,21 @@ namespace MAS.Payments.Commands
     {
         private IRepository<MeterMeasurementType> Repository { get; }
 
+        private IRepository<PaymentType> PaymentTypeRepository { get; }
+
         public AddMeterMeasurementTypeCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<MeterMeasurementType>();
+            PaymentTypeRepository = GetRepository<PaymentType>();
         }
 
         public override void Handle(AddMeterMeasurementTypeCommand command)
         {
             var isUnique =
                 !Repository.GetAll().Any(
-                    new CommonSpecification<MeterMeasurementType>(x => 
+                    new CommonSpecification<MeterMeasurementType>(x =>
                         x.Name == command.Name && x.PaymentTypeId == command.PaymentTypeId));
 
             if (!isUnique)
@@ -34,7 +36,7 @@ namespace MAS.Payments.Commands
             }
 
             var paymentType =
-                QueryProcessor.Execute(new GetEntityQuery<PaymentType>(command.PaymentTypeId));
+                PaymentTypeRepository.Get(command.PaymentTypeId);
 
             if (paymentType == null)
             {

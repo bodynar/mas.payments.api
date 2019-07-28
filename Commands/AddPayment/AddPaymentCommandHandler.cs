@@ -3,25 +3,26 @@ using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Exceptions;
-using MAS.Payments.Queries;
 
 namespace MAS.Payments.Commands
 {
     internal class AddPaymentCommandHandler : BaseCommandHandler<AddPaymentCommand>
     {
         private IRepository<Payment> Repository { get; }
-        
+
+        private IRepository<PaymentType> PaymentTypeRepository { get; }
         public AddPaymentCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<Payment>();
+            PaymentTypeRepository = GetRepository<PaymentType>();
         }
 
         public override void Handle(AddPaymentCommand command)
         {
             var paymentType =
-                QueryProcessor.Execute(new GetEntityQuery<PaymentType>(command.PaymentTypeId));
+                PaymentTypeRepository.Get(command.PaymentTypeId);
 
             if (paymentType == null)
             {

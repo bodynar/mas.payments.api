@@ -3,7 +3,6 @@ using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Exceptions;
-using MAS.Payments.Queries;
 
 namespace MAS.Payments.Commands
 {
@@ -11,17 +10,20 @@ namespace MAS.Payments.Commands
     {
         private IRepository<MeterMeasurement> Repository { get; }
 
+        private IRepository<MeterMeasurementType> MeterMeasurementTypeRepository { get; }
+
         public AddMeterMeasurementCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<MeterMeasurement>();
+            MeterMeasurementTypeRepository = GetRepository<MeterMeasurementType>();
         }
 
         public override void Handle(AddMeterMeasurementCommand command)
         {
             var meterMeasurementType =
-                QueryProcessor.Execute(new GetEntityQuery<MeterMeasurementType>(command.MeterMeasurementTypeId));
+                MeterMeasurementTypeRepository.Get(command.MeterMeasurementTypeId);
 
             if (meterMeasurementType == null)
             {

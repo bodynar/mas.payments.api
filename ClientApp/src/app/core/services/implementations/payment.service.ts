@@ -8,6 +8,7 @@ import { isNullOrUndefined } from 'util';
 import { IPaymentApiBackendService } from 'services/backend/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
+import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import { PaymentResponse } from 'models/response/paymentResponse';
@@ -78,9 +79,9 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public getPayments(): Observable<Array<PaymentResponse>> {
+    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
         return this.paymentApiBackend
-            .getPayments()
+            .getPayments(filter)
             .pipe(
                 map(response => {
                     const hasError: boolean =

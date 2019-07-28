@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -6,10 +6,12 @@ import { catchError, map } from 'rxjs/operators';
 
 import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.backend';
 
+import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import { PaymentResponse } from 'models/response/paymentResponse';
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import { isNullOrUndefined } from 'util';
 
 @Injectable()
 class PaymentApiBackendService implements IPaymentApiBackendService {
@@ -49,9 +51,37 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
             );
     }
 
-    public getPayments(): Observable<Array<PaymentResponse>> {
+    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
+        let params: HttpParams =
+            new HttpParams();
+
+        if (!isNullOrUndefined(filter)) {
+            if (!isNullOrUndefined(filter.month)) {
+                params = params.set('month', `${filter.month}`);
+            }
+            if (!isNullOrUndefined(filter.paymentTypeId)) {
+                params = params.set('paymentTypeId', `${filter.paymentTypeId}`);
+            }
+            if (!isNullOrUndefined(filter.amount)) {
+                if (!isNullOrUndefined(filter.amount.exact)) {
+                    params = params.set('amount.exact', `${filter.amount.exact}`);
+                } else {
+                    if (!isNullOrUndefined(filter.amount.min)){
+                        params = params.set('amount.min', `${filter.amount.min}`);
+                    }
+                    if (!isNullOrUndefined(filter.amount.max)){
+                        params = params.set('amount.max', `${filter.amount.max}`);
+                    }
+                }
+            }
+        }
+
+        const headers: HttpHeaders =
+            new HttpHeaders({
+                'Content-Type': 'application/json'
+            });
         return this.http
-            .get(`${this.apiPrefix}/getPayments`)
+            .get(`${this.apiPrefix}/getPayments`, { headers, params })
             .pipe(
                 map((response: Array<any>) =>
                     response.map(payment => ({

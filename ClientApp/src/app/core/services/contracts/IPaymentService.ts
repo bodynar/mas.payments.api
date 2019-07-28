@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 
+import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import { PaymentResponse } from 'models/response/paymentResponse';
@@ -12,7 +13,7 @@ abstract class IPaymentService {
 
     abstract getPaymentTypes(): Observable<Array<PaymentTypeResponse>>;
 
-    abstract getPayments(): Observable<Array<PaymentResponse>>;
+    abstract getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>>;
 }
 
 export { IPaymentService };

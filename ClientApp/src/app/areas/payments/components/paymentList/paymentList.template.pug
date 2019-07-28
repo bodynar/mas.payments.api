@@ -1,0 +1,57 @@
+doctype html
+
+.actions
+    button.btn.btn-outline-info(
+        *ngFor='let action of actions',
+        (click)='onActionClick(action)'
+    ) {{ action }}
+
+hr
+
+.accordion
+    input.accordion-switcher#filters-display(type='checkbox')
+    label.accordion-label(for='filters-display') Payments filter
+    .accordion-tab
+        form.filters(
+            #filtersForm='ngForm',
+            (submit)='applyFilters(filtersForm)'
+        )
+            .filters-row
+                label.filters-row_label.col-form-label-sm Payment for
+                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#month(
+                    name='month',
+                    [(ngModel)]='filters.month'
+                )
+                    option(
+                        *ngFor='let month of months',
+                        [value]='month.id'
+                    ) {{ month.name }}
+
+            .filters-row
+                label.filters-row_label.col-form-label-sm(for='paymentType') Payment type
+                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#paymentType(
+                    name='paymentType',
+                    [(ngModel)]='filters.paymentTypeId'
+                )
+                    option(
+                        *ngFor='let paymentType of (paymentTypes$ | async)',
+                        [value]='paymentType.id'
+                    ) {{ paymentType.name }}
+
+            .filters-row
+                label.filters-row_label.col-form-label-sm Amount (will be later)
+                
+                
+            button.btn.btn-outline-primary(type='submit') Filter
+
+.payments-list
+    app-payment-item(
+        *ngFor='let payment of (payments$ | async)',
+        [payment]='payment'
+    )
+
+img.loading-indicator(
+    alt='loading..',
+    src='loading.svg',
+    *ngIf='isLoading$ | async'
+)

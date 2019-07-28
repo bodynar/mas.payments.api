@@ -23,10 +23,10 @@ class PaymentService implements IPaymentService {
         // private loggingService: ILoggingService
     ) { }
 
-    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): void {
+    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<boolean> {
         // data validation
 
-        this.paymentApiBackend
+        return this.paymentApiBackend
             .addPaymentType(paymentTypeData)
             .pipe(
                 tap(response => {
@@ -42,10 +42,10 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public addPayment(paymentData: AddPaymentRequest): void {
+    public addPayment(paymentData: AddPaymentRequest): Observable<boolean> {
         // data validation
 
-        this.paymentApiBackend
+        return this.paymentApiBackend
             .addPayment(paymentData)
             .pipe(
                 tap(response => {

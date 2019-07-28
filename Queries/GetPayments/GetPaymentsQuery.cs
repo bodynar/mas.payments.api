@@ -26,7 +26,7 @@ namespace MAS.Payments.Queries
             PaymentTypeId = paymentTypeId;
             ExactAmount = exactAmount;
             MinAmount = minAmount;
-            maxAmount = maxAmount;
+            MaxAmount = maxAmount;
         }
     }
 }

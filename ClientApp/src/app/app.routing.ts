@@ -5,12 +5,15 @@ import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './pages/notFound/notFound.component';
 
-import { PaymentsComponent } from './areas/payments/component/payments.component';
-
 import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
 import { AddMeasurementComponent } from './areas/measurement/components/addMeasurement/addMeasurement.component';
 import { AddMeasurementTypeComponent } from './areas/measurement/components/addMeasurementType/addMeasurementType.component';
 import { MeasurementListComponent } from './areas/measurement/components/measurementList/measurementList.component';
+
+import { PaymentsComponent } from './areas/payments/component/payments.component';
+import { AddPaymentComponent } from './areas/payments/components/addPayment/addPayment.component';
+import { AddPaymentTypeComponent } from './areas/payments/components/addPaymentType/addPaymentType.component';
+import { PaymentListComponent } from './areas/payments/components/paymentList/paymentList.component';
 
 const routes: Routes = [
     {
@@ -29,20 +32,20 @@ const routes: Routes = [
             {
                 path: 'payments',
                 component: PaymentsComponent,
-                // children: [
-                //     {
-                //         path: '',
-                //         component: PaymentListComponent
-                //     },
-                //     {
-                //         path: 'addPayment',
-                //         component: AddPaymentComponent
-                //     },
-                //     {
-                //         path: 'addPaymentType',
-                //         component: AddPaymentTypeComponent
-                //     }
-                // ]
+                children: [
+                    {
+                        path: '',
+                        component: PaymentListComponent
+                    },
+                    {
+                        path: 'addPayment',
+                        component: AddPaymentComponent
+                    },
+                    {
+                        path: 'addPaymentType',
+                        component: AddPaymentTypeComponent
+                    }
+                ]
             },
             {
                 path: 'measures',

@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { PaymentResponse } from 'models/response/PaymentResponse';
+import { PaymentResponse } from 'models/response/paymentResponse';
 
 @Component({
     selector: 'app-payment-item',
@@ -9,7 +9,7 @@ import { PaymentResponse } from 'models/response/PaymentResponse';
 })
 class PaymentComponent {
     @Input()
-    public Payment: PaymentResponse;
+    public payment: PaymentResponse;
 
     constructor(
     ) { }

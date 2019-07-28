@@ -39,9 +39,11 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetPaymentsResponse> GetPayments()
+        public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery]GetPaymentsRequest request)
         {
-            return QueryProcessor.Execute(new GetPaymentsQuery());
+            return QueryProcessor.Execute(
+                new GetPaymentsQuery(request.Month, request.PaymentTypeId,
+                    request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
         }
     }
 }

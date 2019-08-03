@@ -13,6 +13,7 @@ import { NotificatorComponent } from './components/notificator/notificator.compo
 
 import { MeasurementModule } from './areas/measurement/measurement.module';
 import { PaymentsModule } from './areas/payments/payments.module';
+import { StatisticsModule } from './areas/statistics/statistics.module';
 import { PagesModule } from './pages/pages.module';
 
 @NgModule({
@@ -31,6 +32,7 @@ import { PagesModule } from './pages/pages.module';
 
     PaymentsModule,
     MeasurementModule,
+    StatisticsModule,
     PagesModule
   ],
   providers: [],

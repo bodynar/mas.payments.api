@@ -14,6 +14,8 @@ import { PaymentsComponent } from './areas/payments/component/payments.component
 import { AddPaymentComponent } from './areas/payments/components/addPayment/addPayment.component';
 import { AddPaymentTypeComponent } from './areas/payments/components/addPaymentType/addPaymentType.component';
 import { PaymentListComponent } from './areas/payments/components/paymentList/paymentList.component';
+import { StatisticsComponent } from './areas/statistics/component/statistics.component';
+import { StatsComponent } from './areas/statistics/components/stats/stats.component';
 
 const routes: Routes = [
     {
@@ -65,6 +67,16 @@ const routes: Routes = [
                     }
                 ]
             },
+            {
+                path: 'stats',
+                component: StatisticsComponent,
+                children: [
+                    {
+                        path: '',
+                        component: StatsComponent
+                    }
+                ]
+            }
         ]
     },
     {

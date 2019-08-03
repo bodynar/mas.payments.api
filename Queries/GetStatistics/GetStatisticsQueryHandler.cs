@@ -32,14 +32,24 @@ namespace MAS.Payments.Queries
                 filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
 
-
             return Repository
                     .Where(filter)
-                    .Select(x => new GetStatisticsResponse
+                    .Select(payment => new GetStatisticsResponse
                     {
-                        Amout = x.Amount,
-                        Date = x.Date,
-                        PaymentType = x.PaymentType.Name
+                        Amout = payment.Amount,
+                        Date = payment.Date,
+                        PaymentType = payment.PaymentType.Name,
+                        Measurements =
+                            !query.IncludeMeasurements
+                                ? null
+                                : payment.PaymentType
+                                    .MeasurementTypes
+                                    .SelectMany(x => x.MeterMeasurements)
+                                    .Select(x => new GetStatisticsMeasurements
+                                    {
+                                        Name = x.MeasurementType.Name,
+                                        Measurement = x.Measurement
+                                    })
                     });
         }
     }

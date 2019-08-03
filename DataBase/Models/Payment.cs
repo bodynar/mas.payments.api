@@ -12,6 +12,6 @@ namespace MAS.Payments.DataBase
 
         public long PaymentTypeId { get; set; }
 
-        public PaymentType PaymentType { get; set; }
+        public virtual PaymentType PaymentType { get; set; }
     }
 }

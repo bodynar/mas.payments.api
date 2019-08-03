@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 namespace MAS.Payments.DataBase
 {
     public class MeterMeasurementType : Entity
@@ -8,6 +9,13 @@ namespace MAS.Payments.DataBase
 
         public long PaymentTypeId { get; set; }
 
-        public PaymentType PaymentType { get; set; }
+        public virtual PaymentType PaymentType { get; set; }
+
+        public virtual ICollection<MeterMeasurement> MeterMeasurements { get; set; }
+
+        public MeterMeasurementType()
+        {
+            MeterMeasurements = new List<MeterMeasurement>();
+        }
     }
 }

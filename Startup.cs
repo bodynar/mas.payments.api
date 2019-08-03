@@ -43,10 +43,11 @@ namespace MAS.Payments
                     .AddControllerActivation();
             });
 
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+
             services.AddDbContext<DataBaseContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection"),
-                    x => x.MigrationsAssembly("MAS.Payments"))
+                options.UseSqlServer(connectionString, x => x.MigrationsAssembly("MAS.Payments"))
+                       .UseLazyLoadingProxies().UseSqlServer(connectionString)
             );
         }
 

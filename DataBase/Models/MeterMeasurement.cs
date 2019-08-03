@@ -12,6 +12,6 @@ namespace MAS.Payments.DataBase
 
         public long MeterMeasurementTypeId { get; set; }
 
-        public MeterMeasurementType MeasurementType { get; set; }
+        public virtual MeterMeasurementType MeasurementType { get; set; }
     }
 }

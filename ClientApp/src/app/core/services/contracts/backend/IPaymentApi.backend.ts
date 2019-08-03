@@ -14,6 +14,10 @@ abstract class IPaymentApiBackendService {
     abstract getPaymentTypes(): Observable<Array<PaymentTypeResponse>>;
 
     abstract getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>>;
+
+    abstract deletePaymentType(paymentTypeId: number): Observable<boolean>;
+
+    abstract deletePayment(paymentId: number): Observable<boolean>;
 }
 
 export { IPaymentApiBackendService };

@@ -95,6 +95,21 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                 catchError(error => of(error))
             );
     }
+
+    public deletePaymentType(paymentTypeId: number): Observable<boolean> {
+        return this.http
+            .delete(`${this.apiPrefix}/deletePaymentType`,
+                { params: new HttpParams().set('paymentTypeId', `${paymentTypeId}`) })
+            .pipe(catchError(error => of(error)));
+    }
+
+
+    public deletePayment(paymentId: number): Observable<boolean> {
+        return this.http
+            .delete(`${this.apiPrefix}/deletePayment`,
+                { params: new HttpParams().set('paymentId', `${paymentId}`) })
+            .pipe(catchError(error => of(error)));
+    }
 }
 
 export { PaymentApiBackendService };

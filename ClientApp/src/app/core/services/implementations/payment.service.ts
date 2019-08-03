@@ -96,6 +96,18 @@ class PaymentService implements IPaymentService {
                 }),
             );
     }
+
+    public deletePaymentType(paymentTypeId: number): Observable<boolean> {
+        return this.paymentApiBackend
+            .deletePaymentType(paymentTypeId)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
+
+    public deletePayment(paymentId: number): Observable<boolean> {
+        return this.paymentApiBackend
+            .deletePayment(paymentId)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
 }
 
 export { PaymentService };

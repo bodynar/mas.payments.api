@@ -96,6 +96,18 @@ class MeasurementService implements IMeasurementService {
                 }),
             );
     }
+
+    public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
+        return this.measurementApiBackend
+            .deleteMeasurementType(measurementTypeId)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
+
+    public deleteMeasurement(measurementId: number): Observable<boolean> {
+        return this.measurementApiBackend
+            .deleteMeasurement(measurementId)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
 }
 
 export { MeasurementService };

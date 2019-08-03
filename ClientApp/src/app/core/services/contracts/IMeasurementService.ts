@@ -14,6 +14,10 @@ abstract class IMeasurementService {
     abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
 
     abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>>;
+
+    abstract deleteMeasurementType(measurementTypeId: number): Observable<boolean>;
+
+    abstract deleteMeasurement(measurementId: number): Observable<boolean>;
 }
 
 export { IMeasurementService };

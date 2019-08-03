@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, switchMap, takeUntil, tap } from 'rxjs/operators';
 
+import { months } from 'src/static/months';
+
 import { IMeasurementService } from 'services/IMeasurementService';
 import { IRouterService } from 'services/IRouterService';
 
@@ -43,59 +45,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         private measurementService: IMeasurementService,
         private routerService: IRouterService,
     ) {
-        this.months = [
-            {
-                name: ''
-            },
-            {
-                id: 1,
-                name: 'January'
-            },
-            {
-                id: 2,
-                name: 'February'
-            },
-            {
-                id: 3,
-                name: 'March'
-            },
-            {
-                id: 4,
-                name: 'April'
-            },
-            {
-                id: 5,
-                name: 'May'
-            },
-            {
-                id: 6,
-                name: 'June'
-            },
-            {
-                id: 7,
-                name: 'July'
-            },
-            {
-                id: 8,
-                name: 'August'
-            },
-            {
-                id: 9,
-                name: 'September'
-            },
-            {
-                id: 10,
-                name: 'October'
-            },
-            {
-                id: 11,
-                name: 'November'
-            },
-            {
-                id: 12,
-                name: 'December'
-            },
-        ];
+        this.months = [{ name: '' }, ...months];
 
         this.whenSubmitFilters$
             .pipe(

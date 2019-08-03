@@ -45,5 +45,19 @@ namespace MAS.Payments.Controllers
                 new GetPaymentsQuery(request.Month, request.PaymentTypeId,
                     request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
         }
+
+        [HttpDelete("[action]")]
+        public void DeletePaymentType(long paymentTypeId)
+        {
+            CommandProcessor.Execute(
+                new DeletePaymentTypeCommand(paymentTypeId));
+        }
+
+        [HttpDelete("[action]")]
+        public void DeletePayment(long paymentId)
+        {
+            CommandProcessor.Execute(
+                new DeletePaymentCommand(paymentId));
+        }
     }
 }

@@ -44,5 +44,19 @@ namespace MAS.Payments.Controllers
             CommandProcessor.Execute(
                 new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
         }
+
+        [HttpDelete("[action]")]
+        public void DeleteMeasurementType(long measurementTypeId)
+        {
+            CommandProcessor.Execute(
+                new DeleteMeterMeasurementTypeCommand(measurementTypeId));
+        }
+
+        [HttpDelete("[action]")]
+        public void DeleteMeasurement(long measurementId)
+        {
+            CommandProcessor.Execute(
+                new DeleteMeterMeasurementCommand(measurementId));
+        }
     }
 }

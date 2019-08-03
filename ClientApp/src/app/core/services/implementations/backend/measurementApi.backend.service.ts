@@ -89,7 +89,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
         return this.http
-            .post(`${this.apiPrefix}/deleteMeasurementType`,
+            .delete(`${this.apiPrefix}/deleteMeasurementType`,
                 { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
             .pipe(catchError(error => of(error)));
     }

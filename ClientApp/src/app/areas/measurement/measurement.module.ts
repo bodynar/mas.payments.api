@@ -8,6 +8,7 @@ import { AddMeasurementComponent } from './components/addMeasurement/addMeasurem
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
 import { MeasurementComponent } from './components/measurement/measurement.component';
 import { MeasurementListComponent } from './components/measurementList/measurementList.component';
+import { MeasurementTypesComponent } from './components/measurementTypes/measurementTypes.component';
 
 @NgModule({
     imports: [
@@ -19,7 +20,7 @@ import { MeasurementListComponent } from './components/measurementList/measureme
     declarations: [
         MeasurementsComponent, AddMeasurementComponent, AddMeasurementTypeComponent,
 
-        MeasurementListComponent, MeasurementComponent
+        MeasurementListComponent, MeasurementComponent, MeasurementTypesComponent
     ],
     providers: [],
 })

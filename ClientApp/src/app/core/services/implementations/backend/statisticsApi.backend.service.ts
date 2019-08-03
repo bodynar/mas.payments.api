@@ -44,7 +44,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                 'Content-Type': 'application/json'
             });
         return this.http
-            .get(`${this.apiPrefix}/getPayments`, { headers, params })
+            .get(`${this.apiPrefix}/getStatistics`, { headers, params })
             .pipe(
                 map((response: Array<any>) =>
                     response.map(payment => ({

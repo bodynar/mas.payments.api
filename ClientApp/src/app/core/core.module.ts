@@ -19,6 +19,11 @@ import { RouterService } from './services/implementations/router.service';
 import { INotificationService } from 'services/INotificationService';
 import { NotificationService } from './services/implementations/notification.service';
 
+import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
+import { IStatisticsService } from 'services/IStatisticsService';
+import { StatisticsApiBackendService } from './services/implementations/backend/statisticsApi.backend.service';
+import { StatisticsService } from './services/implementations/statisticsService.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -35,6 +40,9 @@ import { NotificationService } from './services/implementations/notification.ser
         { provide: IRouterService, useClass: RouterService },
 
         { provide: INotificationService, useClass: NotificationService },
+
+        { provide: IStatisticsApiBackendService, useClass: StatisticsApiBackendService },
+        { provide: IStatisticsService, useClass: StatisticsService },
     ],
 })
 class CoreModule { }

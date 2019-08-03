@@ -8,7 +8,7 @@ const siteMenu: Array<MenuItem> = [
     },
     {
         name: 'Measurements',
-        link: 'app/measures',
+        link: 'app/measurements',
         isEnabled: true
     },
     {

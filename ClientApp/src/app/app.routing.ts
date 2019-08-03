@@ -9,11 +9,13 @@ import { MeasurementsComponent } from './areas/measurement/component/measurement
 import { AddMeasurementComponent } from './areas/measurement/components/addMeasurement/addMeasurement.component';
 import { AddMeasurementTypeComponent } from './areas/measurement/components/addMeasurementType/addMeasurementType.component';
 import { MeasurementListComponent } from './areas/measurement/components/measurementList/measurementList.component';
+import { MeasurementTypesComponent } from './areas/measurement/components/measurementTypes/measurementTypes.component';
 
 import { PaymentsComponent } from './areas/payments/component/payments.component';
 import { AddPaymentComponent } from './areas/payments/components/addPayment/addPayment.component';
 import { AddPaymentTypeComponent } from './areas/payments/components/addPaymentType/addPaymentType.component';
 import { PaymentListComponent } from './areas/payments/components/paymentList/paymentList.component';
+
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
 import { StatsComponent } from './areas/statistics/components/stats/stats.component';
 
@@ -50,7 +52,7 @@ const routes: Routes = [
                 ]
             },
             {
-                path: 'measures',
+                path: 'measurements',
                 component: MeasurementsComponent,
                 children: [
                     {
@@ -64,7 +66,11 @@ const routes: Routes = [
                     {
                         path: 'addMeasurementType',
                         component: AddMeasurementTypeComponent
-                    }
+                    },
+                    {
+                        path: 'measurementTypes',
+                        component: MeasurementTypesComponent
+                    },
                 ]
             },
             {

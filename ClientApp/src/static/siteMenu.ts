@@ -15,7 +15,7 @@ const siteMenu: Array<MenuItem> = [
         name: 'Statistics',
         link: 'app/stats',
         description: 'Payments statistics and predictions for next payments',
-        isEnabled: false
+        isEnabled: true
     }
 ];
 

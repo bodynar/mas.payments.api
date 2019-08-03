@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 
 @Component({
-    templateUrl: 'statistics.template.pug',
-    styleUrls: ['statistics.style.styl']
+    templateUrl: 'statistics.template.pug'
 })
 class StatisticsComponent {
     constructor(

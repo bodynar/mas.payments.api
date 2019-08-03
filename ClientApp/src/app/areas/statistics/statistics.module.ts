@@ -1,12 +1,18 @@
+import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { RouterModule } from '@angular/router';
 
 import { StatisticsComponent } from './component/statistics.component';
+import { StatsComponent } from './components/stats/stats.component';
 
 @NgModule({
-    imports: [],
+    imports: [
+        CommonModule,
+        RouterModule,
+    ],
     exports: [],
     declarations: [
-        StatisticsComponent
+        StatisticsComponent, StatsComponent
     ],
     providers: [],
 })

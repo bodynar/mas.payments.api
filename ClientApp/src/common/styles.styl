@@ -1,3 +1,5 @@
+@import './colors.styl'
+
 body
     font-family monospace
 
@@ -28,10 +30,10 @@ colors_accordion = #F7F7F7
         position absolute
         opacity 0
         z-index -1
-        &:checked
+        &checked
             & + .accordion-label
                 background darken(colors_accordion, 10%)
-                &::after
+                &after
                     transform rotate(90deg)
             & ~ .accordion-tab
                 max-height 100vh
@@ -46,9 +48,9 @@ colors_accordion = #F7F7F7
         background colors_accordion
         font-weight bold
         cursor pointer
-        &:hover
+        &hover
             background darken(colors_accordion, 10%)
-        &::after
+        &after
             content '\276F'
             width 1em
             height 1em
@@ -73,9 +75,33 @@ colors_accordion = #F7F7F7
             &.small
                 max-width 10%
         .multi
-            &:before 
+            &before 
                 content attr(placeholder) !important
                 color #AAA
                 margin-right 0.5em
-            &:focus:before, &:valid:before
+            &focusbefore, &validbefore
                 content ''
+.app-badge
+    display inline-block
+    min-width 10px
+    margin-left 10px
+    padding 3px 6px
+    border 1px solid color-blue-sea
+    border-radius 2px
+    color color-blue-sea
+    font-size 11px
+    text-align center
+    vertical-align middle
+    cursor pointer
+    user-select none
+
+.oi
+    cursor pointer
+    &:hover
+        color color-blue-blue-sky
+    &:active
+        color color-blue-sky-darken
+    &-small
+        font-size 0.5em
+    &-medium
+        font-size 0.8em

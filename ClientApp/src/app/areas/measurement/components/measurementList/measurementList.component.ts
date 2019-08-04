@@ -32,7 +32,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public months: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
-        ['addMeasurement', 'addMeasurementType'];
+        ['addMeasurement', 'addMeasurementType', 'measurementTypes'];
 
 
     private whenSubmitFilters$: Subject<null> =

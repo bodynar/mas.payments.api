@@ -15,6 +15,7 @@ import { PaymentsComponent } from './areas/payments/component/payments.component
 import { AddPaymentComponent } from './areas/payments/components/addPayment/addPayment.component';
 import { AddPaymentTypeComponent } from './areas/payments/components/addPaymentType/addPaymentType.component';
 import { PaymentListComponent } from './areas/payments/components/paymentList/paymentList.component';
+import { PaymentTypesComponent } from './areas/payments/components/paymentTypes/paymentTypes.component';
 
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
 import { StatsComponent } from './areas/statistics/components/stats/stats.component';
@@ -48,7 +49,11 @@ const routes: Routes = [
                     {
                         path: 'addPaymentType',
                         component: AddPaymentTypeComponent
-                    }
+                    },
+                    {
+                        path: 'paymentTypes',
+                        component: PaymentTypesComponent
+                    },
                 ]
             },
             {

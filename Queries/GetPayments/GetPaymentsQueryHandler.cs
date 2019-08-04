@@ -37,11 +37,11 @@ namespace MAS.Payments.Queries
             {
                 if (query.MinAmount.HasValue)
                 {
-                    filter = filter && new CommonSpecification<Payment>(x => x.Amount > query.MinAmount);
+                    filter = filter && new CommonSpecification<Payment>(x => x.Amount >= query.MinAmount.Value);
                 }
                 if (query.MaxAmount.HasValue)
                 {
-                    filter = filter && new CommonSpecification<Payment>(x => x.Amount < query.MaxAmount);
+                    filter = filter && new CommonSpecification<Payment>(x => x.Amount <= query.MaxAmount.Value);
                 }
             }
 

@@ -4,11 +4,11 @@ namespace MAS.Payments.Models
 {
     public class FieldValueFilter
     {
-        public double Exact { get; set; }
+        public double? Exact { get; set; }
 
-        public double Min { get; set; }
+        public double? Min { get; set; }
 
-        public double Max { get; set; }
+        public double? Max { get; set; }
     }
 
     public class GetPaymentsRequest

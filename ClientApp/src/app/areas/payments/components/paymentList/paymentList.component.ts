@@ -9,6 +9,7 @@ import { IRouterService } from 'services/IRouterService';
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { PaymentResponse } from 'models/response/paymentResponse';
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import { months } from 'src/static/months';
 
 @Component({
     templateUrl: 'paymentList.template.pug',
@@ -46,64 +47,13 @@ class PaymentListComponent implements OnInit, OnDestroy {
         private paymentService: IPaymentService,
         private routerService: IRouterService,
     ) {
-        this.months = [
-            {
-                name: ''
-            },
-            {
-                id: 1,
-                name: 'January'
-            },
-            {
-                id: 2,
-                name: 'February'
-            },
-            {
-                id: 3,
-                name: 'March'
-            },
-            {
-                id: 4,
-                name: 'April'
-            },
-            {
-                id: 5,
-                name: 'May'
-            },
-            {
-                id: 6,
-                name: 'June'
-            },
-            {
-                id: 7,
-                name: 'July'
-            },
-            {
-                id: 8,
-                name: 'August'
-            },
-            {
-                id: 9,
-                name: 'September'
-            },
-            {
-                id: 10,
-                name: 'October'
-            },
-            {
-                id: 11,
-                name: 'November'
-            },
-            {
-                id: 12,
-                name: 'December'
-            },
-        ];
+        this.months = [{name: '' }, ...months];
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
+                tap(_ => console.warn(this.filters)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
                 delay(2 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))

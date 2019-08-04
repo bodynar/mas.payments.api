@@ -46,13 +46,13 @@ hr
                     option() 
                     option(value='between') Between
                     option(value='exactly') Exactly
-                input.form-control.m-form-control.form-control-sm#amountExactly(
+                input.form-control.m-form-control.form-control-sm#exact(
                     *ngIf='(amountFilterType$ | async) == "exactly"',
                     type='text',
-                    placeholder='Enter measurement type name',
-                    name='amount.exactly',
-                    [ngModel]='filters.amount.exactly',
-                    #name='ngModel'
+                    placeholder='Enter payment amount exact value',
+                    name='exact',
+                    [(ngModel)]='filters.amount.exact',
+                    #exact='ngModel'
                 )
                 .filters-row.filters-row_multi-filers(
                     *ngIf='(amountFilterType$ | async) == "between"'

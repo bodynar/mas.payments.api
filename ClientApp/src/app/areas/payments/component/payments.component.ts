@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { IRouterService } from 'services/IRouterService';
 
 @Component({
-    templateUrl: 'payments.template.pug',
-    styleUrls: ['payments.style.styl']
+    templateUrl: 'payments.template.pug'
 })
 class PaymentsComponent {
     constructor(

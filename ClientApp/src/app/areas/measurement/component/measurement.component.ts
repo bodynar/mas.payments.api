@@ -3,8 +3,7 @@ import { Component } from '@angular/core';
 import { IRouterService } from 'services/IRouterService';
 
 @Component({
-    templateUrl: 'measurement.template.pug',
-    styleUrls: ['measurement.style.styl']
+    templateUrl: 'measurement.template.pug'
 })
 class MeasurementsComponent {
     constructor(

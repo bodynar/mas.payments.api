@@ -1,3 +1,8 @@
 doctype html
 
-span payment
+.payment
+    .info
+        .date {{ formatDate(payment.date) }}
+        .amount {{ payment.amount }}
+        .app-badge {{ payment.paymentType }}
+    p.description {{ payment.description }}

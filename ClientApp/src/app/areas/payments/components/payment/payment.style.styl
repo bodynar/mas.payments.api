@@ -1,0 +1,24 @@
+@import '../../../../../common/colors.styl'
+
+.payment
+    display flex
+    flex-direction column
+
+    .info
+        display flex
+        flex-direction row
+        align-items center
+        padding-bottom 0.5em
+    
+        .amount
+            margin 0 5px
+            
+            &:before
+                content ' - '
+            &:after
+                content ' ₽'
+
+        &:hover
+            .app-badge
+                background-color color-blue-sea
+                color color-white-paint

@@ -34,10 +34,10 @@ class StatsComponent implements OnDestroy {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(x => x.valid),
+                // filter(x => x.valid),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
             )
-            .subscribe(stats => this.stats$.next(stats));
+            .subscribe(stats => console.warn(stats));
     }
 
     public ngOnDestroy(): void {
@@ -45,8 +45,8 @@ class StatsComponent implements OnDestroy {
         this.whenComponentDestroy$.complete();
     }
 
-    public onFormSubmit(form: NgForm): void {
-        this.whenSubmitForm$.next(form);
+    public onFormSubmit(): void {
+        this.whenSubmitForm$.next();
     }
 }
 

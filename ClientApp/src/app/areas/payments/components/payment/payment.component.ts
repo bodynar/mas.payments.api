@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 
 import { PaymentResponse } from 'models/response/paymentResponse';
 
+import { months } from 'src/static/months';
+
 @Component({
     selector: 'app-payment-item',
     templateUrl: 'payment.template.pug',
@@ -12,7 +14,18 @@ class PaymentComponent {
     public payment: PaymentResponse;
 
     constructor(
-    ) { }
+    ) {
+    }
+
+    public formatDate(rawDate: string): string {
+        const date: Date =
+            new Date(rawDate);
+
+        const month: number =
+            date.getMonth();
+
+        return `[${date.getFullYear()}] ${months[month].name}`;
+    }
 }
 
 export { PaymentComponent };

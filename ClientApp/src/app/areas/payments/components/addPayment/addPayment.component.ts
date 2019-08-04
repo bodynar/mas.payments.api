@@ -38,13 +38,13 @@ class AddPaymentComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid, value }) => valid && this.isFormValid(value)),
+                filter(({ valid }) => valid && this.isFormValid(this.addPaymentRequest)),
                 switchMap(_ => this.paymentService.addPayment(this.addPaymentRequest)),
                 filter(hasError => {
                     if (hasError) {
                         this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
-                        this.notificationService.success('Measurement was successfully added.');
+                        this.notificationService.success('Payment was successfully added.');
                     }
 
                     return !hasError;
@@ -72,19 +72,19 @@ class AddPaymentComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$.next(form);
     }
 
-    private isFormValid({ value }: NgForm): boolean {
-        // todo: fix => make normal validator on field
+    private isFormValid(value: AddPaymentRequest): boolean {
         let isFormValid: boolean =
             true;
 
-        if (!isNullOrUndefined(this.addPaymentRequest.amount)) {
+        if (!isNullOrUndefined(value.amount)) {
             const measurementValue: number =
-                parseFloat(value['amount']);
+                parseFloat(`${value.amount}`);
 
             if (Number.isNaN(measurementValue)) {
                 isFormValid = false;
             }
         }
+
         return isFormValid;
     }
 }

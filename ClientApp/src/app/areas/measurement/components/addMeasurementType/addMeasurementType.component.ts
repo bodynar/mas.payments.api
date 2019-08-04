@@ -18,7 +18,7 @@ import { IPaymentService } from 'services/IPaymentService';
 class AddMeasurementTypeComponent implements OnInit, OnDestroy {
 
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
-        { };
+        {};
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -57,7 +57,9 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
         this.paymentService
             .getPaymentTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+            .subscribe(paymentTypes => this.paymentTypes$.next([{
+                name: '',
+            }, ...paymentTypes]));
     }
 
     public ngOnDestroy(): void {

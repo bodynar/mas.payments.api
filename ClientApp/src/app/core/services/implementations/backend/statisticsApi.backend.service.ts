@@ -48,10 +48,9 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: Array<any>) =>
                     response.map(payment => ({
-                        amount: payment['amount'],
-                        paymentType: payment['paymentType'],
-                        date: payment['date'],
-                        measurements: payment['measurements']
+                        paymentTypeName: payment['paymentTypeName'],
+                        paymentTypeId: payment['paymentTypeId'],
+                        payments: payment['payments']
                     }) as PaymentStatsResponse)),
                 catchError(error => of(error))
             );

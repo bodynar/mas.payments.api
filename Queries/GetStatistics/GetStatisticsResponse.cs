@@ -10,14 +10,31 @@ namespace MAS.Payments.Queries
         public double Measurement { get; set; }
     }
 
-    public class GetStatisticsResponse
+    public class GetStatisticsPayment
     {
-        public double Amout { get; set; }
+        public double Amount { get; set; }
 
         public DateTime? Date { get; set; }
 
-        public string PaymentType { get; set; }
+        public ICollection<GetStatisticsMeasurements> Measurements { get; set; }
 
-        public IEnumerable<GetStatisticsMeasurements> Measurements { get; set; }
+        public GetStatisticsPayment()
+        {
+            Measurements = new List<GetStatisticsMeasurements>();
+        }
+    }
+
+    public class GetStatisticsResponse
+    {
+        public string PaymentTypeName { get; set; }
+
+        public long PaymentTypeId { get; set; }
+
+        public IEnumerable<GetStatisticsPayment> Payments { get; set; }
+
+        public GetStatisticsResponse()
+        {
+            Payments = new List<GetStatisticsPayment>();
+        }
     }
 }

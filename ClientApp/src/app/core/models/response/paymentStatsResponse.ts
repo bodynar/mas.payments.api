@@ -3,11 +3,16 @@ interface PaymentStatsMeasurementsResponse {
     measurement: number;
 }
 
-interface PaymentStatsResponse {
+interface PaymentStatsPayment {
     amount: number;
-    paymentType: string;
     date?: Date;
     measurements: Array<PaymentStatsMeasurementsResponse>;
+}
+
+interface PaymentStatsResponse {
+    paymentTypeName: string;
+    paymentTypeId: number;
+    payments: Array<PaymentStatsPayment>;
 }
 
 export {

@@ -53,7 +53,6 @@ class PaymentListComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
-                tap(_ => console.warn(this.filters)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
                 delay(2 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))

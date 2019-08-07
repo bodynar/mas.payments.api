@@ -2,6 +2,8 @@ import { Component, Input } from '@angular/core';
 
 import { MeasurementResponse } from 'models/response/measurementResponse';
 
+import { months } from 'src/static/months';
+
 @Component({
     selector: 'app-measurement-item',
     templateUrl: 'measurement.template.pug',
@@ -13,6 +15,16 @@ class MeasurementComponent {
 
     constructor(
     ) { }
+
+    public formatDate(rawDate: string): string {
+        const date: Date =
+            new Date(rawDate);
+
+        const month: number =
+            date.getMonth();
+
+        return `[${date.getFullYear()}] ${months[month].name}`;
+    }
 }
 
 export { MeasurementComponent };

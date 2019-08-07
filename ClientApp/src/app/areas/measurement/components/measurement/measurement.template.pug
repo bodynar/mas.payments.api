@@ -1,3 +1,8 @@
 doctype html
 
-h5 measurement item
+.measurement
+    .info
+        .date {{ formatDate(measurement.date) }}
+        .value {{ measurement.measurement }}
+        .app-badge {{ measurement.measurementTypeName }}
+    p.description {{ measurement.comment }}

@@ -1,5 +1,6 @@
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Notifications;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -13,13 +14,17 @@ namespace MAS.Payments.Controllers
 
         protected IQueryProcessor QueryProcessor { get; }
 
+        protected INotificationProcessor NotificationProcessor { get; }
+
         public BaseApiController(
             ICommandProcessor commandProcessor,
-            IQueryProcessor queryProcessor
+            IQueryProcessor queryProcessor,
+            INotificationProcessor notificationProcessor
         )
         {
             CommandProcessor = commandProcessor;
             QueryProcessor = queryProcessor;
+            NotificationProcessor = notificationProcessor;
         }
     }
 }

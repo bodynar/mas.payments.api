@@ -5,3 +5,4 @@ ideads for features:
     2. Multi-user: save all data's for specific users
     3. Notification every 20-25 days of month (when login) about measurements if not added for current month
     4. if list for displaying is empty [] - display message "no items"
+    5. when adding payment - attach scan of reciept or scan of bill

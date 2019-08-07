@@ -16,7 +16,7 @@ import { StatisticsFilter } from 'models/statisticsFilter';
 class StatsComponent implements OnDestroy {
 
     public statisticsFilter: StatisticsFilter = {
-        includeMeasurements: false,
+        includeMeasurements: true,
     };
 
     public stats$: Subject<Array<PaymentStatsResponse>> =
@@ -37,7 +37,7 @@ class StatsComponent implements OnDestroy {
                 // filter(x => x.valid),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
             )
-            .subscribe(stats => console.warn(stats));
+            .subscribe(stats => this.stats$.next(stats));
     }
 
     public ngOnDestroy(): void {

@@ -35,49 +35,40 @@ namespace MAS.Payments.Queries
             {
                 filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
-            // todo test measurements
-            // todo group by paymenttype
-            var response = PaymentRepository
+
+            return PaymentRepository
                     .Where(filter)
-                    .Select(x => x.PaymentType)
+                    .ToList()
+                    .GroupBy(x => x.PaymentType)
                     .Select(x => new GetStatisticsResponse
                     {
-                        PaymentTypeId = x.Id,
-                        PaymentTypeName = x.Name,
+                        PaymentTypeId = x.Key.Id,
+                        PaymentTypeName = x.Key.Name,
 
                         Payments =
-                            x.Payments
+                            x.Key.Payments
                             .Select(y => new GetStatisticsPayment
                             {
+                                Id = y.Id,
                                 Amount = y.Amount,
-                                Date = y.Date
+                                Date = y.Date,
+
+                                Measurements =
+                                    query.IncludeMeasurements
+                                    ? GetMeasurements(x.Key.Id, query.Year, query.From, query.To)
+                                      .Select(m => new GetStatisticsMeasurements
+                                      {
+                                          Name = m.MeasurementType.Name,
+                                          Measurement = m.Measurement,
+                                      })
+                                      .ToList()
+                                    : new List<GetStatisticsMeasurements>()
                             })
                     })
                     .ToList();
-
-            if (query.IncludeMeasurements)
-            {
-                foreach (var paymentTypeItem in response)
-                {
-                    foreach (var paymentItem in paymentTypeItem.Payments)
-                    {
-                        var measurements =
-                            GetMeasurements(paymentTypeItem.PaymentTypeId, query.Year, query.From, query.To)
-                            .Select(x => new GetStatisticsMeasurements
-                            {
-                                Name = x.MeasurementType.Name,
-                                Measurement = x.Measurement,
-                            });
-
-                        paymentItem.Measurements = new List<GetStatisticsMeasurements>(measurements);
-                    }
-                }
-            }
-
-            return response;
         }
 
-        private IEnumerable<MeterMeasurement> GetMeasurements(long paymentTypeId, int? year, DateTime? from, DateTime? to)
+        private IQueryable<MeterMeasurement> GetMeasurements(long paymentTypeId, int? year, DateTime? from, DateTime? to)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => x.MeasurementType.PaymentTypeId == paymentTypeId);
 
@@ -97,7 +88,7 @@ namespace MAS.Payments.Queries
                 }
             }
 
-            return MeterMeasurementRepository.Where(filter).ToList();
+            return MeterMeasurementRepository.Where(filter);
         }
     }
 }

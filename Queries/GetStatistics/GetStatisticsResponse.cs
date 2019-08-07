@@ -12,11 +12,13 @@ namespace MAS.Payments.Queries
 
     public class GetStatisticsPayment
     {
+        public long Id { get; set; }
+
         public double Amount { get; set; }
 
         public DateTime? Date { get; set; }
 
-        public ICollection<GetStatisticsMeasurements> Measurements { get; set; }
+        public List<GetStatisticsMeasurements> Measurements { get; set; }
 
         public GetStatisticsPayment()
         {
@@ -31,10 +33,5 @@ namespace MAS.Payments.Queries
         public long PaymentTypeId { get; set; }
 
         public IEnumerable<GetStatisticsPayment> Payments { get; set; }
-
-        public GetStatisticsResponse()
-        {
-            Payments = new List<GetStatisticsPayment>();
-        }
     }
 }

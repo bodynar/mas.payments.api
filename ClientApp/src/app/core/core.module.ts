@@ -24,6 +24,11 @@ import { IStatisticsService } from 'services/IStatisticsService';
 import { StatisticsApiBackendService } from './services/implementations/backend/statisticsApi.backend.service';
 import { StatisticsService } from './services/implementations/statisticsService.service';
 
+import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
+import { IUserService } from 'services/IUserService';
+import { UserApiBackendService } from './services/implementations/backend/userApi.backend.service';
+import { UserService } from './services/implementations/user.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -43,6 +48,9 @@ import { StatisticsService } from './services/implementations/statisticsService.
 
         { provide: IStatisticsApiBackendService, useClass: StatisticsApiBackendService },
         { provide: IStatisticsService, useClass: StatisticsService },
+
+        { provide: IUserApiBackendService, useClass: UserApiBackendService },
+        { provide: IUserService, useClass: UserService },
     ],
 })
 class CoreModule { }

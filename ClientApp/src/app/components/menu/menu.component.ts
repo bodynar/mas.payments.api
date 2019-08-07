@@ -10,6 +10,7 @@ import { siteMenu } from 'src/static/siteMenu';
 import { MenuItem } from 'models/menuItem';
 
 import { IRouterService } from 'services/IRouterService';
+import { IUserService } from 'services/IUserService';
 
 @Component({
     selector: 'app-menu',
@@ -31,6 +32,7 @@ class MenuComponent implements OnInit, OnDestroy {
 
     constructor(
         private routerService: IRouterService,
+        private userService: IUserService,
     ) {
         this.menuItems = siteMenu;
         this.menuItems$.next(this.menuItems);
@@ -48,6 +50,10 @@ class MenuComponent implements OnInit, OnDestroy {
             this.routerService.getCurrentRoute();
 
         this.highlightMenuItem(currentRoute);
+
+        this.userService
+            .getNotifications()
+            .subscribe(notifications => console.warn(notifications));
     }
 
     public ngOnDestroy(): void {

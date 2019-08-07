@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using MAS.Payments.DataBase;
@@ -10,13 +11,16 @@ namespace MAS.Payments.Queries
 {
     internal class GetStatisticsQueryHandler : BaseQueryHandler<GetStatisticsQuery, IEnumerable<GetStatisticsResponse>>
     {
-        private IRepository<Payment> Repository { get; }
+        private IRepository<Payment> PaymentRepository { get; }
+
+        private IRepository<MeterMeasurement> MeterMeasurementRepository { get; }
 
         public GetStatisticsQueryHandler(
             IResolver resolver
         ) : base(resolver)
         {
-            Repository = GetRepository<Payment>();
+            PaymentRepository = GetRepository<Payment>();
+            MeterMeasurementRepository = GetRepository<MeterMeasurement>();
         }
 
         public override IEnumerable<GetStatisticsResponse> Handle(GetStatisticsQuery query)
@@ -31,26 +35,69 @@ namespace MAS.Payments.Queries
             {
                 filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
-
-            return Repository
+            // todo test measurements
+            // todo group by paymenttype
+            var response = PaymentRepository
                     .Where(filter)
-                    .Select(payment => new GetStatisticsResponse
+                    .Select(x => x.PaymentType)
+                    .Select(x => new GetStatisticsResponse
                     {
-                        Amout = payment.Amount,
-                        Date = payment.Date,
-                        PaymentType = payment.PaymentType.Name,
-                        Measurements =
-                            !query.IncludeMeasurements
-                                ? null
-                                : payment.PaymentType
-                                    .MeasurementTypes
-                                    .SelectMany(x => x.MeterMeasurements)
-                                    .Select(x => new GetStatisticsMeasurements
-                                    {
-                                        Name = x.MeasurementType.Name,
-                                        Measurement = x.Measurement
-                                    })
-                    });
+                        PaymentTypeId = x.Id,
+                        PaymentTypeName = x.Name,
+
+                        Payments =
+                            x.Payments
+                            .Select(y => new GetStatisticsPayment
+                            {
+                                Amount = y.Amount,
+                                Date = y.Date
+                            })
+                    })
+                    .ToList();
+
+            if (query.IncludeMeasurements)
+            {
+                foreach (var paymentTypeItem in response)
+                {
+                    foreach (var paymentItem in paymentTypeItem.Payments)
+                    {
+                        var measurements =
+                            GetMeasurements(paymentTypeItem.PaymentTypeId, query.Year, query.From, query.To)
+                            .Select(x => new GetStatisticsMeasurements
+                            {
+                                Name = x.MeasurementType.Name,
+                                Measurement = x.Measurement,
+                            });
+
+                        paymentItem.Measurements = new List<GetStatisticsMeasurements>(measurements);
+                    }
+                }
+            }
+
+            return response;
+        }
+
+        private IEnumerable<MeterMeasurement> GetMeasurements(long paymentTypeId, int? year, DateTime? from, DateTime? to)
+        {
+            Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => x.MeasurementType.PaymentTypeId == paymentTypeId);
+
+            if (year.HasValue)
+            {
+                filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date.Year == year.Value);
+            }
+            else
+            {
+                if (from.HasValue)
+                {
+                    filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date >= from.Value);
+                }
+                if (to.HasValue)
+                {
+                    filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date <= to.Value);
+                }
+            }
+
+            return MeterMeasurementRepository.Where(filter).ToList();
         }
     }
 }

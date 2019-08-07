@@ -29,6 +29,11 @@ namespace MAS.Payments.Queries
                 filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date.Month == query.Month.Value);
             }
 
+            if (query.Year.HasValue)
+            {
+                filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date.Year == query.Year.Value);
+            }
+
             if (query.MeterMeasurementTypeId.HasValue)
             {
                 filter = filter && new CommonSpecification<MeterMeasurement>(x => x.MeterMeasurementTypeId == query.MeterMeasurementTypeId.Value);

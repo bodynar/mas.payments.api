@@ -38,7 +38,7 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid, value }) => valid && this.isFormValid(value)),
+                filter(({ valid, value }) => valid && this.isFormValid()),
                 switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
                 filter(hasError => {
                     if (hasError) {
@@ -71,14 +71,14 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$.next(form);
     }
 
-    private isFormValid({ value }: NgForm): boolean {
+    private isFormValid(): boolean {
         // todo: fix => make normal validator on field
         let isFormValid: boolean =
             true;
 
         if (!isNullOrUndefined(this.addMeasurementRequest.measurement)) {
             const measurementValue: number =
-                parseFloat(value['measurement']);
+                parseFloat(`${this.addMeasurementRequest.measurement}`);
 
             if (Number.isNaN(measurementValue)) {
                 isFormValid = false;

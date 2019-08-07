@@ -1,53 +1,50 @@
 const months: Array<{ id?: number, name: string }> = [
     {
-        name: ''
-    },
-    {
-        id: 1,
+        id: 0,
         name: 'January'
     },
     {
-        id: 2,
+        id: 1,
         name: 'February'
     },
     {
-        id: 3,
+        id: 2,
         name: 'March'
     },
     {
-        id: 4,
+        id: 3,
         name: 'April'
     },
     {
-        id: 5,
+        id: 4,
         name: 'May'
     },
     {
-        id: 6,
+        id: 5,
         name: 'June'
     },
     {
-        id: 7,
+        id: 6,
         name: 'July'
     },
     {
-        id: 8,
+        id: 7,
         name: 'August'
     },
     {
-        id: 9,
+        id: 8,
         name: 'September'
     },
     {
-        id: 10,
+        id: 9,
         name: 'October'
     },
     {
-        id: 11,
+        id: 10,
         name: 'November'
     },
     {
-        id: 12,
+        id: 11,
         name: 'December'
     },
 ];

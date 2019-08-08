@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 
 import { AppContainerComponent } from './component/appContainer.component';
 import { AppComponent } from './components/app/app.component';
+import { BellComponent } from './components/bell/bell.component';
 import { HomeComponent } from './components/home/home.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { NotificatorComponent } from './components/notificator/notificator.component';
@@ -22,6 +23,7 @@ import { PagesModule } from './pages/pages.module';
     AppComponent,
     HomeComponent,
     MenuComponent,
+    BellComponent,
     NotificatorComponent
   ],
   imports: [

@@ -1,6 +1,9 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Models;
 using MAS.Payments.Notifications;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +21,17 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<Notification> GetNotifications()
+        public IEnumerable<GetNotificationsResponse> GetNotifications()
         {
-            return NotificationProcessor.GetNotifications();
+            return
+                NotificationProcessor
+                    .GetNotifications()
+                    .Select(notification => new GetNotificationsResponse
+                    {
+                        Name = notification.Name,
+                        Description = notification.Description,
+                        Type = Enum.GetName(typeof(NotificationType), notification.Type)
+                    });
         }
     }
 }

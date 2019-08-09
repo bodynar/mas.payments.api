@@ -27,7 +27,7 @@ class UserApiBackendService implements IUserApiBackendService {
                     response.map(notification => ({
                         name: notification['name'],
                         description: notification['description'],
-                        type: notification['type']
+                        type: notification['type'].toLowerCase()
                     }) as GetNotificationsResponse)),
                 catchError(error => of(error))
             );

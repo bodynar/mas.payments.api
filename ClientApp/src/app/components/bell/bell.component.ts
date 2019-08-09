@@ -21,6 +21,8 @@ class BellComponent implements OnInit, OnDestroy {
         true;
 
 
+    private notifications: Array<GetNotificationsResponse>;
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
@@ -32,7 +34,10 @@ class BellComponent implements OnInit, OnDestroy {
         this.userService
             .getNotifications()
             .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(notifications => this.notifications$.next(notifications));
+            .subscribe(notifications => {
+                this.notifications = notifications;
+                this.notifications$.next(this.notifications);
+            });
     }
 
     public ngOnDestroy(): void {
@@ -44,6 +49,10 @@ class BellComponent implements OnInit, OnDestroy {
         if (target.classList.contains('oi-bell') || target.parentElement.classList.contains('bell')) {
             this.isNotificationsHidden = !this.isNotificationsHidden;
         }
+    }
+
+    public removeNotification(notification: GetNotificationsResponse): void {
+        console.warn(notification);
     }
 }
 

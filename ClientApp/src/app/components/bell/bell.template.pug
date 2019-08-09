@@ -5,9 +5,16 @@
     .bell
         span.oi.oi-bell
         span.badge(
-            *ngIf='(notifications$ | async)?.length > 0'
-        ) {{ (notifications$ | async)?.length }}
+            *ngIf='notifications$ | async as notifications'
+        ) {{ notifications.length }}
     ul.notification-list
         li(
-            
-        ) notification.text
+            *ngFor='let notification of (notifications$ | async)',
+           [ngClass]='notification.type' 
+        )
+            .header
+                h5.title {{ notification.name }}
+                span.oi.oi-x.oi-medium(
+                    (click)='removeNotification(notification)'
+                )
+            p.description {{ notification.description }}

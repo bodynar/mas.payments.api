@@ -21,18 +21,55 @@
     
     .notification-list
         position absolute
-        background-color color-white-milk
+        right 1em
+        margin 0
+        padding 10px 5px
+
         min-width 15em
         overflow auto
-        box-shadow: 0 0 20px 5px rgba(0, 0, 0, 0.5);
-        right 1em
+        max-width 20em
+        max-height 40vh
+
+        background-color color-white
+        box-shadow 0 0 20px 5px rgba(0, 0, 0, 0.5)
+        list-style none
 
         transition opacity 0.2s linear
 
-        list-style none
-        margin 0
-        padding 0
+        li
+            border-left-width 3px
+            border-left-style solid
+            border-bottom-left-radius 3px
+            border-top-left-radius 3px
+            box-shadow 0 0 3px 0px rgba(0, 0, 0, 0.4)
+            margin-bottom 1em
+            padding 1em
+
+            &:last-of-type
+                margin-bottom 0
+            &.info
+                border-left-color color-blue-thunder-light
+            &.warning
+                border-left-color color-orange-bee
+            
+
+            .header
+                display flex
+                align-items end
+                justify-content space-between
+                .title
+                    font-weight bold
+                    font-size 14px
+                    &:hover
+                        cursor pointer
+            .description
+                margin 0px
+                padding 0px
+                max-height 5.5em
+                overflow hidden
+
     &:not(.collapsed) .notification-list
         opacity 1
     &.collapsed .notification-list
         opacity 0
+    

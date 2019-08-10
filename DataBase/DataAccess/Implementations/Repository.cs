@@ -21,11 +21,12 @@ namespace MAS.Payments.DataBase.Access
         public void Delete(long id)
         {
             var entity = Get(id);
-
-            if (entity != null)
+            if (entity == null)
             {
-                DataBaseContext.Remove(entity);
+                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
             }
+
+            DataBaseContext.Remove(entity);
         }
 
         public TEntity Get(long id)

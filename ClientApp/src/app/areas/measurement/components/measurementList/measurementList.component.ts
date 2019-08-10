@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
+import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
 import { MeasurementsFilter } from 'models/measurementsFilter';
@@ -34,6 +35,8 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public actions: Array<string> =
         ['addMeasurement', 'addMeasurementType', 'measurementTypes'];
 
+    private whenMeasurementDelete$: Subject<number> =
+        new Subject();
 
     private whenSubmitFilters$: Subject<null> =
         new Subject();
@@ -44,6 +47,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     constructor(
         private measurementService: IMeasurementService,
         private routerService: IRouterService,
+        private notificationService: INotificationService,
     ) {
         this.months = [{ name: '' }, ...months];
 
@@ -58,6 +62,21 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .subscribe(measurements => this.measurements$.next(measurements));
 
         this.whenSubmitFilters$.next();
+
+        this.whenMeasurementDelete$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0),
+                switchMap(id => this.measurementService.deleteMeasurement(id)),
+                filter(hasError => {
+                    if (hasError) {
+                        this.notificationService.error('Error due deleting type. Try again later');
+                    }
+                    return !hasError;
+                }),
+                switchMapTo(this.measurementService.getMeasurements(this.filters)),
+            )
+            .subscribe(measurements => this.measurements$.next(measurements));
     }
 
     public ngOnInit(): void {
@@ -85,6 +104,10 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public applyFilters(): void {
         this.whenSubmitFilters$.next();
+    }
+
+    public onDeleteRecordClick(measurementId: number): void {
+        this.whenMeasurementDelete$.next(measurementId);
     }
 }
 

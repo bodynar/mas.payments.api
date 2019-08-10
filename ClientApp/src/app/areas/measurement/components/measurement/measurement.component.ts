@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { MeasurementResponse } from 'models/response/measurementResponse';
 
@@ -12,6 +12,10 @@ import { months } from 'src/static/months';
 class MeasurementComponent {
     @Input()
     public measurement: MeasurementResponse;
+
+    @Output()
+    public deleteClick: EventEmitter<number> =
+        new EventEmitter();
 
     constructor(
     ) { }

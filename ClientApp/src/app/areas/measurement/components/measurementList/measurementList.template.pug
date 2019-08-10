@@ -40,10 +40,13 @@ hr
 
             button.btn.btn-outline-primary(type='submit') Filter
 
-.measurement-list
+.measurement-list(
+    [class.hidden]='isLoading$ | async'
+)
     app-measurement-item(
         *ngFor='let measurement of (measurements$ | async)',
-        [measurement]='measurement'
+        [measurement]='measurement',
+        (deleteClick)='onDeleteRecordClick($event)'
     )
 
 img.loading-indicator(

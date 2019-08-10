@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
+import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
@@ -17,7 +18,7 @@ import { months } from 'src/static/months';
 })
 class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
-        { };
+        {};
 
     public payments$: Subject<Array<PaymentResponse>> =
         new Subject();
@@ -40,14 +41,18 @@ class PaymentListComponent implements OnInit, OnDestroy {
     private whenSubmitFilters$: Subject<null> =
         new Subject();
 
+    private whenPaymentDelete$: Subject<number> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     constructor(
         private paymentService: IPaymentService,
         private routerService: IRouterService,
+        private notificationService: INotificationService,
     ) {
-        this.months = [{name: '' }, ...months];
+        this.months = [{ name: '' }, ...months];
 
         this.whenSubmitFilters$
             .pipe(
@@ -56,6 +61,21 @@ class PaymentListComponent implements OnInit, OnDestroy {
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
                 delay(2 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))
+            )
+            .subscribe(payments => this.payments$.next(payments));
+
+        this.whenPaymentDelete$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0),
+                switchMap(id => this.paymentService.deletePayment(id)),
+                filter(hasError => {
+                    if (hasError) {
+                        this.notificationService.error('Error due deleting type. Try again later');
+                    }
+                    return !hasError;
+                }),
+                switchMapTo(this.paymentService.getPayments(this.filters)),
             )
             .subscribe(payments => this.payments$.next(payments));
     }
@@ -80,20 +100,24 @@ class PaymentListComponent implements OnInit, OnDestroy {
         this.routerService.navigateDeep([actionName]);
     }
 
-    public applyFilters(): void {
+    public onSubmitClick(): void {
         this.whenSubmitFilters$.next();
     }
 
-    public amountFilterChanged(filterType: string): void {
+    public onAmountFilterChanged(filterType: string): void {
         const availableTypes: Array<string> =
             ['between', 'exactly'];
 
         if (availableTypes.includes(filterType.toLowerCase())) {
-            this.filters.amount = { };
+            this.filters.amount = {};
         } else {
             this.filters.amount = undefined;
         }
         this.amountFilterType$.next(filterType.toLowerCase());
+    }
+
+    public onDeleteRecordClick(paymentId: number): void {
+        this.whenPaymentDelete$.next(paymentId);
     }
 }
 

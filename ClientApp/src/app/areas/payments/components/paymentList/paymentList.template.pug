@@ -14,7 +14,7 @@ hr
     .accordion-tab
         form.filters(
             #filtersForm='ngForm',
-            (submit)='applyFilters(filtersForm)'
+            (submit)='onSubmitClick(filtersForm)'
         )
             .filters-row
                 label.filters-row_label.col-form-label-sm Payment for
@@ -41,7 +41,7 @@ hr
             .filters-row
                 label.filters-row_label.col-form-label-sm Amount
                 select.filters-row_filter.small.custom-select.m-form-control.custom-select-sm(
-                    (change)='amountFilterChanged($event.target.value)'
+                    (change)='onAmountFilterChanged($event.target.value)'
                 )
                     option() 
                     option(value='between') Between
@@ -74,10 +74,13 @@ hr
 
             button.btn.btn-outline-primary(type='submit') Filter
 
-.payments-list
+.payments-list(
+    [class.hidden]='isLoading$ | async'
+)
     app-payment-item(
         *ngFor='let payment of (payments$ | async)',
-        [payment]='payment'
+        [payment]='payment',
+        (deleteClick)='onDeleteRecordClick($event)'
     )
 
 img.loading-indicator(

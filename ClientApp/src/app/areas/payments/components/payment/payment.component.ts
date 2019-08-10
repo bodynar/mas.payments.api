@@ -1,8 +1,9 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { PaymentResponse } from 'models/response/paymentResponse';
 
 import { months } from 'src/static/months';
+
 
 @Component({
     selector: 'app-payment-item',
@@ -12,6 +13,10 @@ import { months } from 'src/static/months';
 class PaymentComponent {
     @Input()
     public payment: PaymentResponse;
+
+    @Output()
+    public deleteClick: EventEmitter<number> =
+        new EventEmitter();
 
     constructor(
     ) {

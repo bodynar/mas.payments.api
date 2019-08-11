@@ -17,5 +17,9 @@ namespace MAS.Payments.DataBase.Access
         IQueryable<TEntity> GetAll();
 
         IQueryable<TEntity> Where(Specification<TEntity> filter);
+
+        bool Any(Specification<TEntity> predicate);
+
+        int Count(Specification<TEntity> predicate);
     }
 }

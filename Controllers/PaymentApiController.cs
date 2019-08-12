@@ -34,6 +34,22 @@ namespace MAS.Payments.Controllers
                 new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
         }
 
+        [HttpPost("[action]")]
+        public void UpdatePaymentType(UpdatePaymentTypeRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company)
+            );
+        }
+
+        [HttpPost("[action]")]
+        public void UpdatePayment(UpdatePaymentRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
+            );
+        }
+
         [HttpGet("[action]")]
         public IEnumerable<GetPaymentTypesResponse> GetPaymentTypes()
         {

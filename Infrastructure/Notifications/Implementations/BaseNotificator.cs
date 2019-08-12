@@ -14,7 +14,6 @@ namespace MAS.Payments.Notifications
         protected IQueryProcessor QueryProcessor
             => _queryProcessor ?? Resolver.Resolve<IQueryProcessor>();
 
-
         private ICommandProcessor _commandProcessor;
 
         protected ICommandProcessor CommandProcessor

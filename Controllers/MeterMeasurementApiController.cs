@@ -47,6 +47,22 @@ namespace MAS.Payments.Controllers
                 new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
         }
 
+        [HttpPost("[action]")]
+        public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description)
+            );
+        }
+
+        [HttpPost("[action]")]
+        public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdateMeterMeasurementCommand(request.Id, request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment)
+            );
+        }
+
         [HttpDelete("[action]")]
         public void DeleteMeasurementType(long measurementTypeId)
         {

@@ -29,16 +29,12 @@ class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend
             .addMeasurementType(measurementTypeData)
             .pipe(
-                tap(response => {
-                    const hasError: boolean =
-                        !isNullOrUndefined(response);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
                         // this.loggingService.error()
                     }
                 }),
-                map(response => !isNullOrUndefined(response))
             );
     }
 
@@ -48,16 +44,38 @@ class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend
             .addMeasurement(measurementData)
             .pipe(
-                tap(response => {
-                    const hasError: boolean =
-                        !isNullOrUndefined(response);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
                         // this.loggingService.error()
                     }
                 }),
-                map(response => !isNullOrUndefined(response))
+            );
+    }
+
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
+        return this.measurementApiBackend
+            .updateMeasurementType(id, measurementTypeData)
+            .pipe(
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                }),
+            );
+    }
+
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<boolean> {
+        return this.measurementApiBackend
+            .updateMeasurement(id, measurementData)
+            .pipe(
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                }),
             );
     }
 

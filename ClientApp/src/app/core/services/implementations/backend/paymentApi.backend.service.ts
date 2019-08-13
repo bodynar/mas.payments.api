@@ -37,6 +37,18 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
             .pipe(catchError(error => of(error)));
     }
 
+    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updatePaymentType`, { id, ...paymentTypeData })
+            .pipe(catchError(error => of(error)));
+    }
+
+    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updatePayment`, { id, ...paymentData })
+            .pipe(catchError(error => of(error)));
+    }
+
     public getPaymentTypes(): Observable<Array<PaymentTypeResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getPaymentTypes`)

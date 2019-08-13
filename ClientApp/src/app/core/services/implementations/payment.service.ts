@@ -29,16 +29,12 @@ class PaymentService implements IPaymentService {
         return this.paymentApiBackend
             .addPaymentType(paymentTypeData)
             .pipe(
-                tap(response => {
-                    const hasError: boolean =
-                        !isNullOrUndefined(response);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
                         // this.loggingService.error()
                     }
                 }),
-                map(response => !isNullOrUndefined(response))
             );
     }
 
@@ -48,16 +44,38 @@ class PaymentService implements IPaymentService {
         return this.paymentApiBackend
             .addPayment(paymentData)
             .pipe(
-                tap(response => {
-                    const hasError: boolean =
-                        !isNullOrUndefined(response);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
                         // this.loggingService.error()
                     }
                 }),
-                map(response => !isNullOrUndefined(response))
+            );
+    }
+
+    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<boolean> {
+        return this.paymentApiBackend
+            .updatePaymentType(id, paymentTypeData)
+            .pipe(
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                }),
+            );
+    }
+
+    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<boolean> {
+        return this.paymentApiBackend
+            .updatePayment(id, paymentData)
+            .pipe(
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                }),
             );
     }
 

@@ -25,15 +25,27 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
     ) {
     }
 
-    public addMeasurementType(MeasurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
         return this.http
-            .post(`${this.apiPrefix}/addMeasurementType`, MeasurementTypeData)
+            .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)
             .pipe(catchError(error => of(error)));
     }
 
-    public addMeasurement(MeasurementData: AddMeasurementRequest): Observable<any> {
+    public addMeasurement(measurementData: AddMeasurementRequest): Observable<any> {
         return this.http
-            .post(`${this.apiPrefix}/addMeasurement`, MeasurementData)
+            .post(`${this.apiPrefix}/addMeasurement`, measurementData)
+            .pipe(catchError(error => of(error)));
+    }
+
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updateMeasurementType`, { id, ...measurementTypeData })
+            .pipe(catchError(error => of(error)));
+    }
+
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
             .pipe(catchError(error => of(error)));
     }
 

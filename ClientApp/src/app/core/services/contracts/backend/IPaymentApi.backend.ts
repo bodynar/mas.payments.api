@@ -11,6 +11,10 @@ abstract class IPaymentApiBackendService {
 
     abstract addPayment(paymentData: AddPaymentRequest): Observable<any>;
 
+    abstract updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<any>;
+
+    abstract updatePayment(id: number, paymentData: AddPaymentRequest): Observable<any>;
+
     abstract getPaymentTypes(): Observable<Array<PaymentTypeResponse>>;
 
     abstract getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>>;

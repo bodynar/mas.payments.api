@@ -7,9 +7,13 @@ import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 abstract class IMeasurementApiBackendService {
-    abstract addMeasurementType(MeasurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+    abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
 
-    abstract addMeasurement(MeasurementData: AddMeasurementRequest): Observable<any>;
+    abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<any>;
+
+    abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+
+    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any>;
 
     abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
 

@@ -11,6 +11,10 @@ abstract class IPaymentService {
 
     abstract addPayment(paymentData: AddPaymentRequest): Observable<boolean>;
 
+    abstract updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<boolean>;
+
+    abstract updatePayment(id: number, paymentData: AddPaymentRequest): Observable<boolean>;
+
     abstract getPaymentTypes(): Observable<Array<PaymentTypeResponse>>;
 
     abstract getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>>;

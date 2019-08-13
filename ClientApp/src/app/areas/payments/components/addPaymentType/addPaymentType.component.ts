@@ -36,14 +36,14 @@ class AddPaymentTypeComponent implements OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 switchMap(_ => this.paymentService.addPaymentType(this.addPaymentTypeRequest)),
-                filter(hasError => {
-                    if (hasError) {
+                filter(withoutError => {
+                    if (!withoutError) {
                         this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
                         this.notificationService.success('Payment type was successfully added.');
                     }
 
-                    return !hasError;
+                    return withoutError;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());

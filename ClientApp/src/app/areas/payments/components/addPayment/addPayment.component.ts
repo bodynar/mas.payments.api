@@ -40,14 +40,14 @@ class AddPaymentComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid(this.addPaymentRequest)),
                 switchMap(_ => this.paymentService.addPayment(this.addPaymentRequest)),
-                filter(hasError => {
-                    if (hasError) {
+                filter(withoutError => {
+                    if (!withoutError) {
                         this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
                         this.notificationService.success('Payment was successfully added.');
                     }
 
-                    return !hasError;
+                    return withoutError;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());

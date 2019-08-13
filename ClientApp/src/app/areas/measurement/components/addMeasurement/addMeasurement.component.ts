@@ -40,14 +40,14 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid, value }) => valid && this.isFormValid()),
                 switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
-                filter(hasError => {
-                    if (hasError) {
+                filter(withoutError => {
+                    if (!withoutError) {
                         this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
                         this.notificationService.success('Measurement was successfully added.');
                     }
 
-                    return !hasError;
+                    return withoutError;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());

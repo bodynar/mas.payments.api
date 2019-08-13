@@ -1,7 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Specification;
+using MAS.Payments.Projector;
 
 namespace MAS.Payments.DataBase.Access
 {
@@ -54,5 +56,26 @@ namespace MAS.Payments.DataBase.Access
 
         public int Count(Specification<TEntity> predicate)
             => DataBaseContext.Set<TEntity>().Count(predicate);
+
+        public TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector) 
+            where TDestination : class
+        {
+            var entity = Get(id);
+
+            if (entity == null)
+            {
+                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
+            }
+
+            return projector.Project(entity);
+        }
+
+        public IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector) 
+            where TDestination : class
+            => GetAll().Select(projector.Project);
+
+        public IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector) 
+            where TDestination : class
+            => Where(filter).Select(projector.Project);
     }
 }

@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
 using MAS.Payments.Infrastructure.Specification;
+using MAS.Payments.Projector;
 
 namespace MAS.Payments.DataBase.Access
 {
@@ -14,9 +16,18 @@ namespace MAS.Payments.DataBase.Access
 
         TEntity Get(long id);
 
+        TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
+            where TDestination: class;
+
         IQueryable<TEntity> GetAll();
 
+        IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector)
+            where TDestination: class;
+
         IQueryable<TEntity> Where(Specification<TEntity> filter);
+
+        IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector)
+            where TDestination: class;
 
         bool Any(Specification<TEntity> predicate);
 

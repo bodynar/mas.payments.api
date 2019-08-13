@@ -4,6 +4,7 @@ interface PaymentResponse {
     date?: Date;
     description?: string;
     paymentType: string;
+    paymentTypeId: number;
 }
 
 export { PaymentResponse };

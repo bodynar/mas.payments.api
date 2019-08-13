@@ -25,6 +25,46 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
     ) {
     }
 
+    public getPayment(id: number): Observable<PaymentResponse> {
+        return this.http
+            .get(`${this.apiPrefix}/getPayment`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        amount: response['amount'],
+                        date: response['date'],
+                        description: response['description'],
+                        paymentType: response['paymentType'],
+                        paymentTypeId: response['paymentTypeId'],
+                    }) as PaymentResponse),
+                catchError(error => of(error))
+            );
+    }
+
+    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
+        return this.http
+            .get(`${this.apiPrefix}/getPaymentType`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        name: response['name'],
+                        description: response['description'],
+                        company: response['company'],
+                    }) as PaymentTypeResponse),
+                catchError(error => of(error))
+            );
+    }
+
     public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<any> {
         return this.http
             .post(`${this.apiPrefix}/addPaymentType`, paymentTypeData)
@@ -114,7 +154,6 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                 { params: new HttpParams().set('paymentTypeId', `${paymentTypeId}`) })
             .pipe(catchError(error => of(error)));
     }
-
 
     public deletePayment(paymentId: number): Observable<boolean> {
         return this.http

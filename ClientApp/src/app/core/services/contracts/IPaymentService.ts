@@ -7,6 +7,10 @@ import { PaymentResponse } from 'models/response/paymentResponse';
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 
 abstract class IPaymentService {
+    abstract getPayment(id: number): Observable<PaymentResponse>;
+
+    abstract getPaymentType(id: number): Observable<PaymentTypeResponse>;
+
     abstract addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<boolean>;
 
     abstract addPayment(paymentData: AddPaymentRequest): Observable<boolean>;

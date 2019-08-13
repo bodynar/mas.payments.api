@@ -20,6 +20,12 @@ namespace MAS.Payments.Controllers
         {
         }
 
+        [HttpGet("[action]")]
+        public GetPaymentResponse GetPayment(long id)
+        {
+            return QueryProcessor.Execute(new GetPaymentQuery(id));
+        }
+
         [HttpPost("[action]")]
         public void AddPaymentType([FromBody]AddPaymentTypeRequest request)
         {

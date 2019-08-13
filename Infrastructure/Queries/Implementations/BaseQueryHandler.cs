@@ -26,7 +26,7 @@ namespace MAS.Payments.Infrastructure.Query
             Resolver = resolver;
         }
 
-        public abstract TResult Handle(TQuery Query);
+        public abstract TResult Handle(TQuery query);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity: Entity

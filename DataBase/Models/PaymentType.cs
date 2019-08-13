@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 namespace MAS.Payments.DataBase
 {
     public class PaymentType : Entity
@@ -7,5 +8,16 @@ namespace MAS.Payments.DataBase
         public string Description { get; set; }
 
         public string Company { get; set; }
+
+        public virtual ICollection<MeterMeasurementType> MeasurementTypes { get; set; }
+
+        public virtual ICollection<Payment> Payments { get; set; }
+
+
+        public PaymentType()
+        {
+            Payments = new List<Payment>();
+            MeasurementTypes = new List<MeterMeasurementType>();
+        }
     }
 }

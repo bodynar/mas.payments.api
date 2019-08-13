@@ -1,0 +1,11 @@
+doctype html
+
+.payment
+    .info
+        .oi.oi-trash(
+            (click)='deleteClick.emit(payment.id)'
+        )
+        .date {{ formatDate(payment.date) }}
+        .amount {{ payment.amount }}
+        .app-badge {{ payment.paymentType }}
+    p.description {{ payment.description }}

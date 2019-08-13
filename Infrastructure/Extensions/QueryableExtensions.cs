@@ -16,5 +16,11 @@ namespace MAS.Payments.Infrastructure.Extensions
         {
             return source.Any(specification.IsSatisfiedExpression);
         }
+
+        public static int Count<TEntity>(
+            this IQueryable<TEntity> source, Specification<TEntity> specification)
+        {
+            return source.Count(specification.IsSatisfiedExpression);
+        }
     }
 }

@@ -19,6 +19,46 @@ namespace MAS.Payments.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+            modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurement", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Comment");
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<double>("Measurement");
+
+                    b.Property<long>("MeterMeasurementTypeId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MeterMeasurementTypeId");
+
+                    b.ToTable("MeterMeasurements");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Description");
+
+                    b.Property<string>("Name");
+
+                    b.Property<long>("PaymentTypeId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentTypeId");
+
+                    b.ToTable("MeterMeasurementTypes");
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
                     b.Property<long>("Id")
@@ -31,7 +71,7 @@ namespace MAS.Payments.Migrations
 
                     b.Property<string>("Description");
 
-                    b.Property<long?>("PaymentTypeId");
+                    b.Property<long>("PaymentTypeId");
 
                     b.HasKey("Id");
 
@@ -57,11 +97,28 @@ namespace MAS.Payments.Migrations
                     b.ToTable("PaymentTypes");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurement", b =>
+                {
+                    b.HasOne("MAS.Payments.DataBase.MeterMeasurementType", "MeasurementType")
+                        .WithMany()
+                        .HasForeignKey("MeterMeasurementTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
+                {
+                    b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
+                        .WithMany()
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
                     b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
                         .WithMany()
-                        .HasForeignKey("PaymentTypeId");
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

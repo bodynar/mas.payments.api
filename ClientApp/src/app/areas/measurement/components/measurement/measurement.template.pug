@@ -1,0 +1,11 @@
+doctype html
+
+.measurement
+    .info
+        .oi.oi-trash(
+            (click)='deleteClick.emit(measurement.id)'
+        )
+        .date {{ formatDate(measurement.date) }}
+        .value {{ measurement.measurement }}
+        .app-badge {{ measurement.measurementTypeName }}
+    p.description {{ measurement.comment }}

@@ -9,6 +9,7 @@ import { AddPaymentTypeComponent } from './components/addPaymentType/addPaymentT
 import { PaymentComponent } from './components/payment/payment.component';
 import { PaymentListComponent } from './components/paymentList/paymentList.component';
 import { PaymentTypesComponent } from './components/paymentTypes/paymentTypes.component';
+import { UpdatePaymentComponent } from './components/updatePayment/updatePayment.component';
 
 @NgModule({
     imports: [
@@ -19,7 +20,8 @@ import { PaymentTypesComponent } from './components/paymentTypes/paymentTypes.co
     exports: [],
     declarations: [
         PaymentsComponent, AddPaymentComponent, AddPaymentTypeComponent,
-        PaymentListComponent, PaymentComponent, PaymentTypesComponent
+        PaymentListComponent, PaymentComponent, PaymentTypesComponent,
+        UpdatePaymentComponent
     ],
     providers: [],
 })

@@ -1,4 +1,4 @@
-using MAS.Payments.Projector;
+using MAS.Payments.Infrastructure.Projector;
 
 namespace MAS.Payments.Infrastructure.Extensions
 {

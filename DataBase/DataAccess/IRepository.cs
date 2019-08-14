@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.Infrastructure.Projector;
 using MAS.Payments.Infrastructure.Specification;
-using MAS.Payments.Projector;
+
 
 namespace MAS.Payments.DataBase.Access
 {

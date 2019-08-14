@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -38,7 +38,7 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
     ) {
         // todo test
         this.activatedRoute
-            .params
+            .queryParams
             .pipe(
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),

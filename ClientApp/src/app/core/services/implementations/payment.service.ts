@@ -23,6 +23,14 @@ class PaymentService implements IPaymentService {
         // private loggingService: ILoggingService
     ) { }
 
+    public getPayment(id: number): Observable<PaymentResponse> {
+        return this.paymentApiBackend.getPayment(id);
+    }
+
+    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
+        return this.paymentApiBackend.getPaymentType(id);
+    }
+
     public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<boolean> {
         // data validation
 

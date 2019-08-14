@@ -12,14 +12,14 @@ namespace MAS.Payments.Projectors
             where TSource : class
             where TDestination : class
         {
-            private Type SourceType { get; }
-
             private Type DestinationType { get; }
+
+            private Type[] PrimitiveTypes { get; }
 
             internal ToFlat()
             {
-                SourceType = typeof(TSource);
                 DestinationType = typeof(TDestination);
+                PrimitiveTypes = FulfillPrimitiveTypes();
 
                 var destinationTypeHasComplexProperties = CheckIfDestinationIsComplex();
 
@@ -46,13 +46,17 @@ namespace MAS.Payments.Projectors
 
             private bool CheckIfDestinationIsComplex()
             {
-                return DestinationType.GetProperties().Any(x => !x.PropertyType.IsPrimitive);
+                return DestinationType
+                        .GetProperties()
+                        .Any(x =>
+                            x.PropertyType.IsClass
+                            && !PrimitiveTypes.Contains(x.PropertyType));
             }
 
             private TDestination SetValues(TSource source)
             {
-                var sourceProperties = SourceType.GetProperties();
-                var destinationProperties = DestinationType.GetProperties().Where(x => x.PropertyType.IsPrimitive);
+                var sourceProperties = typeof(TSource).GetProperties();
+                var destinationProperties = DestinationType.GetProperties().Where(x => !x.PropertyType.IsClass);
 
                 TDestination destination = Activator.CreateInstance<TDestination>();
 
@@ -62,7 +66,8 @@ namespace MAS.Payments.Projectors
 
                     try
                     {
-                        if (sourceProperty.PropertyType.IsClass)
+                        if (sourceProperty.PropertyType.IsClass
+                            && !PrimitiveTypes.Contains(sourceProperty.PropertyType))
                         {
                             var destinationComplexProperties =
                                 destinationProperties
@@ -100,21 +105,6 @@ namespace MAS.Payments.Projectors
                 PropertyInfo property, IEnumerable<PropertyInfo> destinationComplexProperties
             )
             {
-                // todo: check
-
-                // PaymentType.ID
-                // PaymentType.Name
-                // PaymentTypeID
-                // PaymentTypeName
-
-                // propertyName: PaymentType
-                // destinationComplexProperties: [PaymentTypeID, PaymentTypeName]
-
-
-                // ---------------
-                // PaymentTypeCompanyName
-                // PaymentType.Company.Name
-
                 var sourcePropertyName = property.Name.ToLower();
                 var sourcePropertyValue = property.GetValue(source);
 
@@ -126,7 +116,8 @@ namespace MAS.Payments.Projectors
                     {
                         var internalPropertyName = internalProperty.Name.ToLower();
 
-                        if (internalProperty.PropertyType.IsClass)
+                        if (internalProperty.PropertyType.IsClass
+                            && !PrimitiveTypes.Contains(internalProperty.PropertyType))
                         {
                             var complexProperties =
                                 destinationComplexProperties
@@ -153,6 +144,26 @@ namespace MAS.Payments.Projectors
                     }
                 }
 
+            }
+
+            private Type[] FulfillPrimitiveTypes()
+            {
+                return new[] {
+                    typeof(string),
+                    typeof(char),
+                    typeof(byte),
+                    typeof(sbyte),
+                    typeof(ushort),
+                    typeof(short),
+                    typeof(uint),
+                    typeof(int),
+                    typeof(ulong),
+                    typeof(long),
+                    typeof(float),
+                    typeof(double),
+                    typeof(decimal),
+                    typeof(DateTime)
+                };
             }
 
             #endregion

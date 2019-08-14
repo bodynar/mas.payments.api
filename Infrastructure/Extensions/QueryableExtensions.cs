@@ -1,4 +1,7 @@
+using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.DataBase;
+using MAS.Payments.Infrastructure.Projector;
 using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Infrastructure.Extensions
@@ -21,6 +24,14 @@ namespace MAS.Payments.Infrastructure.Extensions
             this IQueryable<TEntity> source, Specification<TEntity> specification)
         {
             return source.Count(specification.IsSatisfiedExpression);
+        }
+
+        public static IEnumerable<TDestination> Project<TEntity, TDestination>(
+            this IQueryable<TEntity> source, IProjector<TEntity, TDestination> projector)
+            where TEntity : Entity
+            where TDestination : class
+        {
+            return source.Select(projector.Project);
         }
     }
 }

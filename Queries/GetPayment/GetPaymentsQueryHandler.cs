@@ -2,6 +2,7 @@ using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
@@ -18,18 +19,9 @@ namespace MAS.Payments.Queries
 
         public override GetPaymentResponse Handle(GetPaymentQuery query)
         {
-            var payment = Repository.Get(query.Id);
-
-            // todo projector
-            return new GetPaymentResponse
-            {
-                Id = payment.Id,
-                Amount = payment.Amount,
-                Date = payment.Date,
-                Description = payment.Description,
-                PaymentType = payment.PaymentType.Name,
-                PaymentTypeId = payment.PaymentTypeId
-            };
+            return Repository
+                        .Get(query.Id,
+                        new Projector.ToFlat<Payment, GetPaymentResponse>());
         }
     }
 }

@@ -7,5 +7,5 @@ doctype html
         )
         .date {{ formatDate(payment.date) }}
         .amount {{ payment.amount }}
-        .app-badge {{ payment.paymentType }}
+        .app-badge {{ payment.paymentTypeName }}
     p.description {{ payment.description }}

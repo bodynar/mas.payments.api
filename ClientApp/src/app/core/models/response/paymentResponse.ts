@@ -3,7 +3,7 @@ interface PaymentResponse {
     amount: number;
     date?: Date;
     description?: string;
-    paymentType: string;
+    paymentTypeName: string;
     paymentTypeId: number;
 }
 

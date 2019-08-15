@@ -56,7 +56,7 @@ namespace MAS.Payments.Projectors
             private TDestination SetValues(TSource source)
             {
                 var sourceProperties = typeof(TSource).GetProperties();
-                var destinationProperties = DestinationType.GetProperties().Where(x => !x.PropertyType.IsClass);
+                var destinationProperties = DestinationType.GetProperties();
 
                 TDestination destination = Activator.CreateInstance<TDestination>();
 
@@ -101,7 +101,7 @@ namespace MAS.Payments.Projectors
             }
 
             private void SetComplexProperties(
-                TSource source, TDestination destination,
+                object source, TDestination destination,
                 PropertyInfo property, IEnumerable<PropertyInfo> destinationComplexProperties
             )
             {
@@ -124,7 +124,7 @@ namespace MAS.Payments.Projectors
                                     .Where(x => x.Name.ToLower().StartsWith(internalPropertyName));
 
                             if (destinationComplexProperties.Any())
-                                SetComplexProperties(source, destination, internalProperty, complexProperties);
+                                SetComplexProperties(sourcePropertyValue, destination, internalProperty, complexProperties);
                         }
                         else
                         {
@@ -135,7 +135,7 @@ namespace MAS.Payments.Projectors
 
                             if (exactDestinationProperty != null)
                             {
-                                var internalPropertyValue = internalProperty.GetValue(source);
+                                var internalPropertyValue = internalProperty.GetValue(sourcePropertyValue);
                                 exactDestinationProperty.SetValue(destination, internalPropertyValue);
                             }
                         }

@@ -7,7 +7,7 @@ namespace MAS.Payments.Projectors
 {
     public partial class Projector
     {
-        public class Common<TSource, TDestination> : IProjector<TSource, TDestination>
+        internal class Common<TSource, TDestination> : IProjector<TSource, TDestination>
             where TSource : class
             where TDestination : class
         {

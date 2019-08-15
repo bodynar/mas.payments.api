@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
@@ -21,15 +21,7 @@ namespace MAS.Payments.Queries
         public override IEnumerable<GetPaymentTypesResponse> Handle(GetPaymentTypesQuery Query)
         {
             return Repository
-                   .GetAll()
-                   .Select(x => new GetPaymentTypesResponse
-                   {
-                       Id = x.Id,
-                       Name = x.Name,
-                       Description = x.Description,
-                       Company = x.Company
-                   })
-                   .ToList();
+                   .GetAll(new Projector.ToFlat<PaymentType, GetPaymentTypesResponse>());
         }
     }
 }

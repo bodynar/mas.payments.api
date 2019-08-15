@@ -1,10 +1,10 @@
 using System.Collections.Generic;
-using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Infrastructure.Specification;
+using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
@@ -40,17 +40,7 @@ namespace MAS.Payments.Queries
             }
 
             return Repository
-                   .Where(filter)
-                   .Select(x => new GetMeterMeasurementsResponse
-                   {
-                       Id = x.Id,
-                       Measurement = x.Measurement,
-                       Comment = x.Comment,
-                       Date = x.Date,
-                       MeterMeasurementTypeId = x.MeterMeasurementTypeId,
-                       MeasurementTypeName = x.MeasurementType.Name
-                   })
-                   .ToList();
+                   .Where(filter, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsResponse>());
         }
     }
 }

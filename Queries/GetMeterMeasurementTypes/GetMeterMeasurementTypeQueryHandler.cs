@@ -1,9 +1,9 @@
 using System.Collections.Generic;
-using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
@@ -21,16 +21,7 @@ namespace MAS.Payments.Queries
         public override IEnumerable<GetMeterMeasurementTypesResponse> Handle(GetMeterMeasurementTypesQuery Query)
         {
             return Repository
-                   .GetAll()
-                   .Select(x => new GetMeterMeasurementTypesResponse
-                   {
-                       Id = x.Id,
-                       Name = x.Name,
-                       Description = x.Description,
-                       PaymentTypeId = x.PaymentTypeId,
-                       PaymentTypeName = x.PaymentType.Name
-                   })
-                   .ToList();
+                   .GetAll(new Projector.ToFlat<MeterMeasurementType, GetMeterMeasurementTypesResponse>());
         }
     }
 }

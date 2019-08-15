@@ -1,10 +1,11 @@
-using System.Collections.Generic;
 using System.Linq;
+using System.Collections.Generic;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Infrastructure.Specification;
+using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
@@ -44,18 +45,9 @@ namespace MAS.Payments.Queries
                     filter = filter && new CommonSpecification<Payment>(x => x.Amount <= query.MaxAmount.Value);
                 }
             }
-
+            
             return Repository
-                   .Where(filter)
-                   .Select(x => new GetPaymentsResponse
-                   {
-                       Id = x.Id,
-                       Amount = x.Amount,
-                       Description = x.Description,
-                       Date = x.Date,
-                       PaymentType = x.PaymentType.Name
-                   })
-                   .ToList();
+                   .Where(filter, new Projector.ToFlat<Payment, GetPaymentsResponse>());;
         }
     }
 }

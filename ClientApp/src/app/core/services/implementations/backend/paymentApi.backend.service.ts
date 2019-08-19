@@ -39,7 +39,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         amount: response['amount'],
                         date: response['date'],
                         description: response['description'],
-                        paymentType: response['paymentType'],
+                        paymentTypeName: response['paymentTypeName'],
                         paymentTypeId: response['paymentTypeId'],
                     }) as PaymentResponse),
                 catchError(error => of(error))

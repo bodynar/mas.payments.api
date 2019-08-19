@@ -1,0 +1,17 @@
+namespace MAS.Payments.Queries
+{
+    public class GetMeterMeasurementResponse
+    {
+        public long Id { get; set; }
+
+        public double Measurement { get; set; }
+
+        public string Comment { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public long MeterMeasurementTypeId { get; set; }
+
+        public string MeasurementTypeName { get; set; }
+    }
+}

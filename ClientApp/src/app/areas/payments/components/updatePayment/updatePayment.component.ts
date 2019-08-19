@@ -19,13 +19,16 @@ import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 })
 class UpdatePaymentComponent implements OnInit, OnDestroy {
 
-    public addPaymentRequest: AddPaymentRequest;
+    public paymentRequest: AddPaymentRequest =
+        {};
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
+
+    private paymentId: number;
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
@@ -42,15 +45,16 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
             .pipe(
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
+                tap(id => this.paymentId = id),
                 switchMap(id => this.paymentService.getPayment(id))
             )
-            .subscribe(params => this.addPaymentRequest = params);
+            .subscribe(params => this.paymentRequest = params);
 
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid && this.isFormValid(this.addPaymentRequest)),
-                switchMap(_ => this.paymentService.addPayment(this.addPaymentRequest)),
+                filter(({ valid }) => valid && this.isFormValid(this.paymentRequest)),
+                switchMap(_ => this.paymentService.updatePayment(this.paymentId, this.paymentRequest)),
                 filter(withoutError => {
                     if (!withoutError) {
                         this.notificationService.error('Error due saving data. Please, try again later');

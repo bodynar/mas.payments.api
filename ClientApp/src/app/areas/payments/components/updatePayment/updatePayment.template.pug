@@ -1,3 +1,51 @@
 doctype html
 
-h4 update payment
+form.needs-validation(
+    #form='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(form)'
+)
+    .form-group
+        label(for='amount') Amount
+        input.form-control.m-form-control.form-control-sm#amount(
+            type='text',
+            placeholder='Enter amount',
+            name='amount',
+            [(ngModel)]='paymentRequest.amount',
+            #name='ngModel',
+            required='required',
+        )
+
+    .form-group
+        label(for='paymentTypeId') Payment type
+        select.custom-select.m-form-control.custom-select-sm#paymentTypeId(
+            required='required',
+            name='paymentTypeId',
+            [(ngModel)]='paymentRequest.paymentTypeId'
+        )
+            option(
+                *ngFor='let paymentType of (paymentTypes$ | async)',
+                [value]='paymentType.id'
+            ) {{ paymentType.name }}
+
+    .form-group
+        label(for='date') Date of payment
+        input.form-control.m-form-control#date(
+            type='date',
+            required='required',
+            name='date',
+            [(ngModel)]='paymentRequest.date',
+            #orderFor='ngModel'
+        )
+
+    .form-group
+        label(for='description') Description
+        input.form-control.m-form-control.form-control-sm#description(
+            type='text',
+            placeholder='Payment description',
+            name='description',
+            [(ngModel)]='paymentRequest.description',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Update

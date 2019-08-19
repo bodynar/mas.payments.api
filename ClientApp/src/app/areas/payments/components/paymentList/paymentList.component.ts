@@ -32,7 +32,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public months: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
-        ['addPayment', 'addPaymentType', 'paymentTypes'];
+        ['add', 'addType', 'types'];
 
     public amountFilterType$: BehaviorSubject<string> =
         new BehaviorSubject('');

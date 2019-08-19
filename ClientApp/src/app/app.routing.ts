@@ -44,19 +44,19 @@ const routes: Routes = [
                         component: PaymentListComponent
                     },
                     {
-                        path: 'addPayment',
+                        path: 'add',
                         component: AddPaymentComponent
                     },
                     {
-                        path: 'updatePayment',
+                        path: 'update',
                         component: UpdatePaymentComponent
                     },
                     {
-                        path: 'addPaymentType',
+                        path: 'addType',
                         component: AddPaymentTypeComponent
                     },
                     {
-                        path: 'paymentTypes',
+                        path: 'types',
                         component: PaymentTypesComponent
                     },
                 ]

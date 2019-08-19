@@ -1,0 +1,51 @@
+doctype html
+
+form.needs-validation(
+    #form='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(form)'
+)
+    .form-group
+        label(for='measurement') Measurement value
+        input.form-control.m-form-control.form-control-sm#measurement(
+            type='text',
+            placeholder='Enter measurement',
+            name='measurement',
+            [(ngModel)]='measurementRequest.measurement',
+            #measurement='ngModel',
+            required='required',
+        )
+
+    .form-group
+        label(for='meterMeasurementTypeId') Measurement type
+        select.custom-select.m-form-control.custom-select-sm#meterMeasurementTypeId(
+            required='required',
+            name='meterMeasurementTypeId',
+            [(ngModel)]='measurementRequest.meterMeasurementTypeId'
+        )
+            option(
+                *ngFor='let measurementType of (measurementTypes$ | async)',
+                [value]='measurementType.id'
+            ) {{ measurementType.name }}
+
+    .form-group
+        label(for='date') Date of measurement
+        input.form-control.m-form-control#date(
+            type='date',
+            required='required',
+            name='date',
+            [(ngModel)]='measurementRequest.date',
+            #orderFor='ngModel'
+        )
+
+    .form-group
+        label(for='comment') Comment
+        input.form-control.m-form-control.form-control-sm#comment(
+            type='text',
+            placeholder='Enter comment',
+            name='comment',
+            [(ngModel)]='measurementRequest.comment',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Update

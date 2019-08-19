@@ -1,0 +1,40 @@
+doctype html
+
+form.needs-validation(
+    #form='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(form)'
+)
+    .form-group
+        label(for='name') Name
+        input.form-control.m-form-control.form-control-sm#name(
+            type='text',
+            placeholder='Enter measurement type name',
+            name='name',
+            [(ngModel)]='measurementTypeRequest.name',
+            #name='ngModel',
+            required='required'
+        )
+        
+    .form-group
+        label(for='description') Description
+        textarea.form-control.m-form-control.form-control-sm#description(
+            placeholder='Enter description',
+            name='description',
+            [(ngModel)]='measurementTypeRequest.description',
+            #name='ngModel'
+        )
+
+    .form-group
+        label(for='paymentType') Payment type
+        select.custom-select.m-form-control.custom-select-sm(
+            required='required',
+            name='paymentType',
+            [(ngModel)]='measurementTypeRequest.paymentTypeId',
+        )
+            option(
+                *ngFor='let paymentType of (paymentTypes$ | async)',
+                [value]='paymentType.id'
+            ) {{ paymentType.name }}
+    
+    button.btn.btn-outline-primary(type='submit') Update

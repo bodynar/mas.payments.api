@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
@@ -7,21 +6,22 @@ using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
-    internal class GetPaymentTypesQueryHandler : BaseQueryHandler<GetPaymentTypesQuery, IEnumerable<GetPaymentTypesResponse>>
+    internal class GetPaymentTypeQueryHandler : BaseQueryHandler<GetPaymentTypeQuery, GetPaymentTypeResponse>
     {
         private IRepository<PaymentType> Repository { get; }
-        
-        public GetPaymentTypesQueryHandler(
+
+        public GetPaymentTypeQueryHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<PaymentType>();
         }
 
-        public override IEnumerable<GetPaymentTypesResponse> Handle(GetPaymentTypesQuery query)
+        public override GetPaymentTypeResponse Handle(GetPaymentTypeQuery query)
         {
-            return Repository
-                   .GetAll(new Projector.ToFlat<PaymentType, GetPaymentTypesResponse>());
+             return Repository
+                        .Get(query.Id,
+                        new Projector.ToFlat<PaymentType, GetPaymentTypeResponse>());
         }
     }
 }

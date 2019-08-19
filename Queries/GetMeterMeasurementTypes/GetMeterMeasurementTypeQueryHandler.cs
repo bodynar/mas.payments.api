@@ -18,7 +18,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurementType>();
         }
 
-        public override IEnumerable<GetMeterMeasurementTypesResponse> Handle(GetMeterMeasurementTypesQuery Query)
+        public override IEnumerable<GetMeterMeasurementTypesResponse> Handle(GetMeterMeasurementTypesQuery query)
         {
             return Repository
                    .GetAll(new Projector.ToFlat<MeterMeasurementType, GetMeterMeasurementTypesResponse>());

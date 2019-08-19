@@ -20,10 +20,18 @@ namespace MAS.Payments.Controllers
         {
         }
 
+        #region Payment type
+
         [HttpGet("[action]")]
-        public GetPaymentResponse GetPayment(long id)
+        public GetPaymentTypeResponse GetPaymentType(long id)
         {
-            return QueryProcessor.Execute(new GetPaymentQuery(id));
+            return QueryProcessor.Execute(new GetPaymentTypeQuery(id));
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<GetPaymentTypesResponse> GetPaymentTypes()
+        {
+            return QueryProcessor.Execute(new GetPaymentTypesQuery());
         }
 
         [HttpPost("[action]")]
@@ -34,13 +42,6 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddPayment([FromBody]AddPaymentRequest request)
-        {
-            CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
-        }
-
-        [HttpPost("[action]")]
         public void UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
             CommandProcessor.Execute(
@@ -48,18 +49,21 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpPost("[action]")]
-        public void UpdatePayment(UpdatePaymentRequest request)
+        [HttpDelete("[action]")]
+        public void DeletePaymentType(long paymentTypeId)
         {
             CommandProcessor.Execute(
-                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
-            );
+                new DeletePaymentTypeCommand(paymentTypeId));
         }
 
+        #endregion
+
+        #region Payment
+
         [HttpGet("[action]")]
-        public IEnumerable<GetPaymentTypesResponse> GetPaymentTypes()
+        public GetPaymentResponse GetPayment(long id)
         {
-            return QueryProcessor.Execute(new GetPaymentTypesQuery());
+            return QueryProcessor.Execute(new GetPaymentQuery(id));
         }
 
         [HttpGet("[action]")]
@@ -70,11 +74,19 @@ namespace MAS.Payments.Controllers
                     request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
         }
 
-        [HttpDelete("[action]")]
-        public void DeletePaymentType(long paymentTypeId)
+        [HttpPost("[action]")]
+        public void AddPayment([FromBody]AddPaymentRequest request)
         {
             CommandProcessor.Execute(
-                new DeletePaymentTypeCommand(paymentTypeId));
+                new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
+        }
+
+        [HttpPost("[action]")]
+        public void UpdatePayment(UpdatePaymentRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
+            );
         }
 
         [HttpDelete("[action]")]
@@ -83,5 +95,8 @@ namespace MAS.Payments.Controllers
             CommandProcessor.Execute(
                 new DeletePaymentCommand(paymentId));
         }
+
+        #endregion
+
     }
 }

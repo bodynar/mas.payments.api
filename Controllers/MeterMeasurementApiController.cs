@@ -20,6 +20,40 @@ namespace MAS.Payments.Controllers
         {
         }
 
+        #region Measurement Type
+
+        [HttpGet("[action]")]
+        public GetPaymentResponse GetMeasurementType(long id)
+        {
+            return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery(id));
+        }
+
+        [HttpPost("[action]")]
+        public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
+        {
+            CommandProcessor.Execute(
+                new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
+        }
+
+        [HttpPost("[action]")]
+        public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
+        {
+            CommandProcessor.Execute(
+                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description)
+            );
+        }
+
+        [HttpDelete("[action]")]
+        public void DeleteMeasurementType(long measurementTypeId)
+        {
+            CommandProcessor.Execute(
+                new DeleteMeterMeasurementTypeCommand(measurementTypeId));
+        }
+
+        #endregion
+
+        #region Measurement
+
         [HttpGet("[action]")]
         public IEnumerable<GetMeterMeasurementTypesResponse> GetMeasurementTypes()
         {
@@ -41,21 +75,6 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
-        {
-            CommandProcessor.Execute(
-                new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
-        }
-
-        [HttpPost("[action]")]
-        public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
-        {
-            CommandProcessor.Execute(
-                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description)
-            );
-        }
-
-        [HttpPost("[action]")]
         public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
             CommandProcessor.Execute(
@@ -64,17 +83,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpDelete("[action]")]
-        public void DeleteMeasurementType(long measurementTypeId)
-        {
-            CommandProcessor.Execute(
-                new DeleteMeterMeasurementTypeCommand(measurementTypeId));
-        }
-
-        [HttpDelete("[action]")]
         public void DeleteMeasurement(long measurementId)
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementCommand(measurementId));
         }
+
+        #endregion
+
     }
 }

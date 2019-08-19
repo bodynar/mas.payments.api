@@ -39,7 +39,6 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
         private routerService: IRouterService,
         private notificationService: INotificationService,
     ) {
-        // todo test
         this.activatedRoute
             .queryParams
             .pipe(
@@ -59,7 +58,7 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                     if (!withoutError) {
                         this.notificationService.error('Error due saving data. Please, try again later');
                     } else {
-                        this.notificationService.success('Payment was successfully added.');
+                        this.notificationService.success('Payment was successfully updated.');
                     }
 
                     return withoutError;

@@ -1,5 +1,5 @@
 interface AddPaymentTypeRequest {
-    name: string;
+    name?: string;
     description?: string;
     company?: string;
 }

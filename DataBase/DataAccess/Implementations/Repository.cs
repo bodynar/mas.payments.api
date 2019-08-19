@@ -31,13 +31,7 @@ namespace MAS.Payments.DataBase.Access
             DataBaseContext.Remove(entity);
         }
 
-        public TEntity Get(long id)
-            => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
-
-        public IQueryable<TEntity> GetAll()
-            => DataBaseContext.Set<TEntity>().AsQueryable();
-
-        public void Update(long id, TEntity updatedEntity)
+        public void Update(long id, object updatedEntity)
         {
             var entity = Get(id);
             if (entity == null)
@@ -45,8 +39,14 @@ namespace MAS.Payments.DataBase.Access
                 throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
             }
 
-            DataBaseContext.Set<TEntity>().Update(updatedEntity);
+            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedEntity); 
         }
+
+        public TEntity Get(long id)
+            => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+
+        public IQueryable<TEntity> GetAll()
+            => DataBaseContext.Set<TEntity>().AsQueryable();
 
         public IQueryable<TEntity> Where(Specification<TEntity> filter)
             => DataBaseContext.Set<TEntity>().Where(filter);
@@ -57,7 +57,7 @@ namespace MAS.Payments.DataBase.Access
         public int Count(Specification<TEntity> predicate)
             => DataBaseContext.Set<TEntity>().Count(predicate);
 
-        public TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector) 
+        public TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
             where TDestination : class
         {
             var entity = Get(id);
@@ -70,11 +70,11 @@ namespace MAS.Payments.DataBase.Access
             return projector.Project(entity);
         }
 
-        public IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector) 
+        public IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector)
             where TDestination : class
             => GetAll().Select(projector.Project);
 
-        public IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector) 
+        public IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector)
             where TDestination : class
             => Where(filter).Select(projector.Project);
     }

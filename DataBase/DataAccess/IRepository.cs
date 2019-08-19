@@ -11,11 +11,11 @@ namespace MAS.Payments.DataBase.Access
     {
         void Add(TEntity entity);
 
-        void Update(long id, TEntity updatedEntity);
-
         void Delete(long id);
 
         TEntity Get(long id);
+
+        void Update(long id, object updatedModel);
 
         TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
             where TDestination: class;

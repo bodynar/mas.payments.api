@@ -23,6 +23,14 @@ class MeasurementService implements IMeasurementService {
         // private loggingService: ILoggingService
     ) { }
 
+    public getMeasurement(id: number): Observable<MeasurementResponse> {
+        return this.measurementApiBackend.getMeasurement(id);
+    }
+
+    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+        return this.measurementApiBackend.getMeasurementType(id);
+    }
+
     public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
         // data validation
 

@@ -25,6 +25,47 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
     ) {
     }
 
+    public getMeasurement(id: number): Observable<MeasurementResponse> {
+        return this.http
+            .get(`${this.apiPrefix}/getMeasurement`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        measurement: response['measurement'],
+                        comment: response['comment'],
+                        date: response['date'],
+                        meterMeasurementTypeId: response['meterMeasurementTypeId'],
+                        measurementTypeName: response['measurementTypeName'],
+                    }) as MeasurementResponse),
+                catchError(error => of(error))
+            );
+    }
+
+    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+        return this.http
+            .get(`${this.apiPrefix}/getMeasurementType`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        name: response['name'],
+                        description: response['description'],
+                        paymentTypeId: response['paymentTypeId'],
+                        paymentTypeName: response['paymentTypeName'],
+                    }) as MeasurementTypeResponse),
+                catchError(error => of(error))
+            );
+    }
+
     public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
         return this.http
             .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)

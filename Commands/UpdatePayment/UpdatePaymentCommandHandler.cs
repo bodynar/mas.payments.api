@@ -30,14 +30,13 @@ namespace MAS.Payments.Commands
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
             }
 
-            var updatedPayment = Repository.Get(command.Id);
-
-            updatedPayment.Amount = command.Amount;
-            updatedPayment.Date = command.Date;
-            updatedPayment.Description = command.Description;
-            updatedPayment.PaymentTypeId = command.PaymentTypeId;
-
-            Repository.Update(command.Id, updatedPayment);
+            Repository.Update(command.Id, new
+            {
+                Amount = command.Amount,
+                Date = command.Date,
+                Description = command.Description,
+                PaymentTypeId = command.PaymentTypeId,
+            });
         }
     }
 }

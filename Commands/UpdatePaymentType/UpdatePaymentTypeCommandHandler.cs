@@ -34,13 +34,12 @@ namespace MAS.Payments.Commands
                     $"Payment type with name {command.Name} from {command.Company} is already exist");
             }
 
-            var updatedPaymenentyType = Repository.Get(command.Id);
-
-            updatedPaymenentyType.Company = command.Company;
-            updatedPaymenentyType.Description = command.Description;
-            updatedPaymenentyType.Name = command.Name;
-
-            Repository.Update(command.Id, updatedPaymenentyType);
+            Repository.Update(command.Id, new
+            {
+                Company = command.Company,
+                Description = command.Description,
+                Name = command.Name,
+            });
         }
     }
 }

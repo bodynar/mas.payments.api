@@ -31,14 +31,13 @@ namespace MAS.Payments.Commands
                     $"Measurement type with id {command.MeterMeasurementTypeId} doesn't exist");
             }
 
-            var updatedEntity = Repository.Get(command.Id);
-
-            updatedEntity.Comment = command.Comment;
-            updatedEntity.Date = command.Date;
-            updatedEntity.Measurement = command.Measurement;
-            updatedEntity.MeterMeasurementTypeId = command.MeterMeasurementTypeId;
-
-            Repository.Update(command.Id, updatedEntity);
+            Repository.Update(command.Id, new
+            {
+                Comment = command.Comment,
+                Date = command.Date,
+                Measurement = command.Measurement,
+                MeterMeasurementTypeId = command.MeterMeasurementTypeId,
+            });
         }
     }
 }

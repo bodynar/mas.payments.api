@@ -31,13 +31,12 @@ namespace MAS.Payments.Commands
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
             }
 
-            var updatedEntity = Repository.Get(command.Id);
-
-            updatedEntity.Name = command.Name;
-            updatedEntity.PaymentTypeId = command.PaymentTypeId;
-            updatedEntity.Description = command.Description;
-
-            Repository.Update(command.Id, updatedEntity);
+            Repository.Update(command.Id, new
+            {
+                Name = command.Name,
+                PaymentTypeId = command.PaymentTypeId,
+                Description = command.Description,
+            });
         }
     }
 }

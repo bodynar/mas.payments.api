@@ -6,7 +6,7 @@ using MAS.Payments.Projectors;
 
 namespace MAS.Payments.Queries
 {
-    internal class GetMeterMeasurementTypeQueryHandler : BaseQueryHandler<GetMeasurementTypeQuery, GetMeterMeasurementTypeResponse>
+    internal class GetMeterMeasurementTypeQueryHandler : BaseQueryHandler<GetMeterMeasurementTypeQuery, GetMeterMeasurementTypeResponse>
     {
         private IRepository<MeterMeasurementType> Repository { get; }
         
@@ -17,7 +17,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurementType>();
         }
 
-        public override GetMeterMeasurementTypeResponse Handle(GetMeasurementTypeQuery query)
+        public override GetMeterMeasurementTypeResponse Handle(GetMeterMeasurementTypeQuery query)
         {
             return Repository
                    .Get(query.Id, new Projector.ToFlat<MeterMeasurementType, GetMeterMeasurementTypeResponse>());

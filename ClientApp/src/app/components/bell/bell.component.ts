@@ -1,7 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
+import { fromEvent, Observable, Subject } from 'rxjs';
+import { filter, map, takeUntil } from 'rxjs/operators';
+
+import { isNullOrUndefined } from 'util';
 
 import { IUserService } from 'services/IUserService';
 
@@ -23,12 +25,24 @@ class BellComponent implements OnInit, OnDestroy {
 
     private notifications: Array<GetNotificationsResponse>;
 
+    private pageClicks$: Observable<Event> =
+        fromEvent(document, 'click');
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     constructor(
         private userService: IUserService
-    ) { }
+    ) {
+        this.pageClicks$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(_ => !this.isNotificationsHidden),
+                map(event => (event as MouseEvent).target),
+                filter((target: HTMLElement) => !this.isBellChild(target))
+            )
+            .subscribe(_ => this.isNotificationsHidden = !this.isNotificationsHidden);
+    }
 
     public ngOnInit(): void {
         this.userService
@@ -46,13 +60,28 @@ class BellComponent implements OnInit, OnDestroy {
     }
 
     public notificationsToggle(target: HTMLElement): void {
-        if (target.classList.contains('oi-bell') || target.parentElement.classList.contains('bell')) {
+        if (this.isBellChild(target)) {
             this.isNotificationsHidden = !this.isNotificationsHidden;
         }
     }
 
     public removeNotification(notification: GetNotificationsResponse): void {
         console.warn(notification);
+    }
+
+    private isBellChild(element: HTMLElement) {
+        let isBellChild: boolean =
+            element.nodeName.toLowerCase() === 'app-bell';
+
+        if (isBellChild) {
+            return true;
+        }
+
+        if (!isNullOrUndefined(element.parentElement)) {
+            isBellChild = this.isBellChild(element.parentElement);
+        }
+
+        return isBellChild;
     }
 }
 

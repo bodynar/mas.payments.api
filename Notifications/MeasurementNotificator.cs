@@ -49,7 +49,7 @@ namespace MAS.Payments.Notifications
                         {
                             Type = type,
                             Name = "Measurement not added",
-                            Description = $"Measurenemt for {measurementType.Name} for {today.ToString("mm:YYYY")} not added"
+                            Description = $"Measurenemt for {measurementType.Name} for [{today.ToString("MMMM yyyy")}] not added"
                         };
                     }
                 }

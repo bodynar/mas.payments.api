@@ -26,7 +26,6 @@ namespace MAS.Payments.Queries
 
             if (query.Month.HasValue)
             {
-                // todo: check (sql)
                 filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == query.Month.Value);
             }
 

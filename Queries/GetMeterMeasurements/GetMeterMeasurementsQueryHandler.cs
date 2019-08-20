@@ -25,7 +25,6 @@ namespace MAS.Payments.Queries
 
             if (query.Month.HasValue)
             {
-                // todo: check (sql)
                 filter = filter && new CommonSpecification<MeterMeasurement>(x => x.Date.Month == query.Month.Value);
             }
 

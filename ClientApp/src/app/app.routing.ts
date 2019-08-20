@@ -8,7 +8,6 @@ import { NotFoundComponent } from './pages/notFound/notFound.component';
 import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
 import { PaymentsComponent } from './areas/payments/component/payments.component';
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
-import { StatsComponent } from './areas/statistics/components/stats/stats.component';
 
 const routes: Routes = [
     {
@@ -38,12 +37,7 @@ const routes: Routes = [
             {
                 path: 'stats',
                 component: StatisticsComponent,
-                children: [
-                    {
-                        path: '',
-                        component: StatsComponent
-                    }
-                ]
+                loadChildren: () => import('./areas/statistics/statistics.module').then(x => x.StatisticsModule)
             }
         ]
     },

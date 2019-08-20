@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
+import { StatisticsRoutingModule } from './statistics.routing';
+
 import { StatisticsComponent } from './component/statistics.component';
 import { StatsComponent } from './components/stats/stats.component';
 
@@ -9,6 +11,7 @@ import { StatsComponent } from './components/stats/stats.component';
     imports: [
         CommonModule,
         RouterModule,
+        StatisticsRoutingModule
     ],
     exports: [],
     declarations: [

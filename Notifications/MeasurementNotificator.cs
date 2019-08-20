@@ -43,7 +43,7 @@ namespace MAS.Payments.Notifications
 
                     foreach (var measurementType in measurementTypesWithoutMeasurement)
                     {
-                        var type = today.Day < 25 ? NotificationType.Info : NotificationType.Warning;
+                        var type = today.Day <= 23 ? NotificationType.Info : NotificationType.Warning;
 
                         yield return new Notification
                         {

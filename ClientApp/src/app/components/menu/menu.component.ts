@@ -53,6 +53,9 @@ class MenuComponent implements OnInit, OnDestroy {
     }
 
     public onStartSearch() {
+        if (this.searchPattern.trim() === '404') {
+            this.routerService.navigate(['somePathWhichDoesntExist']);
+        }
         if (this.searchPattern.endsWith('.py')) {
             alert('oh you little hacker');
         } else {

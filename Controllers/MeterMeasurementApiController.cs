@@ -23,9 +23,15 @@ namespace MAS.Payments.Controllers
         #region Measurement Type
 
         [HttpGet("[action]")]
-        public GetPaymentResponse GetMeasurementType(long id)
+        public GetMeterMeasurementTypeResponse GetMeasurementType(long id)
         {
-            return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery(id));
+            return QueryProcessor.Execute(new GetMeterMeasurementTypeQuery(id));
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<GetMeterMeasurementTypesResponse> GetMeasurementTypes()
+        {
+            return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
         }
 
         [HttpPost("[action]")]
@@ -55,9 +61,9 @@ namespace MAS.Payments.Controllers
         #region Measurement
 
         [HttpGet("[action]")]
-        public IEnumerable<GetMeterMeasurementTypesResponse> GetMeasurementTypes()
+        public GetMeterMeasurementResponse GetMeasurement(long id)
         {
-            return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
+            return QueryProcessor.Execute(new GetMeterMeasurementQuery(id));
         }
 
         [HttpGet("[action]")]

@@ -6,9 +6,10 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "module": "esnext",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2018",
     "paths": {
       "services/*": [
         "src/app/core/services/contracts/*"

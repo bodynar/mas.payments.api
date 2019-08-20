@@ -27,7 +27,6 @@ const routes: Routes = [
                 path: 'payments',
                 component: PaymentsComponent,
                 loadChildren: () => import('./areas/payments/payments.module').then(x => x.PaymentsModule)
-                // fix ts1323
             },
             {
                 path: 'measurements',

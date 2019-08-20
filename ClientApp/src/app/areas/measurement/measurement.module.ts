@@ -6,11 +6,15 @@ import { RouterModule } from '@angular/router';
 import { MeasurementRoutingModule } from './measurement.routing';
 
 import { MeasurementsComponent } from './component/measurement.component';
+
 import { AddMeasurementComponent } from './components/addMeasurement/addMeasurement.component';
-import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
 import { MeasurementComponent } from './components/measurement/measurement.component';
 import { MeasurementListComponent } from './components/measurementList/measurementList.component';
+import { UpdateMeasurementComponent } from './components/updateMeasurement/updateMeasurement.component';
+
+import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
 import { MeasurementTypesComponent } from './components/measurementTypes/measurementTypes.component';
+import { UpdateMeasurementTypeComponent } from './components/updateMeasurementType/updateMeasurementType.component';
 
 @NgModule({
     imports: [
@@ -21,9 +25,9 @@ import { MeasurementTypesComponent } from './components/measurementTypes/measure
     ],
     exports: [],
     declarations: [
-        MeasurementsComponent, AddMeasurementComponent, AddMeasurementTypeComponent,
+        MeasurementsComponent, AddMeasurementComponent, AddMeasurementTypeComponent, UpdateMeasurementComponent,
 
-        MeasurementListComponent, MeasurementComponent, MeasurementTypesComponent
+        MeasurementListComponent, MeasurementComponent, MeasurementTypesComponent, UpdateMeasurementTypeComponent
     ],
     providers: [],
 })

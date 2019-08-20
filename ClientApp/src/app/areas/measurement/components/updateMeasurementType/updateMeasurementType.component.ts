@@ -15,7 +15,7 @@ import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 import { isNullOrUndefined } from 'util';
 
 @Component({
-    templateUrl: 'addMeasurementType.template.pug'
+    templateUrl: 'updateMeasurementType.template.pug'
 })
 class UpdateMeasurementTypeComponent implements OnInit, OnDestroy {
 

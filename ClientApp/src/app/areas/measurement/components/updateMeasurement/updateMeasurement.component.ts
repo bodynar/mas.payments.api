@@ -91,9 +91,9 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
         let isFormValid: boolean =
             true;
 
-        if (!isNullOrUndefined(this.addMeasurementRequest.measurement)) {
+        if (!isNullOrUndefined(this.measurementRequest.measurement)) {
             const measurementValue: number =
-                parseFloat(`${this.addMeasurementRequest.measurement}`);
+                parseFloat(`${this.measurementRequest.measurement}`);
 
             if (Number.isNaN(measurementValue)) {
                 isFormValid = false;

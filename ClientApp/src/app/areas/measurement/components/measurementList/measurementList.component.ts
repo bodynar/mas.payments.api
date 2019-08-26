@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
@@ -127,6 +129,20 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public onEditRecordClick(measurementId: number): void {
         this.whenMeasurementEdit$.next(measurementId);
+    }
+
+    public onTypeClick(measurementTypeId: number): void {
+        if (!isNullOrUndefined(measurementTypeId) && measurementTypeId !== 0) {
+            this.filters.measurementTypeId = measurementTypeId;
+
+            this.applyFilters();
+        }
+    }
+
+    public clearFilters(): void {
+        this.filters = { };
+
+        this.applyFilters();
     }
 }
 

@@ -16,9 +16,9 @@ hr
             #filtersForm='ngForm',
             (submit)='applyFilters(filtersForm)'
         )
-            .filters-row
-                label.filters-row_label.col-form-label-sm Measurement for
-                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#month(
+            .filters_row
+                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='month') Measurement for
+                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#month(
                     name='month',
                     [(ngModel)]='filters.month'
                 )
@@ -27,9 +27,9 @@ hr
                         [ngValue]='month.id'
                     ) {{ month.name }}
 
-            .filters-row
-                label.filters-row_label.col-form-label-sm(for='measurementType') Measurement type
-                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#measurementType(
+            .filters_row
+                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='measurementType') Measurement type
+                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#measurementType(
                     name='measurementType',
                     [(ngModel)]='filters.measurementTypeId'
                 )
@@ -38,7 +38,13 @@ hr
                         [ngValue]='measurementType.id'
                     ) {{ measurementType.name }}
 
-            button.btn.btn-outline-primary(type='submit') Filter
+            .filters_buttons
+                button.btn.btn-outline-primary(type='submit') Filter
+
+                button.btn.btn-outline-secondary(
+                    type='button',
+                    (click)='clearFilters()'
+                ) Clear
 
 .measurement-list(
     [class.hidden]='isLoading$ | async'
@@ -47,7 +53,8 @@ hr
         *ngFor='let measurement of (measurements$ | async)',
         [measurement]='measurement',
         (deleteClick)='onDeleteRecordClick($event)',
-        (editClick)='onEditRecordClick($event)'
+        (editClick)='onEditRecordClick($event)',
+        (typeClick)='onTypeClick($event)'
     )
 
 img.loading-indicator(

@@ -16,9 +16,9 @@ hr
             #filtersForm='ngForm',
             (submit)='onSubmitClick(filtersForm)'
         )
-            .filters-row
-                label.filters-row_label.col-form-label-sm Payment for
-                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#month(
+            .filters_row
+                label.filters_row_label.col-form-label-sm Payment for
+                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#month(
                     name='month',
                     [(ngModel)]='filters.month'
                 )
@@ -27,9 +27,9 @@ hr
                         [ngValue]='month.id'
                     ) {{ month.name }}
 
-            .filters-row
-                label.filters-row_label.col-form-label-sm(for='paymentType') Payment type
-                select.filters-row_filter.custom-select.m-form-control.custom-select-sm#paymentType(
+            .filters_row
+                label.filters_row_label.col-form-label-sm(for='paymentType') Payment type
+                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#paymentType(
                     name='paymentType',
                     [(ngModel)]='filters.paymentTypeId'
                 )
@@ -38,9 +38,9 @@ hr
                         [ngValue]='paymentType.id'
                     ) {{ paymentType.name }}
 
-            .filters-row
-                label.filters-row_label.col-form-label-sm Amount
-                select.filters-row_filter.small.custom-select.m-form-control.custom-select-sm(
+            .filters_row
+                label.filters_row_label.col-form-label-sm Amount
+                select.filters_row_filter.small.custom-select.m-form-control.custom-select-sm(
                     (change)='onAmountFilterChanged($event.target.value)'
                 )
                     option() 
@@ -54,17 +54,17 @@ hr
                     [(ngModel)]='filters.amount.exact',
                     #exact='ngModel'
                 )
-                .filters-row.filters-row_multi-filers(
+                .filters_row.filters_row_multi-filers(
                     *ngIf='(amountFilterType$ | async) == "between"'
                 )
-                    input.date-filter.filters-row_filter.form-control.form-control-sm(
+                    input.date-filter.filters_row_filter.form-control.form-control-sm(
                         type='text',
                         name='minAmount',
                         [(ngModel)]='filters.amount.min',
                         #periodStart='ngModel',
                         placeholder='Minimum'
                     )
-                    input.date-filter.filters-row_filter.form-control.form-control-sm(
+                    input.date-filter.filters_row_filter.form-control.form-control-sm(
                         type='text',
                         name='periodEnd',
                         [(ngModel)]='filters.amount.max',
@@ -72,7 +72,13 @@ hr
                         placeholder='Maximum'
                     )
 
-            button.btn.btn-outline-primary(type='submit') Filter
+            .filters_buttons
+                button.btn.btn-outline-primary(type='submit') Filter
+
+                button.btn.btn-outline-secondary(
+                    type='button',
+                    (click)='clearFilters()'
+                ) Clear
 
 .payments-list(
     [class.hidden]='isLoading$ | async'
@@ -81,7 +87,8 @@ hr
         *ngFor='let payment of (payments$ | async)',
         [payment]='payment',
         (deleteClick)='onDeleteRecordClick($event)',
-        (editClick)='onEditRecordClick($event)'
+        (editClick)='onEditRecordClick($event)',
+        (typeClick)='onTypeClick($event)'
     )
 
 img.loading-indicator(

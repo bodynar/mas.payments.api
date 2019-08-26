@@ -9,7 +9,8 @@ doctype html
         p.description {{ payment.description }}
     .type
         .app-badge(
-            [ngClass]='getPaymentTypeClass(payment.paymentTypeName)'
+            [ngClass]='getPaymentTypeClass(payment.paymentTypeName)',
+            (click)='typeClick.emit(payment.paymentTypeId)'
         ) {{ payment.paymentTypeName }}
     .options
         .oi.oi-pencil.oi-medium-extra(

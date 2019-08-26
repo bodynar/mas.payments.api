@@ -9,7 +9,8 @@ doctype html
         p.description {{ measurement.description }}
     .type
         .app-badge(
-            [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)'
+            [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)',
+            (click)='typeClick.emit(measurement.meterMeasurementTypeId)'
         ) {{ measurement.measurementTypeName }}
     .options
         .oi.oi-pencil.oi-medium-extra(

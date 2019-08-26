@@ -21,6 +21,10 @@ class PaymentComponent implements OnInit {
     public editClick: EventEmitter<number> =
         new EventEmitter();
 
+    @Output()
+    public typeClick: EventEmitter<number> =
+        new EventEmitter();
+
     public date: Date;
 
     constructor(

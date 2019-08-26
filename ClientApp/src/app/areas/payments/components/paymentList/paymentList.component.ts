@@ -3,6 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
@@ -10,6 +12,7 @@ import { IRouterService } from 'services/IRouterService';
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { PaymentResponse } from 'models/response/paymentResponse';
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+
 import { months } from 'src/static/months';
 
 @Component({
@@ -137,6 +140,20 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     public onEditRecordClick(paymentId: number): void {
         this.whenPaymentEdit$.next(paymentId);
+    }
+
+    public onTypeClick(paymentTypeId: number): void {
+        if (!isNullOrUndefined(paymentTypeId) && paymentTypeId !== 0) {
+            this.filters.paymentTypeId = paymentTypeId;
+
+            this.onSubmitClick();
+        }
+    }
+
+    public clearFilters(): void {
+        this.filters = {};
+
+        this.onSubmitClick();
     }
 }
 

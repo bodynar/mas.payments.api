@@ -1,16 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { PaymentResponse } from 'models/response/paymentResponse';
 
 import { months } from 'src/static/months';
-
 
 @Component({
     selector: 'app-payment-item',
     templateUrl: 'payment.template.pug',
     styleUrls: ['payment.style.styl']
 })
-class PaymentComponent {
+class PaymentComponent implements OnInit {
     @Input()
     public payment: PaymentResponse;
 
@@ -18,18 +17,40 @@ class PaymentComponent {
     public deleteClick: EventEmitter<number> =
         new EventEmitter();
 
+    @Output()
+    public editClick: EventEmitter<number> =
+        new EventEmitter();
+
+    public date: Date;
+
     constructor(
     ) {
     }
 
+    public ngOnInit(): void {
+        this.date = new Date(this.payment.date);
+    }
+
     public formatDate(rawDate: string): string {
-        const date: Date =
-            new Date(rawDate);
-
         const month: number =
-            date.getMonth();
+            new Date(rawDate).getMonth();
 
-        return `[${date.getFullYear()}] ${months[month].name}`;
+        return `${months[month].name}`;
+    }
+
+    public getPaymentTypeClass(paymentTypeName: string): string {
+        // todo: remove method and update model
+
+        switch (paymentTypeName.toLowerCase()) {
+            case 'жкх':
+                return 'house';
+            case 'электричество':
+                return 'electricity';
+            case 'интернет':
+                return 'internet';
+            default:
+                return '';
+        }
     }
 }
 

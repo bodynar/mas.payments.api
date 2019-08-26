@@ -1,11 +1,22 @@
 doctype html
 
 .payment
+    .date
+        .month {{ formatDate(payment.date) }}
+        .year {{ date.getFullYear() }}
     .info
-        .oi.oi-trash(
-            (click)='deleteClick.emit(payment.id)'
-        )
-        .date {{ formatDate(payment.date) }}
         .amount {{ payment.amount }}
-        .app-badge {{ payment.paymentTypeName }}
-    p.description {{ payment.description }}
+        p.description {{ payment.description }}
+    .type
+        .app-badge(
+            [ngClass]='getPaymentTypeClass(payment.paymentTypeName)'
+        ) {{ payment.paymentTypeName }}
+    .options
+        .oi.oi-pencil.oi-medium-extra(
+            (click)='editClick.emit(payment.id)',
+            title='Edit'
+        )
+        .oi.oi-trash.oi-medium-extra(
+            (click)='deleteClick.emit(payment.id)',
+            title='Delete'
+        )

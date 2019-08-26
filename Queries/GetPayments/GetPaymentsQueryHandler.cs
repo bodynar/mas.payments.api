@@ -24,6 +24,11 @@ namespace MAS.Payments.Queries
         {
             Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
 
+            if (query.PaymentTypeId.HasValue)
+            {
+                filter = filter && new CommonSpecification<Payment>(x => x.PaymentTypeId == query.PaymentTypeId);
+            }
+
             if (query.Month.HasValue)
             {
                 filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == query.Month.Value);
@@ -44,9 +49,9 @@ namespace MAS.Payments.Queries
                     filter = filter && new CommonSpecification<Payment>(x => x.Amount <= query.MaxAmount.Value);
                 }
             }
-            
+
             return Repository
-                   .Where(filter, new Projector.ToFlat<Payment, GetPaymentsResponse>());;
+                   .Where(filter, new Projector.ToFlat<Payment, GetPaymentsResponse>()); ;
         }
     }
 }

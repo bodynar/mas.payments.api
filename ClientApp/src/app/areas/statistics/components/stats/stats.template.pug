@@ -6,3 +6,9 @@ button.btn.btn-outline-primary(
 ) Display
 
 .stats-container
+    ul
+        li(*ngFor='let statsItem of (stats$ | async)') {{ statsItem.paymentTypeName }}
+            ul.stats-list
+                li(*ngFor='let paymentItem of statsItem.payments') [{{ paymentItem.date }}] {{ paymentItem.amount }}
+                    ul.stats-list
+                        li(*ngFor='let measurementItem of paymentItem.measurements') {{ measurementItem.name }}:{{ measurementItem.measurement }}

@@ -80,7 +80,8 @@ hr
     app-payment-item(
         *ngFor='let payment of (payments$ | async)',
         [payment]='payment',
-        (deleteClick)='onDeleteRecordClick($event)'
+        (deleteClick)='onDeleteRecordClick($event)',
+        (editClick)='onEditRecordClick($event)'
     )
 
 img.loading-indicator(

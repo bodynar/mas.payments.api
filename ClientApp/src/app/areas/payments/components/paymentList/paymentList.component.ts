@@ -44,6 +44,9 @@ class PaymentListComponent implements OnInit, OnDestroy {
     private whenPaymentDelete$: Subject<number> =
         new Subject();
 
+    private whenPaymentEdit$: Subject<number> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
@@ -78,6 +81,18 @@ class PaymentListComponent implements OnInit, OnDestroy {
                 switchMapTo(this.paymentService.getPayments(this.filters)),
             )
             .subscribe(payments => this.payments$.next(payments));
+
+        this.whenPaymentEdit$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0)
+            )
+            .subscribe(id =>
+                this.routerService.navigateDeep(
+                    ['update'],
+                    { queryParams: { 'id': id } }
+                )
+            );
     }
 
     public ngOnInit(): void {
@@ -118,6 +133,10 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     public onDeleteRecordClick(paymentId: number): void {
         this.whenPaymentDelete$.next(paymentId);
+    }
+
+    public onEditRecordClick(paymentId: number): void {
+        this.whenPaymentEdit$.next(paymentId);
     }
 }
 

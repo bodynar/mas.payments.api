@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { MeasurementResponse } from 'models/response/measurementResponse';
 
@@ -9,7 +9,7 @@ import { months } from 'src/static/months';
     templateUrl: 'measurement.template.pug',
     styleUrls: ['measurement.style.styl']
 })
-class MeasurementComponent {
+class MeasurementComponent implements OnInit {
     @Input()
     public measurement: MeasurementResponse;
 
@@ -17,17 +17,41 @@ class MeasurementComponent {
     public deleteClick: EventEmitter<number> =
         new EventEmitter();
 
+    @Output()
+    public editClick: EventEmitter<number> =
+        new EventEmitter();
+
+    public date: Date;
+
     constructor(
     ) { }
 
+    public ngOnInit(): void {
+        this.date = new Date(this.measurement.date);
+    }
+
     public formatDate(rawDate: string): string {
-        const date: Date =
-            new Date(rawDate);
-
         const month: number =
-            date.getMonth();
+            new Date(rawDate).getMonth();
 
-        return `[${date.getFullYear()}] ${months[month].name}`;
+        return `${months[month].name}`;
+    }
+
+    public getMeasurementTypeClass(paymentTypeName: string): string {
+        // todo: remove method and update model
+
+        switch (paymentTypeName.toLowerCase()) {
+            case 'холодная вода':
+                return 'cold-water';
+            case 'горячая вода':
+                return 'hot-water';
+            case 'электричество (день)':
+                return 'electricity-day';
+            case 'электричество (ночь)':
+                return 'electricity-night';
+            default:
+                return '';
+        }
     }
 }
 

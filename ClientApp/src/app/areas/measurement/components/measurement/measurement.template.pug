@@ -1,11 +1,22 @@
 doctype html
 
 .measurement
+    .date
+        .month {{ formatDate(measurement.date) }}
+        .year {{ date.getFullYear() }}
     .info
-        .oi.oi-trash(
-            (click)='deleteClick.emit(measurement.id)'
+        .amount {{ measurement.measurement }}
+        p.description {{ measurement.description }}
+    .type
+        .app-badge(
+            [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)'
+        ) {{ measurement.measurementTypeName }}
+    .options
+        .oi.oi-pencil.oi-medium-extra(
+            (click)='editClick.emit(measurement.id)',
+            title='Edit'
         )
-        .date {{ formatDate(measurement.date) }}
-        .value {{ measurement.measurement }}
-        .app-badge {{ measurement.measurementTypeName }}
-    p.description {{ measurement.comment }}
+        .oi.oi-trash.oi-medium-extra(
+            (click)='deleteClick.emit(measurement.id)',
+            title='Delete'
+        )

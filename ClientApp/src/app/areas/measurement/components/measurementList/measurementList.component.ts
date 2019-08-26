@@ -38,6 +38,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     private whenMeasurementDelete$: Subject<number> =
         new Subject();
 
+    private whenMeasurementEdit$: Subject<number> =
+        new Subject();
+
     private whenSubmitFilters$: Subject<null> =
         new Subject();
 
@@ -77,6 +80,18 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 switchMapTo(this.measurementService.getMeasurements(this.filters)),
             )
             .subscribe(measurements => this.measurements$.next(measurements));
+
+        this.whenMeasurementEdit$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0)
+            )
+            .subscribe(id =>
+                this.routerService.navigateDeep(
+                    ['update'],
+                    { queryParams: { 'id': id } }
+                )
+            );
     }
 
     public ngOnInit(): void {
@@ -108,6 +123,10 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public onDeleteRecordClick(measurementId: number): void {
         this.whenMeasurementDelete$.next(measurementId);
+    }
+
+    public onEditRecordClick(measurementId: number): void {
+        this.whenMeasurementEdit$.next(measurementId);
     }
 }
 

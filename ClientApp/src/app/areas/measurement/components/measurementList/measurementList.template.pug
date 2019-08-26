@@ -46,7 +46,8 @@ hr
     app-measurement-item(
         *ngFor='let measurement of (measurements$ | async)',
         [measurement]='measurement',
-        (deleteClick)='onDeleteRecordClick($event)'
+        (deleteClick)='onDeleteRecordClick($event)',
+        (editClick)='onEditRecordClick($event)'
     )
 
 img.loading-indicator(

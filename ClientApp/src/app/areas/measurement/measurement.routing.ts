@@ -5,6 +5,8 @@ import { AddMeasurementComponent } from './components/addMeasurement/addMeasurem
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
 import { MeasurementListComponent } from './components/measurementList/measurementList.component';
 import { MeasurementTypesComponent } from './components/measurementTypes/measurementTypes.component';
+import { UpdateMeasurementComponent } from './components/updateMeasurement/updateMeasurement.component';
+import { UpdateMeasurementTypeComponent } from './components/updateMeasurementType/updateMeasurementType.component';
 
 const routes: Routes = [
     {
@@ -12,17 +14,25 @@ const routes: Routes = [
         component: MeasurementListComponent
     },
     {
-        path: 'addMeasurement',
+        path: 'add',
         component: AddMeasurementComponent
     },
     {
-        path: 'addMeasurementType',
+        path: 'update',
+        component: UpdateMeasurementComponent
+    },
+    {
+        path: 'types',
+        component: MeasurementTypesComponent
+    },
+    {
+        path: 'addType',
         component: AddMeasurementTypeComponent
     },
     {
-        path: 'measurementTypes',
-        component: MeasurementTypesComponent
-    },
+        path: 'updateType',
+        component: UpdateMeasurementTypeComponent
+    }
 ];
 
 @NgModule({

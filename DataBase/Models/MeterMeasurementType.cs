@@ -1,8 +1,11 @@
 using System.Collections.Generic;
+
 namespace MAS.Payments.DataBase
 {
     public class MeterMeasurementType : Entity
     {
+        public string SystemName { get; set; }
+
         public string Name { get; set; }
 
         public string Description { get; set; }

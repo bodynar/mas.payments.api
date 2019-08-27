@@ -59,6 +59,7 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(paymentTypes => this.paymentTypes$.next([{
                 name: '',
+                systemName: '',
             }, ...paymentTypes]));
     }
 

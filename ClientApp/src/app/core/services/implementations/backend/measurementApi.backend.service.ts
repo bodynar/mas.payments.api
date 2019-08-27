@@ -58,6 +58,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                     ({
                         id: response['id'],
                         name: response['name'],
+                        systemName: response['systemName'],
                         description: response['description'],
                         paymentTypeId: response['paymentTypeId'],
                         paymentTypeName: response['paymentTypeName'],
@@ -98,6 +99,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                     response.map(measurementType => ({
                         id: measurementType['id'],
                         name: measurementType['name'],
+                        systemName: measurementType['systemName'],
                         description: measurementType['description'],
                         paymentTypeId: measurementType['paymentTypeId'],
                         paymentTypeName: measurementType['paymentTypeName']

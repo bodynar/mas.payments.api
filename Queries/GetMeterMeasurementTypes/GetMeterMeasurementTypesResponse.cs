@@ -3,6 +3,8 @@ namespace MAS.Payments.Queries
     public class GetMeterMeasurementTypesResponse
     {
         public long Id { get; set; }
+
+        public string SystemName { get; set; }
         
         public string Name { get; set; }
 

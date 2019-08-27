@@ -106,7 +106,10 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .getMeasurementTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(measurementTypes => this.measurementTypes$.next([
-                { name: '' }, ...measurementTypes
+                {
+                    name: '',
+                    systemName: '',
+                }, ...measurementTypes
             ]));
     }
 
@@ -140,7 +143,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     }
 
     public clearFilters(): void {
-        this.filters = { };
+        this.filters = {};
 
         this.applyFilters();
     }

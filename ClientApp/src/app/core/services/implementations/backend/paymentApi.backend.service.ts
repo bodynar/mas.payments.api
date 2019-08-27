@@ -58,6 +58,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     ({
                         id: response['id'],
                         name: response['name'],
+                        systemName: response['systemName'],
                         description: response['description'],
                         company: response['company'],
                     }) as PaymentTypeResponse),
@@ -97,6 +98,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     response.map(paymentType => ({
                         id: paymentType['id'],
                         name: paymentType['name'],
+                        systemName: response['systemName'],
                         description: paymentType['description'],
                         company: paymentType['company']
                     }) as PaymentTypeResponse)),

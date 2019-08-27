@@ -74,6 +74,7 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(measurementTypes => this.measurementTypes$.next([{
                 name: '',
+                systemName: '',
             }, ...measurementTypes]));
     }
 

@@ -59,7 +59,8 @@ class AddPaymentComponent implements OnInit, OnDestroy {
             .getPaymentTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(paymentTypes => this.paymentTypes$.next([{
-                name: ''
+                name: '',
+                systemName: '',
             }, ...paymentTypes]));
     }
 

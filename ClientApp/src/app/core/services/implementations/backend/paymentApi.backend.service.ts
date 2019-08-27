@@ -58,9 +58,9 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     ({
                         id: response['id'],
                         name: response['name'],
+                        company: response['company'],
                         systemName: response['systemName'],
                         description: response['description'],
-                        company: response['company'],
                     }) as PaymentTypeResponse),
                 catchError(error => of(error))
             );

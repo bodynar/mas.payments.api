@@ -1,3 +1,4 @@
+using System;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure.Query;
@@ -9,16 +10,17 @@ namespace MAS.Payments.Infrastructure.Command
     {
         protected IResolver Resolver { get; }
 
-        private IQueryProcessor _queryProcessor;
+        private Lazy<IQueryProcessor> _queryProcessor
+            => new Lazy<IQueryProcessor>(() => Resolver.Resolve<IQueryProcessor>());
 
         protected IQueryProcessor QueryProcessor
-            => _queryProcessor ?? Resolver.Resolve<IQueryProcessor>();
+            => _queryProcessor.Value;
 
-
-        private ICommandProcessor _commandProcessor;
+        private Lazy<ICommandProcessor> _commandProcessor
+            => new Lazy<ICommandProcessor>(() => Resolver.Resolve<ICommandProcessor>());
 
         protected ICommandProcessor CommandProcessor
-            => _commandProcessor ?? Resolver.Resolve<ICommandProcessor>();
+            => _commandProcessor.Value;
 
         public BaseCommandHandler(
             IResolver resolver

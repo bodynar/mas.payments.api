@@ -20,7 +20,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetStatisticsResponse> GetStatistics([FromQuery]GetStatisticsRequest request)
+        public GetStatisticsResponse GetStatistics([FromQuery]GetStatisticsRequest request)
         {
             GetStatisticsQuery query = null;
 

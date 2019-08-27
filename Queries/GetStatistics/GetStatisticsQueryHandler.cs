@@ -4,12 +4,13 @@ using System.Linq;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
+using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Queries
 {
-    internal class GetStatisticsQueryHandler : BaseQueryHandler<GetStatisticsQuery, IEnumerable<GetStatisticsResponse>>
+    internal class GetStatisticsQueryHandler : BaseQueryHandler<GetStatisticsQuery, GetStatisticsResponse>
     {
         private IRepository<Payment> PaymentRepository { get; }
 
@@ -23,7 +24,7 @@ namespace MAS.Payments.Queries
             MeterMeasurementRepository = GetRepository<MeterMeasurement>();
         }
 
-        public override IEnumerable<GetStatisticsResponse> Handle(GetStatisticsQuery query)
+        public override GetStatisticsResponse Handle(GetStatisticsQuery query)
         {
             Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
 
@@ -36,11 +37,14 @@ namespace MAS.Payments.Queries
                 filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
 
-            return PaymentRepository
+            var response = new GetStatisticsResponse();
+
+            response.Items =
+                PaymentRepository
                     .Where(filter)
                     .ToList()
                     .GroupBy(x => x.PaymentType)
-                    .Select(x => new GetStatisticsResponse
+                    .Select(x => new StatisticsItem
                     {
                         PaymentTypeId = x.Key.Id,
                         PaymentTypeName = x.Key.Name,
@@ -60,12 +64,29 @@ namespace MAS.Payments.Queries
                                       {
                                           Name = m.MeasurementType.Name,
                                           Measurement = m.Measurement,
+                                          Date = m.Date
                                       })
                                       .ToList()
                                     : new List<GetStatisticsMeasurements>()
                             })
                     })
                     .ToList();
+
+            if (query.IncludeMeasurements)
+            {
+                var measurementDates =
+                    response.Items
+                    .SelectMany(x => x.Payments.SelectMany(y => y.Measurements.Select(z => z.Date)))
+                    .Select(x => x.Date)
+                    .DistinctBy(x => new { x.Month, x.Year })
+                    .OrderBy(x => x.Year)
+                    .ThenBy(x => x.Month);
+
+                response.Dates.AddRange(measurementDates);
+
+            }
+
+            return response;
         }
 
         private IQueryable<MeterMeasurement> GetMeasurements(long paymentTypeId, int? year, DateTime? from, DateTime? to)

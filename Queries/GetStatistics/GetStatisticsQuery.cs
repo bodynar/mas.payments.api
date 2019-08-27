@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    public class GetStatisticsQuery : IQuery<IEnumerable<GetStatisticsResponse>>
+    public class GetStatisticsQuery : IQuery<GetStatisticsResponse>
     {
         public bool IncludeMeasurements { get; }
 

@@ -8,6 +8,8 @@ namespace MAS.Payments.Queries
         public string Name { get; set; }
 
         public double Measurement { get; set; }
+
+        public DateTime Date { get; set; }
     }
 
     public class GetStatisticsPayment
@@ -26,12 +28,24 @@ namespace MAS.Payments.Queries
         }
     }
 
-    public class GetStatisticsResponse
+    public class StatisticsItem
     {
         public string PaymentTypeName { get; set; }
 
         public long PaymentTypeId { get; set; }
 
         public IEnumerable<GetStatisticsPayment> Payments { get; set; }
+    }
+
+    public class GetStatisticsResponse
+    {
+        public List<DateTime> Dates { get; set; }
+
+        public List<StatisticsItem> Items { get; set; }
+
+        public GetStatisticsResponse()
+        {
+            Dates = new List<DateTime>();
+        }
     }
 }

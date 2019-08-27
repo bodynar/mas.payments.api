@@ -15,7 +15,13 @@ interface PaymentStatsResponse {
     payments: Array<PaymentStatsPayment>;
 }
 
+interface GetPaymentStatsResponse {
+    dates?: Array<Date>;
+    items: Array<PaymentStatsResponse>;
+}
+
 export {
     PaymentStatsResponse,
-    PaymentStatsMeasurementsResponse
+    PaymentStatsMeasurementsResponse,
+    GetPaymentStatsResponse
 };

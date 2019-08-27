@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { switchMap, takeUntil } from 'rxjs/operators';
 
 import { IStatisticsService } from 'services/IStatisticsService';
 
@@ -34,10 +34,9 @@ class StatsComponent implements OnDestroy {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                // filter(x => x.valid),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
             )
-            .subscribe(stats => this.stats$.next(stats));
+            .subscribe(stats => this.stats$.next(stats.items));
     }
 
     public ngOnDestroy(): void {

@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 
-import { PaymentStatsResponse } from 'models/response/paymentStatsResponse';
+import { GetPaymentStatsResponse } from 'models/response/paymentStatsResponse';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
 
@@ -23,7 +23,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
     ) {
     }
 
-    public getPaymentStatistics(filter?: StatisticsFilter): Observable<Array<PaymentStatsResponse>> {
+    public getPaymentStatistics(filter?: StatisticsFilter): Observable<GetPaymentStatsResponse> {
         let params: HttpParams =
             new HttpParams().set('includeMeasurements', `${filter.includeMeasurements}`);
 
@@ -46,12 +46,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         return this.http
             .get(`${this.apiPrefix}/getStatistics`, { headers, params })
             .pipe(
-                map((response: Array<any>) =>
-                    response.map(payment => ({
-                        paymentTypeName: payment['paymentTypeName'],
-                        paymentTypeId: payment['paymentTypeId'],
-                        payments: payment['payments']
-                    }) as PaymentStatsResponse)),
+                map((response: any) =>
+                    ({
+                        dates: response['dates'],
+                        items: response['items']
+                    }) as GetPaymentStatsResponse),
                 catchError(error => of(error))
             );
     }

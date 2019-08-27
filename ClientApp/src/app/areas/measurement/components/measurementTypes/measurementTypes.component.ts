@@ -5,6 +5,7 @@ import { filter, switchMap, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
+import { IRouterService } from 'services/IRouterService';
 
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
@@ -16,7 +17,10 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
-    private whenDeleteCalled$: Subject<number> =
+    private whenTypeDelete$: Subject<number> =
+        new Subject();
+
+    private whenTypeEdit$: Subject<number> =
         new Subject();
 
     private whenComponentDestroy$: Subject<null> =
@@ -25,8 +29,9 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
+        private routerService: IRouterService,
     ) {
-        this.whenDeleteCalled$
+        this.whenTypeDelete$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
@@ -40,6 +45,16 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                 switchMapTo(this.measurementService.getMeasurementTypes()),
             )
             .subscribe(measurementTypes => this.measurementTypes$.next(measurementTypes));
+
+        this.whenTypeEdit$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0),
+            )
+            .subscribe(id => this.routerService.navigateArea(
+                ['updateType'],
+                { queryParams: { 'id': id } }
+            ));
     }
 
     public ngOnInit(): void {
@@ -54,8 +69,31 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
         this.whenComponentDestroy$.complete();
     }
 
-    public onDeleteClick(item: MeasurementTypeResponse): void {
-        this.whenDeleteCalled$.next(item.id);
+    public onDeleteClick(typeId: number): void {
+        this.whenTypeDelete$.next(typeId);
+    }
+
+    public onEditClick(typeId: number): void {
+        this.whenTypeEdit$.next(typeId);
+    }
+
+    public onAddClick(): void {
+        this.routerService.navigateArea(['addType']);
+    }
+
+    public getPaymentTypeClass(paymentTypeName: string): string {
+        // todo: remove method and update model
+
+        switch (paymentTypeName.toLowerCase()) {
+            case 'жкх':
+                return 'house';
+            case 'электричество':
+                return 'electricity';
+            case 'интернет':
+                return 'internet';
+            default:
+                return '';
+        }
     }
 }
 

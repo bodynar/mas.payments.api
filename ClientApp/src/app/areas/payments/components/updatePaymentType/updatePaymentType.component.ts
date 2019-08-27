@@ -5,12 +5,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
-import { isNullOrUndefined } from 'util';
 
 @Component({
     templateUrl: 'updatePaymentType.template.pug'

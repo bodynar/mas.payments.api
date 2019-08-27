@@ -7,6 +7,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import { IRouterService } from 'services/IRouterService';
 
 @Component({
     templateUrl: 'paymentTypes.template.pug',
@@ -16,7 +17,10 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
-    private whenDeleteCalled$: Subject<number> =
+    private whenTypeDelete$: Subject<number> =
+        new Subject();
+
+    private whenTypeEdit$: Subject<number> =
         new Subject();
 
     private whenComponentDestroy$: Subject<null> =
@@ -25,8 +29,9 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
+        private routerService: IRouterService,
     ) {
-        this.whenDeleteCalled$
+        this.whenTypeDelete$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
@@ -40,6 +45,16 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                 switchMapTo(this.paymentService.getPaymentTypes()),
             )
             .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+
+        this.whenTypeEdit$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0),
+            )
+            .subscribe(id => this.routerService.navigateArea(
+                ['updateType'],
+                { queryParams: { 'id': id } }
+            ));
     }
 
     public ngOnInit(): void {
@@ -54,8 +69,16 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
         this.whenComponentDestroy$.complete();
     }
 
-    public onDeleteClick(item: PaymentTypeResponse): void {
-        this.whenDeleteCalled$.next(item.id);
+    public onDeleteClick(typeId: number): void {
+        this.whenTypeDelete$.next(typeId);
+    }
+
+    public onEditClick(typeId: number): void {
+        this.whenTypeEdit$.next(typeId);
+    }
+
+    public onAddClick(): void {
+        this.routerService.navigateArea(['addType']);
     }
 }
 

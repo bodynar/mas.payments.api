@@ -22,7 +22,7 @@ form.needs-validation(
             type='text',
             placeholder='Enter payment type name',
             name='company',
-            [(ngModel)]='addPaymentTypeRequest.company',
+            [(ngModel)]='paymentTypeRequest.company',
             #name='ngModel'
         )
         
@@ -31,7 +31,7 @@ form.needs-validation(
         textarea.form-control.m-form-control.form-control-sm#description(
             placeholder='Enter description',
             name='description',
-            [(ngModel)]='addPaymentTypeRequest.description',
+            [(ngModel)]='paymentTypeRequest.description',
             #name='ngModel'
         )
     

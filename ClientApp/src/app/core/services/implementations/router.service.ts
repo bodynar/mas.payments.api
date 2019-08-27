@@ -100,6 +100,14 @@ class RouterService implements IRouterService {
             .then().catch();
     }
 
+    public navigateArea(path: Array<string>, extras?: any): void {
+        const areaName: string =
+            this.getAreaName();
+
+        this.navigate(['app', areaName, ...path], extras);
+    }
+
+
     private getRouteParams(): Array<string> {
         return this.router.url
             .split('/')

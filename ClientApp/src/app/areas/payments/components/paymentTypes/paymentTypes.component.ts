@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -43,6 +43,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                     return !hasError;
                 }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
+                tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
             .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
 

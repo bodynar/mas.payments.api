@@ -80,6 +80,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     return !hasError;
                 }),
                 switchMapTo(this.measurementService.getMeasurements(this.filters)),
+                tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
             .subscribe(measurements => this.measurements$.next(measurements));
 

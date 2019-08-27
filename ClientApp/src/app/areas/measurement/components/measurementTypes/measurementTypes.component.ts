@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -43,6 +43,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                     return !hasError;
                 }),
                 switchMapTo(this.measurementService.getMeasurementTypes()),
+                tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
             .subscribe(measurementTypes => this.measurementTypes$.next(measurementTypes));
 

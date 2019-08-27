@@ -82,6 +82,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
                     return !hasError;
                 }),
                 switchMapTo(this.paymentService.getPayments(this.filters)),
+                tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
             .subscribe(payments => this.payments$.next(payments));
 

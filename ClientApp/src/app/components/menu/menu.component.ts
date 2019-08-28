@@ -74,9 +74,16 @@ class MenuComponent implements OnInit, OnDestroy {
             return;
         }
 
+        let clickedMenuItem: string =
+            menuItemName;
+
+        if (!menuItemName.startsWith('app/')) {
+            clickedMenuItem = `app/${menuItemName}`;
+        }
+
         const menuItem: MenuItem =
             this.menuItems
-                .filter(item => item.link === menuItemName)
+                .filter(item => item.link === clickedMenuItem)
                 .pop();
 
         if (!isNullOrUndefined(menuItem)) {

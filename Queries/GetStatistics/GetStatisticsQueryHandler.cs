@@ -66,11 +66,16 @@ namespace MAS.Payments.Queries
                                 Measurements =
                                     query.IncludeMeasurements
                                     ? GetMeasurements(x.Key.Id, query.Year, query.From, query.To)
+                                      .GroupBy(m => m.Date.Date)
                                       .Select(m => new GetStatisticsMeasurements
                                       {
-                                          Name = m.MeasurementType.Name,
-                                          Measurement = m.Measurement,
-                                          Date = m.Date
+                                          Date = m.Key,
+                                          Measurements = m.Select(g => new GetStatisticsMeasurement
+                                          {
+                                              Name = g.MeasurementType.Name,
+                                              Measurement = g.Measurement,
+                                              SystemName = g.MeasurementType.SystemName
+                                          }).ToList()
                                       })
                                       .ToList()
                                     : new List<GetStatisticsMeasurements>()
@@ -149,6 +154,8 @@ namespace MAS.Payments.Queries
             return items
                     .SelectMany(x => x.Payments.SelectMany(y => y.Measurements.Select(z => z.Date)))
                     .Distinct(DatesComparator)
+                    .OrderBy(x => x.Year)
+                    .ThenBy(x => x.Month)
                     ;
         }
     }

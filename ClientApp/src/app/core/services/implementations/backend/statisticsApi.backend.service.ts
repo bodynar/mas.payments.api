@@ -11,7 +11,6 @@ import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.ba
 import { GetPaymentStatsResponse } from 'models/response/paymentStatsResponse';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
-
 @Injectable()
 class StatisticsApiBackendService implements IStatisticsApiBackendService {
 

@@ -3,11 +3,18 @@ using System;
 
 namespace MAS.Payments.Queries
 {
-    public class GetStatisticsMeasurements
+    public class GetStatisticsMeasurement
     {
         public string Name { get; set; }
 
+        public string SystemName { get; set; }
+
         public double Measurement { get; set; }
+    }
+
+    public class GetStatisticsMeasurements
+    {
+        public List<GetStatisticsMeasurement> Measurements { get; set; }
 
         public DateTime Date { get; set; }
     }

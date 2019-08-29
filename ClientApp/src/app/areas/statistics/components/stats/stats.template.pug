@@ -5,10 +5,15 @@ button.btn.btn-outline-primary(
     (click)='onFormSubmit()'
 ) Display
 
-.stats-container
-    ul
+.table
+    ul.row
+        li 
+        li(*ngFor='let date of (dates$ | async)') {{ date | date:'MMMM|yyyy' }}
+    ul.payments
         li(*ngFor='let statsItem of (stats$ | async)') {{ statsItem.paymentTypeName }}
-            ul.stats-list
-                li(*ngFor='let paymentItem of statsItem.payments') [{{ paymentItem.date }}] {{ paymentItem.amount }}
-                    ul.stats-list
-                        li(*ngFor='let measurementItem of paymentItem.measurements') {{ measurementItem.name }}:{{ measurementItem.measurement }}
+            ul
+                li(*ngFor='let paymentItem of statsItem.payments') {{ paymentItem.name }}
+                    ul.row
+                        li(*ngFor='let measurementItem of paymentItem.measurements') {{  measurementItem.date | date:'MMMM|yyyy' }}
+                            ul.measurements
+                                li(*ngFor='let value of measurementItem.measurements') {{ value.systemName }} - {{ value.measurement }}

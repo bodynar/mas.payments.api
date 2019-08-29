@@ -4,6 +4,8 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import { PaymentStatsResponse } from 'models/response/paymentStatsResponse';
@@ -22,6 +24,9 @@ class StatsComponent implements OnDestroy {
     public stats$: Subject<Array<PaymentStatsResponse>> =
         new ReplaySubject(1);
 
+    public dates$: Subject<Array<Date>> =
+        new ReplaySubject(1);
+
     private whenSubmitForm$: Subject<NgForm> =
         new Subject();
 
@@ -36,7 +41,13 @@ class StatsComponent implements OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
             )
-            .subscribe(stats => this.stats$.next(stats.items));
+            .subscribe(stats => {
+                this.stats$.next(stats.items);
+
+                if (this.statisticsFilter.includeMeasurements && !isNullOrUndefined(stats.dates)) {
+                    this.dates$.next(stats.dates);
+                }
+            });
     }
 
     public ngOnDestroy(): void {

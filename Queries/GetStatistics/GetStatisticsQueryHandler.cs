@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.Comparators;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Infrastructure.Specification;
 
@@ -15,6 +15,12 @@ namespace MAS.Payments.Queries
         private IRepository<Payment> PaymentRepository { get; }
 
         private IRepository<MeterMeasurement> MeterMeasurementRepository { get; }
+
+        private IEqualityComparer<DateTime> DatesComparator
+            => _datesComparator.Value;
+
+        private Lazy<IEqualityComparer<DateTime>> _datesComparator
+            => new Lazy<IEqualityComparer<DateTime>>(() => new DatesComparator());
 
         public GetStatisticsQueryHandler(
             IResolver resolver
@@ -74,16 +80,7 @@ namespace MAS.Payments.Queries
 
             if (query.IncludeMeasurements)
             {
-                var measurementDates =
-                    response.Items
-                    .SelectMany(x => x.Payments.SelectMany(y => y.Measurements.Select(z => z.Date)))
-                    .Select(x => x.Date)
-                    .DistinctBy(x => new { x.Month, x.Year })
-                    .OrderBy(x => x.Year)
-                    .ThenBy(x => x.Month);
-
-                response.Dates.AddRange(measurementDates);
-
+                PopulateMeasurementData(response);
             }
 
             return response;
@@ -110,6 +107,49 @@ namespace MAS.Payments.Queries
             }
 
             return MeterMeasurementRepository.Where(filter);
+        }
+
+        private void PopulateMeasurementData(GetStatisticsResponse response)
+        {
+            var measurementDates =
+                GetAllDates(response.Items);
+
+            response.Dates.AddRange(measurementDates);
+
+            var dates =
+                response.Items
+                .SelectMany(x => x.Payments.SelectMany(y => y.Measurements));
+
+            foreach (var statsItem in response.Items)
+            {
+                foreach (var paymentItem in statsItem.Payments)
+                {
+                    var notIntersectDates =
+                        measurementDates
+                        .Except(paymentItem.Measurements.Select(x => x.Date))
+                        .Select(x => new GetStatisticsMeasurements
+                        {
+                            Date = x
+                        });
+
+                    var allDates =
+                        paymentItem.Measurements
+                            .Union(notIntersectDates)
+                            .OrderBy(x => x.Date.Year)
+                            .ThenBy(x => x.Date.Month);
+
+                    paymentItem.Measurements.Clear();
+                    paymentItem.Measurements.AddRange(allDates);
+                }
+            }
+        }
+
+        private IEnumerable<DateTime> GetAllDates(IEnumerable<StatisticsItem> items)
+        {
+            return items
+                    .SelectMany(x => x.Payments.SelectMany(y => y.Measurements.Select(z => z.Date)))
+                    .Distinct(DatesComparator)
+                    ;
         }
     }
 }

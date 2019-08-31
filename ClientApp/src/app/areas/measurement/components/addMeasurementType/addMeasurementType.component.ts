@@ -50,7 +50,7 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                     return withoutError;
                 })
             )
-            .subscribe(_ => this.routerService.navigateUp());
+            .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
     public ngOnInit(): void {

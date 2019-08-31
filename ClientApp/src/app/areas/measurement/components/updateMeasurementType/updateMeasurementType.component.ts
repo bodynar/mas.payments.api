@@ -5,6 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -12,7 +14,6 @@ import { IRouterService } from 'services/IRouterService';
 
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
-import { isNullOrUndefined } from 'util';
 
 @Component({
     templateUrl: 'updateMeasurementType.template.pug'
@@ -66,7 +67,7 @@ class UpdateMeasurementTypeComponent implements OnInit, OnDestroy {
                     return withoutError;
                 })
             )
-            .subscribe(_ => this.routerService.navigateUp());
+            .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
     public ngOnInit(): void {

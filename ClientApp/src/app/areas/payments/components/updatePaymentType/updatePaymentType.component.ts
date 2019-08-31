@@ -60,7 +60,7 @@ class UpdatePaymentTypeComponent implements OnDestroy {
                     return withoutError;
                 })
             )
-            .subscribe(_ => this.routerService.navigateUp());
+            .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
     public ngOnDestroy(): void {

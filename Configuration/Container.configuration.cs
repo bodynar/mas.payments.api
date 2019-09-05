@@ -2,6 +2,7 @@ using System;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
+using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Notifications;
 using SimpleInjector;
@@ -37,6 +38,8 @@ namespace MAS.Payments.Configuration
             container.Register(typeof(INotificationProcessor), typeof(NotificationProcessor), Lifestyle.Singleton);
             container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
             container.Register(typeof(IRepository<>), typeof(Repository<>));
+            container.Register<IMailSender, MailSender>();
+            container.Register<ISmtpClientFactory, SmtpClientFactory>();
         }
     }
 }

@@ -40,9 +40,7 @@ namespace MAS.Payments.Configuration
             
             services.AddOptions();
             services.Configure<SmtpSettings>(configuration.GetSection("SmtpSettings"));
-            services.AddSingleton<ISmtpClientFactory, SmtpClientFactory>();
-            services.AddSingleton<IMailSender, MailSender>();
-            
+
             #endregion
         }
     }

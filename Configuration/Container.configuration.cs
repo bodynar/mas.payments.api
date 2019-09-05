@@ -40,6 +40,7 @@ namespace MAS.Payments.Configuration
             container.Register(typeof(IRepository<>), typeof(Repository<>));
             container.Register<IMailSender, MailSender>();
             container.Register<ISmtpClientFactory, SmtpClientFactory>();
+            container.Register<IMailBuilder, MailBuilder>();
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net.Mail;
 using System.Threading.Tasks;
 
@@ -7,7 +8,9 @@ namespace MAS.Payments.Infrastructure.MailMessaging
     {
         private ISmtpClientFactory Factory { get; }
 
-        public MailSender(ISmtpClientFactory factory)
+        public MailSender(
+            ISmtpClientFactory factory
+        )
         {
             Factory = factory;
         }

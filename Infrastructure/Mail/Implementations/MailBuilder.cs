@@ -7,34 +7,29 @@ using Microsoft.Extensions.Options;
 
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
-    public class MailBuilder : IMailBuilder
+    public class MailBuilder<TMailMessage> : IMailMessageBuilder<TMailMessage>
+        where TMailMessage : IMailMessage
     {
-        private string From { get; }
+        protected SmtpSettings SmtpSettings { get; }
 
-        private string FolderPath { get; }
+        protected IHostingEnvironment HostingEnvironment { get; }
+
+        protected IResolver Resolver { get; }
+
+        protected string From { get; }
+
+        protected string FolderPath { get; }
 
         public MailBuilder(
-            IOptions<SmtpSettings> smtpSettings,
-            IHostingEnvironment hostingEnvironment
+            IResolver resolver
         )
         {
-            From = smtpSettings.Value.From;
-            FolderPath = $"{hostingEnvironment.WebRootPath}/mailTemplates";
-        }
+            Resolver = resolver;
+            SmtpSettings = resolver.Resolve<IOptions<SmtpSettings>>().Value;
+            HostingEnvironment = resolver.Resolve<IHostingEnvironment>();
 
-        public MailMessage FormTestMailMessage(string to)
-        {
-            var messageText = GetMessageTemplate("Test");
-            var body = GetMessageWrapper(messageText);
-
-            var message = new MailMessage(From, to)
-            {
-                Body = body,
-                Subject = "Test mail message",
-                IsBodyHtml = true
-            };
-
-            return message;
+            From = SmtpSettings.From;
+            FolderPath = $"{HostingEnvironment.WebRootPath}/mailTemplates";
         }
 
         private string GetMessageWrapper(string messageContent)
@@ -60,6 +55,8 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
             if (model != null)
             {
+                // решить вопрос с моделью и объявлению в IMailMessage
+                // для чтения данных оттуда
                 messageTemplate = InsertModelData(messageTemplate, model);
             }
 
@@ -94,6 +91,20 @@ namespace MAS.Payments.Infrastructure.MailMessaging
             }
 
             return messageTemplate;
+        }
+
+        public MailMessage Build(TMailMessage mailMessage)
+        {
+            var messageText = GetMessageTemplate(mailMessage.TemplateName);
+            var body = GetMessageWrapper(messageText);
+
+            return
+                new MailMessage(From, mailMessage.Reciepent)
+                {
+                    Body = body,
+                    Subject = mailMessage.Subject,
+                    IsBodyHtml = true
+                };
         }
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using MAS.Payments.Infrastructure.MailMessaging;
 
 namespace MAS.Payments.MailMessages
@@ -14,7 +15,7 @@ namespace MAS.Payments.MailMessages
 
         public TestMailMessage(string reciepent)
         {
-            Reciepent = reciepent;
+            Reciepent = reciepent ?? throw new ArgumentException(nameof(reciepent));
         }
     }
 }

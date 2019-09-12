@@ -40,10 +40,16 @@ namespace MAS.Payments.Controllers
                     });
         }
 
-        [HttpGet("[action]")]
-        public void TestMailMessage(string recipient)
+        [HttpPost("[action]")]
+        public void TestMailMessage(string reciepent)
         {
-            MailProcessor.Send(new TestMailMessage(recipient));
+            MailProcessor.Send(new TestMailMessage(reciepent));
+        }
+
+        [HttpPost("[action]")]
+        public void TestMailWithModelMessage(string reciepent, int counter, string name)
+        {
+            MailProcessor.Send(new TestMailMessageWithModel(reciepent, counter, name));
         }
     }
 }

@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
 using MAS.Payments.Notifications;
 using Microsoft.AspNetCore.Mvc;
@@ -14,27 +14,21 @@ namespace MAS.Payments.Controllers
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {
-        public IMailSender MailSender { get; }
-
-        public IMailBuilder MailBuilder { get; }
+        public IMailProcessor MailProcessor { get; }
 
         public UserApiController(
             ICommandProcessor commandProcessor,
             IQueryProcessor queryProcessor,
             INotificationProcessor notificationProcessor,
-            IMailSender mailSender,
-            IMailBuilder mailBuilder
+            IMailProcessor mailProcessor
         ) : base(commandProcessor, queryProcessor, notificationProcessor)
         {
-            MailSender = mailSender;
-            MailBuilder = mailBuilder;
+            MailProcessor = mailProcessor;
         }
 
         [HttpGet("[action]")]
         public IEnumerable<GetNotificationsResponse> GetNotifications()
         {
-            TestMailMessage();
-
             return
                 NotificationProcessor
                     .GetNotifications()
@@ -46,10 +40,10 @@ namespace MAS.Payments.Controllers
                     });
         }
 
-        [HttpPost("[action]")]
-        public Task TestMailMessage()
+        [HttpGet("[action]")]
+        public void TestMailMessage(string recipient)
         {
-            return MailSender.SendMailAsync(MailBuilder.FormTestMailMessage("bodynar@gmail.com"));
+            MailProcessor.Send(new TestMailMessage(recipient));
         }
     }
 }

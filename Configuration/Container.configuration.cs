@@ -16,13 +16,11 @@ namespace MAS.Payments.Configuration
         //// </para>
         public static void Configure(this Container container)
         {
+            #region CQRS
+
             container.Register(
                 typeof(IQueryHandler<,>),
                 typeof(IQueryHandler<,>).Assembly);
-
-            // container.Register(
-            //     typeof(INotificator),
-            //     typeof(INotificator).Assembly);
 
             container.Register(
                 typeof(ICommandHandler<>),
@@ -32,15 +30,38 @@ namespace MAS.Payments.Configuration
                 typeof(ICommandHandler<>),
                 typeof(TransactionCommandHandlerDecorator<>));
 
-            container.Register(typeof(IResolver), typeof(Resolver), Lifestyle.Singleton);
             container.Register(typeof(IQueryProcessor), typeof(QueryProcessor), Lifestyle.Singleton);
             container.Register(typeof(ICommandProcessor), typeof(CommandProcessor), Lifestyle.Singleton);
-            container.Register(typeof(INotificationProcessor), typeof(NotificationProcessor), Lifestyle.Singleton);
+
+            #endregion
+
+            #region Database
+
             container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
             container.Register(typeof(IRepository<>), typeof(Repository<>));
+
+            #endregion
+
+            #region Notifications
+
+            container.Register(typeof(INotificationProcessor), typeof(NotificationProcessor), Lifestyle.Singleton);
+
+            // container.Register(
+            //     typeof(INotificator),
+            //     typeof(INotificator).Assembly);
+
+            #endregion
+
+            container.Register(typeof(IResolver), typeof(Resolver), Lifestyle.Singleton);
+
+            #region Mail services
+
+            container.Register(typeof(IMailMessageBuilder<>), typeof(MailBuilder<>));
+            container.Register<IMailProcessor, MailProcessor>();
             container.Register<IMailSender, MailSender>();
             container.Register<ISmtpClientFactory, SmtpClientFactory>();
-            container.Register<IMailBuilder, MailBuilder>();
+
+            #endregion
         }
     }
 }

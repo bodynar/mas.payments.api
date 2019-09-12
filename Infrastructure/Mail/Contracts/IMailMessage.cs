@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
     public interface IMailMessage
@@ -9,5 +7,10 @@ namespace MAS.Payments.Infrastructure.MailMessaging
         string TemplateName { get; }
 
         string Subject { get; }
+    }
+
+    public interface IMailMessage<TModel> : IMailMessage
+    {
+        TModel Model { get; }
     }
 }

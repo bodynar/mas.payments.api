@@ -55,8 +55,6 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
             if (model != null)
             {
-                // решить вопрос с моделью и объявлению в IMailMessage
-                // для чтения данных оттуда
                 messageTemplate = InsertModelData(messageTemplate, model);
             }
 
@@ -86,16 +84,16 @@ namespace MAS.Payments.Infrastructure.MailMessaging
             {
                 if (messageTemplate.Contains($"{{ {property.Name} }}"))
                 {
-                    messageTemplate = messageTemplate.Replace($"{{ {property.Name} }}", property.GetValue(model).ToString());
+                    messageTemplate = messageTemplate.Replace("{{ " + property.Name + " }}", property.GetValue(model).ToString());
                 }
             }
 
             return messageTemplate;
         }
 
-        public MailMessage Build(TMailMessage mailMessage)
+        public MailMessage Build(TMailMessage mailMessage, object model = null)
         {
-            var messageText = GetMessageTemplate(mailMessage.TemplateName);
+            var messageText = GetMessageTemplate(mailMessage.TemplateName, model);
             var body = GetMessageWrapper(messageText);
 
             return

@@ -19,8 +19,25 @@ namespace MAS.Payments.Infrastructure.MailMessaging
             mailSender = new Lazy<IMailSender>(() => Resolver.Resolve<IMailSender>());
         }
 
-        public async void Send<TMailMessage>(TMailMessage message)
-            where TMailMessage : IMailMessage
+        public async void Send(IMailMessage message)
+        {
+            dynamic builder = GetMailBuilder(message);
+
+            var builtMessage = builder.Build((dynamic)message);
+
+            await MailSender.SendMailAsync(builtMessage);
+        }
+
+        public async void Send<TModel>(IMailMessage<TModel> message)
+        {
+            dynamic builder = GetMailBuilder(message);
+
+            var builtMessage = builder.Build((dynamic)message, message.Model);
+
+            await MailSender.SendMailAsync(builtMessage);
+        }
+
+        private object GetMailBuilder<TMailMessage>(TMailMessage message)
         {
             if (message == null)
             {
@@ -29,11 +46,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
             var handlerType = typeof(MailBuilder<>).MakeGenericType(message.GetType());
 
-            dynamic handler = Resolver.GetInstance(handlerType);
-
-            var builtMessage = handler.Build((dynamic)message);
-
-            await MailSender.SendMailAsync(builtMessage);
+            return Resolver.GetInstance(handlerType);
         }
     }
 }

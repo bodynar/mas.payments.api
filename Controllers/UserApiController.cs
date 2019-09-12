@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.MailMessaging;
-using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Infrastructure;
 using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
 using MAS.Payments.Notifications;
@@ -14,16 +12,10 @@ namespace MAS.Payments.Controllers
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {
-        public IMailProcessor MailProcessor { get; }
-
         public UserApiController(
-            ICommandProcessor commandProcessor,
-            IQueryProcessor queryProcessor,
-            INotificationProcessor notificationProcessor,
-            IMailProcessor mailProcessor
-        ) : base(commandProcessor, queryProcessor, notificationProcessor)
+            IResolver resolver
+        ) : base(resolver)
         {
-            MailProcessor = mailProcessor;
         }
 
         [HttpGet("[action]")]

@@ -1,4 +1,7 @@
+using System;
+using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
+using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Notifications;
 using Microsoft.AspNetCore.Mvc;
@@ -10,21 +13,42 @@ namespace MAS.Payments.Controllers
     [Consumes("application/json")]
     public abstract class BaseApiController : Controller
     {
-        protected ICommandProcessor CommandProcessor { get; }
+        #region Private fields
 
-        protected IQueryProcessor QueryProcessor { get; }
+        private Lazy<ICommandProcessor> commandProcessor;
 
-        protected INotificationProcessor NotificationProcessor { get; }
+        private Lazy<IQueryProcessor> queryProcessor;
+
+        private Lazy<INotificationProcessor> notificationProcessor;
+
+        private Lazy<IMailProcessor> mailProcessor;
+
+        #endregion
+
+        protected IResolver Resolver { get; }
+
+        protected ICommandProcessor CommandProcessor
+            => commandProcessor.Value;
+
+        protected IQueryProcessor QueryProcessor
+            => queryProcessor.Value;
+
+        protected INotificationProcessor NotificationProcessor
+            => notificationProcessor.Value;
+
+        protected IMailProcessor MailProcessor
+            => mailProcessor.Value;
 
         public BaseApiController(
-            ICommandProcessor commandProcessor,
-            IQueryProcessor queryProcessor,
-            INotificationProcessor notificationProcessor
+            IResolver resolver
         )
         {
-            CommandProcessor = commandProcessor;
-            QueryProcessor = queryProcessor;
-            NotificationProcessor = notificationProcessor;
+            Resolver = resolver;
+
+            commandProcessor = new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>());
+            queryProcessor = new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>());
+            notificationProcessor = new Lazy<INotificationProcessor>(Resolver.Resolve<INotificationProcessor>());
+            mailProcessor = new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>());
         }
     }
 }

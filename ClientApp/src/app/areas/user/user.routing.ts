@@ -7,11 +7,11 @@ import { UserCardComponent } from './components/userCard/userCard.component';
 const routes: Routes = [
     {
         path: '',
-        component: UserCardComponent
+        component: TestMailMessageComponent
     },
     {
         path: 'mailTest',
-        component: TestMailMessageComponent
+        component: UserCardComponent
     }
 ];
 

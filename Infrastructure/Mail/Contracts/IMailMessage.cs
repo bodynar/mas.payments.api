@@ -2,7 +2,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 {
     public interface IMailMessage
     {
-        string Reciepent { get; }
+        string Recipient { get; }
 
         string TemplateName { get; }
 

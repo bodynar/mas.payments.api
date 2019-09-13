@@ -97,7 +97,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
             var body = GetMessageWrapper(messageText);
 
             return
-                new MailMessage(From, mailMessage.Reciepent)
+                new MailMessage(From, mailMessage.Recipient)
                 {
                     Body = body,
                     Subject = mailMessage.Subject,

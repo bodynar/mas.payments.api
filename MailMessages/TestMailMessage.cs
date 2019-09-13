@@ -8,14 +8,14 @@ namespace MAS.Payments.MailMessages
         public string TemplateName
             => "Test";
 
-        public string Reciepent { get; }
+        public string Recipient { get; }
 
         public string Subject
             => "Test mail message";
 
-        public TestMailMessage(string reciepent)
+        public TestMailMessage(string recipient)
         {
-            Reciepent = reciepent ?? throw new ArgumentException(nameof(reciepent));
+            Recipient = recipient ?? throw new ArgumentException(nameof(recipient));
         }
     }
 }

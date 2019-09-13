@@ -33,15 +33,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void TestMailMessage(string reciepent)
+        public void TestMailMessage(string recipient)
         {
-            MailProcessor.Send(new TestMailMessage(reciepent));
+            MailProcessor.Send(new TestMailMessage(recipient));
         }
 
         [HttpPost("[action]")]
-        public void TestMailWithModelMessage(string reciepent, int counter, string name)
+        public void TestMailWithModelMessage(string recipient, int counter, string name)
         {
-            MailProcessor.Send(new TestMailMessageWithModel(reciepent, counter, name));
+            MailProcessor.Send(new TestMailMessageWithModel(recipient, counter, name));
         }
     }
 }

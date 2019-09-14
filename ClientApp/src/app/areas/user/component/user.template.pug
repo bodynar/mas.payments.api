@@ -4,4 +4,13 @@ h2.module-name(
     (click)='onModuleNameClick()'
 ) User module
 
-router-outlet
+
+.user-container
+    ul.side-menu
+        li(
+            *ngFor='let menuItem of menuItems',
+            [class.active]='menuItem.isActive',
+            (click)='onMenuItemClick(menuItem.link)'
+        ) {{ menuItem.name }}
+    .content
+        router-outlet

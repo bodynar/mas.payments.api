@@ -10,6 +10,8 @@ namespace MAS.Payments.DataBase
 
         public DateTime Date { get; set; }
 
+        public bool IsSent { get; set; }
+
         public long MeterMeasurementTypeId { get; set; }
 
         public virtual MeterMeasurementType MeasurementType { get; set; }

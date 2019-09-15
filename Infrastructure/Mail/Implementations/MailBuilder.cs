@@ -100,7 +100,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
                 new MailMessage(From, mailMessage.Recipient)
                 {
                     Body = body,
-                    Subject = mailMessage.Subject,
+                    Subject = $"[fiSz] Payment service - {mailMessage.Subject}",
                     IsBodyHtml = true
                 };
         }

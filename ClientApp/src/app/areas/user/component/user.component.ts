@@ -33,13 +33,7 @@ class UserComponent implements OnInit {
     }
 
     public onMenuItemClick(menuItem: string): void {
-        if (menuItem === '') {
-            this.routerService.navigate(['app', 'user']);
-        }
-        else {
-            this.routerService.navigate(['app', 'user', menuItem]);
-        }
-
+        this.routerService.navigate(['app', 'user', menuItem]);
         this.highlightMenuItem(menuItem);
     }
 

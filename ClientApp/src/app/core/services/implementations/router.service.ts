@@ -4,6 +4,8 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, pairwise } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { IRouterService } from 'services/IRouterService.ts';
 
 @Injectable()
@@ -69,8 +71,11 @@ class RouterService implements IRouterService {
     }
 
     public navigate(path: Array<string>, extras: any): void {
+        const routePath: Array<string> =
+            path.filter(part => !isNullOrUndefined(part) && part !== '');
+
         this.router
-            .navigate(path, extras)
+            .navigate(routePath, extras)
             .then()
             .catch();
     }

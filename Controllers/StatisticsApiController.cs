@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
-using MAS.Payments.Notifications;
 using MAS.Payments.Queries;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +9,8 @@ namespace MAS.Payments.Controllers
     public class StatisticsApiController : BaseApiController
     {
         public StatisticsApiController(
-            ICommandProcessor commandProcessor,
-            IQueryProcessor queryProcessor,
-            INotificationProcessor notificationProcessor
-        ) : base(commandProcessor, queryProcessor, notificationProcessor)
+            IResolver resolver
+        ) : base(resolver)
         {
         }
 

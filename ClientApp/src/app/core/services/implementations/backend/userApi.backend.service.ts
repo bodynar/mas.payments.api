@@ -4,8 +4,11 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
+import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
 @Injectable()
@@ -31,6 +34,17 @@ class UserApiBackendService implements IUserApiBackendService {
                     }) as GetNotificationsResponse)),
                 catchError(error => of(error))
             );
+    }
+
+    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<any> {
+        const url: string =
+            isNullOrUndefined(testMailMessage.name)
+                ? `${this.apiPrefix}/testMailMessage`
+                : `${this.apiPrefix}/testMailWithModelMessage`;
+
+        return this.http
+            .post(url, testMailMessage)
+            .pipe(catchError(error => of(error)));
     }
 }
 

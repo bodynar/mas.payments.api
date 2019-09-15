@@ -33,11 +33,24 @@
 
             background none
             color white
-    &-links
+    &-right
         display flex
         flex-direction row
         flex-wrap nowrap
         align-items center
+
+        .menu-icon
+            margin 0 0.3em
+
+        .panel
+            display flex
+            flex-direction row
+            margin 0
+            padding 0
+
+            .item
+                display flex
+                flex-direction row
 .menu
     display flex
     justify-content flex-end
@@ -51,6 +64,7 @@
             text-decoration none
             color white
             cursor pointer
+            transition 0.2s ease all
 
             &[disabled]
                 cursor not-allowed

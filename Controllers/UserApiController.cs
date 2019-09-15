@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Query;
+using MAS.Payments.Infrastructure;
+using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
 using MAS.Payments.Notifications;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +13,8 @@ namespace MAS.Payments.Controllers
     public class UserApiController : BaseApiController
     {
         public UserApiController(
-            ICommandProcessor commandProcessor,
-            IQueryProcessor queryProcessor,
-            INotificationProcessor notificationProcessor
-        ) : base(commandProcessor, queryProcessor, notificationProcessor)
+            IResolver resolver
+        ) : base(resolver)
         {
         }
 
@@ -32,6 +30,18 @@ namespace MAS.Payments.Controllers
                         Description = notification.Description,
                         Type = Enum.GetName(typeof(NotificationType), notification.Type)
                     });
+        }
+
+        [HttpPost("[action]")]
+        public void TestMailMessage([FromBody]TestMailMessageRequest request)
+        {
+            MailProcessor.Send(new TestMailMessage(request.Recipient));
+        }
+
+        [HttpPost("[action]")]
+        public void TestMailWithModelMessage([FromBody]TestMailMessageRequest request)
+        {
+            MailProcessor.Send(new TestMailMessageWithModel(request.Recipient, request.Counter, request.Name));
         }
     }
 }

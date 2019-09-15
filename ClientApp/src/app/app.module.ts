@@ -12,10 +12,12 @@ import { BellComponent } from './components/bell/bell.component';
 import { HomeComponent } from './components/home/home.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { NotificatorComponent } from './components/notificator/notificator.component';
+import { AppUserComponent } from './components/user/user.component';
 
 import { MeasurementModule } from './areas/measurement/measurement.module';
 import { PaymentsModule } from './areas/payments/payments.module';
 import { StatisticsModule } from './areas/statistics/statistics.module';
+import { UserModule } from './areas/user/user.module';
 import { PagesModule } from './pages/pages.module';
 
 @NgModule({
@@ -25,6 +27,7 @@ import { PagesModule } from './pages/pages.module';
     HomeComponent,
     MenuComponent,
     BellComponent,
+    AppUserComponent,
     NotificatorComponent
   ],
   imports: [
@@ -38,6 +41,7 @@ import { PagesModule } from './pages/pages.module';
     PaymentsModule,
     MeasurementModule,
     StatisticsModule,
+    UserModule,
     PagesModule
   ],
   providers: [],

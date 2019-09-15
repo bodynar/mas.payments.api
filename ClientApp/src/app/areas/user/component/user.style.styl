@@ -1,0 +1,48 @@
+.user-container
+    display flex
+    flex-direction row
+    
+    .side-menu
+        width 15vw
+        margin 1em 0 0 0
+        padding 0
+        list-style none
+
+        li
+            padding 0.5em 1em
+            margin-bottom 0.5em
+
+            transition 0.2s ease all
+            
+            &[disabled]
+                border-left 1px solid rgba(0, 0, 255, 0.5)
+                box-shadow 0px 0px 0px 1px rgba(0, 0, 0, 0.15)
+                background rgba(212, 213, 214, 0.25)
+            
+            &:not([disabled])
+                border-left 1px solid blue
+                cursor pointer
+                user-select none
+
+                &:not(.active)
+                    box-shadow 0px 0px 0px 1px rgba(0, 0, 0, 0.15)
+
+                    &:hover
+                        box-shadow 0px 0px 0px 1px rgba(0, 0, 0, 0.3)
+                    &:active
+                        box-shadow 0px 0px 0px 1px rgba(0, 203, 255, 0.35)
+
+                &.active
+                    background rgba(0, 203, 255, 0.35)
+                    box-shadow 0px 0px 0px 1px rgba(0, 0, 0, 0.3)
+                    
+                    &:active
+                        box-shadow 0px 0px 0px 1px rgba(0, 121, 152, 0.5)
+
+                    &:hover
+                        box-shadow 0px 0px 0px 1px rgba(0, 0, 0, 0.5)
+            
+
+    .content
+        padding 0 1em
+        width 75%

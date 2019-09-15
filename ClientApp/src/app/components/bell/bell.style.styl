@@ -5,8 +5,11 @@
         color white
         position relative
 
-        &:hover .oi-bell:hover
-            color color-red-orange
+        .oi-bell
+            transition 0.2s ease all
+            
+            &:hover
+                color color-red-orange
 
         .badge
             position absolute
@@ -17,6 +20,7 @@
             color white
             cursor pointer
             font-size 8px
+            user-select none
 
     
     .notification-list
@@ -34,7 +38,7 @@
         box-shadow 0 0 20px 5px rgba(0, 0, 0, 0.5)
         list-style none
 
-        transition opacity 0.2s linear
+        transition all 0.3s ease
 
         li
             border-left-width 3px

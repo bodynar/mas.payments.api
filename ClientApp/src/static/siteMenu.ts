@@ -1,6 +1,6 @@
 import { MenuItem } from 'models/menuItem';
 
-const siteMenu: Array<MenuItem> = [
+const mainSiteMenu: Array<MenuItem> = [
     {
         name: 'Payments',
         link: 'app/payments',
@@ -19,4 +19,25 @@ const siteMenu: Array<MenuItem> = [
     }
 ];
 
-export { siteMenu };
+const userSideMenu: Array<MenuItem> = [
+    {
+        name: 'User card',
+        link: '',
+        isEnabled: true
+    },
+    {
+        name: 'User settings',
+        link: 'settings',
+        isEnabled: false
+    },
+    {
+        name: 'Test mail message',
+        link: 'mailTest',
+        isEnabled: true
+    }
+];
+
+export {
+    mainSiteMenu as siteMenu,
+    userSideMenu
+};

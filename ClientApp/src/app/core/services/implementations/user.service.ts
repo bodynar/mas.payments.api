@@ -8,6 +8,7 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';
 
+import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
 @Injectable()
@@ -33,6 +34,12 @@ class UserService implements IUserService {
                     return hasError ? [] : response;
                 }),
             );
+    }
+
+    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<boolean> {
+        return this.userApiBackend
+            .sendTestMailMessage(testMailMessage)
+            .pipe(map(response => isNullOrUndefined(response)));
     }
 }
 

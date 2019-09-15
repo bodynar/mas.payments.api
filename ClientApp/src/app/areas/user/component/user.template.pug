@@ -1,0 +1,17 @@
+doctype html
+
+h2.module-name(
+    (click)='onMenuItemClick("")'
+) User module
+
+
+.user-container
+    ul.side-menu
+        li(
+            *ngFor='let menuItem of menuItems',
+            [class.active]='menuItem.isActive',
+            [attr.disabled]='menuItem.isEnabled ? null : ""',
+            (click)='menuItem.isEnabled ? onMenuItemClick(menuItem.link):  null'
+        ) {{ menuItem.name }}
+    .content
+        router-outlet

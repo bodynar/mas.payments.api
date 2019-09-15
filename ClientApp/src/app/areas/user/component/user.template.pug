@@ -10,7 +10,8 @@ h2.module-name(
         li(
             *ngFor='let menuItem of menuItems',
             [class.active]='menuItem.isActive',
-            (click)='onMenuItemClick(menuItem.link)'
+            [attr.disabled]='menuItem.isEnabled ? null : ""',
+            (click)='menuItem.isEnabled ? onMenuItemClick(menuItem.link):  null'
         ) {{ menuItem.name }}
     .content
         router-outlet

@@ -34,11 +34,11 @@ const routes: Routes = [
                 component: MeasurementsComponent,
                 loadChildren: () => import('./areas/measurement/measurement.module').then(x => x.MeasurementModule)
             },
-            {
-                path: 'stats',
-                component: StatisticsComponent,
-                loadChildren: () => import('./areas/statistics/statistics.module').then(x => x.StatisticsModule)
-            },
+            // {
+            //     path: 'stats',
+            //     component: StatisticsComponent,
+            //     loadChildren: () => import('./areas/statistics/statistics.module').then(x => x.StatisticsModule)
+            // },
             {
                 path: 'user',
                 component: UserComponent,

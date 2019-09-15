@@ -42,7 +42,11 @@ class MenuComponent implements OnInit, OnDestroy {
             .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
 
         const currentRoute: string =
-            this.routerService.getCurrentRoute();
+            this.routerService
+            .getCurrentRoute()
+            .split('/')
+            .slice(1)
+            .join('/');
 
         this.highlightMenuItem(currentRoute);
     }
@@ -64,7 +68,7 @@ class MenuComponent implements OnInit, OnDestroy {
     }
 
     public onMenuItemClick(menuItemLink: string) {
-        this.routerService.navigate([menuItemLink]);
+        this.routerService.navigate(['app', menuItemLink]);
     }
 
     private highlightMenuItem(menuItemName: string): void {
@@ -74,16 +78,9 @@ class MenuComponent implements OnInit, OnDestroy {
             return;
         }
 
-        let clickedMenuItem: string =
-            menuItemName;
-
-        if (!menuItemName.startsWith('app/')) {
-            clickedMenuItem = `app/${menuItemName}`;
-        }
-
         const menuItem: MenuItem =
             this.menuItems
-                .filter(item => item.link === clickedMenuItem)
+                .filter(item => item.link === menuItemName)
                 .pop();
 
         if (!isNullOrUndefined(menuItem)) {

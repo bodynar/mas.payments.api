@@ -16,6 +16,9 @@
       ],
       "models/*": [
         "src/app/core/models/*"
+      ],
+      "static/*": [
+        "src/static"
       ]
     },
     "typeRoots": [

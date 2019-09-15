@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { isNullOrUndefined } from 'util';
 
+import { userSideMenu } from '../../../../static/siteMenu';
+
 import { IRouterService } from 'services/IRouterService';
 
 import { MenuItem } from 'models/menuItem';
@@ -11,25 +13,12 @@ import { MenuItem } from 'models/menuItem';
     styleUrls: ['user.style.styl']
 })
 class UserComponent implements OnInit {
-    public menuItems: Array<MenuItem> =
-        [
-            {
-                name: 'User card',
-                link: '',
-                isActive: false,
-                isEnabled: true,
-            },
-            {
-                name: 'Test mail message',
-                link: 'mailTest',
-                isActive: false,
-                isEnabled: true,
-            }
-        ];
+    public menuItems: Array<MenuItem>;
 
     constructor(
         private routerService: IRouterService
     ) {
+        this.menuItems = userSideMenu;
     }
 
     public ngOnInit(): void {

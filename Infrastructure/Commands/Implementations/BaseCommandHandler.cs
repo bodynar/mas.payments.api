@@ -1,6 +1,7 @@
 using System;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
+using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Infrastructure.Command
@@ -8,19 +9,29 @@ namespace MAS.Payments.Infrastructure.Command
     internal abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
         where TCommand : ICommand
     {
-        protected IResolver Resolver { get; }
+        #region Private fields
 
         private Lazy<IQueryProcessor> _queryProcessor
-            => new Lazy<IQueryProcessor>(() => Resolver.Resolve<IQueryProcessor>());
+            => new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>);
+
+        private Lazy<ICommandProcessor> _commandProcessor
+            => new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>);
+
+        private Lazy<IMailProcessor> _mailProcessor
+            => new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>);
+
+        #endregion
+
+        protected IResolver Resolver { get; }
 
         protected IQueryProcessor QueryProcessor
             => _queryProcessor.Value;
 
-        private Lazy<ICommandProcessor> _commandProcessor
-            => new Lazy<ICommandProcessor>(() => Resolver.Resolve<ICommandProcessor>());
-
         protected ICommandProcessor CommandProcessor
             => _commandProcessor.Value;
+
+        protected IMailProcessor MailProcessor
+            => _mailProcessor.Value;
 
         public BaseCommandHandler(
             IResolver resolver

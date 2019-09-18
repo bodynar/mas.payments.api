@@ -12,6 +12,8 @@ namespace MAS.Payments.Queries
 
         public DateTime Date { get; set; }
 
+        public bool IsSent { get; set; }
+
         public long MeterMeasurementTypeId { get; set; }
 
         public string MeasurementTypeName { get; set; }

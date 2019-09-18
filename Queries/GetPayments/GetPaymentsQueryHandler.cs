@@ -31,7 +31,7 @@ namespace MAS.Payments.Queries
 
             if (query.Month.HasValue)
             {
-                filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == query.Month.Value);
+                filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == (query.Month.Value - 1));
             }
 
             if (query.ExactAmount.HasValue)

@@ -1,3 +1,5 @@
+using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
@@ -89,6 +91,12 @@ namespace MAS.Payments.Controllers
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementCommand(measurementId));
+        }
+
+        [HttpPost("[action]")]
+        public void SendMeasurements(IEnumerable<long> measurementIdentifiers)
+        {
+            CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
         }
 
         #endregion

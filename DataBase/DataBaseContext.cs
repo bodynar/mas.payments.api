@@ -19,5 +19,19 @@ namespace MAS.Payments.DataBase
         public DbSet<User> Users { get; set; }
 
         public DbSet<UserSettings> UserSettings { get; set; }
+
+        public DbSet<UserToken> UserTokens { get; set; }
+
+        public DbSet<UserTokenType> UserTokenTypes { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<UserTokenType>()
+                .HasData(
+                    new UserTokenType { Name = "Auth", Description = "Token used for authentication system" },
+                    new UserTokenType { Name = "RegistrationConfirm", Description = "Token used for user registration" }
+                );
+        }
     }
 }

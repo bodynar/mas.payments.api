@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using MAS.Payments.Infrastructure.Command;
@@ -10,8 +11,9 @@ namespace MAS.Payments.Commands
         
         public IEnumerable<long> MeterMeasurementIdentifiers { get; }
 
-        public SendMeasurementsCommand(IEnumerable<long> meterMeasurementIdentifiers)
+        public SendMeasurementsCommand(string recipient, IEnumerable<long> meterMeasurementIdentifiers)
         {
+            Recipient = recipient ?? throw new ArgumentException(nameof(recipient));
             MeterMeasurementIdentifiers = meterMeasurementIdentifiers;
         }
     }

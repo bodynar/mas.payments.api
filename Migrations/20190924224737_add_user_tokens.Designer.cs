@@ -191,9 +191,7 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.UserTokenType", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<long>("Id");
 
                     b.Property<string>("Description");
 

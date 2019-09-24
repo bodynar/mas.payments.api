@@ -1,4 +1,3 @@
-using System;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
@@ -22,9 +21,13 @@ namespace MAS.Payments.Configuration
                 typeof(IQueryHandler<,>),
                 typeof(IQueryHandler<,>).Assembly);
 
+            container.RegisterDecorator(
+                typeof(IQueryHandler<,>),
+                typeof(FlushableQueryHandlerDecorator<,>));
+
             container.Register(
                 typeof(ICommandHandler<>),
-                AppDomain.CurrentDomain.GetAssemblies());
+                typeof(ICommandHandler<>).Assembly);
 
             container.RegisterDecorator(
                 typeof(ICommandHandler<>),

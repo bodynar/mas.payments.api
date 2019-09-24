@@ -16,6 +16,8 @@ namespace MAS.Payments.Commands
 
         public string LastName { get; }
 
+        public string Token { get; set; }
+
         public RegisterUserCommand(string login, string passwordHash, string email, string firstName, string lastName)
         {
             Login = login ?? throw new ArgumentException(nameof(login));

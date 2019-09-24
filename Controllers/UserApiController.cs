@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
@@ -42,6 +43,21 @@ namespace MAS.Payments.Controllers
         public void TestMailWithModelMessage([FromBody]TestMailMessageRequest request)
         {
             MailProcessor.Send(new TestMailMessageWithModel(request.Recipient, request.Counter, request.Name));
+        }
+
+        [HttpPost("[action]")]
+        public void Register([FromBody]RegistrationRequest request)
+        {
+            var command = 
+                new RegisterUserCommand(
+                    request.Login, request.PasswordHash, request.Email,
+                    request.FirstName, request.LastName);
+
+            CommandProcessor.Execute(command);
+
+            MailProcessor.Send(
+                new ConfirmRegistrationMailMessage(
+                    request.Email, command.Token, request.FirstName, request.LastName));
         }
     }
 }

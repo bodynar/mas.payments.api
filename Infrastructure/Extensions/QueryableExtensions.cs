@@ -14,6 +14,12 @@ namespace MAS.Payments.Infrastructure.Extensions
             return source.Where(specification.IsSatisfiedExpression);
         }
 
+        public static TEntity FirstOrDefault<TEntity>(
+            this IQueryable<TEntity> source, Specification<TEntity> specification)
+        {
+            return source.FirstOrDefault(specification.IsSatisfiedExpression);
+        }
+
         public static bool Any<TEntity>(
             this IQueryable<TEntity> source, Specification<TEntity> specification)
         {

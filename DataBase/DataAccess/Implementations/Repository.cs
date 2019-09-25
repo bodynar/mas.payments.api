@@ -45,6 +45,9 @@ namespace MAS.Payments.DataBase.Access
         public TEntity Get(long id)
             => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
 
+        public TEntity Get(Specification<TEntity> specification)
+            => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(specification);
+
         public IQueryable<TEntity> GetAll()
             => DataBaseContext.Set<TEntity>().AsQueryable();
 

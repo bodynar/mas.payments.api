@@ -15,6 +15,8 @@ namespace MAS.Payments.DataBase.Access
 
         TEntity Get(long id);
 
+        TEntity Get(Specification<TEntity> specification);
+
         void Update(long id, object updatedModel);
 
         TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)

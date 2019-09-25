@@ -1,3 +1,4 @@
+using System;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
@@ -11,11 +12,14 @@ namespace MAS.Payments.Commands
     {
         private IRepository<User> Repository { get; }
 
+        private IRepository<UserToken> UserTokenRepository { get; }
+
         public RegisterUserCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<User>();
+            UserTokenRepository = GetRepository<UserToken>();
         }
 
         public override CheckResult Check(RegisterUserCommand command)
@@ -53,6 +57,28 @@ namespace MAS.Payments.Commands
             };
 
             Repository.Add(user);
+
+            var token = GenerateToken(user);
+
+            command.Token = token;
+        }
+
+        private string GenerateToken(User user)
+        {
+            var token = Convert.ToBase64String(Guid.NewGuid().ToByteArray());
+
+            var userToken = new UserToken
+            {
+                CreatedAt = DateTime.UtcNow,
+                ActiveTo = DateTime.UtcNow.AddDays(20),
+                UserTokenTypeId = (long)UserTokenTypeEnum.RegistrationConfirm,
+                User = user, 
+                Token = token
+            };
+
+            UserTokenRepository.Add(userToken);
+
+            return token;
         }
     }
 }

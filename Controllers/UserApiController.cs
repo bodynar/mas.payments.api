@@ -48,7 +48,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void Register([FromBody]RegistrationRequest request)
         {
-            var command = 
+            var command =
                 new RegisterUserCommand(
                     request.Login, request.PasswordHash, request.Email,
                     request.FirstName, request.LastName);
@@ -58,6 +58,12 @@ namespace MAS.Payments.Controllers
             MailProcessor.Send(
                 new ConfirmRegistrationMailMessage(
                     request.Email, command.Token, request.FirstName, request.LastName));
+        }
+
+        [HttpGet("[action]")]
+        public void ConfirmREgistration(string token)
+        {
+            CommandProcessor.Execute(new ConfirmRegistrationCommand(token));
         }
     }
 }

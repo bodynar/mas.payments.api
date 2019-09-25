@@ -29,8 +29,8 @@ namespace MAS.Payments.DataBase
             modelBuilder
                 .Entity<UserTokenType>()
                 .HasData(
-                    new UserTokenType { Name = "Auth", Description = "Token used for authentication system" },
-                    new UserTokenType { Name = "RegistrationConfirm", Description = "Token used for user registration" }
+                    new UserTokenType { Id = 1, Name = "Auth", Description = "Token used for authentication system" },
+                    new UserTokenType { Id = 2, Name = "RegistrationConfirm", Description = "Token used for user registration" }
                 );
         }
     }

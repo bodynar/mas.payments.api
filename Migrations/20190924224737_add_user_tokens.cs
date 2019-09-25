@@ -35,7 +35,7 @@ namespace MAS.Payments.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserTokens", x => x.Token);
+                    table.PrimaryKey("PK_UserTokens", x => x.Id);
                     table.ForeignKey(
                         name: "FK_UserTokens_Users_UserId",
                         column: x => x.UserId,

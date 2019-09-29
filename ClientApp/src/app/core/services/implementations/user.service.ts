@@ -41,6 +41,12 @@ class UserService implements IUserService {
             .sendTestMailMessage(testMailMessage)
             .pipe(map(response => isNullOrUndefined(response)));
     }
+
+    public confirmRegistration(token: string): Observable<boolean> {
+        return this.userApiBackend
+            .confirmRegistration(token)
+            .pipe(map(response => isNullOrUndefined(response)));
+    }
 }
 
 export { UserService };

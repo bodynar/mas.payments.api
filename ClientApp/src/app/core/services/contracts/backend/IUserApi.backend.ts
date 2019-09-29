@@ -7,6 +7,8 @@ abstract class IUserApiBackendService {
     abstract getNotifications(): Observable<Array<GetNotificationsResponse>>;
 
     abstract sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<any>;
+
+    abstract confirmRegistration(token: string): Observable<any>;
 }
 
 export { IUserApiBackendService };

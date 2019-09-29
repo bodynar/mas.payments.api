@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -44,6 +44,15 @@ class UserApiBackendService implements IUserApiBackendService {
 
         return this.http
             .post(url, testMailMessage)
+            .pipe(catchError(error => of(error)));
+    }
+
+    public confirmRegistration(token: string): Observable<any> {
+        const params: HttpParams =
+            new HttpParams().set('token', token);
+
+        return this.http
+            .get(`${this.apiPrefix}/confirmRegistration`, { params })
             .pipe(catchError(error => of(error)));
     }
 }

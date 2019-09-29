@@ -7,6 +7,8 @@ abstract class IUserService {
     abstract getNotifications(): Observable<Array<GetNotificationsResponse>>;
 
     abstract sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<boolean>;
+
+    abstract confirmRegistration(token: string): Observable<boolean>;
 }
 
 export { IUserService };

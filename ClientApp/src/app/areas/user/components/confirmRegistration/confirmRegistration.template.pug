@@ -1,0 +1,18 @@
+doctype html
+
+h3 Confirm user registration
+
+form.card
+    .row
+        label.col-form-label-sm Token
+        input.form-control.form-control-sm#token(
+            type='text',
+            placeholder='Enter confirmation token',
+            name='token',
+            [(ngModel)]='token',
+            #token='ngModel'
+        )
+    .row
+        button(
+            (click)=''
+        ) Submit

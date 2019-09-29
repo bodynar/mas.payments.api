@@ -14,8 +14,9 @@ namespace MAS.Payments.MailMessages
 
         public string Date { get; }
 
-        public ConfirmRegistrationModel(string token, string firstName, string lastName)
+        public ConfirmRegistrationModel(string link, string token, string firstName, string lastName)
         {
+            Link = link ?? throw new ArgumentException(nameof(Link));
             Token = token ?? throw new ArgumentException(nameof(Token));
             FirstName = firstName;
             LastName = lastName;

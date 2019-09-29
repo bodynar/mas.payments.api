@@ -15,11 +15,11 @@ namespace MAS.Payments.MailMessages
 
         public ConfirmRegistrationModel Model { get; }
 
-        public ConfirmRegistrationMailMessage(string recipient, string token, string firstName, string lastName)
+        public ConfirmRegistrationMailMessage(string link, string recipient, string token, string firstName, string lastName)
         {
             Recipient = recipient ?? throw new ArgumentException(nameof(recipient));
 
-            Model = new ConfirmRegistrationModel(token, firstName, lastName);
+            Model = new ConfirmRegistrationModel(link, token, firstName, lastName);
         }
     }
 }

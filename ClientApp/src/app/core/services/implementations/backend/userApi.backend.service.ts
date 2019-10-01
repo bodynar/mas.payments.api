@@ -9,6 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
+import { UserRegisterRequest } from 'models/request/userRegisterRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
 @Injectable()
@@ -44,6 +45,12 @@ class UserApiBackendService implements IUserApiBackendService {
 
         return this.http
             .post(url, testMailMessage)
+            .pipe(catchError(error => of(error)));
+    }
+
+    public register(userRegisterRequest: UserRegisterRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/register`, userRegisterRequest)
             .pipe(catchError(error => of(error)));
     }
 

@@ -51,14 +51,14 @@ class ConfirmRegistrationComponent implements OnDestroy {
                 switchMap(token => this.userService.confirmRegistration(token)),
                 delay(1 * 1000),
                 tap(_ => this.isBusy$.next(false)),
-                filter(result => {
-                    if (!result) {
+                filter(isSuccess => {
+                    if (!isSuccess) {
                         this.notificationService.error('Error due confirming registration. Please, try again later');
                     } else {
                         this.notificationService.success('Registration confirmed successfully. You may log in');
                     }
 
-                    return result;
+                    return isSuccess;
                 })
             )
             .subscribe(_ => {

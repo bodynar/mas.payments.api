@@ -1,6 +1,6 @@
-using System;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
+using MAS.Payments.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -14,9 +14,16 @@ namespace MAS.Payments.Controllers
         {
         }
 
-        public string Authenticate()
+        [HttpPost("[action]")]
+        public string Authenticate([FromBody]AuthenticateRequest request)
         {
-            throw new NotImplementedException();
+            var command =
+                new AuthenticateCommand(
+                    request.Login, request.PasswordHash, request.RememberMe);
+
+            CommandProcessor.Execute(command);
+
+            return command.Token;
         }
 
         [HttpPost("[action]")]

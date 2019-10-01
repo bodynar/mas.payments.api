@@ -2,17 +2,16 @@ doctype html
 
 h3 Confirm user registration
 
-form.card
-    .row
-        label.col-form-label-sm Token
+.app-card.center
+    .app-card__row
         input.form-control.form-control-sm#token(
             type='text',
-            placeholder='Enter confirmation token',
+            placeholder='Token from e-mail message',
             name='token',
             [(ngModel)]='token',
-            #token='ngModel'
+            [attr.disabled]='(isBusy$ | async) ? "disabled" : null',
         )
-    .row
-        button(
-            (click)=''
-        ) Submit
+        button.btn.btn-outline-success.btn-sm(
+            [attr.disabled]='(isBusy$ | async) ? "disabled" : null',
+            (click)='onTokenSubmit()'
+        ) Confirm

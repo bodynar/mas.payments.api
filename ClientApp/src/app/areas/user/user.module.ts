@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { UserRoutingModule } from './user.routing';
 
 import { UserComponent } from './component/user.component';
+import { ConfirmRegistrationComponent } from './components/confirmRegistration/confirmRegistration.component';
 import { TestMailMessageComponent } from './components/testMailMessage/testMailMessage.component';
 import { UserCardComponent } from './components/userCard/userCard.component';
 
@@ -19,7 +20,8 @@ import { UserCardComponent } from './components/userCard/userCard.component';
     exports: [],
     declarations: [
         UserComponent, UserCardComponent,
-        TestMailMessageComponent
+        TestMailMessageComponent,
+        ConfirmRegistrationComponent
     ],
     providers: [],
 })

@@ -7,7 +7,7 @@ using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Commands
 {
-    internal class ConfirmRegistrationCommandHandler : BaseCommandHandler<RegisterUserCommand>
+    internal class ConfirmRegistrationCommandHandler : BaseCommandHandler<ConfirmRegistrationCommand>
     {
         private IRepository<UserToken> Repository { get; }
 
@@ -18,7 +18,7 @@ namespace MAS.Payments.Commands
             Repository = GetRepository<UserToken>();
         }
 
-        public override void Handle(RegisterUserCommand command)
+        public override void Handle(ConfirmRegistrationCommand command)
         {
             var userToken = Repository.Get(new CommonSpecification<UserToken>(x => x.Token == command.Token));
 

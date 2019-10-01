@@ -10,6 +10,7 @@ import { PaymentsComponent } from './areas/payments/component/payments.component
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
 import { UserComponent } from './areas/user/component/user.component';
 import { ConfirmRegistrationComponent } from './areas/user/components/confirmRegistration/confirmRegistration.component';
+import { RegisterComponent } from './areas/user/components/register/register.component';
 
 const routes: Routes = [
     {
@@ -45,8 +46,13 @@ const routes: Routes = [
                 component: UserComponent,
                 loadChildren: () => import('./areas/user/user.module').then(x => x.UserModule)
             },
+
             {
-                path: 'confirm',
+                path: 'registerUser',
+                component: RegisterComponent
+            },
+            {
+                path: 'confirmRegistration',
                 component: ConfirmRegistrationComponent
             },
         ]

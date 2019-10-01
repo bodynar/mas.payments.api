@@ -57,7 +57,7 @@ namespace MAS.Payments.Controllers
 
             MailProcessor.Send(
                 new ConfirmRegistrationMailMessage(
-                    $"{Request.Host.Host}/confirm?token={command.Token}",
+                    $"{Request.Host.Host}/confirmRegistration?token={command.Token}",
                     request.Email, command.Token, 
                     request.FirstName, request.LastName));
         }

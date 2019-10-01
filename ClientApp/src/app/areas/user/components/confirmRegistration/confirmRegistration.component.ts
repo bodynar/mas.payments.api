@@ -1,8 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, filter, map, switchMap, tap } from 'rxjs/operators';
+import { delay, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -14,7 +14,7 @@ import { IUserService } from 'services/IUserService';
     templateUrl: 'confirmRegistration.template.pug',
     styleUrls: ['confirmRegistration.style.styl']
 })
-class ConfirmRegistrationComponent {
+class ConfirmRegistrationComponent implements OnDestroy {
     public isBusy$: BehaviorSubject<boolean> =
         new BehaviorSubject(false);
 
@@ -22,6 +22,9 @@ class ConfirmRegistrationComponent {
         '';
 
     private whenTokenSubmitted$: Subject<string> =
+        new Subject();
+
+    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     constructor(
@@ -33,6 +36,7 @@ class ConfirmRegistrationComponent {
         this.activatedRoute
             .queryParams
             .pipe(
+                takeUntil(this.whenComponentDestroy$),
                 filter(params => !isNullOrUndefined(params['token']) && params['token'] !== ''),
                 map(params => params['token']),
                 tap(token => this.token = token),
@@ -41,6 +45,7 @@ class ConfirmRegistrationComponent {
 
         this.whenTokenSubmitted$
             .pipe(
+                takeUntil(this.whenComponentDestroy$),
                 filter(token => !isNullOrUndefined(token) && token !== ''),
                 tap(_ => this.isBusy$.next(true)),
                 switchMap(token => this.userService.confirmRegistration(token)),
@@ -59,6 +64,11 @@ class ConfirmRegistrationComponent {
             .subscribe(_ => {
                 this.routerService.navigate(['user', 'login']);
             });
+    }
+
+    public ngOnDestroy(): void {
+        this.whenComponentDestroy$.next(null);
+        this.whenComponentDestroy$.complete();
     }
 
     public onTokenSubmit(): void {

@@ -1,0 +1,48 @@
+doctype html
+
+.app-card
+    form
+        .app-card__row
+            label.col-form-label-sm.w-20 Login
+            input.form-control.form-control-sm#login(
+                type='text',
+                placeholder='Login',
+                name='login',
+                [(ngModel)]='userRegistrationRequest.login'
+            )
+        .app-card__row
+            label.col-form-label-sm.w-20 Password
+            input.form-control.form-control-sm#password(
+                type='password',
+                placeholder='Password',
+                name='password',
+                [(ngModel)]='userRegistrationRequest.password'
+            )
+        .app-card__row
+            label.col-form-label-sm.w-20 Email
+            input.form-control.form-control-sm#email(
+                type='text',
+                placeholder='e.g. example@mail.com',
+                name='email',
+                [(ngModel)]='userRegistrationRequest.email'
+            )
+        .app-card__row
+            label.col-form-label-sm.w-20 First name
+            input.form-control.form-control-sm#firstName(
+                type='text',
+                name='firstName',
+                placeholder='John',
+                [(ngModel)]='userRegistrationRequest.firstName'
+            )
+        .app-card__row
+            label.col-form-label-sm.w-20 Last name
+            input.form-control.form-control-sm#lastName(
+                type='text',
+                name='lastName',
+                placeholder='Doe',
+                [(ngModel)]='userRegistrationRequest.lastName'
+            )
+        .app-card__row.end
+            button.btn.btn-outline-success.btn-sm(
+                (click)='onFormSubmit()'
+            ) Register

@@ -7,6 +7,7 @@ import { UserRoutingModule } from './user.routing';
 
 import { UserComponent } from './component/user.component';
 import { ConfirmRegistrationComponent } from './components/confirmRegistration/confirmRegistration.component';
+import { RegisterComponent } from './components/register/register.component';
 import { TestMailMessageComponent } from './components/testMailMessage/testMailMessage.component';
 import { UserCardComponent } from './components/userCard/userCard.component';
 
@@ -21,7 +22,7 @@ import { UserCardComponent } from './components/userCard/userCard.component';
     declarations: [
         UserComponent, UserCardComponent,
         TestMailMessageComponent,
-        ConfirmRegistrationComponent
+        RegisterComponent, ConfirmRegistrationComponent
     ],
     providers: [],
 })

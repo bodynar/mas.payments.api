@@ -57,11 +57,13 @@ namespace MAS.Payments.Controllers
 
             MailProcessor.Send(
                 new ConfirmRegistrationMailMessage(
-                    request.Email, command.Token, request.FirstName, request.LastName));
+                    $"{Request.Host.Host}/confirm?token={command.Token}",
+                    request.Email, command.Token, 
+                    request.FirstName, request.LastName));
         }
 
         [HttpGet("[action]")]
-        public void ConfirmREgistration(string token)
+        public void ConfirmRegistration(string token)
         {
             CommandProcessor.Execute(new ConfirmRegistrationCommand(token));
         }

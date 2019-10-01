@@ -13,6 +13,8 @@ namespace MAS.Payments.DataBase.Access
 
         void Delete(long id);
 
+        void Delete(TEntity entity);
+
         TEntity Get(long id);
 
         TEntity Get(Specification<TEntity> specification);

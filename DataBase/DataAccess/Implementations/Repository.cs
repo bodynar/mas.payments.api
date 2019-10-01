@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.Infrastructure.Exceptions;
 using MAS.Payments.Infrastructure.Extensions;
 using MAS.Payments.Infrastructure.Projector;
 using MAS.Payments.Infrastructure.Specification;
@@ -25,11 +26,14 @@ namespace MAS.Payments.DataBase.Access
             var entity = Get(id);
             if (entity == null)
             {
-                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
+                throw new EntityNotFoundException(typeof(TEntity), id);
             }
 
-            DataBaseContext.Remove(entity);
+            Delete(entity);
         }
+
+        public void Delete(TEntity entity)
+            => DataBaseContext.Remove(entity);
 
         public void Update(long id, object updatedEntity)
         {
@@ -39,7 +43,7 @@ namespace MAS.Payments.DataBase.Access
                 throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
             }
 
-            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedEntity); 
+            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedEntity);
         }
 
         public TEntity Get(long id)

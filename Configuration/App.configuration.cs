@@ -1,4 +1,6 @@
+using MAS.Payments.DataBase;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.DependencyInjection;
 using SimpleInjector;
@@ -7,8 +9,10 @@ namespace MAS.Payments.Configuration
 {
     public static class AppConfiguration
     {
-        public static void Configure(this IApplicationBuilder app, Container container, bool isDevelopment)
+        public static void Configure(this IApplicationBuilder app, Container container, IHostingEnvironment hostingEnvironment)
         {
+            var isDevelopment = hostingEnvironment.IsDevelopment();
+
             if (isDevelopment)
             {
                 app.UseDeveloperExceptionPage();
@@ -47,6 +51,12 @@ namespace MAS.Payments.Configuration
 
             container.Configure();
             container.Verify();
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DataBaseContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

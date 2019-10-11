@@ -33,16 +33,6 @@ class ConfirmRegistrationComponent implements OnDestroy {
         private notificationService: INotificationService,
         private routerService: IRouterService,
     ) {
-        this.activatedRoute
-            .queryParams
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(params => !isNullOrUndefined(params['token']) && params['token'] !== ''),
-                map(params => params['token']),
-                tap(token => this.token = token),
-            )
-            .subscribe(token => this.whenTokenSubmitted$.next(token));
-
         this.whenTokenSubmitted$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -64,6 +54,17 @@ class ConfirmRegistrationComponent implements OnDestroy {
             .subscribe(_ => {
                 this.routerService.navigate(['user', 'login']);
             });
+
+        this.activatedRoute
+            .queryParams
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(params => !isNullOrUndefined(params['token']) && params['token'] !== ''),
+                map(params => params['token']),
+                map(tokenUri => decodeURIComponent(tokenUri)),
+                tap(token => this.token = token),
+            )
+            .subscribe(token => this.whenTokenSubmitted$.next(token));
     }
 
     public ngOnDestroy(): void {

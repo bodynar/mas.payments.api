@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.MailMessages;
@@ -55,9 +56,11 @@ namespace MAS.Payments.Controllers
 
             CommandProcessor.Execute(command);
 
+            var encodedToken = HttpUtility.UrlEncode($"{command.Token}"); 
+
             MailProcessor.Send(
                 new ConfirmRegistrationMailMessage(
-                    $"{Request.Host.Host}/confirmRegistration?token={command.Token}",
+                    $"https://{Request.Host.Host}:{Request.Host.Port}/confirmRegistration?token={encodedToken}",
                     request.Email, command.Token, 
                     request.FirstName, request.LastName));
         }

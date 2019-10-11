@@ -9,6 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
+import { UserLoginRequest } from 'models/request/userLoginRequest';
 import { UserRegisterRequest } from 'models/request/userRegisterRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
@@ -55,11 +56,14 @@ class UserApiBackendService implements IUserApiBackendService {
     }
 
     public confirmRegistration(token: string): Observable<any> {
-        const params: HttpParams =
-            new HttpParams().set('token', token);
-
         return this.http
-            .get(`${this.apiPrefix}/confirmRegistration`, { params })
+            .post(`${this.apiPrefix}/confirmRegistration`, { token: token })
+            .pipe(catchError(error => of(error)));
+    }
+
+    public login(loginInformation: UserLoginRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/auth`, loginInformation)
             .pipe(catchError(error => of(error)));
     }
 }

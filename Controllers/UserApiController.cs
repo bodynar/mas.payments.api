@@ -65,8 +65,8 @@ namespace MAS.Payments.Controllers
                     request.FirstName, request.LastName));
         }
 
-        [HttpGet("[action]")]
-        public void ConfirmRegistration(string token)
+        [HttpPost("[action]")]
+        public void ConfirmRegistration([FromBody]string token)
         {
             CommandProcessor.Execute(new ConfirmRegistrationCommand(token));
         }

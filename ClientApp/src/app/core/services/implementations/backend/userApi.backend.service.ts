@@ -61,7 +61,7 @@ class UserApiBackendService implements IUserApiBackendService {
             .pipe(catchError(error => of(error)));
     }
 
-    public login(loginInformation: UserLoginRequest): Observable<any> {
+    public login(loginInformation: UserLoginRequest): Observable<string> {
         return this.http
             .post(`${this.apiPrefix}/auth`, loginInformation)
             .pipe(catchError(error => of(error)));

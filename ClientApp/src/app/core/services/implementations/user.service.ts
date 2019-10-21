@@ -62,7 +62,7 @@ class UserService implements IUserService {
             .pipe(
                 map(response => {
                     const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof String);
+                        isNullOrUndefined(response) || response === '';
 
                     if (hasError) {
                         // this.loggingService.error(response);

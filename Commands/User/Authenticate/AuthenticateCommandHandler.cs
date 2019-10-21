@@ -31,7 +31,7 @@ namespace MAS.Payments.Commands
 
             if (user == null)
             {
-                throw new CommandExecutionException("User with specified data not found");
+                throw new CommandExecutionException("Login or password incorrect");
             }
 
             if (!user.IsActive)

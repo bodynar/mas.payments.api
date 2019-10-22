@@ -1,3 +1,4 @@
+using MAS.Payments.ActionFilters;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
@@ -26,6 +27,7 @@ namespace MAS.Payments.Controllers
             return command.Token;
         }
 
+        [Authorize]
         [HttpPost("[action]")]
         public void LogOff([FromBody]string token)
         {

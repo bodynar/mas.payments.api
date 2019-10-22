@@ -29,11 +29,16 @@ namespace MAS.Payments.Configuration
                     .AddControllerActivation();
             });
 
+            services.AddTransient<Container>((_) => container);
+
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 
             services.AddDbContext<DataBaseContext>(options =>
-                options.UseSqlServer(connectionString, x => x.MigrationsAssembly("MAS.Payments"))
-                       .UseLazyLoadingProxies().UseSqlServer(connectionString)
+                options.UseSqlServer(connectionString, 
+                    x => x
+                        .MigrationsAssembly("MAS.Payments"))
+                        .UseLazyLoadingProxies()
+                        .UseSqlServer(connectionString)
             );
 
             #region Mail

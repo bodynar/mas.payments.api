@@ -1,18 +1,16 @@
 using System;
 using System.Linq;
 using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Queries;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SimpleInjector;
 
 namespace MAS.Payments.ActionFilters
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class)]
-    public class AuthorizeAttribute : ActionFilterAttribute, IAuthorizationFilter // todo: or ~IActionFilter ?
+    public class AuthorizeAttribute : ActionFilterAttribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)
         {
@@ -24,8 +22,10 @@ namespace MAS.Payments.ActionFilters
 
                 if (!isAuthorized)
                 {
-                    // context.Result = new Unauthorized("controllerName", "methodName");
-                    // todo: figure out about data returning on this result
+                    var methodName = context.ActionDescriptor.RouteValues["action"];
+                    var controllerName = context.ActionDescriptor.RouteValues["controller"];
+                    
+                    context.Result = new Unauthorized(controllerName, methodName);
                 }
             }
         }

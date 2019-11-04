@@ -71,6 +71,10 @@ class UserService implements IUserService {
                     return hasError ? '' : response;
                 }));
     }
+
+    public setAuthToken(token: string): void {
+        localStorage.setItem('auth-token', token);
+    }
 }
 
 export { UserService };

@@ -1,4 +1,5 @@
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
@@ -19,6 +20,8 @@ import { PaymentsModule } from './areas/payments/payments.module';
 import { StatisticsModule } from './areas/statistics/statistics.module';
 import { UserModule } from './areas/user/user.module';
 import { PagesModule } from './pages/pages.module';
+
+import { AuthHeaderInterceptor } from './interceptors/auth.interceptor';
 
 @NgModule({
   declarations: [
@@ -44,7 +47,13 @@ import { PagesModule } from './pages/pages.module';
     UserModule,
     PagesModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthHeaderInterceptor,
+      multi: true
+    },
+  ],
   bootstrap: [AppContainerComponent]
 })
 class AppModule { }

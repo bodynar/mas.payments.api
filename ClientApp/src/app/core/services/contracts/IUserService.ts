@@ -15,8 +15,6 @@ abstract class IUserService {
     abstract confirmRegistration(token: string): Observable<boolean>;
 
     abstract login(loginInformation: UserLoginRequest): Observable<string>;
-
-    abstract setAuthToken(token: string): void;
 }
 
 export { IUserService };

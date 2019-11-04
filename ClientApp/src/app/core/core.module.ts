@@ -29,6 +29,9 @@ import { IUserService } from 'services/IUserService';
 import { UserApiBackendService } from './services/implementations/backend/userApi.backend.service';
 import { UserService } from './services/implementations/user.service';
 
+import { IAuthService } from 'services/IAuthService';
+import { AuthService } from './services/implementations/auth.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -51,6 +54,8 @@ import { UserService } from './services/implementations/user.service';
 
         { provide: IUserApiBackendService, useClass: UserApiBackendService },
         { provide: IUserService, useClass: UserService },
+
+        { provide: IAuthService, useClass: AuthService },
     ],
 })
 class CoreModule { }

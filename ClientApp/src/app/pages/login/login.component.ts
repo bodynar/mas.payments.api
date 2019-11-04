@@ -8,6 +8,7 @@ import { isNullOrUndefined } from 'util';
 
 import { UserLoginRequest } from 'models/request/userLoginRequest';
 
+import { IAuthService } from 'services/IAuthService';
 import { IRouterService } from 'services/IRouterService';
 import { IUserService } from 'services/IUserService';
 
@@ -29,6 +30,7 @@ class LoginComponent implements OnDestroy {
     constructor(
         private routerService: IRouterService,
         private userService: IUserService,
+        private authService: IAuthService,
     ) {
         this.whenUserAttemptAuth$
             .pipe(
@@ -43,7 +45,7 @@ class LoginComponent implements OnDestroy {
 
                     return isTokenValid;
                 }),
-                tap(token => this.userService.setAuthToken(token)),
+                tap(token => this.authService.setAuthToken(token)),
             )
             .subscribe(_ => {
                 this.routerService.navigate(['app']);

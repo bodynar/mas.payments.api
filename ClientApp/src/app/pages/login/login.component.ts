@@ -2,7 +2,7 @@ import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -34,7 +34,7 @@ class LoginComponent implements OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(form => form.valid),
-                switchMap(form => this.userService.login(this.userLoginRequest)),
+                switchMap(_ => this.userService.login(this.userLoginRequest)),
                 filter(token => {
                     const isTokenValid: boolean =
                         !isNullOrUndefined(token) && token !== '';
@@ -42,9 +42,16 @@ class LoginComponent implements OnDestroy {
                     // display login errors
 
                     return isTokenValid;
-                })
+                }),
+                tap(token => this.userService.setAuthToken(token)),
             )
-            .subscribe();
+            .subscribe(_ => {
+                this.routerService.navigate(['app']);
+            });
+    }
+
+    public onUserTryAuth(form: NgForm): void {
+        this.whenUserAttemptAuth$.next(form);
     }
 
     public ngOnDestroy(): void {

@@ -1,3 +1,30 @@
 doctype html
 
-h1 login
+.bg-container
+    .bg-image
+    .auth-container
+        .auth-card
+            .auth-image
+                img(src='images/img-login.png', alt='Payments logo')
+            .auth-form
+                .info
+                    h3 Sign in
+                    p Please, sign in to use all features of service. Use values from your registration form.
+                .form-row
+                    label(for='login') Login
+                    .input-group.input-group-sm
+                        input.form-control#login(
+                            type='text',
+                            name='login',
+                            placeholder='kraken89'
+                        )
+                .form-row
+                    label(for='password') Password
+                    .input-group.input-group-sm
+                        input.form-control#password(
+                            type='password',
+                            name='password',
+                            placeholder='password10'
+                        )
+                .form-row
+                    button.btn.btn-sm.btn-primary() Sign in

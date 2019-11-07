@@ -21,7 +21,7 @@ namespace MAS.Payments.Queries
         {
             Token = token;
             TokenTypeEnum = tokenType;
-            ActiveTo = DateTime.Now;
+            ActiveTo = DateTime.UtcNow;
         }
     }
 }

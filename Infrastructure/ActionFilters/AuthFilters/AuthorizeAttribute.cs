@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 using MAS.Payments.DataBase;
@@ -43,17 +42,15 @@ namespace MAS.Payments.ActionFilters
             if (!string.IsNullOrEmpty(token))
             {
                 // solve about storing user tokens
-                var cachedTokens = CacheService.Get<IEnumerable<CachedAuthToken>>("authTokens");
+                var cachedToken = AuthTokensCache.Get(token);
 
-                var cachedToken = cachedTokens.FirstOrDefault(x => x.Token == token);
-                
                 if (cachedToken != null)
                 {
-                    var minutesSinceLastCheck = Math.Round((DateTime.Now - cachedToken.LastChecked).TotalMinutes);
+                    var minutesSinceLastCheck = Math.Round((DateTime.UtcNow - cachedToken.LastChecked).TotalMinutes);
 
                     if (minutesSinceLastCheck > 5)
                     {
-                        return IsTokenValid(token, httpContext);
+                        return IsTokenValid(token, httpContext, cachedToken);
                     }
 
                     return true;
@@ -65,12 +62,8 @@ namespace MAS.Payments.ActionFilters
             return false;
         }
 
-        private bool IsTokenValid(string token, HttpContext httpContext)
+        private bool IsTokenValid(string token, HttpContext httpContext, CachedAuthToken cachedAuthToken = null)
         {
-            // get token
-            // check is valid
-            // save valid info into cache
-
             var resolver =
                 httpContext.RequestServices.GetService(typeof(Container));
 
@@ -81,15 +74,51 @@ namespace MAS.Payments.ActionFilters
 
                 if (queryProcessor != null)
                 {
+                    var query = new IsTokenValidQuery(token, UserTokenTypeEnum.Auth);
+
                     var isTokenValid =
-                        (queryProcessor as IQueryProcessor).Execute(
-                            new IsTokenValidQuery(token, UserTokenTypeEnum.Auth));
+                        (queryProcessor as IQueryProcessor).Execute(query);
+
+                    // todo: test
+                    UpdateCachedToken(cachedAuthToken, token, query.UserToken, isTokenValid);
 
                     return isTokenValid;
                 }
             }
 
             throw new Exception("QueryProcessor cannot be constructed");
+        }
+
+        private void UpdateCachedToken(CachedAuthToken cachedAuthToken, string token, UserToken userToken, bool isTokenValid)
+        {
+            if (isTokenValid)
+            {
+                if (cachedAuthToken == null)
+                {
+                    cachedAuthToken = new CachedAuthToken
+                    {
+                        Token = token,
+                        ActiveTo = userToken.ActiveTo.Value,
+                        CreatedAt = userToken.CreatedAt,
+                        LastChecked = DateTime.UtcNow,
+                        UserId = userToken.UserId,
+                        UserName = userToken.User.Login
+                    };
+                }
+                else
+                {
+                    cachedAuthToken.LastChecked = DateTime.UtcNow;
+                }
+
+                AuthTokensCache.SaveOrUpdate(cachedAuthToken);
+            }
+            else
+            {
+                if (cachedAuthToken != null)
+                {
+                    AuthTokensCache.Remove(token);
+                }
+            }
         }
     }
 }

@@ -29,8 +29,10 @@ import { IUserService } from 'services/IUserService';
 import { UserApiBackendService } from './services/implementations/backend/userApi.backend.service';
 import { UserService } from './services/implementations/user.service';
 
+import { IAuthApiBackendService } from 'services/backend/IAuthApi.backend';
 import { IAuthService } from 'services/IAuthService';
 import { AuthService } from './services/implementations/auth.service';
+import { AuthApiBackendService } from './services/implementations/backend/authApi.backend.service';
 
 @NgModule({
     imports: [
@@ -55,6 +57,7 @@ import { AuthService } from './services/implementations/auth.service';
         { provide: IUserApiBackendService, useClass: UserApiBackendService },
         { provide: IUserService, useClass: UserService },
 
+        {provide: IAuthApiBackendService, useClass: AuthApiBackendService },
         { provide: IAuthService, useClass: AuthService },
     ],
 })

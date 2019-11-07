@@ -22,7 +22,7 @@ class AuthApiBackendService implements IAuthApiBackendService {
 
     public authenticate(authenticateRequest: AuthenticateRequest): Observable<string> {
         return this.http
-            .post(`${this.apiPrefix}/auth`, authenticateRequest)
+            .post(`${this.apiPrefix}/authenticate`, authenticateRequest)
             .pipe(catchError(error => of(error)));
     }
 

@@ -19,12 +19,17 @@ namespace MAS.Payments.Queries
 
         public override bool Handle(IsTokenValidQuery query)
         {
-            var token = 
+            var token =
                 Repository.Get(
                     new CommonSpecification<UserToken>(
                         x => x.Token == query.Token && x.UserTokenTypeId == query.UserTokenTypeId));
 
-            return 
+            if (token != null)
+            {
+                query.UserToken = token;
+            }
+
+            return
                 token != null
                 && token.ActiveTo <= query.ActiveTo;
         }

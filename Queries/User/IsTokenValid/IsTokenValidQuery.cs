@@ -6,6 +6,8 @@ namespace MAS.Payments.Queries
 {
     public class IsTokenValidQuery : IQuery<bool>
     {
+        public UserToken UserToken { get; set; }
+
         public string Token { get; }
 
         public UserTokenTypeEnum TokenTypeEnum { get; }

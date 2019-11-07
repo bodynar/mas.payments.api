@@ -16,7 +16,7 @@ namespace MAS.Payments.Controllers
         ) : base(resolver) { }
 
         [HttpPost("[action]")]
-        public string Authenticate([FromBody] AuthenticateRequest request)
+        public string Authenticate([FromBody]AuthenticateRequest request)
         {
             var command =
                 new AuthenticateCommand(
@@ -31,7 +31,7 @@ namespace MAS.Payments.Controllers
 
         [Authorize]
         [HttpPost("[action]")]
-        public void LogOff([FromBody] string token)
+        public void LogOff([FromBody]string token)
         {
             CommandProcessor.Execute(new LogOffCommand(token));
 

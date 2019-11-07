@@ -9,19 +9,27 @@ import { AuthenticateRequest } from 'models/request/authenticateRequest';
 
 import { IAuthApiBackendService } from 'services/backend/IAuthApi.backend';
 import { IAuthService } from 'services/IAuthService';
+import { IHasherService } from 'services/IHasherService';
 
 @Injectable()
 class AuthService implements IAuthService {
 
     constructor(
         private authApiBackend: IAuthApiBackendService,
+        private hashService: IHasherService,
         // private loggingService: ILoggingService
     ) {
     }
 
     public authenticate(authenticateRequest: AuthenticateRequest): Observable<string> {
+        const request: AuthenticateRequest =
+        {
+            login: authenticateRequest.login,
+            passwordHash: this.hashService.generateHash(authenticateRequest.password)
+        };
+
         return this.authApiBackend
-            .authenticate(authenticateRequest)
+            .authenticate(request)
             .pipe(
                 map(response => {
                     const hasError: boolean =

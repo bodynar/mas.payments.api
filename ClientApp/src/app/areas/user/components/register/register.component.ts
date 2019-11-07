@@ -4,7 +4,6 @@ import { Subject } from 'rxjs';
 import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { INotificationService } from 'services/INotificationService';
-import { IRouterService } from 'services/IRouterService';
 import { IUserService } from 'services/IUserService';
 
 import { UserRegisterRequest } from 'models/request/userRegisterRequest';
@@ -27,7 +26,6 @@ class RegisterComponent implements OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
     ) {
         this.whenFormSubmit$
             .pipe(

@@ -6,6 +6,7 @@ import { map } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
+import { IHasherService } from 'services/IHasherService';
 import { IUserService } from 'services/IUserService';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
@@ -16,6 +17,7 @@ import { GetNotificationsResponse } from 'models/response/getNotificationsRespon
 class UserService implements IUserService {
     constructor(
         private userApiBackend: IUserApiBackendService,
+        private hashService: IHasherService,
         // private loggingService: ILoggingService
     ) {
     }
@@ -44,8 +46,16 @@ class UserService implements IUserService {
     }
 
     public register(userRegisterRequest: UserRegisterRequest): Observable<boolean> {
+        const request: UserRegisterRequest = {
+            login: userRegisterRequest.login,
+            passwordHash: this.hashService.generateHash(userRegisterRequest.password),
+            email: userRegisterRequest.email,
+            firstName: userRegisterRequest.firstName,
+            lastName: userRegisterRequest.lastName
+        };
+
         return this.userApiBackend
-            .register(userRegisterRequest)
+            .register(request)
             .pipe(map(response => isNullOrUndefined(response)));
     }
 

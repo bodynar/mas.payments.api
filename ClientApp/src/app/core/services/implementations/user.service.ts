@@ -9,7 +9,6 @@ import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
-import { UserLoginRequest } from 'models/request/userLoginRequest';
 import { UserRegisterRequest } from 'models/request/userRegisterRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
@@ -54,22 +53,6 @@ class UserService implements IUserService {
         return this.userApiBackend
             .confirmRegistration(token)
             .pipe(map(response => isNullOrUndefined(response)));
-    }
-
-    public login(loginInformation: UserLoginRequest): Observable<string> {
-        return this.userApiBackend
-            .login(loginInformation)
-            .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || response === '';
-
-                    if (hasError) {
-                        // this.loggingService.error(response);
-                    }
-
-                    return hasError ? '' : response;
-                }));
     }
 }
 

@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -9,7 +9,6 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
-import { UserLoginRequest } from 'models/request/userLoginRequest';
 import { UserRegisterRequest } from 'models/request/userRegisterRequest';
 import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
 
@@ -58,12 +57,6 @@ class UserApiBackendService implements IUserApiBackendService {
     public confirmRegistration(token: string): Observable<any> {
         return this.http
             .post(`${this.apiPrefix}/confirmRegistration`, { token: token })
-            .pipe(catchError(error => of(error)));
-    }
-
-    public login(loginInformation: UserLoginRequest): Observable<string> {
-        return this.http
-            .post(`${this.apiPrefix}/auth`, loginInformation)
             .pipe(catchError(error => of(error)));
     }
 }

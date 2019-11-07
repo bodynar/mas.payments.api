@@ -10,7 +10,7 @@ namespace MAS.Payments.Infrastructure.Cache
 
         public static void Save<T>(string key, T @object)
         {
-            Cache.AddOrUpdate(key, @object, (key, value) =>
+            Cache.AddOrUpdate(key, @object, (recordKey, value) =>
             {
                 value = @object;
                 return @object;

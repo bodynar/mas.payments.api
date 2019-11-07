@@ -54,7 +54,7 @@ namespace MAS.Payments.Commands
 
             UserTokenRepository.Add(authToken);
 
-            command.Token = token;
+            command.Token = authToken;
         }
     }
 }

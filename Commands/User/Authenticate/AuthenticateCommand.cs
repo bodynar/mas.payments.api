@@ -1,4 +1,5 @@
 using System;
+using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
@@ -11,7 +12,7 @@ namespace MAS.Payments.Commands
 
         public bool RememberMe { get; }
 
-        public string Token { get; set; }
+        public UserToken Token { get; set; }
 
         public AuthenticateCommand(string login, string passwordHash, bool rememberMe = false)
         {

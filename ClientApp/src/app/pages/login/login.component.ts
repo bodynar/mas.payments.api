@@ -1,42 +1,46 @@
 import { Component, OnDestroy } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { UserLoginRequest } from 'models/request/userLoginRequest';
+import { AuthenticateRequest } from 'models/request/authenticateRequest';
 
 import { IAuthService } from 'services/IAuthService';
 import { IRouterService } from 'services/IRouterService';
-import { IUserService } from 'services/IUserService';
 
 @Component({
     templateUrl: 'login.template.pug',
     styleUrls: ['login.style.styl']
 })
 class LoginComponent implements OnDestroy {
-    public userLoginRequest: UserLoginRequest =
-        new UserLoginRequest();
+    public userLoginRequest: AuthenticateRequest =
+        new AuthenticateRequest();
 
+    public isBusy$: Subject<boolean> =
+        new BehaviorSubject(false);
 
-    private whenUserAttemptAuth$: Subject<NgForm> =
+    public whenUserAttemptAuth$: Subject<NgForm> =
         new Subject();
+
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     constructor(
         private routerService: IRouterService,
-        private userService: IUserService,
         private authService: IAuthService,
     ) {
         this.whenUserAttemptAuth$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(form => form.valid),
-                switchMap(_ => this.userService.login(this.userLoginRequest)),
+                tap(_ => this.isBusy$.next(true)),
+                switchMap(_ => this.authService.authenticate(this.userLoginRequest)),
+                delay(1 * 1500),
+                tap(_ => this.isBusy$.next(false)),
                 filter(token => {
                     const isTokenValid: boolean =
                         !isNullOrUndefined(token) && token !== '';
@@ -46,6 +50,7 @@ class LoginComponent implements OnDestroy {
                     return isTokenValid;
                 }),
                 tap(token => this.authService.setAuthToken(token)),
+                delay(1 * 1500),
             )
             .subscribe(_ => {
                 this.routerService.navigate(['app']);

@@ -6,7 +6,11 @@ doctype html
         .auth-card
             .auth-image
                 img(src='images/img-login.png', alt='Payments logo')
-            .auth-form
+            form.auth-form(
+                #form='ngForm',
+                [class.was-validated]='!!(whenUserAttemptAuth$ | async)',
+                (submit)='onUserTryAuth(form)'
+            )
                 .info
                     h3 Sign in
                     p Please, sign in to use all features of service. Use values from your registration form.
@@ -16,7 +20,10 @@ doctype html
                         input.form-control#login(
                             type='text',
                             name='login',
-                            placeholder='kraken89'
+                            placeholder='kraken89',
+                            [(ngModel)]='userLoginRequest.login',
+                            #login='ngModel',
+                            required='required'
                         )
                 .form-row
                     label(for='password') Password
@@ -24,7 +31,23 @@ doctype html
                         input.form-control#password(
                             type='password',
                             name='password',
-                            placeholder='password10'
+                            placeholder='password10',
+                            [(ngModel)]='userLoginRequest.password',
+                            #password='ngModel',
+                            required='required'
                         )
                 .form-row
-                    button.btn.btn-sm.btn-primary() Sign in
+                    button.btn.btn-primary(
+                        *ngIf='isBusy$ | async',
+                        type='button',
+                        disabled='disabled'
+                    )
+                        span.spinner-border.spinner-border-sm(
+                            role='status',
+                            aria-hidden='true'
+                        )
+                        |  Signing..
+                    button.btn.btn-sm.btn-primary(
+                        *ngIf='!(isBusy$ | async)',
+                        type='submit'
+                    ) Sign in

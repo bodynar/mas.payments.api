@@ -34,6 +34,9 @@ import { IAuthService } from 'services/IAuthService';
 import { AuthService } from './services/implementations/auth.service';
 import { AuthApiBackendService } from './services/implementations/backend/authApi.backend.service';
 
+import { IHasherService } from 'services/IHasherService';
+import { HasherService } from './services/implementations/hasher.service';
+
 @NgModule({
     imports: [
         HttpClientModule
@@ -57,8 +60,10 @@ import { AuthApiBackendService } from './services/implementations/backend/authAp
         { provide: IUserApiBackendService, useClass: UserApiBackendService },
         { provide: IUserService, useClass: UserService },
 
-        {provide: IAuthApiBackendService, useClass: AuthApiBackendService },
+        { provide: IAuthApiBackendService, useClass: AuthApiBackendService },
         { provide: IAuthService, useClass: AuthService },
+
+        { provide: IHasherService, useClass: HasherService }
     ],
 })
 class CoreModule { }

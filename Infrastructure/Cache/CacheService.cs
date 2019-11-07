@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+
 namespace MAS.Payments.Infrastructure.Cache
 {
     public static class CacheService
@@ -30,6 +31,16 @@ namespace MAS.Payments.Infrastructure.Cache
             }
 
             throw new Exception($"Cache record isn't accessible or cannot be converted into {typeof(T).Name} type.");
+        }
+
+        public static void Remove(string key)
+        {
+            var isSuccess = Cache.TryRemove(key, out object objectResult);
+
+            if (!isSuccess)
+            {
+                throw new Exception($"Cache record {key} cannot be removed.");
+            }
         }
     }
 }

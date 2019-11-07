@@ -41,12 +41,11 @@ namespace MAS.Payments.ActionFilters
 
             if (!string.IsNullOrEmpty(token))
             {
-                // solve about storing user tokens
                 var cachedToken = AuthTokensCache.Get(token);
 
                 if (cachedToken != null)
                 {
-                    var minutesSinceLastCheck = Math.Round((DateTime.UtcNow - cachedToken.LastChecked).TotalMinutes);
+                    var minutesSinceLastCheck = (DateTime.UtcNow - cachedToken.LastChecked).TotalMinutes;
 
                     if (minutesSinceLastCheck > 5)
                     {

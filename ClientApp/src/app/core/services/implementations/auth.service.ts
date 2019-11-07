@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -14,7 +14,7 @@ import { IAuthService } from 'services/IAuthService';
 class AuthService implements IAuthService {
 
     constructor(
-        private authApiBackend: IAuthApiBackendService
+        private authApiBackend: IAuthApiBackendService,
     ) {
     }
 
@@ -34,12 +34,32 @@ class AuthService implements IAuthService {
                 }));
     }
 
+    public logOff(): Observable<boolean> {
+        return this.authApiBackend
+            .logOff()
+            .pipe(
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                    else {
+                        this.removeAuthToken();
+                    }
+                }),
+            );
+    }
+
     public setAuthToken(token: string): void {
         localStorage.setItem('auth-token', token);
     }
 
     public getAuthToken(): string {
         return localStorage.getItem('auth-token');
+    }
+
+    private removeAuthToken(): void {
+        localStorage.removeItem('auth-token');
     }
 }
 

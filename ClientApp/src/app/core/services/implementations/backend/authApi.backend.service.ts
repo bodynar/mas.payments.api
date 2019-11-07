@@ -17,7 +17,6 @@ class AuthApiBackendService implements IAuthApiBackendService {
 
     constructor(
         private http: HttpClient,
-        private authService: IAuthService,
     ) {
     }
 
@@ -27,10 +26,7 @@ class AuthApiBackendService implements IAuthApiBackendService {
             .pipe(catchError(error => of(error)));
     }
 
-    public logOff(): Observable<any> {
-        const authToken: string =
-            this.authService.getAuthToken();
-
+    public logOff(authToken: string): Observable<any> {
         return this.http
             .post(`${this.apiPrefix}/logOff`, authToken)
             .pipe(catchError(error => of(error)));

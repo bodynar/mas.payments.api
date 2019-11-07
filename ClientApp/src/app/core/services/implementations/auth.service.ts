@@ -15,6 +15,7 @@ class AuthService implements IAuthService {
 
     constructor(
         private authApiBackend: IAuthApiBackendService,
+        // private loggingService: ILoggingService
     ) {
     }
 
@@ -35,8 +36,11 @@ class AuthService implements IAuthService {
     }
 
     public logOff(): Observable<boolean> {
+        const authToken: string =
+            this.getAuthToken();
+
         return this.authApiBackend
-            .logOff()
+            .logOff(authToken)
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {

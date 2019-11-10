@@ -7,18 +7,18 @@ using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.Commands
 {
-    internal class LogOffCommandHandler : BaseCommandHandler<LogOffCommand>
+    internal class LogoutCommandHandler : BaseCommandHandler<LogoutCommand>
     {
         private IRepository<UserToken> Repository { get; }
 
-        public LogOffCommandHandler(
+        public LogoutCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<UserToken>();
         }
 
-        public override void Handle(LogOffCommand command)
+        public override void Handle(LogoutCommand command)
         {
             var userTokenEntity =
                 Repository.Get(new CommonSpecification<UserToken>(x => x.Token == command.Token));

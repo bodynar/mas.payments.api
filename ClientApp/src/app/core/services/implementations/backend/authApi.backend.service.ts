@@ -26,9 +26,9 @@ class AuthApiBackendService implements IAuthApiBackendService {
             .pipe(catchError(error => of(error)));
     }
 
-    public logOff(authToken: string): Observable<any> {
+    public logout(authToken: string): Observable<any> {
         return this.http
-            .post(`${this.apiPrefix}/logOff`, authToken)
+            .post(`${this.apiPrefix}/logout`, authToken)
             .pipe(catchError(error => of(error)));
     }
 }

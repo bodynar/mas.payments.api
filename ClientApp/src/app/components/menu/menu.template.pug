@@ -23,6 +23,10 @@ ul.menubar
                             (click)='!menuItem.isEnabled ? null : onMenuItemClick(menuItem.link)'
                         ) {{ menuItem.name }}
             li.item
-                app-user.menu-icon
+                app-user-profile.menu-icon
+            li.item(
+                *ngIf='isAuthenticated$ | async'
+            )
+                app-user-logout.menu-icon
             li.item
                 app-bell.menu-icon

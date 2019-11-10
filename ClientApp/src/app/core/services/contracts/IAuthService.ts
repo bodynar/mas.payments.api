@@ -5,7 +5,7 @@ import { AuthenticateRequest } from 'models/request/authenticateRequest';
 abstract class IAuthService {
     abstract authenticate(authenticateRequest: AuthenticateRequest): Observable<string>;
 
-    abstract logOff(): Observable<boolean>;
+    abstract logout(): Observable<boolean>;
 
     abstract setAuthToken(token: string): void;
 

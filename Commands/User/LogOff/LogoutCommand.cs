@@ -3,11 +3,11 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class LogOffCommand : ICommand
+    public class LogoutCommand : ICommand
     {
         public string Token { get; }
 
-        public LogOffCommand(string token)
+        public LogoutCommand(string token)
         {
             Token = token ?? throw new ArgumentNullException(nameof(Token));
         }

@@ -43,7 +43,7 @@ class AuthService implements IAuthService {
                 }));
     }
 
-    public logOff(): Observable<boolean> {
+    public logout(): Observable<boolean> {
         const authToken: string =
             this.getAuthToken();
 

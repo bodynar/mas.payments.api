@@ -7,7 +7,7 @@ import { IRouterService } from 'services/IRouterService';
 import { IUserService } from 'services/IUserService';
 
 @Component({
-    selector: 'app-user',
+    selector: 'app-user-profile',
     templateUrl: 'user.template.pug',
     styleUrls: ['user.style.styl']
 })

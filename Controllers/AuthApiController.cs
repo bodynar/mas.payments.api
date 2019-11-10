@@ -31,9 +31,9 @@ namespace MAS.Payments.Controllers
 
         [Authorize]
         [HttpPost("[action]")]
-        public void LogOff([FromBody]string token)
+        public void Logout([FromBody]string token)
         {
-            CommandProcessor.Execute(new LogOffCommand(token));
+            CommandProcessor.Execute(new LogoutCommand(token));
 
             AuthTokensCache.Remove(token);
         }

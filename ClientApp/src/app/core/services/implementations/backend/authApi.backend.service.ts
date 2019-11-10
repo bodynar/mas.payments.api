@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -23,6 +23,16 @@ class AuthApiBackendService implements IAuthApiBackendService {
     public authenticate(authenticateRequest: AuthenticateRequest): Observable<string> {
         return this.http
             .post(`${this.apiPrefix}/authenticate`, authenticateRequest)
+            .pipe(catchError(error => of(error)));
+    }
+
+    public isAuthenticated(token: string): Observable<boolean> {
+        return this.http
+            .get(`${this.apiPrefix}/isTokenValid`, {
+                params: new HttpParams({
+                    fromObject: { token: `${token}` }
+                })
+            })
             .pipe(catchError(error => of(error)));
     }
 

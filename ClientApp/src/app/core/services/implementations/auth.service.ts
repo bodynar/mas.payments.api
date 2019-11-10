@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -41,6 +41,25 @@ class AuthService implements IAuthService {
 
                     return hasError ? '' : response;
                 }));
+    }
+
+    public isAuthenticated(): Observable<boolean> {
+        const authToken: string =
+            this.getAuthToken();
+
+        if (isNullOrUndefined(authToken) || authToken === '') {
+            return of(false);
+        }
+
+        return this.authApiBackend
+            .isAuthenticated(authToken)
+            .pipe(
+                tap(isTokenValid => {
+                    if (!isTokenValid) {
+                        this.removeAuthToken();
+                    }
+                }),
+            );
     }
 
     public logout(): Observable<boolean> {

@@ -7,6 +7,8 @@ abstract class IAuthService {
 
     abstract logout(): Observable<boolean>;
 
+    abstract isAuthenticated(): Observable<boolean>;
+
     abstract setAuthToken(token: string): void;
 
     abstract getAuthToken(): string;

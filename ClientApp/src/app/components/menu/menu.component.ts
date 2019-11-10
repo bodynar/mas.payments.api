@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -9,6 +9,7 @@ import { siteMenu } from 'src/static/siteMenu';
 
 import { MenuItem } from 'models/menuItem';
 
+import { IAuthService } from 'services/IAuthService';
 import { IRouterService } from 'services/IRouterService';
 
 @Component({
@@ -17,6 +18,9 @@ import { IRouterService } from 'services/IRouterService';
     styleUrls: ['menu.style.styl']
 })
 class MenuComponent implements OnInit, OnDestroy {
+    public isAuthenticated$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public menuItems$: Subject<Array<MenuItem>> =
         new ReplaySubject(1);
 
@@ -30,9 +34,14 @@ class MenuComponent implements OnInit, OnDestroy {
 
     constructor(
         private routerService: IRouterService,
+        private authService: IAuthService,
     ) {
         this.menuItems = siteMenu;
         this.menuItems$.next(this.menuItems);
+
+        this.authService
+            .isAuthenticated()
+            .subscribe(isAuthenticated => this.isAuthenticated$.next(isAuthenticated));
     }
 
     public ngOnInit(): void {
@@ -43,10 +52,10 @@ class MenuComponent implements OnInit, OnDestroy {
 
         const currentRoute: string =
             this.routerService
-            .getCurrentRoute()
-            .split('/')
-            .slice(1)
-            .join('/');
+                .getCurrentRoute()
+                .split('/')
+                .slice(1)
+                .join('/');
 
         this.highlightMenuItem(currentRoute);
     }

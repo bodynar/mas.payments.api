@@ -2,7 +2,7 @@ using System;
 
 namespace MAS.Payments.DataBase
 {
-    public class MeterMeasurement : Entity
+    public partial class MeterMeasurement : Entity
     {
         public double Measurement { get; set; }
 

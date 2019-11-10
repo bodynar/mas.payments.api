@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace MAS.Payments.DataBase
 {
-    public class PaymentType : Entity
+    public partial class PaymentType : Entity
     {
         public string SystemName { get; set; }
         

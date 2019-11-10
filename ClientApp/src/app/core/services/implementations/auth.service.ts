@@ -86,7 +86,16 @@ class AuthService implements IAuthService {
     }
 
     public getAuthToken(): string {
-        return localStorage.getItem('auth-token');
+        let token: string =
+            localStorage.getItem('auth-token');
+
+        if (token === '[object Object]') {
+            this.removeAuthToken();
+            // this.loggingService.errro()'
+            token = '';
+        }
+
+        return token;
     }
 
     private removeAuthToken(): void {

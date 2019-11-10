@@ -1,14 +1,16 @@
-using System.Linq;
-using System.Collections;
 using System.Collections.Generic;
+
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
+using MAS.Payments.ActionFilters;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
 {
+    [Authorize]
     [Route("api/measures")]
     public class MeterMeasurementApiController : BaseApiController
     {

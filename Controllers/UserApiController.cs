@@ -2,15 +2,19 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+
+using MAS.Payments.ActionFilters;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
 using MAS.Payments.Notifications;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
 {
+    [Authorize]
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {
@@ -46,6 +50,7 @@ namespace MAS.Payments.Controllers
             MailProcessor.Send(new TestMailMessageWithModel(request.Recipient, request.Counter, request.Name));
         }
 
+        [AllowAnonymous]
         [HttpPost("[action]")]
         public void Register([FromBody]RegistrationRequest request)
         {
@@ -65,6 +70,7 @@ namespace MAS.Payments.Controllers
                     request.FirstName, request.LastName));
         }
 
+        [AllowAnonymous]
         [HttpPost("[action]")]
         public void ConfirmRegistration([FromBody]string token)
         {

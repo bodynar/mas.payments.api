@@ -1,12 +1,15 @@
 using System.Collections.Generic;
+using MAS.Payments.ActionFilters;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
 {
+    [Authorize]
     [Route("api/payment")]
     public class PaymentApiController : BaseApiController
     {

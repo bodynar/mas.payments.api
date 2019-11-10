@@ -200,6 +200,20 @@ namespace MAS.Payments.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("UserTokenTypes");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1L,
+                            Description = "Token used for authentication system",
+                            Name = "Auth"
+                        },
+                        new
+                        {
+                            Id = 2L,
+                            Description = "Token used for user registration",
+                            Name = "RegistrationConfirm"
+                        });
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurement", b =>

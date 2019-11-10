@@ -1,9 +1,13 @@
 using System;
+using System.Linq;
+
 using MAS.Payments.Infrastructure;
+using MAS.Payments.Infrastructure.Cache;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Notifications;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -49,6 +53,15 @@ namespace MAS.Payments.Controllers
             queryProcessor = new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>());
             notificationProcessor = new Lazy<INotificationProcessor>(Resolver.Resolve<INotificationProcessor>());
             mailProcessor = new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>());
+        }
+
+        protected long? GetCachedUserId()
+        {
+            var userToken = HttpContext.Request.Headers["auth-token"].FirstOrDefault();
+
+            var cachedAuthToken = AuthTokensCache.Get(userToken);
+
+            return cachedAuthToken?.UserId;
         }
     }
 }

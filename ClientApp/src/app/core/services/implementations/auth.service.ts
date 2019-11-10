@@ -48,7 +48,7 @@ class AuthService implements IAuthService {
             this.getAuthToken();
 
         return this.authApiBackend
-            .logOff(authToken)
+            .logout(authToken)
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {

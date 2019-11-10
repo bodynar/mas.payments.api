@@ -1,5 +1,6 @@
 .user
     span.icon.oi.oi-person(
         (click)='onIconClick()',
-        [class.active]='isUserPage$ | async'
+        [class.active]='isUserPage$ | async',
+        title='My profile'
     )

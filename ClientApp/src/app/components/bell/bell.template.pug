@@ -1,6 +1,7 @@
 .notification(
     [class.collapsed]='isNotificationsHidden',
-    (click)='notificationsToggle($event.target)'
+    (click)='notificationsToggle($event.target)',
+    title='Notifications'
 )
     .bell
         span.oi.oi-bell

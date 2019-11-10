@@ -11,6 +11,7 @@ import { AppContainerComponent } from './component/appContainer.component';
 import { AppComponent } from './components/app/app.component';
 import { BellComponent } from './components/bell/bell.component';
 import { HomeComponent } from './components/home/home.component';
+import { LogoutComponent } from './components/logout/logout.component';
 import { MenuComponent } from './components/menu/menu.component';
 import { NotificatorComponent } from './components/notificator/notificator.component';
 import { AppUserComponent } from './components/user/user.component';
@@ -31,6 +32,7 @@ import { AuthHeaderInterceptor } from './interceptors/auth.interceptor';
     MenuComponent,
     BellComponent,
     AppUserComponent,
+    LogoutComponent,
     NotificatorComponent
   ],
   imports: [

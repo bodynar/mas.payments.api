@@ -3,8 +3,8 @@ using System.Linq.Expressions;
 
 namespace MAS.Payments.DataBase
 {
-    public partial class MeterMeasurement : Entity, IOwnedEntity<MeterMeasurement>
+    public partial class MeterMeasurement : OwnedEntity<MeterMeasurement>
     {
-        public Expression<Func<MeterMeasurement, long>> EntityOwnerId => entity => entity.Author.Id;
+        public override Expression<Func<MeterMeasurement, long>> EntityOwnerId => entity => entity.Author.Id;
     }
 }

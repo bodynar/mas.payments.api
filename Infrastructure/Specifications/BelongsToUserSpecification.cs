@@ -1,5 +1,6 @@
 using System;
 using System.Linq.Expressions;
+
 using MAS.Payments.DataBase;
 
 namespace MAS.Payments.Infrastructure.Specification

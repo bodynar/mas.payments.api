@@ -36,7 +36,8 @@ namespace MAS.Payments.Commands
                 Measurement = command.Measurement,
                 Comment = command.Comment,
                 Date = command.Date,
-                MeterMeasurementTypeId = command.MeterMeasurementTypeId
+                MeterMeasurementTypeId = command.MeterMeasurementTypeId,
+                AuthorId = command.UserId
             };
 
             Repository.Add(meterMeasurement);

@@ -35,7 +35,8 @@ namespace MAS.Payments.Commands
                 Amount = command.Amount,
                 Date = command.Date,
                 Description = command.Description,
-                PaymentTypeId = command.PaymentTypeId
+                PaymentTypeId = command.PaymentTypeId,
+                AuthorId = command.UserId
             };
 
             Repository.Add(payment);

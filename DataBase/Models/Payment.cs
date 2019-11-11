@@ -12,6 +12,8 @@ namespace MAS.Payments.DataBase
 
         public virtual User Author { get; set; }
 
+        public long? AuthorId { get; set; }
+
         public long PaymentTypeId { get; set; }
 
         public virtual PaymentType PaymentType { get; set; }

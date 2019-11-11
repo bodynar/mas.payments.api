@@ -14,6 +14,8 @@ namespace MAS.Payments.DataBase
 
         public virtual User Author { get; set; }
 
+        public long? AuthorId { get; set; }
+
         public long MeterMeasurementTypeId { get; set; }
 
         public virtual MeterMeasurementType MeasurementType { get; set; }

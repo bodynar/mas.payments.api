@@ -36,8 +36,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPaymentType([FromBody]AddPaymentTypeRequest request)
         {
+            var userId = GetCachedUserId();
+
             CommandProcessor.Execute(
-                new AddPaymentTypeCommand(request.Name, request.Description, request.Company));
+                new AddPaymentTypeCommand(
+                    userId, request.Name, request.Description, request.Company));
         }
 
         [HttpPost("[action]")]
@@ -76,8 +79,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPayment([FromBody]AddPaymentRequest request)
         {
+            var userId = GetCachedUserId();
+
             CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
+                new AddPaymentCommand(
+                    userId, request.PaymentTypeId, request.Amount, request.Date, request.Description));
         }
 
         [HttpPost("[action]")]

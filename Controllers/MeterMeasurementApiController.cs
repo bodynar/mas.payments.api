@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using MAS.Payments.Commands;
@@ -37,8 +38,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
         {
+            var userId = GetCachedUserId();
+
             CommandProcessor.Execute(
-                new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
+                new AddMeterMeasurementTypeCommand(
+                    userId, request.PaymentTypeId, request.Name, request.Description));
         }
 
         [HttpPost("[action]")]
@@ -76,8 +80,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddMeasurement(AddMeterMeasurementRequest request)
         {
+            var userId = GetCachedUserId();
+
             CommandProcessor.Execute(
-                new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment));
+                new AddMeterMeasurementCommand(
+                    userId, request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment));
         }
 
         [HttpPost("[action]")]
@@ -98,7 +105,8 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void SendMeasurements(IEnumerable<long> measurementIdentifiers)
         {
-            CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
+            throw new NotImplementedException();
+            // CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
         }
 
         #endregion

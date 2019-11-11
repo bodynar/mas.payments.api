@@ -55,13 +55,16 @@ namespace MAS.Payments.Controllers
             mailProcessor = new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>());
         }
 
-        protected long? GetCachedUserId()
+        protected long GetCachedUserId()
         {
             var userToken = HttpContext.Request.Headers["auth-token"].FirstOrDefault();
 
             var cachedAuthToken = AuthTokensCache.Get(userToken);
-
-            return cachedAuthToken?.UserId;
+            
+            // todo: solve
+            // cachedAuthToken can be null, but method should be used in [Authorize] methods
+            
+            return cachedAuthToken.UserId;
         }
     }
 }

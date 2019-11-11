@@ -5,13 +5,14 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class SendMeasurementsCommand : ICommand
+    public class SendMeasurementsCommand : UserCommand
     {
         public string Recipient { get; }
         
         public IEnumerable<long> MeterMeasurementIdentifiers { get; }
 
-        public SendMeasurementsCommand(string recipient, IEnumerable<long> meterMeasurementIdentifiers)
+        public SendMeasurementsCommand(long userId, string recipient, IEnumerable<long> meterMeasurementIdentifiers)
+            : base(userId)
         {
             Recipient = recipient ?? throw new ArgumentException(nameof(recipient));
             MeterMeasurementIdentifiers = meterMeasurementIdentifiers;

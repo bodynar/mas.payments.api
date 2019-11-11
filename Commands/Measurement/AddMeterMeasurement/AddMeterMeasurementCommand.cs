@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class AddMeterMeasurementCommand : ICommand
+    public class AddMeterMeasurementCommand : UserCommand
     {
         public double Measurement { get; }
 
@@ -14,7 +14,8 @@ namespace MAS.Payments.Commands
 
         public long MeterMeasurementTypeId { get; }
 
-        public AddMeterMeasurementCommand(long meterMeasurementTypeId, DateTime date, double measurement, string comment = null)
+        public AddMeterMeasurementCommand(long userId, long meterMeasurementTypeId, DateTime date, double measurement, string comment = null)
+            : base(userId)
         {
             Measurement = measurement;
             Comment = comment;

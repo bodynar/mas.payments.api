@@ -3,7 +3,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class AddPaymentTypeCommand : ICommand
+    public class AddPaymentTypeCommand : UserCommand
     {
         public string Name { get; }
 
@@ -11,7 +11,8 @@ namespace MAS.Payments.Commands
 
         public string Company { get; }
 
-        public AddPaymentTypeCommand(string name, string description, string company)
+        public AddPaymentTypeCommand(long userId, string name, string description, string company)
+            : base(userId)
         {
             Name = name;
             Description = description;

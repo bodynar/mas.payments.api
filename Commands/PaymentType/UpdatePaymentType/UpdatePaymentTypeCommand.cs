@@ -2,7 +2,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class UpdatePaymentTypeCommand : ICommand
+    public class UpdatePaymentTypeCommand : UserCommand
     {
         public long Id { get; }
 
@@ -12,7 +12,8 @@ namespace MAS.Payments.Commands
 
         public string Company { get; }
 
-        public UpdatePaymentTypeCommand(long id, string name, string description, string company)
+        public UpdatePaymentTypeCommand(long userId, long id, string name, string description, string company)
+            : base(userId)
         {
             Id = id;
             Name = name;

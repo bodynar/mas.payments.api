@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+
 using MAS.Payments.Infrastructure;
 
 namespace MAS.Payments.Notifications
 {
-    internal class TestNotificator : BaseNotificator
+    internal class TestNotificator : BasePublicNotificator
     {
         public TestNotificator(
             IResolver resolver

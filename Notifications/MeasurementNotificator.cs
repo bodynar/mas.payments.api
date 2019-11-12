@@ -1,21 +1,20 @@
-using System.Linq;
 using System;
+using System.Linq;
 using System.Collections.Generic;
+
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Queries;
 
 namespace MAS.Payments.Notifications
 {
-    internal class MeasurementNotificator : BaseNotificator
+    internal class MeasurementNotificator : BaseUserNotificator
     {
-
         public MeasurementNotificator(
             IResolver resolver
         ) : base(resolver)
-        {
-        }
+        { }
 
-        public override IEnumerable<Notification> GetNotifications()
+        public override IEnumerable<Notification> GetNotifications(long userId)
         {
             var today = DateTime.Today;
 
@@ -23,7 +22,7 @@ namespace MAS.Payments.Notifications
             {
                 var measurements =
                     QueryProcessor.Execute(
-                        new GetMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
+                        new GetMeterMeasurementsQuery(userId, (byte?)today.Month, year: today.Year)
                     )
                     .Select(x => x.MeterMeasurementTypeId);
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using MAS.Payments.Comparators;
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
@@ -32,15 +33,15 @@ namespace MAS.Payments.Queries
 
         public override GetStatisticsResponse Handle(GetStatisticsQuery query)
         {
-            Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
+            Specification<Payment> filter = new BelongsToUser<Payment>(query.UserId);
 
             if (query.Year.HasValue)
             {
-                filter = new CommonSpecification<Payment>(x => x.Date.Value.Year == query.Year.Value);
+                filter = filter && new CommonSpecification<Payment>(x => x.Date.Value.Year == query.Year.Value);
             }
             else if (query.IsDatePeriodSpecified)
             {
-                filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
+                filter = filter && new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
 
             var response = new GetStatisticsResponse();

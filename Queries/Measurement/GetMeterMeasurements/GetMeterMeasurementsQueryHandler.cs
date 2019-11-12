@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
@@ -21,7 +22,7 @@ namespace MAS.Payments.Queries
 
         public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
         {
-            Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
+            Specification<MeterMeasurement> filter = new BelongsToUser<MeterMeasurement>(query.UserId);
 
             if (query.Month.HasValue)
             {

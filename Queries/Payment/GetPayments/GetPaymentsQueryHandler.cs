@@ -22,7 +22,7 @@ namespace MAS.Payments.Queries
 
         public override IEnumerable<GetPaymentsResponse> Handle(GetPaymentsQuery query)
         {
-            Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
+            Specification<Payment> filter = new BelongsToUser<Payment>(query.UserId);
 
             if (query.PaymentTypeId.HasValue)
             {

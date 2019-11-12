@@ -101,7 +101,7 @@ namespace MAS.Payments.ActionFilters
                         CreatedAt = userToken.CreatedAt,
                         LastChecked = DateTime.UtcNow,
                         UserId = userToken.UserId,
-                        UserName = userToken.User.Login
+                        UserLogin = userToken.User.Login
                     };
                 }
                 else

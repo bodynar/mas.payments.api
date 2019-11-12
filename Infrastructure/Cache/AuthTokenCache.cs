@@ -21,7 +21,7 @@ namespace MAS.Payments.Infrastructure.Cache
                 CreatedAt = token.CreatedAt,
                 LastChecked = DateTime.UtcNow,
                 UserId = token.UserId,
-                UserName = token.User.Login
+                UserLogin = token.User.Login
             };
 
             CacheService.Save($"authToken: {token.Token}", cachedAuthToken);

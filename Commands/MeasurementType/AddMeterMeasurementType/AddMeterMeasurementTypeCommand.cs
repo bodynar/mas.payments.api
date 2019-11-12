@@ -3,7 +3,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class AddMeterMeasurementTypeCommand : UserCommand
+    public class AddMeterMeasurementTypeCommand : BaseUserCommand
     {
         public string Name { get; }
 

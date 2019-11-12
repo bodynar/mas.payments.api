@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class AddMeterMeasurementCommand : UserCommand
+    public class AddMeterMeasurementCommand : BaseUserCommand
     {
         public double Measurement { get; }
 

@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class AddPaymentCommand : UserCommand
+    public class AddPaymentCommand : BaseUserCommand
     {
         public double Amount { get; }
 

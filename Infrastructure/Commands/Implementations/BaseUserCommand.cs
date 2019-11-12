@@ -1,11 +1,11 @@
 namespace MAS.Payments.Infrastructure.Command
 {
     // todo: find better name
-    public abstract class UserCommand : ICommand
+    public abstract class BaseUserCommand : ICommand
     {
         public long UserId { get; }
 
-        public UserCommand(long userId)
+        public BaseUserCommand(long userId)
         {
             UserId = userId;
         }

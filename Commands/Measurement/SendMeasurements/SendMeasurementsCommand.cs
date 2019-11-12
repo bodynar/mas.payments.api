@@ -5,7 +5,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class SendMeasurementsCommand : UserCommand
+    public class SendMeasurementsCommand : BaseUserCommand
     {
         public string Recipient { get; }
         

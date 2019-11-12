@@ -10,7 +10,7 @@ namespace MAS.Payments.Commands
 
         public ConfirmRegistrationCommand(string token)
         {
-            Token = token ?? throw new ArgumentException(nameof(Token));
+            Token = token ?? throw new ArgumentNullException(nameof(Token));
         }
     }
 }

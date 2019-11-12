@@ -20,9 +20,9 @@ namespace MAS.Payments.Commands
 
         public RegisterUserCommand(string login, string passwordHash, string email, string firstName, string lastName)
         {
-            Login = login ?? throw new ArgumentException(nameof(login));
-            PasswordHash = passwordHash ?? throw new ArgumentException(nameof(passwordHash));
-            Email = email ?? throw new ArgumentException(nameof(email));
+            Login = login ?? throw new ArgumentNullException(nameof(login));
+            PasswordHash = passwordHash ?? throw new ArgumentNullException(nameof(passwordHash));
+            Email = email ?? throw new ArgumentNullException(nameof(email));
             FirstName = firstName;
             LastName = lastName;
         }

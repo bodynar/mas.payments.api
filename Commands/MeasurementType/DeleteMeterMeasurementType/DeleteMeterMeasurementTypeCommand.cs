@@ -3,12 +3,11 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class DeleteMeterMeasurementTypeCommand : UserCommand
+    public class DeleteMeterMeasurementTypeCommand : ICommand
     {
         public long MeterMeasurementTypeId { get; set; }
 
-        public DeleteMeterMeasurementTypeCommand(long userId, long meterMeasurementTypeId)
-            : base(userId)
+        public DeleteMeterMeasurementTypeCommand(long meterMeasurementTypeId)
         {
             MeterMeasurementTypeId = meterMeasurementTypeId;
         }

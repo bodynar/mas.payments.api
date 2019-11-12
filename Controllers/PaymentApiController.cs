@@ -46,21 +46,16 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new UpdatePaymentTypeCommand(
-                    userId, request.Id, request.Name, request.Description, request.Company)
+                new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company)
             );
         }
 
         [HttpDelete("[action]")]
         public void DeletePaymentType(long paymentTypeId)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new DeletePaymentTypeCommand(userId, paymentTypeId));
+                new DeletePaymentTypeCommand(paymentTypeId));
         }
 
         #endregion
@@ -94,21 +89,16 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePayment(UpdatePaymentRequest request)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new UpdatePaymentCommand(
-                    userId, request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
+                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
             );
         }
 
         [HttpDelete("[action]")]
         public void DeletePayment(long paymentId)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new DeletePaymentCommand(userId, paymentId));
+                new DeletePaymentCommand(paymentId));
         }
 
         #endregion

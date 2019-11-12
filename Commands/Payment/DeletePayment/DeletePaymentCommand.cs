@@ -3,12 +3,11 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class DeletePaymentCommand : UserCommand
+    public class DeletePaymentCommand : ICommand
     {
         public long PaymentId { get; set; }
 
-        public DeletePaymentCommand(long userId, long paymentId)
-            : base(userId)
+        public DeletePaymentCommand(long paymentId)
         {
             PaymentId = paymentId;
         }

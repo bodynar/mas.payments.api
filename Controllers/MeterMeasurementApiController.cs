@@ -48,21 +48,16 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new UpdateMeterMeasurementTypeCommand(
-                    userId, request.Id, request.PaymentTypeId, request.Name, request.Description)
+                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description)
             );
         }
 
         [HttpDelete("[action]")]
         public void DeleteMeasurementType(long measurementTypeId)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementTypeCommand(userId, measurementTypeId));
+                new DeleteMeterMeasurementTypeCommand(measurementTypeId));
         }
 
         #endregion
@@ -95,21 +90,16 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new UpdateMeterMeasurementCommand(
-                    userId, request.Id, request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment)
+                new UpdateMeterMeasurementCommand(request.Id, request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment)
             );
         }
 
         [HttpDelete("[action]")]
         public void DeleteMeasurement(long measurementId)
         {
-            var userId = GetCachedUserId();
-
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementCommand(userId, measurementId));
+                new DeleteMeterMeasurementCommand(measurementId));
         }
 
         [HttpPost("[action]")]

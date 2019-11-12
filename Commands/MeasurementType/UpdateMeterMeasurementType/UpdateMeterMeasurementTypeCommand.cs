@@ -2,7 +2,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class UpdateMeterMeasurementTypeCommand : UserCommand
+    public class UpdateMeterMeasurementTypeCommand : ICommand
     {
         public long Id { get; }
 
@@ -12,9 +12,7 @@ namespace MAS.Payments.Commands
 
         public long PaymentTypeId { get; }
 
-        public UpdateMeterMeasurementTypeCommand(long userId,
-            long id, long paymentTypeId, string name, string description)
-            : base(userId)
+        public UpdateMeterMeasurementTypeCommand(long id, long paymentTypeId, string name, string description)
         {
             Id = id;
             Name = name;

@@ -5,5 +5,7 @@ namespace MAS.Payments.DataBase
         Auth = 1,
 
         RegistrationConfirm = 2,
+
+        PasswordReset = 3,
     }
 }

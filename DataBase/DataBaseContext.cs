@@ -30,7 +30,8 @@ namespace MAS.Payments.DataBase
                 .Entity<UserTokenType>()
                 .HasData(
                     new UserTokenType { Id = 1, Name = "Auth", Description = "Token used for authentication system" },
-                    new UserTokenType { Id = 2, Name = "RegistrationConfirm", Description = "Token used for user registration" }
+                    new UserTokenType { Id = 2, Name = "RegistrationConfirm", Description = "Token used for user registration" },
+                    new UserTokenType { Id = 3, Name = "PasswordReset", Description = "Token used for user password reset" }
                 );
         }
     }

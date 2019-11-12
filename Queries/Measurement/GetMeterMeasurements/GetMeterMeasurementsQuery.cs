@@ -3,7 +3,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    public class GetMeterMeasurementsQuery : IQuery<IEnumerable<GetMeterMeasurementsResponse>>
+    public class GetMeterMeasurementsQuery : BaseUserQuery<IEnumerable<GetMeterMeasurementsResponse>>
     {
         public byte? Month { get; }
 
@@ -11,7 +11,9 @@ namespace MAS.Payments.Queries
 
         public long? MeterMeasurementTypeId { get; }
 
-        public GetMeterMeasurementsQuery(byte? month = null, long? metermeasurementTypeId = null, int? year = null)
+        public GetMeterMeasurementsQuery(long userId, 
+            byte? month = null, long? metermeasurementTypeId = null, int? year = null)
+            : base(userId)
         {
             Month = month;
             MeterMeasurementTypeId = metermeasurementTypeId;

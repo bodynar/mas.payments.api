@@ -73,8 +73,11 @@ namespace MAS.Payments.Controllers
         [HttpGet("[action]")]
         public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery]GetMeterMeasurementRequest filter)
         {
+            long cachedUserId = GetCachedUserId();
+
             return QueryProcessor.Execute(
-                new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId));
+                new GetMeterMeasurementsQuery(
+                    cachedUserId, filter.Month, filter.MeasurementTypeId));
         }
 
         [HttpPost("[action]")]

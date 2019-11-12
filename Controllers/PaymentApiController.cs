@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+
 using MAS.Payments.ActionFilters;
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
@@ -71,8 +72,11 @@ namespace MAS.Payments.Controllers
         [HttpGet("[action]")]
         public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery]GetPaymentsRequest request)
         {
+            long cachedUserId = GetCachedUserId();
+
             return QueryProcessor.Execute(
-                new GetPaymentsQuery(request.Month, request.PaymentTypeId,
+                new GetPaymentsQuery(
+                    cachedUserId, request.Month, request.PaymentTypeId,
                     request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
         }
 

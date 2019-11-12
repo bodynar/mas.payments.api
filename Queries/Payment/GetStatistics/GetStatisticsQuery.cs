@@ -1,10 +1,10 @@
 using System;
-using System.Collections.Generic;
+
 using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    public class GetStatisticsQuery : IQuery<GetStatisticsResponse>
+    public class GetStatisticsQuery : BaseUserQuery<GetStatisticsResponse>
     {
         public bool IncludeMeasurements { get; }
 
@@ -17,18 +17,21 @@ namespace MAS.Payments.Queries
 
         public DateTime? To { get; }
 
-        public GetStatisticsQuery(bool includeMeasurements = false)
+        public GetStatisticsQuery(long userId, bool includeMeasurements = false)
+            : base(userId)
         {
             IncludeMeasurements = includeMeasurements;
         }
 
-        public GetStatisticsQuery(int year, bool includeMeasurements = false)
+        public GetStatisticsQuery(long userId, int year, bool includeMeasurements = false)
+            : base(userId)
         {
             Year = year;
             IncludeMeasurements = includeMeasurements;
         }
 
-        public GetStatisticsQuery(DateTime from, DateTime to, bool includeMeasurements = false)
+        public GetStatisticsQuery(long userId, DateTime from, DateTime to, bool includeMeasurements = false)
+            : base(userId)
         {
             From = from;
             To = to;

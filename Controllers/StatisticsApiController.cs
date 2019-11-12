@@ -21,18 +21,19 @@ namespace MAS.Payments.Controllers
         public GetStatisticsResponse GetStatistics([FromQuery]GetStatisticsRequest request)
         {
             GetStatisticsQuery query = null;
+            long cachedUserId = GetCachedUserId();
 
             if (request.Year.HasValue)
             {
-                query = new GetStatisticsQuery(request.Year.Value, request.IncludeMeasurements);
+                query = new GetStatisticsQuery(cachedUserId, request.Year.Value, request.IncludeMeasurements);
             }
             else if (request.IsDatePeriodSpecified)
             {
-                query = new GetStatisticsQuery(request.From.Value, request.To.Value, request.IncludeMeasurements);
+                query = new GetStatisticsQuery(cachedUserId, request.From.Value, request.To.Value, request.IncludeMeasurements);
             }
             else
             {
-                query = new GetStatisticsQuery(request.IncludeMeasurements);
+                query = new GetStatisticsQuery(cachedUserId, request.IncludeMeasurements);
             }
 
             return QueryProcessor.Execute(query);

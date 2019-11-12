@@ -3,7 +3,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    public class GetPaymentsQuery : IQuery<IEnumerable<GetPaymentsResponse>>
+    public class GetPaymentsQuery : BaseUserQuery<IEnumerable<GetPaymentsResponse>>
     {
         public byte? Month { get; }
 
@@ -15,12 +15,10 @@ namespace MAS.Payments.Queries
 
         public double? MaxAmount { get; }
 
-        public GetPaymentsQuery()
-        { }
-
-        public GetPaymentsQuery(
+        public GetPaymentsQuery(long userId,
             byte? month, long? paymentTypeId,
             double? exactAmount, double? minAmount, double? maxAmount)
+            : base(userId)
         { 
             Month = month;
             PaymentTypeId = paymentTypeId;

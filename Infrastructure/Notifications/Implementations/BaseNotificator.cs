@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.Query;
@@ -28,7 +27,5 @@ namespace MAS.Payments.Notifications
         {
             Resolver = resolver;
         }
-
-        public abstract IEnumerable<Notification> GetNotifications();
     }
 }

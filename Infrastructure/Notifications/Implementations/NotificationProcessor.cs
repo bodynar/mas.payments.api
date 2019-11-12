@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using MAS.Payments.Infrastructure;
 
 namespace MAS.Payments.Notifications
@@ -10,7 +11,11 @@ namespace MAS.Payments.Notifications
         private IResolver Resolver { get; }
 
         private static Lazy<IEnumerable<Type>> NotificatorsTypesMap
-            => new Lazy<IEnumerable<Type>>(() => FillNotificatorsTypesMap());
+            => new Lazy<IEnumerable<Type>>(() => FillNotificatorsTypesMap<IPublicNotificator>());
+
+        private static Lazy<IEnumerable<Type>> UserNotificatorsTypesMap
+            => new Lazy<IEnumerable<Type>>(() => FillNotificatorsTypesMap<IUserNotificator>());
+
 
         public NotificationProcessor(
             IResolver resolver
@@ -33,9 +38,24 @@ namespace MAS.Payments.Notifications
             return notifications;
         }
 
-        private static IEnumerable<Type> FillNotificatorsTypesMap()
+        public IEnumerable<Notification> GetUserNotifications(long userId)
         {
-            var notificatorInterfaceType = typeof(INotificator);
+            var notifications = new List<Notification>();
+
+            foreach (var notificatorType in UserNotificatorsTypesMap.Value)
+            {
+                dynamic notificator = Resolver.GetInstance(notificatorType);
+
+                notifications.AddRange(notificator.GetUserNotifications(userId));
+            }
+
+            return notifications;
+        }
+
+        private static IEnumerable<Type> FillNotificatorsTypesMap<TNotification>()
+            where TNotification: INotificator
+        {
+            var notificatorInterfaceType = typeof(TNotification);
 
             return
                  typeof(NotificationProcessor)

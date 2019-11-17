@@ -19,6 +19,16 @@ namespace MAS.Payments.Infrastructure.Cache
 
         public static T Get<T>(string key)
         {
+            if (Cache.IsEmpty)
+            {
+                return default(T);
+            }
+
+            if (!Cache.ContainsKey(key))
+            {
+                return default(T);
+            }
+
             object objectResult = null;
 
             var isSuccess = Cache.TryGetValue(key, out objectResult);

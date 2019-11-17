@@ -29,7 +29,7 @@ namespace MAS.Payments.Configuration
                     .AddControllerActivation();
             });
 
-            services.AddTransient<Container>((_) => container);
+            services.AddScoped<Container>((_) => container);
 
             var connectionString = configuration.GetConnectionString("DefaultConnection");
 

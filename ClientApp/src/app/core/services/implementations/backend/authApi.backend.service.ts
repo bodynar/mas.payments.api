@@ -7,7 +7,6 @@ import { catchError } from 'rxjs/operators';
 import { AuthenticateRequest } from 'models/request/authenticateRequest';
 
 import { IAuthApiBackendService } from 'services/backend/IAuthApi.backend';
-import { IAuthService } from 'services/IAuthService';
 
 @Injectable()
 class AuthApiBackendService implements IAuthApiBackendService {
@@ -38,7 +37,7 @@ class AuthApiBackendService implements IAuthApiBackendService {
 
     public logout(authToken: string): Observable<any> {
         return this.http
-            .post(`${this.apiPrefix}/logout`, authToken)
+            .post(`${this.apiPrefix}/logout`, { token: authToken })
             .pipe(catchError(error => of(error)));
     }
 }

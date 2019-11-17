@@ -98,7 +98,11 @@ class AuthService implements IAuthService {
         return token;
     }
 
-    private removeAuthToken(): void {
+    public removeAuthToken(): void {
+        this.removeAuthToken();
+    }
+
+    private removeToken(): void {
         localStorage.removeItem('auth-token');
     }
 }

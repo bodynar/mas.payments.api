@@ -12,6 +12,8 @@ abstract class IAuthService {
     abstract setAuthToken(token: string): void;
 
     abstract getAuthToken(): string;
+
+    abstract removeAuthToken(): void;
 }
 
 export { IAuthService };

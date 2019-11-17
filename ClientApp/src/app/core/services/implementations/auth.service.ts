@@ -99,7 +99,7 @@ class AuthService implements IAuthService {
     }
 
     public removeAuthToken(): void {
-        this.removeAuthToken();
+        this.removeToken();
     }
 
     private removeToken(): void {

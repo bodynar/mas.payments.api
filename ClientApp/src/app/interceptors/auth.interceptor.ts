@@ -1,10 +1,12 @@
-import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpHandler, HttpInterceptor, HttpRequest } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
+
+import { isNullOrUndefined } from 'util';
 
 import { IAuthService } from 'services/IAuthService';
-import { isNullOrUndefined } from 'util';
 
 @Injectable()
 class AuthHeaderInterceptor implements HttpInterceptor {
@@ -24,6 +26,17 @@ class AuthHeaderInterceptor implements HttpInterceptor {
                     setHeaders: {
                         'auth-token': token
                     }
+                })
+            ).pipe(
+                map(event => event as HttpEvent<any>),
+                catchError((error: HttpErrorResponse) => {
+
+                    if (error.status === 401) {
+                        this.authService.removeAuthToken();
+                        console.warn('token removed');
+                    }
+
+                    return throwError(error);
                 })
             );
         }

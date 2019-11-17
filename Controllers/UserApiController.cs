@@ -61,12 +61,12 @@ namespace MAS.Payments.Controllers
 
             CommandProcessor.Execute(command);
 
-            var encodedToken = HttpUtility.UrlEncode($"{command.Token}"); 
+            var encodedToken = HttpUtility.UrlEncode($"{command.Token}");
 
             MailProcessor.Send(
                 new ConfirmRegistrationMailMessage(
                     $"https://{Request.Host.Host}:{Request.Host.Port}/confirmRegistration?token={encodedToken}",
-                    request.Email, command.Token, 
+                    request.Email, command.Token,
                     request.FirstName, request.LastName));
         }
 
@@ -76,5 +76,30 @@ namespace MAS.Payments.Controllers
         {
             CommandProcessor.Execute(new ConfirmRegistrationCommand(token));
         }
+
+        [AllowAnonymous]
+        [HttpPost("[action]")]
+        public void ResetPassword([FromBody]ResetPasswordRequest request)
+        {
+            var command =
+                new ResetPasswordCommand(request.Email, request.Login);
+
+            CommandProcessor.Execute(command);
+
+            var encodedToken = HttpUtility.UrlEncode($"{command.Token}");
+
+            MailProcessor.Send(
+                new ResetPasswordMailMessage(
+                    $"https://{Request.Host.Host}:{Request.Host.Port}/resetPassword?token={encodedToken}",
+                    request.Email, command.Token,
+                    command.FirstName, command.LastName));
+        }
+
+        // [AllowAnonymous]
+        // [HttpPost("[action]")]
+        // public void UpdatePassword([FromBody]UpdatePassword request)
+        // {
+
+        // }
     }
 }

@@ -78,7 +78,6 @@ namespace MAS.Payments.ActionFilters
                     var isTokenValid =
                         (queryProcessor as IQueryProcessor).Execute(query);
 
-                    // todo: test
                     UpdateCachedToken(cachedAuthToken, token, query.UserToken, isTokenValid);
 
                     return isTokenValid;

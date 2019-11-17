@@ -31,7 +31,7 @@ namespace MAS.Payments.Queries
 
             return
                 token != null
-                && token.ActiveTo <= query.ActiveTo;
+                && token.ActiveTo >= query.ActiveTo;
         }
     }
 }

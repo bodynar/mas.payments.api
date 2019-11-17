@@ -59,7 +59,7 @@ namespace MAS.Payments.Controllers
                 return true;
             }
 
-            return IsTokenValid(token);
+            return IsTokenValid(token, cachedToken);
         }
 
         private bool IsTokenValid(string token, CachedAuthToken cachedAuthToken = null)
@@ -68,7 +68,6 @@ namespace MAS.Payments.Controllers
 
             var isTokenValid = QueryProcessor.Execute(query);
 
-            // todo: test
             UpdateCachedToken(cachedAuthToken, token, query.UserToken, isTokenValid);
 
             return isTokenValid;

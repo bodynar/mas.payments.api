@@ -79,7 +79,7 @@ namespace MAS.Payments.Controllers
 
         [AllowAnonymous]
         [HttpPost("[action]")]
-        public void ResetPassword([FromBody]ResetPasswordRequest request)
+        public void ForgotPassword([FromBody]ForgotPasswordRequest request)
         {
             var command =
                 new ResetPasswordCommand(request.Email, request.Login);

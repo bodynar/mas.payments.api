@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.MailMessaging;
 
 namespace MAS.Payments.MailMessages
 {
-    public class ResetPasswordMailMessage : IMailMessage<ResetPasswordModel>
+    public class ForgotPasswordMailMessage : IMailMessage<ForgotPasswordModel>
     {
         public string TemplateName
             => "ResetPassword";
@@ -14,13 +14,13 @@ namespace MAS.Payments.MailMessages
         public string Subject
             => "Password reset";
 
-        public ResetPasswordModel Model { get; }
+        public ForgotPasswordModel Model { get; }
 
-        public ResetPasswordMailMessage(string link, string recipient, string token, string firstName, string lastName)
+        public ForgotPasswordMailMessage(string link, string recipient, string token, string firstName, string lastName)
         {
             Recipient = recipient ?? throw new ArgumentException(nameof(recipient));
 
-            Model = new ResetPasswordModel(link, token, firstName, lastName);
+            Model = new ForgotPasswordModel(link, token, firstName, lastName);
         }
     }
 }

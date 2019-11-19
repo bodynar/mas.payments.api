@@ -2,7 +2,7 @@ using System;
 
 namespace MAS.Payments.MailMessages
 {
-    public class ResetPasswordModel
+    public class ForgotPasswordModel
     {
         public string FirstName { get; }
 
@@ -14,7 +14,7 @@ namespace MAS.Payments.MailMessages
 
         public string Date { get; }
 
-        public ResetPasswordModel(string link, string token, string firstName, string lastName)
+        public ForgotPasswordModel(string link, string token, string firstName, string lastName)
         {
             Link = link ?? throw new ArgumentException(nameof(Link));
             Token = token ?? throw new ArgumentException(nameof(Token));

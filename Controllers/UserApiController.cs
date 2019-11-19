@@ -82,7 +82,7 @@ namespace MAS.Payments.Controllers
         public void ForgotPassword([FromBody]ForgotPasswordRequest request)
         {
             var command =
-                new ResetPasswordCommand(request.Email, request.Login);
+                new ForgotPasswordCommand(request.Email, request.Login);
 
             CommandProcessor.Execute(command);
 

@@ -89,7 +89,7 @@ namespace MAS.Payments.Controllers
             var encodedToken = HttpUtility.UrlEncode($"{command.Token}");
 
             MailProcessor.Send(
-                new ResetPasswordMailMessage(
+                new ForgotPasswordMailMessage(
                     $"https://{Request.Host.Host}:{Request.Host.Port}/resetPassword?token={encodedToken}",
                     request.Email, command.Token,
                     command.FirstName, command.LastName));

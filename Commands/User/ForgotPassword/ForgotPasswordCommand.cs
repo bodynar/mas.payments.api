@@ -4,7 +4,7 @@ using MAS.Payments.Infrastructure.Command;
 
 namespace MAS.Payments.Commands
 {
-    public class ResetPasswordCommand : ICommand
+    public class ForgotPasswordCommand : ICommand
     {
         public string Login { get; }
 
@@ -16,7 +16,7 @@ namespace MAS.Payments.Commands
 
         public string LastName { get; set; }
 
-        public ResetPasswordCommand(string login, string email)
+        public ForgotPasswordCommand(string login, string email)
         {
             Login = login ?? throw new ArgumentNullException(nameof(Login));
             Email = email ?? throw new ArgumentNullException(nameof(Email));

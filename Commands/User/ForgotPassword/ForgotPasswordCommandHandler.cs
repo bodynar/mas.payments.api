@@ -9,13 +9,13 @@ using MAS.Payments.Models;
 
 namespace MAS.Payments.Commands
 {
-    internal class ResetPasswordCommandHandler : BaseCommandHandlerWithCheck<ResetPasswordCommand>
+    internal class ForgotPasswordCommandHandler : BaseCommandHandlerWithCheck<ForgotPasswordCommand>
     {
         private IRepository<User> Repository { get; }
 
         private IRepository<UserToken> UserTokenRepository { get; }
 
-        public ResetPasswordCommandHandler(
+        public ForgotPasswordCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
@@ -23,7 +23,7 @@ namespace MAS.Payments.Commands
             UserTokenRepository = GetRepository<UserToken>();
         }
 
-        public override CheckResult Check(ResetPasswordCommand command)
+        public override CheckResult Check(ForgotPasswordCommand command)
         {
             var hasUser =
                 Repository.Any(
@@ -39,7 +39,7 @@ namespace MAS.Payments.Commands
             return CheckResult.Success();
         }
 
-        public override void HandleChecked(ResetPasswordCommand command)
+        public override void HandleChecked(ForgotPasswordCommand command)
         {
             var user = 
                 Repository.Get(

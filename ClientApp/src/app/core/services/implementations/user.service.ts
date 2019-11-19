@@ -64,6 +64,12 @@ class UserService implements IUserService {
             .confirmRegistration(token)
             .pipe(map(response => isNullOrUndefined(response)));
     }
+
+    public forgotPassword(email: string, login: string): Observable<boolean> {
+        return this.userApiBackend
+            .forgotPassword({ email, login })
+            .pipe(map(response => isNullOrUndefined(response)));
+    }
 }
 
 export { UserService };

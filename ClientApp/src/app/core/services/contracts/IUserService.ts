@@ -12,6 +12,8 @@ abstract class IUserService {
     abstract register(userInformation: UserRegisterRequest): Observable<boolean>;
 
     abstract confirmRegistration(token: string): Observable<boolean>;
+
+    abstract forgotPassword(email: string, login: string): Observable<boolean>;
 }
 
 export { IUserService };

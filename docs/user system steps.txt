@@ -1,0 +1,49 @@
+    [+] 1. Test filter
+            - handle auth error
+    [+] 2. client
+            + register
+                + services
+                + views
+            + confirm registration
+                + services
+                + views
+            + login
+                + services
+                    + insert token into every request
+                + views
+            + logoff
+                + services
+                + views (component on mail view)
+
+    [+] 3. attach entity to user when created
+            + update commands
+            + solve about deleting / updating Measurement + Payment
+                think of checking rights on delete/update
+
+        => User will see only owned measurements and payments
+            and will see all types
+
+    [+] !. Remove token on Auth exceptiom 
+
+    [ ] 4. update origin database
+
+    [+] 5. update token system
+        token - check every 5 minutes
+            + add lastCheckTime in request
+            + refresh date in Auth http handler
+            + when open main - check date (next day token)
+        
+    [ ] 6. Add auth guardian pages
+
+    [ ] 7. Add reset password feature
+            - request password reset
+                + commands
+                - views
+                + mail
+            - reset password
+                - command
+                - view
+
+    [ ] II. roles
+        [ ] 1. Add roles
+        [ ] 2. Update access to actions based on roles

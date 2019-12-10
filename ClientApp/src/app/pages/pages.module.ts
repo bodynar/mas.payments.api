@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
+import { ForgotPasswordComponent } from './forgotPassword/forgotPassword.component';
 import { LoginComponent } from './login/login.component';
 import { NotFoundComponent } from './notFound/notFound.component';
 
@@ -13,7 +14,8 @@ import { NotFoundComponent } from './notFound/notFound.component';
     exports: [],
     declarations: [
         NotFoundComponent,
-        LoginComponent
+        LoginComponent,
+        ForgotPasswordComponent
     ],
     providers: [],
 })

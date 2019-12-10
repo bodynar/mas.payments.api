@@ -11,6 +11,7 @@ import { StatisticsComponent } from './areas/statistics/component/statistics.com
 import { UserComponent } from './areas/user/component/user.component';
 import { ConfirmRegistrationComponent } from './areas/user/components/confirmRegistration/confirmRegistration.component';
 import { RegisterComponent } from './areas/user/components/register/register.component';
+import { ForgotPasswordComponent } from './pages/forgotPassword/forgotPassword.component';
 import { LoginComponent } from './pages/login/login.component';
 
 const routes: Routes = [
@@ -61,6 +62,10 @@ const routes: Routes = [
     {
         path: 'login',
         component: LoginComponent,
+    },
+    {
+        path: 'forgotPassword',
+        component: ForgotPasswordComponent
     },
     {
         path: '404',

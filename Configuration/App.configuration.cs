@@ -1,3 +1,4 @@
+using MAS.Payments.DataBase;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.DependencyInjection;
@@ -32,9 +33,6 @@ namespace MAS.Payments.Configuration
 
             app.UseSpa(spa =>
             {
-                // To learn more about options for serving an Angular SPA from ASP.NET Core,
-                // see https://go.microsoft.com/fwlink/?linkid=864501
-
                 spa.Options.SourcePath = "ClientApp";
 
                 if (isDevelopment)
@@ -47,6 +45,12 @@ namespace MAS.Payments.Configuration
 
             container.Configure();
             container.Verify();
+
+            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            {
+                var context = serviceScope.ServiceProvider.GetRequiredService<DataBaseContext>();
+                context.Database.EnsureCreated();
+            }
         }
     }
 }

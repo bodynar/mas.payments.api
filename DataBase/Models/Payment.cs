@@ -10,8 +10,6 @@ namespace MAS.Payments.DataBase
 
         public string Description { get; set; }
 
-        public virtual User Author { get; set; }
-
         public long PaymentTypeId { get; set; }
 
         public virtual PaymentType PaymentType { get; set; }

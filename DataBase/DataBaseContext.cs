@@ -16,8 +16,6 @@ namespace MAS.Payments.DataBase
 
         public DbSet<MeterMeasurementType> MeterMeasurementTypes { get; set; }
 
-        public DbSet<User> Users { get; set; }
-
         public DbSet<UserSettings> UserSettings { get; set; }
     }
 }

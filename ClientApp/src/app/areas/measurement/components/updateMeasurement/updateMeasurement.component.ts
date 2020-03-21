@@ -58,7 +58,10 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
             )
           .subscribe(params =>
             this.measurementRequest = {
-                ...params,
+                year: params.year,
+                comment: params.comment,
+                measurement: params.measurement,
+                meterMeasurementTypeId: params.meterMeasurementTypeId,
                 month: (parseInt(params.month) - 1).toString()
             }
           );

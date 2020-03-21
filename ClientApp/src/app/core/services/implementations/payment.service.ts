@@ -48,9 +48,18 @@ class PaymentService implements IPaymentService {
 
     public addPayment(paymentData: AddPaymentRequest): Observable<boolean> {
         // data validation
+        const parsedMonth: number =
+            parseInt(paymentData.month) + 1;
+        const month: number =
+          parsedMonth > 12
+            ? parsedMonth % 12
+            : parsedMonth;
 
         return this.paymentApiBackend
-            .addPayment(paymentData)
+            .addPayment({
+              ...paymentData,
+              month: month.toString()
+            })
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {

@@ -5,6 +5,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
+import { months } from 'src/static/months';
+import { years } from 'src/common/years';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -19,13 +21,19 @@ import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
 class AddPaymentComponent implements OnInit, OnDestroy {
 
     public addPaymentRequest: AddPaymentRequest =
-        {};
+      {};
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
+
+    public months$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
+    public years$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
@@ -62,6 +70,14 @@ class AddPaymentComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...paymentTypes]));
+
+      const currentDate = new Date();
+
+      this.months$.next(months);
+      this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
+
+      this.addPaymentRequest.month = currentDate.getMonth().toString();
+      this.addPaymentRequest.year = currentDate.getFullYear().toString();
     }
 
     public ngOnDestroy(): void {

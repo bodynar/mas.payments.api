@@ -1,6 +1,7 @@
 interface AddPaymentRequest {
     amount?: number;
-    date?: Date;
+    year?: string;
+    month?: string;
     description?: string;
     paymentTypeId?: number;
 }

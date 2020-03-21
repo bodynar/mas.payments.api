@@ -1,8 +1,11 @@
+using System;
 using System.Collections.Generic;
+
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -73,8 +76,10 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPayment([FromBody]AddPaymentRequest request)
         {
+            var paymentDate = new DateTime(request.Year, request.Month, 20);
+
             CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeId, request.Amount, request.Date, request.Description));
+                new AddPaymentCommand(request.PaymentTypeId, request.Amount, paymentDate, request.Description));
         }
 
         [HttpPost("[action]")]

@@ -2,8 +2,8 @@ doctype html
 
 .payment
     .date
-        .month {{ formatDate(payment.date) }}
-        .year {{ date.getFullYear() }}
+        .month {{ formatMonth(payment.month) }}
+        .year {{ payment.year }}
     .info
         .amount {{ payment.amount }}
         p.description {{ payment.description }}

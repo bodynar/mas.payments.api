@@ -6,6 +6,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
+import { months } from 'src/static/months';
+import { years } from 'src/common/years';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -28,6 +30,12 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
+    public months$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
+    public years$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
     private paymentId: number;
 
     private whenComponentDestroy$: Subject<null> =
@@ -47,7 +55,15 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                 tap(id => this.paymentId = id),
                 switchMap(id => this.paymentService.getPayment(id))
             )
-            .subscribe(params => this.paymentRequest = params);
+          .subscribe(params => {
+            this.paymentRequest = {
+              amount: params.amount,
+              description: params.description,
+              paymentTypeId: params.paymentTypeId,
+              year: params.year,
+              month: (parseInt(params.month) - 1).toString()
+            }
+          });
 
         this.whenSubmittedForm$
             .pipe(
@@ -67,7 +83,6 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
             .subscribe(_ => this.routerService.navigateUp());
     }
 
-
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
@@ -76,6 +91,11 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...paymentTypes]));
+
+      const currentDate = new Date();
+
+      this.months$.next(months);
+      this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
     }
 
     public ngOnDestroy(): void {

@@ -1,5 +1,3 @@
-using System;
-
 namespace MAS.Payments.Queries
 {
     public class GetPaymentsResponse
@@ -8,7 +6,9 @@ namespace MAS.Payments.Queries
 
         public double Amount { get; set; }
 
-        public DateTime? Date { get; set; }
+        public int DateYear { get; set; }
+
+        public int DateMonth { get; set; }
 
         public string Description { get; set; }
 

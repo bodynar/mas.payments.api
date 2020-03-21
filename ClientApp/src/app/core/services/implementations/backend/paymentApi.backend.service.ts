@@ -37,7 +37,8 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     ({
                         id: response['id'],
                         amount: response['amount'],
-                        date: response['date'],
+                        month: response['dateMonth'],
+                        year: response['dateYear'],
                         description: response['description'],
                         paymentTypeName: response['paymentTypeName'],
                         paymentTypeId: response['paymentTypeId'],
@@ -142,7 +143,8 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                     response.map(payment => ({
                         id: payment['id'],
                         amount: payment['amount'],
-                        date: payment['date'],
+                        month: payment['dateMonth'],
+                        year: payment['dateYear'],
                         description: payment['description'],
                         paymentTypeName: payment['paymentTypeName'],
                         paymentTypeId: payment['paymentTypeId']

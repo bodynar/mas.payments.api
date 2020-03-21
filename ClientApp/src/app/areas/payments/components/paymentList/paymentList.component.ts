@@ -100,15 +100,16 @@ class PaymentListComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.whenSubmitFilters$.next();
-
         this.paymentService
             .getPaymentTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...paymentTypes]));
+            .subscribe(paymentTypes => {
+                this.paymentTypes$.next([{
+                  name: '',
+                  systemName: '',
+                }, ...paymentTypes])
+              this.whenSubmitFilters$.next();
+            });
     }
 
     public ngOnDestroy(): void {

@@ -28,15 +28,29 @@ form.needs-validation(
                 [value]='paymentType.id'
             ) {{ paymentType.name }}
 
-    .form-group
-        label(for='date') Date of payment
-        input.form-control.m-form-control#date(
-            type='date',
+    .form-group.form-row
+      .col-2
+        label(for='month') Month
+        select.custom-select.custom-select-sm#month(
             required='required',
-            name='date',
-            [(ngModel)]='paymentRequest.date',
-            #orderFor='ngModel'
+            name='month',
+            [(ngModel)]='paymentRequest.month'
         )
+            option(
+                *ngFor='let month of (months$ | async)',
+                [value]='month.id'
+            ) {{ month.name }}
+      .col-1
+        label(for='year') Year
+        select.custom-select.custom-select-sm#year(
+              required='required',
+              name='year',
+              [(ngModel)]='paymentRequest.year'
+          )
+              option(
+                  *ngFor='let year of (years$ | async)',
+                  [value]='year.id'
+              ) {{ year.name }}
 
     .form-group
         label(for='description') Description

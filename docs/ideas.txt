@@ -9,3 +9,8 @@ ideads for features:
             add types and group by types (e.g. MeasurementNotSpecified)
     4. if list for displaying is empty [] - display message "no items"
     5. when adding payment - attach scan of reciept or scan of bill
+
+
+    -- develop
+
+        1. add [NotNull] attribtue to prevent recieving null values in http method - respond json with data (error)

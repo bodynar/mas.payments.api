@@ -1,10 +1,11 @@
-using System.Linq;
-using System.Collections;
+using System;
 using System.Collections.Generic;
+
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -74,8 +75,10 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddMeasurement(AddMeterMeasurementRequest request)
         {
+            var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
+
             CommandProcessor.Execute(
-                new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment));
+                new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, meterMeasurementDate, request.Measurement, request.Comment));
         }
 
         [HttpPost("[action]")]
@@ -100,6 +103,5 @@ namespace MAS.Payments.Controllers
         }
 
         #endregion
-
     }
 }

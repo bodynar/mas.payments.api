@@ -5,6 +5,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
+import { months } from 'src/static/months';
+import { years } from 'src/common/years';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -19,10 +21,16 @@ import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse
 class AddMeasurementComponent implements OnInit, OnDestroy {
 
     public addMeasurementRequest: AddMeasurementRequest =
-        {};
+      {};
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new ReplaySubject(1);
+      new ReplaySubject(1);
+
+    public months$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
+    public years$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
@@ -38,7 +46,7 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid, value }) => valid && this.isFormValid()),
+                filter(({ valid }) => valid && this.isFormValid()),
                 switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
                 filter(withoutError => {
                     if (!withoutError) {
@@ -61,6 +69,14 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...measurementTypes]));
+
+      const currentDate = new Date();
+
+      this.months$.next(months);
+      this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
+
+      this.addMeasurementRequest.month = currentDate.getMonth();
+      this.addMeasurementRequest.year = currentDate.getFullYear();
     }
 
     public ngOnDestroy(): void {

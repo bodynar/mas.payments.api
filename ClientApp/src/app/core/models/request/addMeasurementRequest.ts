@@ -1,5 +1,6 @@
 interface AddMeasurementRequest {
-    date?: Date;
+    year?: number;
+    month?: number;
     measurement?: number;
     comment?: string;
     meterMeasurementTypeId?: number;

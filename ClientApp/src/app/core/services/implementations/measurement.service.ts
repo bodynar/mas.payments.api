@@ -50,7 +50,10 @@ class MeasurementService implements IMeasurementService {
         // data validation
 
         return this.measurementApiBackend
-            .addMeasurement(measurementData)
+            .addMeasurement({
+              ...measurementData,
+              month: measurementData.month + 1
+            })
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {

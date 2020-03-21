@@ -19,6 +19,9 @@
       ],
       "static/*": [
         "src/static"
+      ],
+      "common": [
+        "src/common"
       ]
     },
     "typeRoots": [

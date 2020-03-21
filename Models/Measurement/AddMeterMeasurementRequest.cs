@@ -1,5 +1,3 @@
-using System;
-
 namespace MAS.Payments.Models
 {
     public class AddMeterMeasurementRequest
@@ -8,7 +6,9 @@ namespace MAS.Payments.Models
 
         public string Comment { get; set; }
 
-        public DateTime Date { get; set; }
+        public int Year { get; set; }
+
+        public int Month { get; set; }
 
         public long MeterMeasurementTypeId { get; set; }
     }

@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using MAS.Payments.Infrastructure.Projector;
-
 namespace MAS.Payments.Projectors
 {
-    public partial class Projector
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+
+    using MAS.Payments.Infrastructure.Projector;
+
+    public static partial class Projector
     {
         internal class ToFlat<TSource, TDestination> : IProjector<TSource, TDestination>
             where TSource : class
@@ -66,7 +67,7 @@ namespace MAS.Payments.Projectors
 
                     try
                     {
-                        if (sourceProperty.PropertyType.IsClass
+                        if ((sourceProperty.PropertyType.IsClass || sourceProperty.PropertyType.IsValueType)
                             && !PrimitiveTypes.Contains(sourceProperty.PropertyType))
                         {
                             var destinationComplexProperties =
@@ -74,7 +75,7 @@ namespace MAS.Payments.Projectors
                                     .Where(x => x.Name.ToLower().StartsWith(propertyName));
 
                             if (destinationComplexProperties.Any())
-                                SetComplexProperties(source, destination, sourceProperty, destinationComplexProperties);
+                                SetComplexProperties(source, destination, sourceProperty, destinationComplexProperties, 1);
                         }
                         else
                         {
@@ -102,9 +103,12 @@ namespace MAS.Payments.Projectors
 
             private void SetComplexProperties(
                 object source, TDestination destination,
-                PropertyInfo property, IEnumerable<PropertyInfo> destinationComplexProperties
+                PropertyInfo property, IEnumerable<PropertyInfo> destinationComplexProperties,
+                int deepLevel
             )
             {
+                if (deepLevel >= 5) return;
+
                 var sourcePropertyName = property.Name.ToLower();
                 var sourcePropertyValue = property.GetValue(source);
 
@@ -116,7 +120,7 @@ namespace MAS.Payments.Projectors
                     {
                         var internalPropertyName = internalProperty.Name.ToLower();
 
-                        if (internalProperty.PropertyType.IsClass
+                        if ((internalProperty.PropertyType.IsClass || internalProperty.PropertyType.IsValueType)
                             && !PrimitiveTypes.Contains(internalProperty.PropertyType))
                         {
                             var complexProperties =
@@ -124,7 +128,7 @@ namespace MAS.Payments.Projectors
                                     .Where(x => x.Name.ToLower().StartsWith(internalPropertyName));
 
                             if (destinationComplexProperties.Any())
-                                SetComplexProperties(sourcePropertyValue, destination, internalProperty, complexProperties);
+                                SetComplexProperties(sourcePropertyValue, destination, internalProperty, complexProperties, deepLevel + 1);
                         }
                         else
                         {
@@ -161,8 +165,7 @@ namespace MAS.Payments.Projectors
                     typeof(long),
                     typeof(float),
                     typeof(double),
-                    typeof(decimal),
-                    typeof(DateTime)
+                    typeof(decimal)
                 };
             }
 

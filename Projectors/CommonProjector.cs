@@ -1,11 +1,12 @@
-using System.Linq.Expressions;
-using System;
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure.Projector;
-
 namespace MAS.Payments.Projectors
 {
-    public partial class Projector
+    using System;
+    using System.Collections.Generic;
+    using System.Linq.Expressions;
+
+    using MAS.Payments.Infrastructure.Projector;
+
+    public static partial class Projector
     {
         internal class Common<TSource, TDestination> : IProjector<TSource, TDestination>
             where TSource : class

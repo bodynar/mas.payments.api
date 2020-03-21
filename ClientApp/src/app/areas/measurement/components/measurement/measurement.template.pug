@@ -2,8 +2,8 @@ doctype html
 
 .measurement
     .date
-        .month {{ formatDate(measurement.date) }}
-        .year {{ date.getFullYear() }}
+        .month {{ formatMonth(measurement.month) }}
+        .year {{ measurement.year }}
     .info
         .amount {{ measurement.measurement }}
         p.description {{ measurement.description }}

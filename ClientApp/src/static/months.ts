@@ -49,4 +49,12 @@ const months: Array<{ id?: number, name: string }> = [
     },
 ];
 
-export { months };
+const getMonthName = function(monthNumber: number): string {
+    if (monthNumber <= 0 || monthNumber > 12) {
+      throw new Error('Month number must be in (0, 12] range.');
+    }
+
+  return months[monthNumber - 1].name;
+}
+
+export { months, getMonthName };

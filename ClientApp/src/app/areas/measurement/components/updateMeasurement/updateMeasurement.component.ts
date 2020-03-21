@@ -6,6 +6,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
+import { months } from 'src/static/months';
+import { years } from 'src/common/years';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -28,6 +30,12 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
+    public months$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
+    public years$: Subject<Array<{ id?: number, name: string }>> =
+      new ReplaySubject(1);
+
 
     private measurementId: number;
 
@@ -48,7 +56,12 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
                 tap(id => this.measurementId = id),
                 switchMap(id => this.measurementService.getMeasurement(id))
             )
-            .subscribe(params => this.measurementRequest = params);
+          .subscribe(params =>
+            this.measurementRequest = {
+                ...params,
+                month: (parseInt(params.month) - 1).toString()
+            }
+          );
 
         this.whenSubmittedForm$
             .pipe(
@@ -76,6 +89,11 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...measurementTypes]));
+
+      const currentDate = new Date();
+
+      this.months$.next(months);
+      this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
     }
 
     public ngOnDestroy(): void {

@@ -97,19 +97,17 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public ngOnInit(): void {
         this.measurementService
-            .getMeasurements()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurements => this.measurements$.next(measurements));
-
-        this.measurementService
             .getMeasurementTypes()
             .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurementTypes => this.measurementTypes$.next([
-                {
+            .subscribe(measurementTypes => {
+                this.measurementTypes$.next([
+                  {
                     name: '',
                     systemName: '',
-                }, ...measurementTypes
-            ]));
+                  }, ...measurementTypes
+                ])
+                this.whenSubmitFilters$.next();
+            });
     }
 
     public ngOnDestroy(): void {

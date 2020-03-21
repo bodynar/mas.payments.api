@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { MeasurementResponse } from 'models/response/measurementResponse';
 
-import { months } from 'src/static/months';
+import { getMonthName } from 'src/static/months';
 
 @Component({
     selector: 'app-measurement-item',
     templateUrl: 'measurement.template.pug',
     styleUrls: ['measurement.style.styl']
 })
-class MeasurementComponent implements OnInit {
+class MeasurementComponent {
     @Input()
     public measurement: MeasurementResponse;
 
@@ -25,20 +25,11 @@ class MeasurementComponent implements OnInit {
     public typeClick: EventEmitter<number> =
         new EventEmitter();
 
-    public date: Date;
-
     constructor(
     ) { }
 
-    public ngOnInit(): void {
-        this.date = new Date(this.measurement.date);
-    }
-
-    public formatDate(rawDate: string): string {
-        const month: number =
-            new Date(rawDate).getMonth();
-
-        return `${months[month].name}`;
+    public formatMonth(monthNumber: number): string {
+      return getMonthName(monthNumber);
     }
 
     public getMeasurementTypeClass(paymentTypeName: string): string {

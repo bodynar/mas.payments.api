@@ -2,7 +2,8 @@ interface MeasurementResponse {
     id: number;
     measurement: number;
     comment?: string;
-    date: Date;
+    month: string;
+    year: number;
     meterMeasurementTypeId: number;
     measurementTypeName: string;
 }

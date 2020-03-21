@@ -1,5 +1,3 @@
-using System;
-
 namespace MAS.Payments.Queries
 {
     public class GetMeterMeasurementResponse
@@ -10,7 +8,9 @@ namespace MAS.Payments.Queries
 
         public string Comment { get; set; }
 
-        public DateTime Date { get; set; }
+        public int DateYear { get; set; }
+
+        public int DateMonth { get; set; }
 
         public bool IsSent { get; set; }
 

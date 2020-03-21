@@ -48,11 +48,16 @@ class MeasurementService implements IMeasurementService {
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<boolean> {
         // data validation
-
+        const parsedMonth: number =
+          parseInt(measurementData.month) + 1;
+        const month: number =
+          parsedMonth > 12
+            ? parsedMonth % 12
+            : parsedMonth;
         return this.measurementApiBackend
             .addMeasurement({
               ...measurementData,
-              month: measurementData.month + 1
+              month: month.toString()
             })
             .pipe(
                 map(response => isNullOrUndefined(response)),

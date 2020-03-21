@@ -75,7 +75,7 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
       this.months$.next(months);
       this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
 
-      this.addMeasurementRequest.month = currentDate.getMonth();
+      this.addMeasurementRequest.month = currentDate.getMonth().toString();
       this.addMeasurementRequest.year = currentDate.getFullYear();
     }
 

@@ -66,8 +66,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             )
             .subscribe(measurements => this.measurements$.next(measurements));
 
-        this.whenSubmitFilters$.next();
-
         this.whenMeasurementDelete$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),

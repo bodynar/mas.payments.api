@@ -1,0 +1,5 @@
+﻿    1. MeterMeasurement update - use month + year
+    2. getMeterMeasurements - get Month + year
+    3. Payment update - use month + year
+    4. getPayments - get Month + year => probably use another mapper
+    5. add selecting meterMeasurements (checkboxes in list) and action to send (+ mailTemplate and action)

@@ -70,6 +70,9 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid()),
+                tap(_ => {
+                  this.measurementRequest.month = (parseInt(this.measurementRequest.month) + 1).toString();
+                }),
                 switchMap(_ => this.measurementService.updateMeasurement(this.measurementId, this.measurementRequest)),
                 filter(withoutError => {
                     if (!withoutError) {

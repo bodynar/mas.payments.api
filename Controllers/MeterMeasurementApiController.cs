@@ -84,8 +84,10 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
+            var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
+
             CommandProcessor.Execute(
-                new UpdateMeterMeasurementCommand(request.Id, request.MeterMeasurementTypeId, request.Date, request.Measurement, request.Comment)
+                new UpdateMeterMeasurementCommand(request.Id, request.MeterMeasurementTypeId, meterMeasurementDate, request.Measurement, request.Comment)
             );
         }
 

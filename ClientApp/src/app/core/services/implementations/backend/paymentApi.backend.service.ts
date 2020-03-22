@@ -113,7 +113,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
         if (!isNullOrUndefined(filter)) {
             if (!isNullOrUndefined(filter.month)) {
-                params = params.set('month', `${filter.month}`);
+                params = params.set('month', `${filter.month + 1}`);
             }
             if (!isNullOrUndefined(filter.paymentTypeId)) {
                 params = params.set('paymentTypeId', `${filter.paymentTypeId}`);

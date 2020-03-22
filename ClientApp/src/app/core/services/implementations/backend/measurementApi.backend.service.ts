@@ -115,7 +115,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
         if (!isNullOrUndefined(filter)) {
             if (!isNullOrUndefined(filter.month)) {
-                params = params.set('month', `${filter.month}`);
+                params = params.set('month', `${filter.month + 1}`);
             }
             if (!isNullOrUndefined(filter.measurementTypeId)) {
                 params = params.set('measurementTypeId', `${filter.measurementTypeId}`);

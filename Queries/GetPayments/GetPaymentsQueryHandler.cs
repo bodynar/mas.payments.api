@@ -1,14 +1,14 @@
-using System.Linq;
-using System.Collections.Generic;
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Query;
-using MAS.Payments.Infrastructure.Specification;
-using MAS.Payments.Projectors;
-
 namespace MAS.Payments.Queries
 {
+    using System.Collections.Generic;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Query;
+    using MAS.Payments.Infrastructure.Specification;
+    using MAS.Payments.Projectors;
+
     internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsResponse>>
     {
         private IRepository<Payment> Repository { get; }
@@ -31,7 +31,7 @@ namespace MAS.Payments.Queries
 
             if (query.Month.HasValue)
             {
-                filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == (query.Month.Value - 1));
+                filter = filter && new CommonSpecification<Payment>(x => x.Date.HasValue && x.Date.Value.Month == query.Month.Value);
             }
 
             if (query.ExactAmount.HasValue)

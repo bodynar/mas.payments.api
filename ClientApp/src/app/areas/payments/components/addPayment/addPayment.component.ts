@@ -77,7 +77,7 @@ class AddPaymentComponent implements OnInit, OnDestroy {
       this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
 
       this.addPaymentRequest.month = currentDate.getMonth().toString();
-      this.addPaymentRequest.year = currentDate.getFullYear().toString();
+      this.addPaymentRequest.year = currentDate.getFullYear();
     }
 
     public ngOnDestroy(): void {

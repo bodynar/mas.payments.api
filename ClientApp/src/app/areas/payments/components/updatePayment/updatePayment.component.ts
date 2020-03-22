@@ -69,6 +69,9 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid(this.paymentRequest)),
+                tap(_ => {
+                  this.paymentRequest.month = (parseInt(this.paymentRequest.month) + 1).toString();
+                }),
                 switchMap(_ => this.paymentService.updatePayment(this.paymentId, this.paymentRequest)),
                 filter(withoutError => {
                     if (!withoutError) {

@@ -85,8 +85,10 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePayment(UpdatePaymentRequest request)
         {
+            var paymentDate = new DateTime(request.Year, request.Month, 20);
+
             CommandProcessor.Execute(
-                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, request.Date, request.Description)
+                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, paymentDate, request.Description)
             );
         }
 

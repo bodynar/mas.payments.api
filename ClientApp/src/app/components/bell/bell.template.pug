@@ -1,18 +1,21 @@
 .notification(
     [class.collapsed]='isNotificationsHidden',
-    (click)='notificationsToggle($event.target)'
+    (click)='notificationsToggle($event.target)',
+    title='Notifications'
 )
     .bell
         span.oi.oi-bell
         span.badge(
-            *ngIf='(notifications$ | async)?.lenghth > 0'
+            *ngIf='(notifications$ | async)?.length > 0'
         ) {{ (notifications$ | async)?.length }}
     ul.notification-list(
-        *ngIf='(notifications$ | async)?.length > 0'
+        *ngIf='(notifications$ | async)?.length > 0',
+        data-bell-child='true'
     )
         li(
             *ngFor='let notification of (notifications$ | async)',
-           [ngClass]='notification.type' 
+           [ngClass]='notification.type',
+           data-bell-list-child='true'
         )
             .header
                 h5.title {{ notification.name }}

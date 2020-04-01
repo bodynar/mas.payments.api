@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { fromEvent, Observable, Subject } from 'rxjs';
+import { fromEvent, Observable, Subject, ReplaySubject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -17,7 +17,7 @@ import { GetNotificationsResponse } from 'models/response/getNotificationsRespon
 class BellComponent implements OnInit, OnDestroy {
 
     public notifications$: Subject<Array<GetNotificationsResponse>> =
-        new Subject();
+        new ReplaySubject();
 
     public isNotificationsHidden: boolean =
         true;
@@ -60,20 +60,23 @@ class BellComponent implements OnInit, OnDestroy {
     }
 
     public notificationsToggle(target: HTMLElement): void {
-        if (this.isBellChild(target)) {
+        if (this.isBellChild(target) && !this.isBellList(target)) {
             this.isNotificationsHidden = !this.isNotificationsHidden;
         }
     }
 
     public removeNotification(notification: GetNotificationsResponse): void {
-        console.warn(notification);
+        this.notifications = this.notifications.filter(notificationItem => notificationItem != notification);
+        this.notifications$.next(this.notifications);
     }
 
-    private isBellChild(element: HTMLElement) {
+    private isBellChild(element: HTMLElement): boolean {
         let isBellChild: boolean =
             element.nodeName.toLowerCase() === 'app-bell';
 
-        if (isBellChild) {
+        const bellListItemAttribute = element.attributes.getNamedItem('data-bell-list-child');
+
+        if (isBellChild || (!isNullOrUndefined(bellListItemAttribute) && bellListItemAttribute.value === 'true')) {
             return true;
         }
 
@@ -82,6 +85,26 @@ class BellComponent implements OnInit, OnDestroy {
         }
 
         return isBellChild;
+    }
+
+    private isBellList(element: HTMLElement): boolean {
+        let isRootBell: boolean =
+            element.nodeName.toLowerCase() === 'app-bell';
+
+        if (isRootBell) {
+            return false;
+        }
+
+        const bellListItemAttribute = element.attributes.getNamedItem('data-bell-list-child');
+        if (!isNullOrUndefined(bellListItemAttribute) && bellListItemAttribute.value === 'true') {
+            return true;
+        }
+
+        if (!isNullOrUndefined(element.parentElement)) {
+            return this.isBellList(element.parentElement);
+        }
+
+        return false;
     }
 }
 

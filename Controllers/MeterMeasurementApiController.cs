@@ -99,7 +99,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void SendMeasurements(IEnumerable<long> measurementIdentifiers)
+        public void SendMeasurements([FromBody]IEnumerable<long> measurementIdentifiers)
         {
             CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
         }

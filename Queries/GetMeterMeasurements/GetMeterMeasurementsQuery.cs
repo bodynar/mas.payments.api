@@ -3,7 +3,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Queries
 {
-    public class GetMeterMeasurementsQuery : IQuery<IEnumerable<GetMeterMeasurementsResponse>>
+    public class GetMeterMeasurementsQuery : IQuery<IReadOnlyCollection<GetMeterMeasurementsResponse>>
     {
         public byte? Month { get; }
 

@@ -43,9 +43,9 @@ namespace MAS.Payments.Queries
                 filter = new CommonSpecification<Payment>(x => x.Date <= query.To && x.Date >= query.From);
             }
 
-            var response = new GetStatisticsResponse();
-
-            response.Items =
+            var response = new GetStatisticsResponse
+            {
+                Items =
                 PaymentRepository
                     .Where(filter)
                     .ToList()
@@ -81,7 +81,8 @@ namespace MAS.Payments.Queries
                                     : new List<GetStatisticsMeasurements>()
                             })
                     })
-                    .ToList();
+                    .ToList()
+            };
 
             if (query.IncludeMeasurements)
             {

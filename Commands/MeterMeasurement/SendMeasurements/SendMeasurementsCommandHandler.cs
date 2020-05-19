@@ -49,7 +49,7 @@ namespace MAS.Payments.Commands
             var mappedMeasurements =
                 measurements.Select(x => $"{x.MeasurementType.Name}: {x.Measurement}");
             
-            var date = DateTime.Today.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"));
+            var date = measurements.FirstOrDefault().Date.ToString("MMMM yyyy", CultureInfo.GetCultureInfo("ru-RU"));
 
             var messageModel =
                 new MeasurementMailModel(date, string.Join("\n", mappedMeasurements));

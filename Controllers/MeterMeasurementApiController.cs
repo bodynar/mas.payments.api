@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
@@ -101,6 +102,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void SendMeasurements([FromBody]IEnumerable<long> measurementIdentifiers)
         {
+            if (!measurementIdentifiers.Any())
+            {
+                throw new ArgumentException("No measurement identifiers not specified");
+            }
+
             CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
         }
 

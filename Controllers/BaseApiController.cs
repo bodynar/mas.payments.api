@@ -15,13 +15,13 @@ namespace MAS.Payments.Controllers
     {
         #region Private fields
 
-        private Lazy<ICommandProcessor> commandProcessor;
+        private readonly Lazy<ICommandProcessor> commandProcessor;
 
-        private Lazy<IQueryProcessor> queryProcessor;
+        private readonly Lazy<IQueryProcessor> queryProcessor;
 
-        private Lazy<INotificationProcessor> notificationProcessor;
+        private readonly Lazy<INotificationProcessor> notificationProcessor;
 
-        private Lazy<IMailProcessor> mailProcessor;
+        private readonly Lazy<IMailProcessor> mailProcessor;
 
         #endregion
 

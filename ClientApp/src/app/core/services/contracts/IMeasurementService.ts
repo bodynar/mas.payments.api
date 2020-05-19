@@ -7,25 +7,34 @@ import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 abstract class IMeasurementService {
-    abstract getMeasurement(id: number): Observable<MeasurementResponse>;
-
-    abstract getMeasurementType(id: number): Observable<MeasurementTypeResponse>;
-
-    abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean>;
-
-    abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<boolean>;
-
-    abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<boolean>;
-
-    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<boolean>;
-
-    abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
+    // #region measurements
+    abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<any>;
 
     abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>>;
 
-    abstract deleteMeasurementType(measurementTypeId: number): Observable<boolean>;
+    abstract getMeasurement(id: number): Observable<MeasurementResponse>;
+
+    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any>;
 
     abstract deleteMeasurement(measurementId: number): Observable<boolean>;
+
+    abstract sendMeasurements(measurementIds: Array<number>): Observable<boolean>;
+
+    // #endregion measurements
+
+    // #region measurement types
+
+    abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+
+    abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
+
+    abstract getMeasurementType(id: number): Observable<MeasurementTypeResponse>;
+
+    abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+
+    abstract deleteMeasurementType(measurementTypeId: number): Observable<boolean>;
+
+    // #endregion measurement types
 }
 
 export { IMeasurementService };

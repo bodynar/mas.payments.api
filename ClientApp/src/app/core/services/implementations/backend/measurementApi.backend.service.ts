@@ -18,95 +18,19 @@ import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse
 class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     private readonly apiPrefix: string =
-        '/api/measures';
+        '/api/measurement';
 
     constructor(
         private http: HttpClient
     ) {
     }
 
-    public getMeasurement(id: number): Observable<MeasurementResponse> {
-        return this.http
-            .get(`${this.apiPrefix}/getMeasurement`, {
-                params: new HttpParams({
-                    fromObject: { id: `${id}` }
-                })
-            })
-            .pipe(
-                map((response: any) =>
-                    ({
-                        id: response['id'],
-                        measurement: response['measurement'],
-                        comment: response['comment'],
-                        month: response['dateMonth'],
-                        year: response['dateYear'],
-                        meterMeasurementTypeId: response['meterMeasurementTypeId'],
-                        measurementTypeName: response['measurementTypeName'],
-                    }) as MeasurementResponse),
-                catchError(error => of(error))
-            );
-    }
-
-    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
-        return this.http
-            .get(`${this.apiPrefix}/getMeasurementType`, {
-                params: new HttpParams({
-                    fromObject: { id: `${id}` }
-                })
-            })
-            .pipe(
-                map((response: any) =>
-                    ({
-                        id: response['id'],
-                        name: response['name'],
-                        systemName: response['systemName'],
-                        description: response['description'],
-                        paymentTypeId: response['paymentTypeId'],
-                        paymentTypeName: response['paymentTypeName'],
-                    }) as MeasurementTypeResponse),
-                catchError(error => of(error))
-            );
-    }
-
-    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
-        return this.http
-            .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)
-            .pipe(catchError(error => of(error)));
-    }
+    // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<any> {
         return this.http
             .post(`${this.apiPrefix}/addMeasurement`, measurementData)
             .pipe(catchError(error => of(error)));
-    }
-
-    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
-        return this.http
-            .post(`${this.apiPrefix}/updateMeasurementType`, { id, ...measurementTypeData })
-            .pipe(catchError(error => of(error)));
-    }
-
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any> {
-        return this.http
-            .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
-            .pipe(catchError(error => of(error)));
-    }
-
-    public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
-        return this.http
-            .get(`${this.apiPrefix}/getMeasurementTypes`)
-            .pipe(
-                map((response: Array<any>) =>
-                    response.map(measurementType => ({
-                        id: measurementType['id'],
-                        name: measurementType['name'],
-                        systemName: measurementType['systemName'],
-                        description: measurementType['description'],
-                        paymentTypeId: measurementType['paymentTypeId'],
-                        paymentTypeName: measurementType['paymentTypeName']
-                    }) as MeasurementTypeResponse)),
-                catchError(error => of(error))
-            );
     }
 
     public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
@@ -145,10 +69,31 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             );
     }
 
-    public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
+    public getMeasurement(id: number): Observable<MeasurementResponse> {
         return this.http
-            .delete(`${this.apiPrefix}/deleteMeasurementType`,
-                { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
+            .get(`${this.apiPrefix}/getMeasurement`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        measurement: response['measurement'],
+                        comment: response['comment'],
+                        month: response['dateMonth'],
+                        year: response['dateYear'],
+                        meterMeasurementTypeId: response['meterMeasurementTypeId'],
+                        measurementTypeName: response['measurementTypeName'],
+                    }) as MeasurementResponse),
+                catchError(error => of(error))
+            );
+    }
+
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
             .pipe(catchError(error => of(error)));
     }
 
@@ -158,6 +103,75 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                 { params: new HttpParams().set('measurementId', `${measurementId}`) })
             .pipe(catchError(error => of(error)));
     }
+
+    public sendMeasurements(measurementIds: Array<number>): Observable<boolean> {
+        return this.http
+            .post(`${this.apiPrefix}/sendMeasurements`, measurementIds)
+            .pipe(catchError(error => of(error)));
+    }
+
+    // #endregion measurements
+
+    // #region measurement types
+
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)
+            .pipe(catchError(error => of(error)));
+    }
+
+    public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
+        return this.http
+            .get(`${this.apiPrefix}/getMeasurementTypes`)
+            .pipe(
+                map((response: Array<any>) =>
+                    response.map(measurementType => ({
+                        id: measurementType['id'],
+                        name: measurementType['name'],
+                        systemName: measurementType['systemName'],
+                        description: measurementType['description'],
+                        paymentTypeId: measurementType['paymentTypeId'],
+                        paymentTypeName: measurementType['paymentTypeName']
+                    }) as MeasurementTypeResponse)),
+                catchError(error => of(error))
+            );
+    }
+
+    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+        return this.http
+            .get(`${this.apiPrefix}/getMeasurementType`, {
+                params: new HttpParams({
+                    fromObject: { id: `${id}` }
+                })
+            })
+            .pipe(
+                map((response: any) =>
+                    ({
+                        id: response['id'],
+                        name: response['name'],
+                        systemName: response['systemName'],
+                        description: response['description'],
+                        paymentTypeId: response['paymentTypeId'],
+                        paymentTypeName: response['paymentTypeName'],
+                    }) as MeasurementTypeResponse),
+                catchError(error => of(error))
+            );
+    }
+
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+        return this.http
+            .post(`${this.apiPrefix}/updateMeasurementType`, { id, ...measurementTypeData })
+            .pipe(catchError(error => of(error)));
+    }
+
+    public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
+        return this.http
+            .delete(`${this.apiPrefix}/deleteMeasurementType`,
+                { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
+            .pipe(catchError(error => of(error)));
+    }
+
+    // #endregion measurement types
 }
 
 export { MeasurementApiBackendService };

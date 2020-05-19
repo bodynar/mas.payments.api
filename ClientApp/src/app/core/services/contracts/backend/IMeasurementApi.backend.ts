@@ -7,25 +7,34 @@ import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 abstract class IMeasurementApiBackendService {
-    abstract getMeasurement(id: number): Observable<MeasurementResponse>;
-
-    abstract getMeasurementType(id: number): Observable<MeasurementTypeResponse>;
-
-    abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
-
+    // #region measurements
     abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<any>;
-
-    abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
-
-    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any>;
-
-    abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
 
     abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>>;
 
-    abstract deleteMeasurementType(measurementTypeId: number): Observable<boolean>;
+    abstract getMeasurement(id: number): Observable<MeasurementResponse>;
+
+    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any>;
 
     abstract deleteMeasurement(measurementId: number): Observable<boolean>;
+
+    abstract sendMeasurements(measurementIds: Array<number>): Observable<boolean>;
+
+    // #endregion measurements
+
+    // #region measurement types
+
+    abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+
+    abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
+
+    abstract getMeasurementType(id: number): Observable<MeasurementTypeResponse>;
+
+    abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any>;
+
+    abstract deleteMeasurementType(measurementTypeId: number): Observable<boolean>;
+
+    // #endregion measurement types
 }
 
 export { IMeasurementApiBackendService };

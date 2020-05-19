@@ -15,7 +15,7 @@ import { MeasurementResponse } from 'models/response/measurementResponse';
 import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
 
 @Injectable()
-class MeasurementService implements IMeasurementService {
+export default class MeasurementService implements IMeasurementService {
 
     constructor(
         private measurementApiBackend: IMeasurementApiBackendService,
@@ -23,41 +23,20 @@ class MeasurementService implements IMeasurementService {
         // private loggingService: ILoggingService
     ) { }
 
-    public getMeasurement(id: number): Observable<MeasurementResponse> {
-        return this.measurementApiBackend.getMeasurement(id);
-    }
-
-    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
-        return this.measurementApiBackend.getMeasurementType(id);
-    }
-
-    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
-        // data validation
-
-        return this.measurementApiBackend
-            .addMeasurementType(measurementTypeData)
-            .pipe(
-                map(response => isNullOrUndefined(response)),
-                tap(withoutError => {
-                    if (!withoutError) {
-                        // this.loggingService.error()
-                    }
-                }),
-            );
-    }
+    // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<boolean> {
         // data validation
         const parsedMonth: number =
-          parseInt(measurementData.month) + 1;
+            parseInt(measurementData.month) + 1;
         const month: number =
-          parsedMonth > 12
-            ? parsedMonth % 12
-            : parsedMonth;
+            parsedMonth > 12
+                ? parsedMonth % 12
+                : parsedMonth;
         return this.measurementApiBackend
             .addMeasurement({
-              ...measurementData,
-              month: month.toString()
+                ...measurementData,
+                month: month.toString()
             })
             .pipe(
                 map(response => isNullOrUndefined(response)),
@@ -69,9 +48,31 @@ class MeasurementService implements IMeasurementService {
             );
     }
 
-    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
         return this.measurementApiBackend
-            .updateMeasurementType(id, measurementTypeData)
+            .getMeasurements(filter)
+            .pipe(
+                map(response => {
+                    const hasError: boolean =
+                        isNullOrUndefined(response) || !(response instanceof Array);
+
+                    if (hasError) {
+                        // this.notificationService.error();
+                        // this.loggingService.error(response);
+                    }
+
+                    return hasError ? [] : response;
+                }),
+            );
+    }
+
+    public getMeasurement(id: number): Observable<MeasurementResponse> {
+        return this.measurementApiBackend.getMeasurement(id);
+    }
+
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<boolean> {
+        return this.measurementApiBackend
+            .updateMeasurement(id, measurementData)
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
@@ -82,9 +83,27 @@ class MeasurementService implements IMeasurementService {
             );
     }
 
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<boolean> {
+    public deleteMeasurement(measurementId: number): Observable<boolean> {
         return this.measurementApiBackend
-            .updateMeasurement(id, measurementData)
+            .deleteMeasurement(measurementId)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
+
+    public sendMeasurements(measurementIds: Array<number>): Observable<boolean> {
+        return this.measurementApiBackend
+            .sendMeasurements(measurementIds)
+            .pipe(map(response => !isNullOrUndefined(response)));
+    }
+
+    // #endregion measurements
+
+    // #region measurement types
+
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
+        // data validation
+
+        return this.measurementApiBackend
+            .addMeasurementType(measurementTypeData)
             .pipe(
                 map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
@@ -113,20 +132,19 @@ class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
+    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+        return this.measurementApiBackend.getMeasurementType(id);
+    }
+
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
         return this.measurementApiBackend
-            .getMeasurements(filter)
+            .updateMeasurementType(id, measurementTypeData)
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
-                        // this.loggingService.error(response);
+                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
@@ -137,11 +155,5 @@ class MeasurementService implements IMeasurementService {
             .pipe(map(response => !isNullOrUndefined(response)));
     }
 
-    public deleteMeasurement(measurementId: number): Observable<boolean> {
-        return this.measurementApiBackend
-            .deleteMeasurement(measurementId)
-            .pipe(map(response => !isNullOrUndefined(response)));
-    }
+    // #endregion measurement types
 }
-
-export { MeasurementService };

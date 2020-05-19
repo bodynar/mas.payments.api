@@ -1,6 +1,15 @@
 doctype html
 
 .measurement
+    .sent-flag(
+        *ngIf='(isSentFlagActive | async)'
+    )
+        input(
+            type="checkbox",
+            name='',
+            [disabled]='measurement.isSent',
+            (change)='onChecked($event)'
+        )
     .date
         .month {{ formatMonth(measurement.month) }}
         .year {{ measurement.year }}

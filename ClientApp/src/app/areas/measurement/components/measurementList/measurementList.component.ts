@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
 import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -32,10 +32,19 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
+    public isMeasurementsSentFlagActive$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public selectedMeasurementsCount$: Subject<string> =
+        new Subject();
+
     public months: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
         ['add', 'types'];
+
+    public isMeasurementsSentFlagVisible: boolean =
+        false;
 
     private whenMeasurementDelete$: Subject<number> =
         new Subject();
@@ -48,6 +57,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
+
+    private selectedMeasurementsToSend: Array<number> =
+        [];
 
     constructor(
         private measurementService: IMeasurementService,
@@ -93,6 +105,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     { queryParams: { 'id': id } }
                 )
             );
+
+        this.selectedMeasurementsCount$.next('');
+
+        this.isMeasurementsSentFlagActive$
+            .subscribe(isFlagVisible => this.isMeasurementsSentFlagVisible = isFlagVisible);
     }
 
     public ngOnInit(): void {
@@ -101,11 +118,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(measurementTypes => {
                 this.measurementTypes$.next([
-                  {
-                    name: '',
-                    systemName: '',
-                  }, ...measurementTypes
-                ])
+                    {
+                        name: '',
+                        systemName: '',
+                    }, ...measurementTypes
+                ]);
                 this.whenSubmitFilters$.next();
             });
     }
@@ -139,10 +156,41 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         }
     }
 
+    public onSendMeasurementsClick(): void {
+        this.applyFilters();
+    }
+
+    public onSendFlagClick(event: {
+        checked: boolean,
+        id: number,
+    }): void {
+        if (event.checked) {
+            this.selectedMeasurementsToSend.push(event.id);
+        } else {
+            this.selectedMeasurementsToSend.splice(
+                this.selectedMeasurementsToSend.indexOf(event.id),
+                1
+            );
+        }
+        const count: string =
+            this.selectedMeasurementsToSend.length > 0
+                ? `(${this.selectedMeasurementsToSend.length})`
+                : '';
+        this.selectedMeasurementsCount$.next(count);
+    }
+
     public clearFilters(): void {
         this.filters = {};
 
         this.applyFilters();
+    }
+
+    public onSelectMeasurementsClick(isMeasurementsSentFlagVisible: boolean): void {
+        this.isMeasurementsSentFlagActive$.next(isMeasurementsSentFlagVisible);
+
+        if (!isMeasurementsSentFlagVisible) {
+            this.selectedMeasurementsToSend = [];
+        }
     }
 }
 

@@ -1,11 +1,34 @@
 doctype html
 
 .actions
-    button.btn.btn-outline-info(
-        *ngFor='let action of actions',
-        (click)='onActionClick(action)'
-    ) {{ action }}
-
+    .btn-spaced
+        button.btn.btn-outline-info(
+            *ngFor='let action of actions',
+            (click)='onActionClick(action)'
+        ) {{ action }}
+    .btn-group(
+        *ngIf='isMeasurementsSentFlagActive$ | async'
+    )
+        button.btn.btn-success(
+            type='button',
+            (click)='onSendMeasurementsClick()'
+        ) Send {{ selectedMeasurementsCount$ | async }}
+        button.btn.btn-success.dropdown-toggle.dropdown-toggle-split(
+            type='button',
+            data-toggle='dropdown',
+            aria-haspopup='true',
+            aria-expanded='false'
+        )
+            span.sr-only Toggle Dropdown
+        .dropdown-menu
+            button.dropdown-item(
+                type='button',
+                (click)='onSelectMeasurementsClick(false)'
+            ) Cancel
+    button.btn.btn-success(
+        *ngIf='!(isMeasurementsSentFlagActive$ | async)',
+        (click)='onSelectMeasurementsClick(true)'
+    ) Send
 hr
 
 .accordion
@@ -52,9 +75,11 @@ hr
     app-measurement-item(
         *ngFor='let measurement of (measurements$ | async)',
         [measurement]='measurement',
+        [isSentFlagActive]='this.isMeasurementsSentFlagActive$',
         (deleteClick)='onDeleteRecordClick($event)',
         (editClick)='onEditRecordClick($event)',
-        (typeClick)='onTypeClick($event)'
+        (typeClick)='onTypeClick($event)',
+        (sendFlagClick)='onSendFlagClick($event)',
     )
 
 img.loading-indicator(

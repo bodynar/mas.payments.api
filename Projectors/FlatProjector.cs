@@ -153,6 +153,7 @@ namespace MAS.Payments.Projectors
             private Type[] FulfillPrimitiveTypes()
             {
                 return new[] {
+                    typeof(bool),
                     typeof(string),
                     typeof(char),
                     typeof(byte),

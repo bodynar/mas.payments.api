@@ -115,16 +115,24 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         this.onSendMeasurementsClick$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+				filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+				tap(_ => {
+					this.isLoading$.next(true);
+					this.isMeasurementsSentFlagActive$.next(false);
+				}),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
                 filter(hasError => {
                     if (hasError) {
                         this.notificationService.error('Error due sending measurements. Try again later');
                     }
-                    return !hasError;
+                    return true;
                 }),
-                switchMapTo(this.measurementService.getMeasurements(this.filters)),
-                tap(_ => this.notificationService.success('Measurements sent'))
+				switchMapTo(this.measurementService.getMeasurements(this.filters)),
+				delay(2 * 1000), // todo: configure this value to UX
+				tap(_ => {
+					this.notificationService.success('Measurements sent');
+					this.isLoading$.next(false)
+				}),
             )
             .subscribe(measurements => this.measurements$.next(measurements));
 

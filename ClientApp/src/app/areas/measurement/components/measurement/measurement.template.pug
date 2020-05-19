@@ -6,7 +6,8 @@ doctype html
     )
         .custom-control.custom-checkbox
             input.custom-control-input(
-                [id]='measurement.id'
+                [id]='measurement.id',
+				[checked]='measurement.isSent',
                 type='checkbox',
                 [disabled]='measurement.isSent',
                 (change)='onChecked($event)',

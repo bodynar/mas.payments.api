@@ -1,7 +1,7 @@
 namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
-
+    using System.Linq;
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -9,7 +9,7 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Specification;
     using MAS.Payments.Projectors;
 
-    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IEnumerable<GetMeterMeasurementsResponse>>
+    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IReadOnlyCollection<GetMeterMeasurementsResponse>>
     {
         private IRepository<MeterMeasurement> Repository { get; }
 
@@ -20,7 +20,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
+        public override IReadOnlyCollection<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
 
@@ -40,7 +40,8 @@ namespace MAS.Payments.Queries
             }
 
             return Repository
-                   .Where(filter, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsResponse>());
+                   .Where(filter, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsResponse>())
+                   .ToList();
         }
     }
 }

@@ -32,10 +32,22 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
+    public isMeasurementsSentFlagActive$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isAnyMeasurementSelectedToSend$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public selectedMeasurementsCount$: Subject<string> =
+        new Subject();
+
     public months: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
         ['add', 'types'];
+
+    public isMeasurementsSentFlagVisible: boolean =
+        false;
 
     private whenMeasurementDelete$: Subject<number> =
         new Subject();
@@ -48,6 +60,12 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
+
+    private onSendMeasurementsClick$: Subject<Array<number>>
+        = new Subject();
+
+    private selectedMeasurementsToSend: Array<number> =
+        [];
 
     constructor(
         private measurementService: IMeasurementService,
@@ -93,6 +111,35 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     { queryParams: { 'id': id } }
                 )
             );
+
+        this.onSendMeasurementsClick$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+				filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+				tap(_ => {
+					this.isLoading$.next(true);
+					this.isMeasurementsSentFlagActive$.next(false);
+				}),
+                switchMap(array => this.measurementService.sendMeasurements(array)),
+                filter(hasError => {
+                    if (hasError) {
+                        this.notificationService.error('Error due sending measurements. Try again later');
+                    }
+                    return true;
+                }),
+				switchMapTo(this.measurementService.getMeasurements(this.filters)),
+				delay(2 * 1000), // todo: configure this value to UX
+				tap(_ => {
+					this.notificationService.success('Measurements sent');
+					this.isLoading$.next(false)
+				}),
+            )
+            .subscribe(measurements => this.measurements$.next(measurements));
+
+        this.selectedMeasurementsCount$.next('');
+
+        this.isMeasurementsSentFlagActive$
+            .subscribe(isFlagVisible => this.isMeasurementsSentFlagVisible = isFlagVisible);
     }
 
     public ngOnInit(): void {
@@ -101,11 +148,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this.whenComponentDestroy$))
             .subscribe(measurementTypes => {
                 this.measurementTypes$.next([
-                  {
-                    name: '',
-                    systemName: '',
-                  }, ...measurementTypes
-                ])
+                    {
+                        name: '',
+                        systemName: '',
+                    }, ...measurementTypes
+                ]);
                 this.whenSubmitFilters$.next();
             });
     }
@@ -139,10 +186,46 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         }
     }
 
+    public onSendMeasurementsClick(): void {
+        this.onSendMeasurementsClick$.next(this.selectedMeasurementsToSend);
+    }
+
+    public onSendFlagClick(measurement: {
+        checked: boolean,
+        id: number,
+    }): void {
+        if (measurement.checked) {
+            this.selectedMeasurementsToSend.push(measurement.id);
+        } else {
+            this.selectedMeasurementsToSend.splice(
+                this.selectedMeasurementsToSend.indexOf(measurement.id),
+                1
+            );
+        }
+
+        this.isAnyMeasurementSelectedToSend$.next(this.selectedMeasurementsToSend.length > 0);
+
+        const count: string =
+            this.selectedMeasurementsToSend.length > 0
+                ? `(${this.selectedMeasurementsToSend.length})`
+                : '';
+        this.selectedMeasurementsCount$.next(count);
+    }
+
     public clearFilters(): void {
         this.filters = {};
 
         this.applyFilters();
+    }
+
+    public onSelectMeasurementsClick(isMeasurementsSentFlagVisible: boolean): void {
+        this.isMeasurementsSentFlagActive$.next(isMeasurementsSentFlagVisible);
+
+        if (!isMeasurementsSentFlagVisible) {
+            this.selectedMeasurementsToSend = [];
+            this.isAnyMeasurementSelectedToSend$.next(false);
+            this.selectedMeasurementsCount$.next('');
+        }
     }
 }
 

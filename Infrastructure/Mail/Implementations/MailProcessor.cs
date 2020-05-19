@@ -4,7 +4,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 {
     public class MailProcessor : IMailProcessor
     {
-        private Lazy<IMailSender> mailSender;
+        private readonly Lazy<IMailSender> mailSender;
 
         private IResolver Resolver { get; }
 

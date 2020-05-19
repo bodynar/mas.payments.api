@@ -1,6 +1,20 @@
 doctype html
 
 .measurement
+    .sent-flag(
+        *ngIf='(isSentFlagActive | async)'
+    )
+        .custom-control.custom-checkbox
+            input.custom-control-input(
+                [id]='measurement.id',
+				[checked]='measurement.isSent',
+                type='checkbox',
+                [disabled]='measurement.isSent',
+                (change)='onChecked($event)',
+            )
+            label.custom-control-label(
+                [for]='measurement.id'
+            )
     .date
         .month {{ formatMonth(measurement.month) }}
         .year {{ measurement.year }}

@@ -1,4 +1,6 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
+import { Subject } from 'rxjs';
 
 import { MeasurementResponse } from 'models/response/measurementResponse';
 
@@ -9,9 +11,12 @@ import { getMonthName } from 'src/static/months';
     templateUrl: 'measurement.template.pug',
     styleUrls: ['measurement.style.styl']
 })
-class MeasurementComponent {
+class MeasurementComponent implements OnInit {
     @Input()
     public measurement: MeasurementResponse;
+
+    @Input()
+    public isSentFlagActive: Subject<boolean>;
 
     @Output()
     public deleteClick: EventEmitter<number> =
@@ -25,11 +30,34 @@ class MeasurementComponent {
     public typeClick: EventEmitter<number> =
         new EventEmitter();
 
+    @Output()
+    public sendFlagClick: EventEmitter<{
+        checked: boolean,
+        id: number,
+    }> =
+        new EventEmitter();
+
     constructor(
-    ) { }
+    ) {
+    }
+
+    public ngOnInit(): void {
+        this.isSentFlagActive.subscribe();
+    }
 
     public formatMonth(monthNumber: number): string {
-      return getMonthName(monthNumber);
+        return getMonthName(monthNumber);
+    }
+
+    public onChecked({ target }: Event): void {
+        const checked: boolean =
+            target instanceof HTMLInputElement
+            && target.checked;
+
+        this.sendFlagClick.emit({
+            checked: checked,
+            id: this.measurement.id,
+        });
     }
 
     public getMeasurementTypeClass(paymentTypeName: string): string {

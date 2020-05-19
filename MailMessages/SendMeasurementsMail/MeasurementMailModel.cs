@@ -1,15 +1,17 @@
+using MAS.Payments.Infrastructure.MailMessaging;
+
 namespace MAS.Payments.MailMessages
 {
-    public class MeasurementMailModel
+    public class MeasurementMailModel: BaseMailMessageModel
     {
-        public string TypeName { get; }
+        public string Date { get; }
 
-        public double Measurement { get; }
+        public string Measurements { get; }
 
-        public MeasurementMailModel(string typeName, double measurement)
+        public MeasurementMailModel(string date, string measurements)
         {
-            TypeName = typeName;
-            Measurement = measurement;
+            Date = date;
+            Measurements = measurements;
         }
     }
 }

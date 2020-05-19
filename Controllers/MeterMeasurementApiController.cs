@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using MAS.Payments.Commands;
 using MAS.Payments.Infrastructure;
@@ -10,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
 {
-    [Route("api/measures")]
+    [Route("api/measurement")]
     public class MeterMeasurementApiController : BaseApiController
     {
         public MeterMeasurementApiController(
@@ -99,8 +100,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void SendMeasurements(IEnumerable<long> measurementIdentifiers)
+        public void SendMeasurements([FromBody]IEnumerable<long> measurementIdentifiers)
         {
+            if (!measurementIdentifiers.Any())
+            {
+                throw new ArgumentException("No measurement identifiers not specified");
+            }
+
             CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
         }
 

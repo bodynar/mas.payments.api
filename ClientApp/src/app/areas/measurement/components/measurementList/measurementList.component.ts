@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -35,6 +35,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public isMeasurementsSentFlagActive$: Subject<boolean> =
         new BehaviorSubject(false);
 
+    public isAnyMeasurementSelectedToSend$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public selectedMeasurementsCount$: Subject<string> =
         new Subject();
 
@@ -57,6 +60,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
+
+    private onSendMeasurementsClick$: Subject<Array<number>>
+        = new Subject();
 
     private selectedMeasurementsToSend: Array<number> =
         [];
@@ -105,6 +111,22 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     { queryParams: { 'id': id } }
                 )
             );
+
+        this.onSendMeasurementsClick$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+                switchMap(array => this.measurementService.sendMeasurements(array)),
+                filter(hasError => {
+                    if (hasError) {
+                        this.notificationService.error('Error due sending measurements. Try again later');
+                    }
+                    return !hasError;
+                }),
+                switchMapTo(this.measurementService.getMeasurements(this.filters)),
+                tap(_ => this.notificationService.success('Measurements sent'))
+            )
+            .subscribe(measurements => this.measurements$.next(measurements));
 
         this.selectedMeasurementsCount$.next('');
 
@@ -157,21 +179,24 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     }
 
     public onSendMeasurementsClick(): void {
-        this.applyFilters();
+        this.onSendMeasurementsClick$.next(this.selectedMeasurementsToSend);
     }
 
-    public onSendFlagClick(event: {
+    public onSendFlagClick(measurement: {
         checked: boolean,
         id: number,
     }): void {
-        if (event.checked) {
-            this.selectedMeasurementsToSend.push(event.id);
+        if (measurement.checked) {
+            this.selectedMeasurementsToSend.push(measurement.id);
         } else {
             this.selectedMeasurementsToSend.splice(
-                this.selectedMeasurementsToSend.indexOf(event.id),
+                this.selectedMeasurementsToSend.indexOf(measurement.id),
                 1
             );
         }
+
+        this.isAnyMeasurementSelectedToSend$.next(this.selectedMeasurementsToSend.length > 0);
+
         const count: string =
             this.selectedMeasurementsToSend.length > 0
                 ? `(${this.selectedMeasurementsToSend.length})`
@@ -190,6 +215,8 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
         if (!isMeasurementsSentFlagVisible) {
             this.selectedMeasurementsToSend = [];
+            this.isAnyMeasurementSelectedToSend$.next(false);
+            this.selectedMeasurementsCount$.next('');
         }
     }
 }

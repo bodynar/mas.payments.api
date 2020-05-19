@@ -11,7 +11,8 @@ doctype html
     )
         button.btn.btn-success(
             type='button',
-            (click)='onSendMeasurementsClick()'
+            (click)='onSendMeasurementsClick()',
+            [disabled]='!(isAnyMeasurementSelectedToSend$ | async)',
         ) Send {{ selectedMeasurementsCount$ | async }}
         button.btn.btn-success.dropdown-toggle.dropdown-toggle-split(
             type='button',

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
 {
-    [Route("api/measures")]
+    [Route("api/measurement")]
     public class MeterMeasurementApiController : BaseApiController
     {
         public MeterMeasurementApiController(

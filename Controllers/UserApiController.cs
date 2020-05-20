@@ -1,10 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using MAS.Payments.Infrastructure;
 using MAS.Payments.MailMessages;
 using MAS.Payments.Models;
 using MAS.Payments.Notifications;
+using MAS.Payments.Queries;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -42,6 +45,12 @@ namespace MAS.Payments.Controllers
         public void TestMailWithModelMessage([FromBody]TestMailMessageRequest request)
         {
             MailProcessor.Send(new TestMailMessageWithModel(request.Recipient, request.Counter, request.Name));
+        }
+
+        [HttpGet]
+        public IReadOnlyCollection<GetUserSettingsQueryResult> GetSettings()
+        {
+            return QueryProcessor.Execute(new GetUserSettingsQuery());
         }
     }
 }

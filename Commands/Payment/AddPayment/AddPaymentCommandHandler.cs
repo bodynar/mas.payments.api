@@ -11,6 +11,7 @@ namespace MAS.Payments.Commands
         private IRepository<Payment> Repository { get; }
 
         private IRepository<PaymentType> PaymentTypeRepository { get; }
+
         public AddPaymentCommandHandler(
             IResolver resolver
         ) : base(resolver)

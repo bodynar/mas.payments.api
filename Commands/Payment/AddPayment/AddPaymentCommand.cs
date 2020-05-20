@@ -1,4 +1,3 @@
-
 using System;
 using MAS.Payments.Infrastructure.Command;
 

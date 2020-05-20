@@ -2,8 +2,10 @@ namespace MAS.Payments.DataBase
 {
     public class UserSettings : Entity
     {
-        public string MeasurementsEmailToSend { get; set; }
+        public string Name { get; set; }
 
-        public bool DisplayMeasurementNotification { get; set; }
+        public string RawValue { get; set; }
+
+        public string TypeName { get; set; }
     }
 }

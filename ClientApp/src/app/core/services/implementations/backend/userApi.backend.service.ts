@@ -10,6 +10,7 @@ import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
+import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
 @Injectable()
 class UserApiBackendService implements IUserApiBackendService {
@@ -45,6 +46,22 @@ class UserApiBackendService implements IUserApiBackendService {
         return this.http
             .post(url, testMailMessage)
             .pipe(catchError(error => of(error)));
+    }
+
+    public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
+        return this.http
+            .get(`${this.apiPrefix}/getSettings`)
+            .pipe(
+                map((response: Array<any>) =>
+                    response.map(setting => ({
+                        id: setting['Id'],
+                        name: setting['Name'],
+                        typeName: setting['TypeName'],
+                        rawValue: setting['RawValue'],
+                        displayName: setting['DisplayName'],
+                    }) as GetUserSettingsResponse)),
+                catchError(error => of(error))
+            );
     }
 }
 

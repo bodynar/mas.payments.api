@@ -10,6 +10,7 @@ import { IUserService } from 'services/IUserService';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
+import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
 @Injectable()
 class UserService implements IUserService {
@@ -40,6 +41,23 @@ class UserService implements IUserService {
         return this.userApiBackend
             .sendTestMailMessage(testMailMessage)
             .pipe(map(response => isNullOrUndefined(response)));
+    }
+
+    public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
+        return this.userApiBackend
+            .getUserSettings()
+            .pipe(
+                map(response => {
+                    const hasError: boolean =
+                        isNullOrUndefined(response) || !(response instanceof Array);
+
+                    if (hasError) {
+                        // this.loggingService.error(response);
+                    }
+
+                    return hasError ? [] : response;
+                }),
+            );
     }
 }
 

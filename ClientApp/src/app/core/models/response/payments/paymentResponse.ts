@@ -1,4 +1,4 @@
-interface PaymentResponse {
+export default interface PaymentResponse {
     id: number;
     amount: number;
     month: string;
@@ -7,5 +7,3 @@ interface PaymentResponse {
     paymentTypeName: string;
     paymentTypeId: number;
 }
-
-export { PaymentResponse };

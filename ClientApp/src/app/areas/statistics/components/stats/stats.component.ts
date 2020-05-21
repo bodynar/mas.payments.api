@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { PaymentStatsResponse } from 'models/response/paymentStatsResponse';
+import { PaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
 @Component({

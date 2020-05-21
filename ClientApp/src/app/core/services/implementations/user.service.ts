@@ -9,7 +9,7 @@ import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
-import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
+import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
 @Injectable()
 class UserService implements IUserService {

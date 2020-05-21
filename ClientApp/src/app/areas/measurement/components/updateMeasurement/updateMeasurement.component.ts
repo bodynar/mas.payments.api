@@ -14,7 +14,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
-import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
+import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
     templateUrl: 'updateMeasurement.template.pug'

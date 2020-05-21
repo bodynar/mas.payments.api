@@ -3,8 +3,8 @@ import { Observable } from 'rxjs';
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/response/paymentResponse';
-import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import PaymentResponse from 'models/response/payments/paymentResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 abstract class IPaymentApiBackendService {
     abstract getPayment(id: number): Observable<PaymentResponse>;

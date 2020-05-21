@@ -9,7 +9,7 @@ import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.ba
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { GetPaymentStatsResponse } from 'models/response/paymentStatsResponse';
+import { GetPaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
 @Injectable()

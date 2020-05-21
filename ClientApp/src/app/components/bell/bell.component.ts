@@ -7,7 +7,7 @@ import { isNullOrUndefined } from 'util';
 
 import { IUserService } from 'services/IUserService';
 
-import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
+import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
 @Component({
     selector: 'app-bell',

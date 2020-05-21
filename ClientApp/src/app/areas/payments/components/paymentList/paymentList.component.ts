@@ -10,8 +10,8 @@ import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
 import { PaymentsFilter } from 'models/paymentsFilter';
-import { PaymentResponse } from 'models/response/paymentResponse';
-import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import PaymentResponse from 'models/response/payments/paymentResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 import { months } from 'src/static/months';
 

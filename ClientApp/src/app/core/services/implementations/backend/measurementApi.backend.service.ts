@@ -11,8 +11,8 @@ import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.
 import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
-import { MeasurementResponse } from 'models/response/measurementResponse';
-import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
+import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Injectable()
 class MeasurementApiBackendService implements IMeasurementApiBackendService {

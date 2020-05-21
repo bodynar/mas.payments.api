@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
-import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
+import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
 abstract class IUserApiBackendService {
     abstract getNotifications(): Observable<Array<GetNotificationsResponse>>;

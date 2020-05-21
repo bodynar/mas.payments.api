@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 
-import { GetPaymentStatsResponse } from 'models/response/paymentStatsResponse';
+import { GetPaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
 @Injectable()

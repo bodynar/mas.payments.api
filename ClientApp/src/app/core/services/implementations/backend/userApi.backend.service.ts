@@ -9,7 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
-import { GetNotificationsResponse } from 'models/response/getNotificationsResponse';
+import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
 @Injectable()
 class UserApiBackendService implements IUserApiBackendService {

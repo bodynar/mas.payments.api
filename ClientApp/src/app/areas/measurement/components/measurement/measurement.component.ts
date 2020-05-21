@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
-import { MeasurementResponse } from 'models/response/measurementResponse';
+import MeasurementResponse from 'models/response/measurements/measurementResponse';
 
 import { getMonthName } from 'src/static/months';
 

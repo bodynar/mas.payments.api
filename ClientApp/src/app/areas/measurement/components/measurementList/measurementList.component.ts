@@ -12,8 +12,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
 import { MeasurementsFilter } from 'models/measurementsFilter';
-import { MeasurementResponse } from 'models/response/measurementResponse';
-import { MeasurementTypeResponse } from 'models/response/measurementTypeResponse';
+import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
     templateUrl: 'measurementList.template.pug',

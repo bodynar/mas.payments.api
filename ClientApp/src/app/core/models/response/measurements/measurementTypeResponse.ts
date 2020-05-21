@@ -1,4 +1,4 @@
-interface MeasurementTypeResponse {
+export default interface MeasurementTypeResponse {
     id?: number;
     name: string;
     systemName: string;
@@ -6,5 +6,3 @@ interface MeasurementTypeResponse {
     paymentTypeId?: number;
     paymentTypeName?: string;
 }
-
-export { MeasurementTypeResponse };

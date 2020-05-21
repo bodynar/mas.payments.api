@@ -6,7 +6,7 @@ import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 
-import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import { IRouterService } from 'services/IRouterService';
 
 @Component({

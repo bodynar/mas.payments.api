@@ -13,7 +13,7 @@ import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
-import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({
     templateUrl: 'updateMeasurementType.template.pug'

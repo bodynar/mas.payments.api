@@ -11,8 +11,8 @@ import { IPaymentService } from 'services/IPaymentService';
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
-import { PaymentResponse } from 'models/response/paymentResponse';
-import { PaymentTypeResponse } from 'models/response/paymentTypeResponse';
+import PaymentResponse from 'models/response/payments/paymentResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Injectable()
 class PaymentService implements IPaymentService {

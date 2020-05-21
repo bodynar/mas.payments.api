@@ -47,7 +47,7 @@ namespace MAS.Payments.Controllers
             MailProcessor.Send(new TestMailMessageWithModel(request.Recipient, request.Counter, request.Name));
         }
 
-        [HttpGet]
+        [HttpGet("[action]")]
         public IReadOnlyCollection<GetUserSettingsQueryResult> GetSettings()
         {
             return QueryProcessor.Execute(new GetUserSettingsQuery());

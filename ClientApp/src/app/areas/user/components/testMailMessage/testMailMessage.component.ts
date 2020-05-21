@@ -7,7 +7,7 @@ import { isNullOrUndefined } from 'util';
 
 import { IUserService } from 'services/IUserService';
 
-import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
+import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import { INotificationService } from 'services/INotificationService';
 
 @Component({

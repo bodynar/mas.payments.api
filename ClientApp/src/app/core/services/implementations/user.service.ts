@@ -8,7 +8,8 @@ import { isNullOrUndefined } from 'util';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';
 
-import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
+import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
+import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -58,6 +59,12 @@ class UserService implements IUserService {
                     return hasError ? [] : response;
                 }),
             );
+    }
+
+    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<boolean> {
+        return this.userApiBackend
+            .updateUserSettings(updatedSettings)
+            .pipe(map(response => isNullOrUndefined(response)));
     }
 }
 

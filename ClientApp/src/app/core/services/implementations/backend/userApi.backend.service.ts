@@ -8,7 +8,8 @@ import { isNullOrUndefined } from 'util';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
-import { TestMailMessageRequest } from 'models/request/testMailMessageRequest';
+import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
+import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -62,6 +63,12 @@ class UserApiBackendService implements IUserApiBackendService {
                     }) as GetUserSettingsResponse)),
                 catchError(error => of(error))
             );
+    }
+
+    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<boolean> {
+        return this.http
+            .post(`${this.apiPrefix}/updateSettings`, updatedSettings)
+            .pipe(catchError(error => of(error)));
     }
 }
 

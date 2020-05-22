@@ -4,4 +4,5 @@ export default interface GetUserSettingsResponse {
     displayName: string;
     typeName: string;
     rawValue: string;
+    value: any;
 }

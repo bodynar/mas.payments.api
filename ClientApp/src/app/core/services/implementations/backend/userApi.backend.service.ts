@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -18,7 +18,6 @@ class UserApiBackendService implements IUserApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/user';
-
     constructor(
         private http: HttpClient
     ) {
@@ -50,16 +49,27 @@ class UserApiBackendService implements IUserApiBackendService {
     }
 
     public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
+        const getMappedValue = (typeName: string, rawValue: string): any => {
+            if (typeName === 'Boolean') {
+                return !!!rawValue;
+            } else if (typeName === 'Number') {
+                return +rawValue;
+            } else {
+                return rawValue;
+            }
+        };
+
         return this.http
             .get(`${this.apiPrefix}/getSettings`)
             .pipe(
                 map((response: Array<any>) =>
                     response.map(setting => ({
-                        id: setting['Id'],
-                        name: setting['Name'],
-                        typeName: setting['TypeName'],
-                        rawValue: setting['RawValue'],
-                        displayName: setting['DisplayName'],
+                        id: setting['id'],
+                        name: setting['name'],
+                        typeName: setting['typeName'],
+                        rawValue: setting['rawValue'],
+                        displayName: setting['displayName'],
+                        value: getMappedValue(setting['typeName'], setting['rawValue'])
                     }) as GetUserSettingsResponse)),
                 catchError(error => of(error))
             );

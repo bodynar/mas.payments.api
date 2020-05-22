@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using MAS.Payments.Commands;
+using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
@@ -107,7 +108,9 @@ namespace MAS.Payments.Controllers
                 throw new ArgumentException("No measurement identifiers not specified");
             }
 
-            CommandProcessor.Execute(new SendMeasurementsCommand(null, measurementIdentifiers));
+            var recipientEmail = QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.EmailToSendMeasurements.ToString()));
+
+            CommandProcessor.Execute(new SendMeasurementsCommand(recipientEmail.RawValue, measurementIdentifiers));
         }
 
         #endregion

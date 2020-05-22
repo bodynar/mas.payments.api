@@ -20,6 +20,7 @@ namespace MAS.Payments.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            // todo: use DefaultUserSetting enum and its attribute
             modelBuilder
                 .Entity<UserSettings>()
                 .HasData(

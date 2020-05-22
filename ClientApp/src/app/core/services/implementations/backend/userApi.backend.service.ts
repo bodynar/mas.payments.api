@@ -77,7 +77,7 @@ class UserApiBackendService implements IUserApiBackendService {
 
     public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<boolean> {
         return this.http
-            .post(`${this.apiPrefix}/updateSettings`, updatedSettings)
+            .post(`${this.apiPrefix}/updateUserSettings`, updatedSettings)
             .pipe(catchError(error => of(error)));
     }
 }

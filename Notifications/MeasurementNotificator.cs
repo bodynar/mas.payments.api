@@ -25,7 +25,8 @@ namespace MAS.Payments.Notifications
                     QueryProcessor.Execute(
                         new GetMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
                     )
-                    .Select(x => x.MeterMeasurementTypeId);
+                    .SelectMany(x => x.Measurements.Select(y => y.MeterMeasurementTypeId))
+                    .Distinct();
 
                 var measurementTypes =
                     QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());

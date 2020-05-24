@@ -74,7 +74,7 @@ class AddPaymentComponent implements OnInit, OnDestroy {
       const currentDate = new Date();
 
       this.months$.next(months);
-      this.years$.next(years(currentDate.getFullYear() - 40, currentDate.getFullYear() + 40));
+      this.years$.next(years(2019, currentDate.getFullYear() + 5));
 
       this.addPaymentRequest.month = currentDate.getMonth().toString();
       this.addPaymentRequest.year = currentDate.getFullYear();

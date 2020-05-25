@@ -70,7 +70,7 @@ hr
                     (click)='clearFilters()'
                 ) Clear
 
-.measurement-list(
+div(
     [class.hidden]='isLoading$ | async'
 )
     app-measurement-group(

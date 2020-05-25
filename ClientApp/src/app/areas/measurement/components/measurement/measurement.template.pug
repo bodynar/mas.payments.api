@@ -1,7 +1,9 @@
 doctype html
 
-.measurement
-    .sent-flag(
+.measurement(
+    [class.measurement--flagged]='(isSentFlagActive | async)'
+)
+    .measurement__flag(
         *ngIf='(isSentFlagActive | async)'
     )
         .custom-control.custom-checkbox
@@ -15,20 +17,21 @@ doctype html
             label.custom-control-label(
                 [for]='measurement.id'
             )
-    .info
-        .amount {{ measurement.measurement }}
-        p.description {{ measurement.description }}
-    .type
+    .measurement__type
         .app-badge(
             [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)',
             (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
         ) {{ measurement.measurementTypeName }}
-    .options
-        .oi.oi-pencil.oi-medium-extra(
+    .measurement__value
+        span {{ measurement.measurement }}
+    .measurement__comment
+        p {{ measurement.comment }}
+    .measurement__actions
+        i.oi.oi-pencil.oi-medium-extra(
             (click)='onEditClick.next(measurement.id)',
             title='Edit'
         )
-        .oi.oi-trash.oi-medium-extra(
+        i.oi.oi-trash.oi-medium-extra(
             (click)='onDeleteClick.next(measurement.id)',
             title='Delete'
         )

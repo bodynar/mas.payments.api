@@ -4,8 +4,6 @@ import { Subject } from 'rxjs';
 
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 
-import { getMonthName } from 'src/static/months';
-
 @Component({
     selector: 'app-measurement-item',
     templateUrl: 'measurement.template.pug',
@@ -18,24 +16,20 @@ class MeasurementComponent implements OnInit {
     @Input()
     public isSentFlagActive: Subject<boolean>;
 
-    @Output()
-    public deleteClick: EventEmitter<number> =
-        new EventEmitter();
+    @Input()
+    public onDeleteClick: Subject<number>;
 
-    @Output()
-    public editClick: EventEmitter<number> =
-        new EventEmitter();
+    @Input()
+    public onEditClick: Subject<number>;
 
-    @Output()
-    public typeClick: EventEmitter<number> =
-        new EventEmitter();
+    @Input()
+    public onTypeClick: Subject<number>;
 
-    @Output()
-    public sendFlagClick: EventEmitter<{
+    @Input()
+    public onSendFlagClick: Subject<{
         checked: boolean,
         id: number,
-    }> =
-        new EventEmitter();
+    }>;
 
     constructor(
     ) {
@@ -45,16 +39,12 @@ class MeasurementComponent implements OnInit {
         this.isSentFlagActive.subscribe();
     }
 
-    public formatMonth(monthNumber: number): string {
-        return getMonthName(monthNumber);
-    }
-
     public onChecked({ target }: Event): void {
         const checked: boolean =
             target instanceof HTMLInputElement
             && target.checked;
 
-        this.sendFlagClick.emit({
+        this.onSendFlagClick.next({
             checked: checked,
             id: this.measurement.id,
         });

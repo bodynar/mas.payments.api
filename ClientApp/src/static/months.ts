@@ -55,6 +55,6 @@ const getMonthName = function(monthNumber: number): string {
     }
 
   return months[monthNumber - 1].name;
-}
+};
 
 export { months, getMonthName };

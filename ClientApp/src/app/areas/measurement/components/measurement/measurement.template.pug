@@ -15,23 +15,20 @@ doctype html
             label.custom-control-label(
                 [for]='measurement.id'
             )
-    .date
-        .month {{ formatMonth(measurement.month) }}
-        .year {{ measurement.year }}
     .info
         .amount {{ measurement.measurement }}
         p.description {{ measurement.description }}
     .type
         .app-badge(
             [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)',
-            (click)='typeClick.emit(measurement.meterMeasurementTypeId)'
+            (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
         ) {{ measurement.measurementTypeName }}
     .options
         .oi.oi-pencil.oi-medium-extra(
-            (click)='editClick.emit(measurement.id)',
+            (click)='onEditClick.next(measurement.id)',
             title='Edit'
         )
         .oi.oi-trash.oi-medium-extra(
-            (click)='deleteClick.emit(measurement.id)',
+            (click)='onDeleteClick.next(measurement.id)',
             title='Delete'
         )

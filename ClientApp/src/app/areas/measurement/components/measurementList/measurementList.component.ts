@@ -12,7 +12,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
 import { MeasurementsFilter } from 'models/measurementsFilter';
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
@@ -23,7 +23,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =
         {};
 
-    public measurements$: Subject<Array<MeasurementResponse>> =
+    public measurements$: Subject<Array<MeasurementsResponse>> =
         new Subject();
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
@@ -79,7 +79,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
-                delay(2 * 1000), // todo: configure this value to UX
+                delay(1.5 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))
             )
             .subscribe(measurements => this.measurements$.next(measurements));
@@ -95,10 +95,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     }
                     return !hasError;
                 }),
-                switchMapTo(this.measurementService.getMeasurements(this.filters)),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(measurements => this.measurements$.next(measurements));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.whenMeasurementEdit$
             .pipe(
@@ -115,11 +114,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         this.onSendMeasurementsClick$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-				filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
-				tap(_ => {
-					this.isLoading$.next(true);
-					this.isMeasurementsSentFlagActive$.next(false);
-				}),
+                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+                tap(_ => {
+                    this.isLoading$.next(true);
+                    this.isMeasurementsSentFlagActive$.next(false);
+                }),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
                 filter(hasError => {
                     if (hasError) {
@@ -127,14 +126,13 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     }
                     return true;
                 }),
-				switchMapTo(this.measurementService.getMeasurements(this.filters)),
-				delay(2 * 1000), // todo: configure this value to UX
-				tap(_ => {
-					this.notificationService.success('Measurements sent');
-					this.isLoading$.next(false)
-				}),
+                delay(1.5 * 1000), // todo: configure this value to UX
+                tap(_ => {
+                    this.notificationService.success('Measurements sent');
+                    this.isLoading$.next(false);
+                }),
             )
-            .subscribe(measurements => this.measurements$.next(measurements));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.selectedMeasurementsCount$.next('');
 

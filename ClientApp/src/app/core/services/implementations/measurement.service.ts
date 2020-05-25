@@ -12,6 +12,7 @@ import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Injectable()
@@ -48,7 +49,7 @@ export default class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>> {
         return this.measurementApiBackend
             .getMeasurements(filter)
             .pipe(

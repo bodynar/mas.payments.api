@@ -73,10 +73,10 @@ hr
 .measurement-list(
     [class.hidden]='isLoading$ | async'
 )
-    app-measurement-item(
-        *ngFor='let measurement of (measurements$ | async)',
-        [measurement]='measurement',
-        [isSentFlagActive]='this.isMeasurementsSentFlagActive$',
+    app-measurement-group(
+        *ngFor='let measurementGroup of (measurements$ | async)',
+        [measurementGroup]='measurementGroup',
+        [isSentFlagActive]='isMeasurementsSentFlagActive$',
         (deleteClick)='onDeleteRecordClick($event)',
         (editClick)='onEditRecordClick($event)',
         (typeClick)='onTypeClick($event)',

@@ -1,0 +1,14 @@
+doctype html
+
+.card.m-card
+    .card-header {{ formattedGroupName }}
+    .card-body
+        app-measurement-item(
+            *ngFor='let measurement of measurementGroup.measurements',
+            [measurement]='measurement',
+            [isSentFlagActive]='isSentFlagActive',
+            [onDeleteClick]='onDeleteClick$',
+            [onEditClick]='onEditClick$',
+            [onTypeClick]='onTypeClick$',
+            [onSendFlagClick]='onSendFlagClick$',
+        )

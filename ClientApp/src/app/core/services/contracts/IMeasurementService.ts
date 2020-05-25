@@ -4,13 +4,14 @@ import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 abstract class IMeasurementService {
     // #region measurements
     abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<any>;
 
-    abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>>;
+    abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>>;
 
     abstract getMeasurement(id: number): Observable<MeasurementResponse>;
 

@@ -108,7 +108,7 @@ export default class MeasurementGroupComponent implements OnInit {
                 if (this.currentSortOrder === 'asc') {
                     sortingFunc = (left, right) => left.measurement - right.measurement;
                 } else {
-                    sortingFunc = (left, right) => left.measurement - right.measurement;
+                    sortingFunc = (left, right) => right.measurement - left.measurement;
                 }
                 break;
             case 'sent':

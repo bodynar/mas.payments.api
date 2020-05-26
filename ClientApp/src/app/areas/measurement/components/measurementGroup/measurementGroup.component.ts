@@ -1,10 +1,10 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { ReplaySubject, Subject, BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
 import { getMonthName } from 'src/static/months';
 
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
+import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 
 @Component({
     selector: 'app-measurement-group',
@@ -37,6 +37,9 @@ export default class MeasurementGroupComponent implements OnInit {
     }> =
         new EventEmitter();
 
+    public measurements$: Subject<Array<MeasurementsResponseMeasurement>> =
+        new ReplaySubject();
+
     public onDeleteClick$: Subject<number> =
         new ReplaySubject();
 
@@ -55,10 +58,21 @@ export default class MeasurementGroupComponent implements OnInit {
     public isGroupCollapsed$: Subject<boolean> =
         new BehaviorSubject(false);
 
+    public isDescSortOrder$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public currentSortColumn$: Subject<string> =
+        new Subject();
+
     public formattedGroupName: string;
 
     private collapsed: boolean =
         false;
+
+    private currentSortOrder: 'asc' | 'desc' =
+        'asc';
+
+    private currentSortColumn: string;
 
     constructor(
     ) {
@@ -73,10 +87,57 @@ export default class MeasurementGroupComponent implements OnInit {
             getMonthName(+this.measurementGroup.month);
 
         this.formattedGroupName = `${monthName} ${this.measurementGroup.year}`;
+        this.onSortColumn('type');
     }
 
     public toggleState(): void {
         this.collapsed = !this.collapsed;
         this.isGroupCollapsed$.next(this.collapsed);
+    }
+
+    public onSortColumn(columnName: string): void {
+        let sortingFunc: (left: MeasurementsResponseMeasurement, right: MeasurementsResponseMeasurement) => number;
+
+        if (this.currentSortColumn !== columnName) {
+            this.currentSortOrder = 'asc';
+            this.currentSortColumn = columnName;
+        }
+
+        switch (columnName) {
+            case 'value':
+                if (this.currentSortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.measurement - right.measurement;
+                } else {
+                    sortingFunc = (left, right) => left.measurement - right.measurement;
+                }
+                break;
+            case 'sent':
+                if (this.currentSortOrder === 'asc') {
+                    sortingFunc = (left, right) => (left.isSent ? 1 : 0) - (right.isSent ? 1 : 0);
+                } else {
+                    sortingFunc = (left, right) => (right.isSent ? 1 : 0) - (left.isSent ? 1 : 0);
+                }
+                break;
+            default:
+                if (this.currentSortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.meterMeasurementTypeId - right.meterMeasurementTypeId;
+                } else {
+                    sortingFunc = (left, right) => right.meterMeasurementTypeId - left.meterMeasurementTypeId;
+                }
+                break;
+        }
+
+        this.currentSortOrder =
+            this.currentSortOrder === 'asc'
+                ? 'desc'
+                : 'asc';
+
+        this.currentSortColumn$.next(columnName);
+        this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
+
+        const sortedMeasurements: Array<MeasurementsResponseMeasurement> =
+            this.measurementGroup.measurements.sort(sortingFunc);
+
+        this.measurements$.next(sortedMeasurements);
     }
 }

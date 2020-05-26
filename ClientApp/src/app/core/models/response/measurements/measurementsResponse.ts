@@ -1,4 +1,4 @@
-interface MeasurementsResponseMeasurement {
+export interface MeasurementsResponseMeasurement {
     id: number;
     measurement: number;
     comment?: string;

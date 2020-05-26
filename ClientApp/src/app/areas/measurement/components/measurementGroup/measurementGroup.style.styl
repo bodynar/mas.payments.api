@@ -30,7 +30,7 @@ transitionFunction = cubic-bezier(0.4, 0.6, 0.6, 1)
             overflow hidden
 .measurement-header
     display grid
-    grid-template-columns minmax(min-content, max-content) 0.5fr 0.1fr 1.25fr 0.5fr
+    grid-template-columns minmax(min-content, max-content) 0.5fr 0.2fr 1.25fr 0.5fr
     grid-template-rows 1fr
     gap 1em
     grid-template-areas "Flag Type Measurement Comment Actions"
@@ -40,7 +40,20 @@ transitionFunction = cubic-bezier(0.4, 0.6, 0.6, 1)
 
     & > * > span
         user-select none
+
+    &:not(&:has(&--clickable)) > * > span
         cursor default
+
+    &--clickable
+        span.oi
+            font-size 0.75em
+            margin-right 0.5em
+            transition 0.2s transform transitionFunction
+
+            &--rotated
+                transform rotate(180deg)
+        span
+            cursor pointer
 
     &__flag
         grid-area Flag

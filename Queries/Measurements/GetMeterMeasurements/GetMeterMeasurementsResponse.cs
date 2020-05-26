@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace MAS.Payments.Queries
 {
@@ -8,11 +9,16 @@ namespace MAS.Payments.Queries
 
         public int DateMonth { get; set; }
 
-        public IList<GetMeterMeasurementsResponseMeasurement> Measurements { get; }
+        public IList<GetMeterMeasurementsResponseMeasurement> Measurements { get; private set; }
 
         public GetMeterMeasurementsResponse()
         {
             Measurements = new List<GetMeterMeasurementsResponseMeasurement>();
+        }
+
+        internal void SortMeasurements()
+        {
+            Measurements = Measurements.OrderBy(item => item.MeterMeasurementTypeId).ToList();
         }
     }
 

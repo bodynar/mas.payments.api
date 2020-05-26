@@ -67,6 +67,8 @@ namespace MAS.Payments.Queries
                 }
             }
 
+            result.ForEach(x => x.SortMeasurements());
+
             return result;
         }
     }

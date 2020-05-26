@@ -1,2 +1,36 @@
 .m-card
     margin-bottom 1.5em
+
+.card-body__measurement-header
+    display grid
+    grid-template-columns minmax(min-content, max-content) 0.5fr 0.1fr 1.25fr 0.5fr
+    grid-template-rows 1fr
+    gap 1em
+    grid-template-areas "Flag Type Measurement Comment Actions"
+
+    margin-bottom 1em
+    font-weight bold
+
+    & > * > span
+        user-select none
+        cursor default
+
+    &__flag
+        grid-area Flag
+
+    &--flagged
+        padding-left 1em
+
+    &__type
+        grid-area Type
+        justify-self center
+
+    &__value
+        grid-area Measurement
+
+    &__comment
+        grid-area Comment
+
+    &__actions
+        grid-area Actions
+        justify-self center

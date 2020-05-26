@@ -1,7 +1,13 @@
 doctype html
 
-.card.m-card
-    .card-header {{ formattedGroupName }}
+.card.m-card(
+        [class.m-card--collapsed]='(isGroupCollapsed$ | async)'
+    )
+    .card-header(
+        (click)='toggleState()'
+    ) 
+        span.oi.oi-chevron-bottom
+        | {{ formattedGroupName }}
     .card-body
         .measurement-header(
             [class.measurement-header--flagged]='(isSentFlagActive | async)'

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject, BehaviorSubject } from 'rxjs';
 
 import { getMonthName } from 'src/static/months';
 
@@ -52,7 +52,13 @@ export default class MeasurementGroupComponent implements OnInit {
     }> =
         new ReplaySubject();
 
+    public isGroupCollapsed$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public formattedGroupName: string;
+
+    private collapsed: boolean =
+        false;
 
     constructor(
     ) {
@@ -67,5 +73,10 @@ export default class MeasurementGroupComponent implements OnInit {
             getMonthName(+this.measurementGroup.month);
 
         this.formattedGroupName = `${monthName} ${this.measurementGroup.year}`;
+    }
+
+    public toggleState(): void {
+        this.collapsed = !this.collapsed;
+        this.isGroupCollapsed$.next(this.collapsed);
     }
 }

@@ -2,6 +2,7 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -9,7 +10,7 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Specification;
     using MAS.Payments.Projectors;
 
-    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IReadOnlyCollection<GetMeterMeasurementsResponse>>
+    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IEnumerable<GetMeterMeasurementsResponse>>
     {
         private IRepository<MeterMeasurement> Repository { get; }
 
@@ -20,7 +21,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IReadOnlyCollection<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
+        public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
 
@@ -69,7 +70,7 @@ namespace MAS.Payments.Queries
 
             result.ForEach(x => x.SortMeasurements());
 
-            return result;
+            return result.OrderBy(x => x.DateYear).ThenBy(x => x.DateMonth);
         }
     }
 }

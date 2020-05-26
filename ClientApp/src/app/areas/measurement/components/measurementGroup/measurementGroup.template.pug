@@ -3,20 +3,20 @@ doctype html
 .card.m-card
     .card-header {{ formattedGroupName }}
     .card-body
-        .card-body__measurement-header(
-            [class.card-body__measurement-header--flagged]='(isSentFlagActive | async)'
+        .measurement-header(
+            [class.measurement-header--flagged]='(isSentFlagActive | async)'
         )
-            .card-body__measurement-header__flag(
+            .measurement-header__flag(
                 *ngIf='(isSentFlagActive | async)'
             )
                 span Sent
-            .card-body__measurement-header__type
+            .measurement-header__type
                 span Type
-            .card-body__measurement-header__value
+            .measurement-header__value
                 span Value
-            .card-body__measurement-header__comment
+            .measurement-header__comment
                 span Comment
-            .card-body__measurement-header__actions
+            .measurement-header__actions
                 span Actions
         app-measurement-item(
             *ngFor='let measurement of measurementGroup.measurements',

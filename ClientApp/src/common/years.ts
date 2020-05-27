@@ -1,4 +1,4 @@
-const years = function (start: number, end: number): Array<{ id?: number, name: string }> {
+const yearsRange = function (start: number, end: number): Array<{ id?: number, name: string }> {
     if (start < 0 || end < 0) {
         throw new Error('Year range must be positive.');
     }
@@ -9,7 +9,7 @@ const years = function (start: number, end: number): Array<{ id?: number, name: 
 
     const tempArray = [];
 
-    for (var i = start; i <= end; i++) {
+    for (let i = start; i <= end; i++) {
         tempArray.push(i);
     }
 
@@ -19,4 +19,4 @@ const years = function (start: number, end: number): Array<{ id?: number, name: 
     }));
 };
 
-export { years };
+export { yearsRange };

@@ -68,8 +68,8 @@ hr
                     )
                         option(
                             *ngFor='let year of years',
-                            [ngValue]='year'
-                        ) {{ year }}
+                            [ngValue]='year.id'
+                        ) {{ year.name }}
             .row
                 label.col-sm-2.col-form-label-sm Measurement type
                 .col-sm-3

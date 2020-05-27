@@ -5,6 +5,7 @@ import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
+import { yearsRange } from 'src/common/years';
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
@@ -42,6 +43,8 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public months: Array<{ name: string, id?: number }>;
 
+    public years: Array<{ name: string, id?: number }>;
+
     public actions: Array<string> =
         ['add', 'types'];
 
@@ -72,6 +75,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         private notificationService: INotificationService,
     ) {
         this.months = [{ name: '' }, ...months];
+        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.whenSubmitFilters$
             .pipe(

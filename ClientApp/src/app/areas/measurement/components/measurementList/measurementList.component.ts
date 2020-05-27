@@ -79,7 +79,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
-                delay(1.5 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))
             )
             .subscribe(measurements => this.measurements$.next(measurements));
@@ -126,7 +125,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     }
                     return true;
                 }),
-                delay(1.5 * 1000), // todo: configure this value to UX
                 tap(_ => {
                     this.notificationService.success('Measurements sent');
                     this.isLoading$.next(false);

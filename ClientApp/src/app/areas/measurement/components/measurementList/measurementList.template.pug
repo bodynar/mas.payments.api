@@ -1,12 +1,16 @@
 doctype html
 
-.actions
-    .btn-spaced
-        button.btn.btn-outline-info(
-            *ngFor='let action of actions',
-            (click)='onActionClick(action)'
-        ) {{ action }}
+.btn-toolbar(
+    role='toolbar',
+    aria-label='action buttons'
+)
+    button.btn.btn-outline-info.mr-2(
+        *ngFor='let action of actions',
+        (click)='onActionClick(action)'
+    ) {{ action }}
     .btn-group(
+        role='group',
+        aria-label='send measurement button',
         *ngIf='isMeasurementsSentFlagActive$ | async'
     )
         button.btn.btn-success(
@@ -26,10 +30,15 @@ doctype html
                 type='button',
                 (click)='onSelectMeasurementsClick(false)'
             ) Cancel
-    button.btn.btn-success(
-        *ngIf='!(isMeasurementsSentFlagActive$ | async)',
-        (click)='onSelectMeasurementsClick(true)'
-    ) Send
+    .btn-group(
+        role='group',
+        aria-label='send measurement button',
+        *ngIf='!(isMeasurementsSentFlagActive$ | async)'
+    )
+        button.btn.btn-success(
+            *ngIf='!(isMeasurementsSentFlagActive$ | async)',
+            (click)='onSelectMeasurementsClick(true)'
+        ) Send
 hr
 
 .accordion
@@ -47,7 +56,6 @@ hr
                         name='month',
                         [(ngModel)]='filters.month'
                     )
-                        ) Month
                         option(
                             *ngFor='let month of months',
                             [ngValue]='month.id'
@@ -82,7 +90,7 @@ hr
                     aria-label='filter button'
                 )
                     button.btn.btn-primary.btn-sm(
-                        type='button'
+                        type='submit'
                     ) Filter
                 .btn-group.mr-2(
                     role='group',

@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -16,8 +16,7 @@ import MeasurementsResponse from 'models/response/measurements/measurementsRespo
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
-    templateUrl: 'measurementList.template.pug',
-    styleUrls: ['measurementList.style.styl']
+    templateUrl: 'measurementList.template.pug'
 })
 class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =

@@ -36,39 +36,62 @@ hr
     input.accordion-switcher#filters-display(type='checkbox')
     label.accordion-label(for='filters-display') Measurements filter
     .accordion-tab
-        form.filters(
+        form(
             #filtersForm='ngForm',
             (submit)='applyFilters(filtersForm)'
         )
-            .filters_row
-                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='month') Measurement for
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#month(
-                    name='month',
-                    [(ngModel)]='filters.month'
+            .row
+                label.col-sm-2.col-form-label-sm Measurement for
+                .col-sm-2
+                    select.form-control-sm.form-control#month(
+                        name='month',
+                        [(ngModel)]='filters.month'
+                    )
+                        ) Month
+                        option(
+                            *ngFor='let month of months',
+                            [ngValue]='month.id'
+                        ) {{ month.name }}
+                .col-sm-2
+                    select.form-control-sm.form-control#year(
+                        name='year',
+                        [(ngModel)]='filters.year',
+                        placeholder='Year'
+                    )
+                        option(
+                            *ngFor='let year of years',
+                            [ngValue]='year'
+                        ) {{ year }}
+            .row
+                label.col-sm-2.col-form-label-sm Measurement type
+                .col-sm-3
+                    select.form-control-sm.form-control#measurementType(
+                        name='measurementType',
+                        [(ngModel)]='filters.measurementTypeId'
+                    )
+                        option(
+                            *ngFor='let measurementType of (measurementTypes$ | async)',
+                            [ngValue]='measurementType.id'
+                        ) {{ measurementType.name }}
+            .btn-toolbar(
+                role='toolbar',
+                aria-label='filter buttons'
+            )
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='filter button'
                 )
-                    option(
-                        *ngFor='let month of months',
-                        [ngValue]='month.id'
-                    ) {{ month.name }}
-
-            .filters_row
-                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='measurementType') Measurement type
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#measurementType(
-                    name='measurementType',
-                    [(ngModel)]='filters.measurementTypeId'
+                    button.btn.btn-primary.btn-sm(
+                        type='button'
+                    ) Filter
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='clear filter button'
                 )
-                    option(
-                        *ngFor='let measurementType of (measurementTypes$ | async)',
-                        [ngValue]='measurementType.id'
-                    ) {{ measurementType.name }}
-
-            .filters_buttons
-                button.btn.btn-outline-primary(type='submit') Filter
-
-                button.btn.btn-outline-secondary(
-                    type='button',
-                    (click)='clearFilters()'
-                ) Clear
+                    button.btn.btn-outline-secondary.btn-sm(
+                        type='button',
+                        (click)='clearFilters()'
+                    ) Clear
 
 div(
     [class.hidden]='isLoading$ | async'

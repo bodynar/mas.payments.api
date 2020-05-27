@@ -71,7 +71,7 @@ namespace MAS.Payments.Controllers
         public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery]GetMeterMeasurementRequest filter)
         {
             return QueryProcessor.Execute(
-                new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId));
+                new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
         }
 
         [HttpPost("[action]")]

@@ -4,6 +4,8 @@ namespace MAS.Payments.Models
     {
         public byte? Month { get; set; }
         
+        public short? Year { get; set; }
+
         public long? MeasurementTypeId { get; set; }
     }
 }

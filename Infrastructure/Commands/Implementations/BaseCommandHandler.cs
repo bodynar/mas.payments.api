@@ -6,7 +6,7 @@ using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Infrastructure.Command
 {
-    internal abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
+    public abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
         where TCommand : ICommand
     {
         #region Private fields
@@ -33,11 +33,15 @@ namespace MAS.Payments.Infrastructure.Command
         protected IMailProcessor MailProcessor
             => _mailProcessor.Value;
 
+        protected Type CommandType { get; }
+
         public BaseCommandHandler(
             IResolver resolver
         )
         {
             Resolver = resolver;
+
+            CommandType = typeof(TCommand);
         }
 
         public abstract void Handle(TCommand command);

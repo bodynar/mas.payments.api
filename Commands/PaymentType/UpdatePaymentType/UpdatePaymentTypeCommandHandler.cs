@@ -30,7 +30,7 @@ namespace MAS.Payments.Commands
 
             if (!isUnique)
             {
-                throw new CommandExecutionException(
+                throw new CommandExecutionException(CommandType,
                     $"Payment type with name {command.Name} from {command.Company} is already exist");
             }
 

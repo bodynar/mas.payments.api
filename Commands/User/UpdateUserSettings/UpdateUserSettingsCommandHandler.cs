@@ -41,7 +41,7 @@ namespace MAS.Payments.Commands
 
             if (errors.Any())
             {
-                throw new CommandExecutionException(string.Join(", ", errors));
+                throw new CommandExecutionException(CommandType, string.Join(", ", errors));
             }
         }
 
@@ -66,7 +66,7 @@ namespace MAS.Payments.Commands
                     break;
                 }
                 default:
-                    throw new CommandExecutionException($"Setting {setting.DisplayName} has incorrect dataValueType: {setting.TypeName}");
+                    throw new CommandExecutionException(CommandType, $"Setting {setting.DisplayName} has incorrect dataValueType: {setting.TypeName}");
             }
 
             return result;

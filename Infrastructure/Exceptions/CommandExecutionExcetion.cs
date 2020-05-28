@@ -1,19 +1,19 @@
 using System;
-using System.Runtime.Serialization;
 
 namespace MAS.Payments.Infrastructure.Exceptions
 {
     [Serializable]
     public class CommandExecutionException : Exception
     {
-        public CommandExecutionException() { }
+        public string CommandFullTypeName { get; }
 
-        public CommandExecutionException(string message) : base(message) { }
+        public string CommandName { get; }
 
-        public CommandExecutionException(string message, Exception inner) : base(message, inner) { }
-
-        protected CommandExecutionException(
-            SerializationInfo info,
-            StreamingContext context) : base(info, context) { }
+        public CommandExecutionException(Type commandType, string message)
+            : base(message)
+        {
+            CommandFullTypeName = commandType.FullName;
+            CommandName = commandType.Name;
+        }
     }
 }

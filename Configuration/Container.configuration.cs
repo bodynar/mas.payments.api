@@ -14,7 +14,7 @@ namespace MAS.Payments.Configuration
         //// <para>
         //// Custom dependency container configuration
         //// </para>
-        public static void Configure(this Container container)
+        public static Container Configure(this Container container)
         {
             #region CQRS
 
@@ -62,6 +62,8 @@ namespace MAS.Payments.Configuration
             container.Register<ISmtpClientFactory, SmtpClientFactory>();
 
             #endregion
+
+            return container;
         }
     }
 }

@@ -69,6 +69,8 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                             meterMeasurementTypeId: x['meterMeasurementTypeId'],
                             measurementTypeName: x['measurementTypeName'],
                             isSent: x['isSent'],
+                            year: measurement['dateYear'],
+                            month: measurement['dateMonth'],
                         })),
                     }) as MeasurementsResponse)),
                 catchError(error => of(error))

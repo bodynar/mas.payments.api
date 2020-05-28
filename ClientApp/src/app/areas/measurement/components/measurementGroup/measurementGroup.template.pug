@@ -1,6 +1,7 @@
 doctype html
 
 .card.m-card(
+        *ngIf='showAsGroups | async',
         [class.m-card--collapsed]='(isGroupCollapsed$ | async)'
     )
     .card-header(
@@ -10,10 +11,10 @@ doctype html
         | {{ formattedGroupName }}
     .card-body
         .measurement-header(
-            [class.measurement-header--flagged]='(isSentFlagActive | async)'
+            [class.measurement-header--flagged]='(isSentFlagActive$ | async)'
         )
             .measurement-header__flag.measurement-header--clickable(
-                *ngIf='(isSentFlagActive | async)'
+                *ngIf='(isSentFlagActive$ | async)'
             )
                 span.oi.oi-chevron-bottom(
                     *ngIf='(currentSortColumn$ | async) === "sent"',
@@ -47,10 +48,24 @@ doctype html
                 span Actions
         app-measurement-item(
             *ngFor='let measurement of (measurements$ | async)',
+            [isGroupedItem]='true',
             [measurement]='measurement',
-            [isSentFlagActive]='isSentFlagActive',
+            [isSentFlagActive]='isSentFlagActive$',
             [onDeleteClick]='onDeleteClick$',
             [onEditClick]='onEditClick$',
             [onTypeClick]='onTypeClick$',
             [onSendFlagClick]='onSendFlagClick$',
         )
+div(
+    *ngIf='!(showAsGroups | async)',
+)
+    app-measurement-item(
+        *ngFor='let measurement of (measurements$ | async)',
+        [isGroupedItem]='false',
+        [measurement]='measurement',
+        [isSentFlagActive]='isSentFlagActive$',
+        [onDeleteClick]='onDeleteClick$',
+        [onEditClick]='onEditClick$',
+        [onTypeClick]='onTypeClick$',
+        [onSendFlagClick]='onSendFlagClick$',
+    )

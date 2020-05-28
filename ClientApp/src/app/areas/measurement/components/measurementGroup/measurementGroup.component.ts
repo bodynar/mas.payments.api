@@ -16,7 +16,10 @@ export default class MeasurementGroupComponent implements OnInit {
     public measurementGroup: MeasurementsResponse;
 
     @Input()
-    public isSentFlagActive: Subject<boolean>;
+    public isSentFlagActive$: Subject<boolean>;
+
+    @Input()
+    public showAsGroups: Subject<boolean>;
 
     @Output()
     public deleteClick: EventEmitter<number> =
@@ -83,6 +86,8 @@ export default class MeasurementGroupComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.showAsGroups.subscribe(x => console.error(x));
+
         const monthName: string =
             getMonthName(+this.measurementGroup.month);
 

@@ -1,8 +1,11 @@
 doctype html
 
 .measurement(
-    [class.measurement--flagged]='(isSentFlagActive | async)'
+    [class.measurement--flagged]='(isSentFlagActive | async)',
+    [class.measurement--single]='!isGroupedItem',
 )
+    .measurement__date
+        span {{ formattedDate }}
     .measurement__flag(
         *ngIf='(isSentFlagActive | async)'
     )

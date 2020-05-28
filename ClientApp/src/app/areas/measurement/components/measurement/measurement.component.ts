@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import { getMonthName } from 'src/static/months';
+
+import { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 
 @Component({
     selector: 'app-measurement-item',
@@ -11,7 +13,10 @@ import MeasurementResponse from 'models/response/measurements/measurementRespons
 })
 class MeasurementComponent implements OnInit {
     @Input()
-    public measurement: MeasurementResponse;
+    public measurement: MeasurementsResponseMeasurement;
+
+    @Input()
+    public isGroupedItem: boolean;
 
     @Input()
     public isSentFlagActive: Subject<boolean>;
@@ -31,12 +36,16 @@ class MeasurementComponent implements OnInit {
         id: number,
     }>;
 
+    public formattedDate: string;
+
     constructor(
     ) {
     }
 
     public ngOnInit(): void {
         this.isSentFlagActive.subscribe();
+
+        this.formattedDate = `${getMonthName(this.measurement.month)} ${this.measurement.year}`;
     }
 
     public onChecked({ target }: Event): void {

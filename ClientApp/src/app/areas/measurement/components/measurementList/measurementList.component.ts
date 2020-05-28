@@ -12,7 +12,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { MeasurementsFilter } from 'models/measurementsFilter';
+import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
@@ -21,7 +21,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 })
 class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =
-        {};
+        new MeasurementsFilter();
 
     public measurements$: Subject<Array<MeasurementsResponse>> =
         new Subject();
@@ -40,6 +40,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public selectedMeasurementsCount$: Subject<string> =
         new Subject();
+
+    public isFilterApplied$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public months: Array<{ name: string, id?: number }>;
 
@@ -81,6 +84,10 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
+                tap(_ => {
+                    this.filters.setIsEmpty();
+                    this.isFilterApplied$.next(this.filters.isEmpty);
+                }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
                 tap(_ => this.isLoading$.next(false))
             )
@@ -212,7 +219,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     }
 
     public clearFilters(): void {
-        this.filters = {};
+        this.filters.clear();
 
         this.applyFilters();
     }

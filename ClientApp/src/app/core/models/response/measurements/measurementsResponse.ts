@@ -5,6 +5,8 @@ export interface MeasurementsResponseMeasurement {
     meterMeasurementTypeId: number;
     measurementTypeName: string;
     isSent: boolean;
+    month: number;
+    year: number;
 }
 
 export default interface MeasurementsResponse {

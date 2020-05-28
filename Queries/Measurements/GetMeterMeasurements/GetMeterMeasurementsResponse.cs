@@ -26,6 +26,10 @@ namespace MAS.Payments.Queries
     {
         public long Id { get; set; }
 
+        public int DateYear { get; set; }
+
+        public int DateMonth { get; set; }
+
         public double Measurement { get; set; }
 
         public string Comment { get; set; }

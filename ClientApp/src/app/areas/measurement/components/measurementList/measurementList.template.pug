@@ -107,7 +107,8 @@ div(
     app-measurement-group(
         *ngFor='let measurementGroup of (measurements$ | async)',
         [measurementGroup]='measurementGroup',
-        [isSentFlagActive]='isMeasurementsSentFlagActive$',
+        [showAsGroups]='isFilterApplied$',
+        [isSentFlagActive$]='isMeasurementsSentFlagActive$',
         (deleteClick)='onDeleteRecordClick($event)',
         (editClick)='onEditRecordClick($event)',
         (typeClick)='onTypeClick($event)',

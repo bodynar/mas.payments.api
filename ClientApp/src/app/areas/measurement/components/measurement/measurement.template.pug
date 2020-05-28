@@ -1,7 +1,12 @@
 doctype html
 
-.measurement
-    .sent-flag(
+.measurement(
+    [class.measurement--flagged]='(isSentFlagActive | async)',
+    [class.measurement--single]='!isGroupedItem',
+)
+    .measurement__date
+        span {{ formattedDate }}
+    .measurement__flag(
         *ngIf='(isSentFlagActive | async)'
     )
         .custom-control.custom-checkbox
@@ -15,23 +20,21 @@ doctype html
             label.custom-control-label(
                 [for]='measurement.id'
             )
-    .date
-        .month {{ formatMonth(measurement.month) }}
-        .year {{ measurement.year }}
-    .info
-        .amount {{ measurement.measurement }}
-        p.description {{ measurement.description }}
-    .type
+    .measurement__type
         .app-badge(
             [ngClass]='getMeasurementTypeClass(measurement.measurementTypeName)',
-            (click)='typeClick.emit(measurement.meterMeasurementTypeId)'
+            (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
         ) {{ measurement.measurementTypeName }}
-    .options
-        .oi.oi-pencil.oi-medium-extra(
-            (click)='editClick.emit(measurement.id)',
+    .measurement__value
+        span {{ measurement.measurement }}
+    .measurement__comment
+        p {{ measurement.comment }}
+    .measurement__actions
+        i.oi.oi-pencil.oi-medium-extra(
+            (click)='onEditClick.next(measurement.id)',
             title='Edit'
         )
-        .oi.oi-trash.oi-medium-extra(
-            (click)='deleteClick.emit(measurement.id)',
+        i.oi.oi-trash.oi-medium-extra(
+            (click)='onDeleteClick.next(measurement.id)',
             title='Delete'
         )

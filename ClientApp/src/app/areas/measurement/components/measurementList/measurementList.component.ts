@@ -1,29 +1,29 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
+import { yearsRange } from 'src/common/years';
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { MeasurementsFilter } from 'models/measurementsFilter';
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementsFilter from 'models/measurementsFilter';
+import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
-    templateUrl: 'measurementList.template.pug',
-    styleUrls: ['measurementList.style.styl']
+    templateUrl: 'measurementList.template.pug'
 })
 class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =
-        {};
+        new MeasurementsFilter();
 
-    public measurements$: Subject<Array<MeasurementResponse>> =
+    public measurements$: Subject<Array<MeasurementsResponse>> =
         new Subject();
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
@@ -41,7 +41,12 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public selectedMeasurementsCount$: Subject<string> =
         new Subject();
 
+    public isFilterApplied$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public months: Array<{ name: string, id?: number }>;
+
+    public years: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
         ['add', 'types'];
@@ -73,13 +78,17 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         private notificationService: INotificationService,
     ) {
         this.months = [{ name: '' }, ...months];
+        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
+                tap(_ => {
+                    this.filters.setIsEmpty();
+                    this.isFilterApplied$.next(this.filters.isEmpty);
+                }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
-                delay(2 * 1000), // todo: configure this value to UX
                 tap(_ => this.isLoading$.next(false))
             )
             .subscribe(measurements => this.measurements$.next(measurements));
@@ -95,10 +104,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     }
                     return !hasError;
                 }),
-                switchMapTo(this.measurementService.getMeasurements(this.filters)),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(measurements => this.measurements$.next(measurements));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.whenMeasurementEdit$
             .pipe(
@@ -115,11 +123,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         this.onSendMeasurementsClick$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-				filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
-				tap(_ => {
-					this.isLoading$.next(true);
-					this.isMeasurementsSentFlagActive$.next(false);
-				}),
+                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+                tap(_ => {
+                    this.isLoading$.next(true);
+                    this.isMeasurementsSentFlagActive$.next(false);
+                }),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
                 filter(hasError => {
                     if (hasError) {
@@ -127,14 +135,12 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     }
                     return true;
                 }),
-				switchMapTo(this.measurementService.getMeasurements(this.filters)),
-				delay(2 * 1000), // todo: configure this value to UX
-				tap(_ => {
-					this.notificationService.success('Measurements sent');
-					this.isLoading$.next(false)
-				}),
+                tap(_ => {
+                    this.notificationService.success('Measurements sent');
+                    this.isLoading$.next(false);
+                }),
             )
-            .subscribe(measurements => this.measurements$.next(measurements));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.selectedMeasurementsCount$.next('');
 
@@ -213,7 +219,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     }
 
     public clearFilters(): void {
-        this.filters = {};
+        this.filters.clear();
 
         this.applyFilters();
     }

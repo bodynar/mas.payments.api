@@ -13,6 +13,7 @@ import { MeasurementListComponent } from './components/measurementList/measureme
 import { UpdateMeasurementComponent } from './components/updateMeasurement/updateMeasurement.component';
 
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
+import MeasurementGroupComponent from './components/measurementGroup/measurementGroup.component';
 import { MeasurementTypesComponent } from './components/measurementTypes/measurementTypes.component';
 import { UpdateMeasurementTypeComponent } from './components/updateMeasurementType/updateMeasurementType.component';
 
@@ -25,9 +26,15 @@ import { UpdateMeasurementTypeComponent } from './components/updateMeasurementTy
     ],
     exports: [],
     declarations: [
-        MeasurementsComponent, AddMeasurementComponent, AddMeasurementTypeComponent, UpdateMeasurementComponent,
-
-        MeasurementListComponent, MeasurementComponent, MeasurementTypesComponent, UpdateMeasurementTypeComponent
+        MeasurementsComponent,
+        AddMeasurementComponent,
+        AddMeasurementTypeComponent,
+        UpdateMeasurementComponent,
+        MeasurementListComponent,
+        MeasurementGroupComponent,
+        MeasurementComponent,
+        MeasurementTypesComponent,
+        UpdateMeasurementTypeComponent
     ],
     providers: [],
 })

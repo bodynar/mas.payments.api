@@ -1,12 +1,16 @@
 doctype html
 
-.actions
-    .btn-spaced
-        button.btn.btn-outline-info(
-            *ngFor='let action of actions',
-            (click)='onActionClick(action)'
-        ) {{ action }}
+.btn-toolbar(
+    role='toolbar',
+    aria-label='action buttons'
+)
+    button.btn.btn-outline-info.mr-2(
+        *ngFor='let action of actions',
+        (click)='onActionClick(action)'
+    ) {{ action }}
     .btn-group(
+        role='group',
+        aria-label='send measurement button',
         *ngIf='isMeasurementsSentFlagActive$ | async'
     )
         button.btn.btn-success(
@@ -26,57 +30,85 @@ doctype html
                 type='button',
                 (click)='onSelectMeasurementsClick(false)'
             ) Cancel
-    button.btn.btn-success(
-        *ngIf='!(isMeasurementsSentFlagActive$ | async)',
-        (click)='onSelectMeasurementsClick(true)'
-    ) Send
+    .btn-group(
+        role='group',
+        aria-label='send measurement button',
+        *ngIf='!(isMeasurementsSentFlagActive$ | async)'
+    )
+        button.btn.btn-success(
+            *ngIf='!(isMeasurementsSentFlagActive$ | async)',
+            (click)='onSelectMeasurementsClick(true)'
+        ) Send
 hr
 
 .accordion
     input.accordion-switcher#filters-display(type='checkbox')
     label.accordion-label(for='filters-display') Measurements filter
     .accordion-tab
-        form.filters(
+        form(
             #filtersForm='ngForm',
             (submit)='applyFilters(filtersForm)'
         )
-            .filters_row
-                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='month') Measurement for
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#month(
-                    name='month',
-                    [(ngModel)]='filters.month'
+            .row
+                label.col-sm-2.col-form-label-sm Measurement for
+                .col-sm-2
+                    select.form-control-sm.form-control#month(
+                        name='month',
+                        [(ngModel)]='filters.month'
+                    )
+                        option(
+                            *ngFor='let month of months',
+                            [ngValue]='month.id'
+                        ) {{ month.name }}
+                .col-sm-2
+                    select.form-control-sm.form-control#year(
+                        name='year',
+                        [(ngModel)]='filters.year',
+                        placeholder='Year'
+                    )
+                        option(
+                            *ngFor='let year of years',
+                            [ngValue]='year.id'
+                        ) {{ year.name }}
+            .row
+                label.col-sm-2.col-form-label-sm Measurement type
+                .col-sm-3
+                    select.form-control-sm.form-control#measurementType(
+                        name='measurementType',
+                        [(ngModel)]='filters.measurementTypeId'
+                    )
+                        option(
+                            *ngFor='let measurementType of (measurementTypes$ | async)',
+                            [ngValue]='measurementType.id'
+                        ) {{ measurementType.name }}
+            .btn-toolbar(
+                role='toolbar',
+                aria-label='filter buttons'
+            )
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='filter button'
                 )
-                    option(
-                        *ngFor='let month of months',
-                        [ngValue]='month.id'
-                    ) {{ month.name }}
-
-            .filters_row
-                label.filters_row_label.col-form-label-sm.m-filters_row_label(for='measurementType') Measurement type
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#measurementType(
-                    name='measurementType',
-                    [(ngModel)]='filters.measurementTypeId'
+                    button.btn.btn-primary.btn-sm(
+                        type='submit'
+                    ) Filter
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='clear filter button'
                 )
-                    option(
-                        *ngFor='let measurementType of (measurementTypes$ | async)',
-                        [ngValue]='measurementType.id'
-                    ) {{ measurementType.name }}
+                    button.btn.btn-outline-secondary.btn-sm(
+                        type='button',
+                        (click)='clearFilters()'
+                    ) Clear
 
-            .filters_buttons
-                button.btn.btn-outline-primary(type='submit') Filter
-
-                button.btn.btn-outline-secondary(
-                    type='button',
-                    (click)='clearFilters()'
-                ) Clear
-
-.measurement-list(
+div(
     [class.hidden]='isLoading$ | async'
 )
-    app-measurement-item(
-        *ngFor='let measurement of (measurements$ | async)',
-        [measurement]='measurement',
-        [isSentFlagActive]='this.isMeasurementsSentFlagActive$',
+    app-measurement-group(
+        *ngFor='let measurementGroup of (measurements$ | async)',
+        [measurementGroup]='measurementGroup',
+        [showAsGroups]='isFilterApplied$',
+        [isSentFlagActive$]='isMeasurementsSentFlagActive$',
         (deleteClick)='onDeleteRecordClick($event)',
         (editClick)='onEditRecordClick($event)',
         (typeClick)='onTypeClick($event)',

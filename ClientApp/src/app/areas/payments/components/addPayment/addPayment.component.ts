@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { years } from 'src/common/years';
+import { yearsRange } from 'src/common/years';
 import { months } from 'src/static/months';
 import { isNullOrUndefined } from 'util';
 
@@ -74,7 +74,7 @@ class AddPaymentComponent implements OnInit, OnDestroy {
       const currentDate = new Date();
 
       this.months$.next(months);
-      this.years$.next(years(2019, currentDate.getFullYear() + 5));
+      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
 
       this.addPaymentRequest.month = currentDate.getMonth().toString();
       this.addPaymentRequest.year = currentDate.getFullYear();

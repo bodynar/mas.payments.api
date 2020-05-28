@@ -12,6 +12,7 @@ import { MeasurementsFilter } from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
+import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Injectable()
@@ -33,13 +34,16 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             .pipe(catchError(error => of(error)));
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>> {
         let params: HttpParams =
             new HttpParams();
 
         if (!isNullOrUndefined(filter)) {
             if (!isNullOrUndefined(filter.month)) {
                 params = params.set('month', `${filter.month + 1}`);
+            }
+            if (!isNullOrUndefined(filter.year)) {
+                params = params.set('year', `${filter.year}`);
             }
             if (!isNullOrUndefined(filter.measurementTypeId)) {
                 params = params.set('measurementTypeId', `${filter.measurementTypeId}`);
@@ -56,15 +60,19 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             .pipe(
                 map((response: Array<any>) =>
                     response.map(measurement => ({
-                        id: measurement['id'],
-                        measurement: measurement['measurement'],
-                        comment: measurement['comment'],
-                        month: measurement['dateMonth'],
                         year: measurement['dateYear'],
-                        meterMeasurementTypeId: measurement['meterMeasurementTypeId'],
-                        measurementTypeName: measurement['measurementTypeName'],
-                        isSent: measurement['isSent'],
-                    }) as MeasurementResponse)),
+                        month: measurement['dateMonth'],
+                        measurements: measurement['measurements'].map(x => ({
+                            id: x['id'],
+                            measurement: x['measurement'],
+                            comment: x['comment'],
+                            meterMeasurementTypeId: x['meterMeasurementTypeId'],
+                            measurementTypeName: x['measurementTypeName'],
+                            isSent: x['isSent'],
+                            year: measurement['dateYear'],
+                            month: measurement['dateMonth'],
+                        })),
+                    }) as MeasurementsResponse)),
                 catchError(error => of(error))
             );
     }

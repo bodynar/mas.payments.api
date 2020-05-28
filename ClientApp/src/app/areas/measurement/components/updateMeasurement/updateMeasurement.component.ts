@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { yearsRange } from 'src/common/years';
 import { months } from 'src/static/months';
-import { years } from 'src/common/years';
+import { isNullOrUndefined } from 'util';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -99,7 +99,7 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
       const currentDate = new Date();
 
       this.months$.next(months);
-      this.years$.next(years(2019, currentDate.getFullYear() + 5));
+      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
     }
 
     public ngOnDestroy(): void {

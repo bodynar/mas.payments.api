@@ -2,6 +2,7 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -9,7 +10,7 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Specification;
     using MAS.Payments.Projectors;
 
-    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IReadOnlyCollection<GetMeterMeasurementsResponse>>
+    internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IEnumerable<GetMeterMeasurementsResponse>>
     {
         private IRepository<MeterMeasurement> Repository { get; }
 
@@ -20,7 +21,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IReadOnlyCollection<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
+        public override IEnumerable<GetMeterMeasurementsResponse> Handle(GetMeterMeasurementsQuery query)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
 
@@ -39,9 +40,37 @@ namespace MAS.Payments.Queries
                 filter = filter && new CommonSpecification<MeterMeasurement>(x => x.MeterMeasurementTypeId == query.MeterMeasurementTypeId.Value);
             }
 
-            return Repository
-                   .Where(filter, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsResponse>())
+            var filteredMeasurements =
+                Repository
+                   .Where(filter)
                    .ToList();
+
+            var result = new List<GetMeterMeasurementsResponse>();
+            var itemProjector = new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsResponseMeasurement>();
+
+            foreach (var measurement in filteredMeasurements)
+            {
+                var group = result.FirstOrDefault(x => x.DateMonth == measurement.Date.Month && x.DateYear == measurement.Date.Year);
+
+                if (group != null)
+                {
+                    group.Measurements.Add(itemProjector.Project(measurement));
+                } else
+                {
+                    group = new GetMeterMeasurementsResponse
+                    {
+                        DateMonth = measurement.Date.Month,
+                        DateYear = measurement.Date.Year,
+                    };
+                    group.Measurements.Add(itemProjector.Project(measurement));
+
+                    result.Add(group);
+                }
+            }
+
+            result.ForEach(x => x.SortMeasurements());
+
+            return result.OrderBy(x => x.DateYear).ThenBy(x => x.DateMonth);
         }
     }
 }

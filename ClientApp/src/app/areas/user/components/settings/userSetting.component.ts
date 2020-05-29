@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { takeUntil, tap, switchMap } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
@@ -41,20 +41,26 @@ export default class UserSettingComponent implements OnDestroy, OnInit {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 switchMap(_ => this.userService.getUserSettings()),
-                tap(settings => {
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+                tap(({ result }) => {
                     const settingsFormArray: FormArray =
                         this.settingsForm.controls['items'] as FormArray;
 
                     settingsFormArray.controls = [];
 
-                    settings.forEach(x => {
+                    result.forEach(x => {
                         settingsFormArray.push(this.formBuilder.group({
                             [x.name]: [x.value]
                         }));
                     });
                 }),
             )
-            .subscribe(settings => this.userSettings$.next(settings));
+            .subscribe(({ result }) => this.userSettings$.next(result));
     }
 
     public ngOnInit(): void {

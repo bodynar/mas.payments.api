@@ -43,9 +43,15 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                     return response.success;
                 }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+            .subscribe(({ result }) => this.paymentTypes$.next(result));
 
         this.whenTypeEdit$
             .pipe(
@@ -61,8 +67,16 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next(paymentTypes));
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next(result));
     }
 
     public ngOnDestroy(): void {

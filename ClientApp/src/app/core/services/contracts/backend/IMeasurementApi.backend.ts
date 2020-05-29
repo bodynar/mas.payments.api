@@ -7,14 +7,15 @@ import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 abstract class IMeasurementApiBackendService {
     // #region measurements
     abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult>;
 
-    abstract getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>>;
+    abstract getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>>;
 
-    abstract getMeasurement(id: number): Observable<MeasurementResponse>;
+    abstract getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>>;
 
     abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult>;
 
@@ -28,9 +29,9 @@ abstract class IMeasurementApiBackendService {
 
     abstract addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult>;
 
-    abstract getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>>;
+    abstract getMeasurementTypes(): Observable<QueryExecutionResult<Array<MeasurementTypeResponse>>>;
 
-    abstract getMeasurementType(id: number): Observable<MeasurementTypeResponse>;
+    abstract getMeasurementType(id: number): Observable<QueryExecutionResult<MeasurementTypeResponse>>;
 
     abstract updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult>;
 

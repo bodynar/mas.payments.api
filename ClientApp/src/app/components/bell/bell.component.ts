@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { fromEvent, Observable, Subject, ReplaySubject } from 'rxjs';
+import { fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
+import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
@@ -32,7 +33,8 @@ class BellComponent implements OnInit, OnDestroy {
         new Subject();
 
     constructor(
-        private userService: IUserService
+        private userService: IUserService,
+        private notificationService: INotificationService,
     ) {
         this.pageClicks$
             .pipe(
@@ -47,7 +49,16 @@ class BellComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.userService
             .getNotifications()
-            .pipe(takeUntil(this.whenComponentDestroy$))
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+                map(response => response.result),
+            )
             .subscribe(notifications => {
                 this.notifications = notifications;
                 this.notifications$.next(this.notifications);

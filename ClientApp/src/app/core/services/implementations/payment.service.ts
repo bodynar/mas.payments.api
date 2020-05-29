@@ -14,13 +14,13 @@ import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 class PaymentService implements IPaymentService {
 
     constructor(
         private paymentApiBackend: IPaymentApiBackendService,
-        // private notificationService: INotificationService,
         // private loggingService: ILoggingService
     ) { }
 
@@ -49,25 +49,19 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
+    public getPayments(filter?: PaymentsFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
         return this.paymentApiBackend
             .getPayments(filter)
             .pipe(
-                map(response => {
-                    const hasError: CommandExecutionResult =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public getPayment(id: number): Observable<PaymentResponse> {
+    public getPayment(id: number): Observable<QueryExecutionResult<PaymentResponse>> {
         return this.paymentApiBackend.getPayment(id);
     }
 
@@ -106,25 +100,19 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public getPaymentTypes(): Observable<Array<PaymentTypeResponse>> {
+    public getPaymentTypes(): Observable<QueryExecutionResult<Array<PaymentTypeResponse>>> {
         return this.paymentApiBackend
             .getPaymentTypes()
             .pipe(
-                map(response => {
-                    const hasError: CommandExecutionResult =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
+    public getPaymentType(id: number): Observable<QueryExecutionResult<PaymentTypeResponse>> {
         return this.paymentApiBackend.getPaymentType(id);
     }
 

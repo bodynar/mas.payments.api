@@ -21,7 +21,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 class AddPaymentComponent implements OnInit, OnDestroy {
 
     public addPaymentRequest: AddPaymentRequest =
-      {};
+        {};
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -30,10 +30,10 @@ class AddPaymentComponent implements OnInit, OnDestroy {
         new ReplaySubject(1);
 
     public months$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public years$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
@@ -65,19 +65,27 @@ class AddPaymentComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...paymentTypes]));
+            }, ...result]));
 
-      const currentDate = new Date();
+        const currentDate = new Date();
 
-      this.months$.next(months);
-      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+        this.months$.next(months);
+        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
 
-      this.addPaymentRequest.month = currentDate.getMonth().toString();
-      this.addPaymentRequest.year = currentDate.getFullYear();
+        this.addPaymentRequest.month = currentDate.getMonth().toString();
+        this.addPaymentRequest.year = currentDate.getFullYear();
     }
 
     public ngOnDestroy(): void {

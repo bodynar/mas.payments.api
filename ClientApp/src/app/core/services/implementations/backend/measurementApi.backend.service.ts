@@ -15,6 +15,7 @@ import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -44,7 +45,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
         let params: HttpParams =
             new HttpParams();
 
@@ -83,11 +84,21 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                             month: measurement['dateMonth'],
                         })),
                     }) as MeasurementsResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getMeasurement(id: number): Observable<MeasurementResponse> {
+    public getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurement`, {
                 params: new HttpParams({
@@ -105,7 +116,17 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         meterMeasurementTypeId: response['meterMeasurementTypeId'],
                         measurementTypeName: response['measurementTypeName'],
                     }) as MeasurementResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
@@ -174,7 +195,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
             );
     }
 
-    public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
+    public getMeasurementTypes(): Observable<QueryExecutionResult<Array<MeasurementTypeResponse>>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurementTypes`)
             .pipe(
@@ -187,11 +208,21 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         paymentTypeId: measurementType['paymentTypeId'],
                         paymentTypeName: measurementType['paymentTypeName']
                     }) as MeasurementTypeResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+    public getMeasurementType(id: number): Observable<QueryExecutionResult<MeasurementTypeResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurementType`, {
                 params: new HttpParams({
@@ -208,7 +239,17 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         paymentTypeId: response['paymentTypeId'],
                         paymentTypeName: response['paymentTypeName'],
                     }) as MeasurementTypeResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 

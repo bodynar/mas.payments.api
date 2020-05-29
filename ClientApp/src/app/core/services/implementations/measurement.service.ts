@@ -15,13 +15,13 @@ import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 export default class MeasurementService implements IMeasurementService {
 
     constructor(
         private measurementApiBackend: IMeasurementApiBackendService,
-        // private notificationService: INotificationService,
         // private loggingService: ILoggingService
     ) { }
 
@@ -49,25 +49,19 @@ export default class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
         return this.measurementApiBackend
             .getMeasurements(filter)
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public getMeasurement(id: number): Observable<MeasurementResponse> {
+    public getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>> {
         return this.measurementApiBackend.getMeasurement(id);
     }
 
@@ -111,25 +105,19 @@ export default class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
+    public getMeasurementTypes(): Observable<QueryExecutionResult<Array<MeasurementTypeResponse>>> {
         return this.measurementApiBackend
             .getMeasurementTypes()
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+    public getMeasurementType(id: number): Observable<QueryExecutionResult<MeasurementTypeResponse>> {
         return this.measurementApiBackend.getMeasurementType(id);
     }
 

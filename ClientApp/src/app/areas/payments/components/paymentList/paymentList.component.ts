@@ -65,10 +65,15 @@ class PaymentListComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
-                delay(2 * 1000), // todo: configure this value to UX
-                tap(_ => this.isLoading$.next(false))
+                tap(_ => this.isLoading$.next(false)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-            .subscribe(payments => this.payments$.next(payments));
+            .subscribe(({ result }) => this.payments$.next(result));
 
         this.whenPaymentDelete$
             .pipe(
@@ -82,9 +87,15 @@ class PaymentListComponent implements OnInit, OnDestroy {
                     return response.success;
                 }),
                 switchMapTo(this.paymentService.getPayments(this.filters)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(payments => this.payments$.next(payments));
+            .subscribe(({ result }) => this.payments$.next(result));
 
         this.whenPaymentEdit$
             .pipe(
@@ -102,13 +113,21 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => {
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
                 this.paymentTypes$.next([{
-                  name: '',
-                  systemName: '',
-                }, ...paymentTypes])
-              this.whenSubmitFilters$.next();
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+                this.whenSubmitFilters$.next();
             });
     }
 

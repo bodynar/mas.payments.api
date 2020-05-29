@@ -48,9 +48,15 @@ class UpdateMeasurementTypeComponent implements OnInit, OnDestroy {
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
                 tap(id => this.measurementTypeId = id),
-                switchMap(id => this.measurementService.getMeasurementType(id))
+                switchMap(id => this.measurementService.getMeasurementType(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-            .subscribe(params => this.measurementTypeRequest = params);
+            .subscribe(({ result }) => this.measurementTypeRequest = result);
 
         this.whenSubmittedForm$
             .pipe(
@@ -73,11 +79,19 @@ class UpdateMeasurementTypeComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...paymentTypes]));
+            }, ...result]));
     }
 
     public ngOnDestroy(): void {

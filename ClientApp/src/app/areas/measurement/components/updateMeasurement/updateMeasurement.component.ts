@@ -31,10 +31,10 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
         new ReplaySubject(1);
 
     public months$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public years$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
 
     private measurementId: number;
@@ -54,24 +54,30 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
                 tap(id => this.measurementId = id),
-                switchMap(id => this.measurementService.getMeasurement(id))
+                switchMap(id => this.measurementService.getMeasurement(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-          .subscribe(params =>
-            this.measurementRequest = {
-                year: params.year,
-                comment: params.comment,
-                measurement: params.measurement,
-                meterMeasurementTypeId: params.meterMeasurementTypeId,
-                month: (parseInt(params.month) - 1).toString()
-            }
-          );
+            .subscribe(({ result }) =>
+                this.measurementRequest = {
+                    year: result.year,
+                    comment: result.comment,
+                    measurement: result.measurement,
+                    meterMeasurementTypeId: result.meterMeasurementTypeId,
+                    month: (parseInt(result.month) - 1).toString()
+                }
+            );
 
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid()),
                 tap(_ => {
-                  this.measurementRequest.month = (parseInt(this.measurementRequest.month) + 1).toString();
+                    this.measurementRequest.month = (parseInt(this.measurementRequest.month) + 1).toString();
                 }),
                 switchMap(_ => this.measurementService.updateMeasurement(this.measurementId, this.measurementRequest)),
                 filter(response => {
@@ -90,16 +96,24 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.measurementService
             .getMeasurementTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurementTypes => this.measurementTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.measurementTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...measurementTypes]));
+            }, ...result]));
 
-      const currentDate = new Date();
+        const currentDate = new Date();
 
-      this.months$.next(months);
-      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+        this.months$.next(months);
+        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
     }
 
     public ngOnDestroy(): void {

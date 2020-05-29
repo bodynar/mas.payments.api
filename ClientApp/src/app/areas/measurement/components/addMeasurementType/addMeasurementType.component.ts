@@ -56,11 +56,20 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...paymentTypes]));
+            }, ...result]));
     }
 
     public ngOnDestroy(): void {

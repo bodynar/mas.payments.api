@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -11,6 +11,7 @@ import { IUserService } from 'services/IUserService';
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -22,19 +23,14 @@ class UserService implements IUserService {
     ) {
     }
 
-    public getNotifications(): Observable<Array<GetNotificationsResponse>> {
+    public getNotifications(): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>> {
         return this.userApiBackend
             .getNotifications()
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
@@ -44,19 +40,14 @@ class UserService implements IUserService {
             .sendTestMailMessage(testMailMessage);
     }
 
-    public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
+    public getUserSettings(): Observable<QueryExecutionResult<Array<GetUserSettingsResponse>>> {
         return this.userApiBackend
             .getUserSettings()
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
+                tap(response => {
+                    if (!response.success) {
                         // this.loggingService.error(response);
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }

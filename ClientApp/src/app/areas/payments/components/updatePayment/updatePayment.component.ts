@@ -53,15 +53,21 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
                 tap(id => this.paymentId = id),
-                switchMap(id => this.paymentService.getPayment(id))
+                switchMap(id => this.paymentService.getPayment(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-            .subscribe(params => {
+            .subscribe(({ result }) => {
                 this.paymentRequest = {
-                    amount: params.amount,
-                    description: params.description,
-                    paymentTypeId: params.paymentTypeId,
-                    year: params.year,
-                    month: (parseInt(params.month) - 1).toString()
+                    amount: result.amount,
+                    description: result.description,
+                    paymentTypeId: result.paymentTypeId,
+                    year: result.year,
+                    month: (parseInt(result.month) - 1).toString()
                 }
             });
 
@@ -89,11 +95,19 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...paymentTypes]));
+            }, ...result]));
 
         const currentDate = new Date();
 

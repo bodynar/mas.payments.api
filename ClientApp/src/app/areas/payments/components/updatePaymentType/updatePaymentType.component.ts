@@ -41,9 +41,15 @@ class UpdatePaymentTypeComponent implements OnDestroy {
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
                 tap(id => this.paymentTypeId = id),
-                switchMap(id => this.paymentService.getPaymentType(id))
+                switchMap(id => this.paymentService.getPaymentType(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-            .subscribe(params => this.paymentTypeRequest = params);
+            .subscribe(({ result }) => this.paymentTypeRequest = result);
 
         this.whenSubmittedForm$
             .pipe(

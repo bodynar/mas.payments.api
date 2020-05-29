@@ -11,6 +11,7 @@ import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -24,7 +25,7 @@ class UserApiBackendService implements IUserApiBackendService {
     ) {
     }
 
-    public getNotifications(): Observable<Array<GetNotificationsResponse>> {
+    public getNotifications(): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>> {
         return this.http
             .get(`${this.apiPrefix}/getNotifications`)
             .pipe(
@@ -34,7 +35,17 @@ class UserApiBackendService implements IUserApiBackendService {
                         description: notification['description'],
                         type: notification['type'].toLowerCase()
                     }) as GetNotificationsResponse)),
-                catchError(error => of(error))
+                catchError(error => of(error.error)),
+                map(x => isNullOrUndefined(x.Success)
+                    ? ({
+                        success: true,
+                        result: x
+                    })
+                    : ({
+                        success: false,
+                        error: x['Message'],
+                    })
+                ),
             );
     }
 
@@ -58,7 +69,7 @@ class UserApiBackendService implements IUserApiBackendService {
             );
     }
 
-    public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
+    public getUserSettings(): Observable<QueryExecutionResult<Array<GetUserSettingsResponse>>> {
         const getMappedValue = (typeName: string, rawValue: string): any => {
             if (typeName === 'Boolean') {
                 return !!!rawValue;
@@ -81,28 +92,23 @@ class UserApiBackendService implements IUserApiBackendService {
                         displayName: setting['displayName'],
                         value: getMappedValue(setting['typeName'], setting['rawValue'])
                     }) as GetUserSettingsResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
     public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updateUserSettings`, updatedSettings)
-            .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
-            );
-    }
-
-    public exception(): Observable<CommandExecutionResult> {
-        return this.http
-            .post(`${this.apiPrefix}/exception`, {})
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x

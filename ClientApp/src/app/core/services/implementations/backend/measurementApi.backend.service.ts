@@ -8,12 +8,14 @@ import { isNullOrUndefined } from 'util';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 
-import { MeasurementsFilter } from 'models/measurementsFilter';
+import MeasurementsFilter from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -28,13 +30,22 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     // #region measurements
 
-    public addMeasurement(measurementData: AddMeasurementRequest): Observable<any> {
+    public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/addMeasurement`, measurementData)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<Array<MeasurementsResponse>> {
+    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
         let params: HttpParams =
             new HttpParams();
 
@@ -73,11 +84,21 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                             month: measurement['dateMonth'],
                         })),
                     }) as MeasurementsResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getMeasurement(id: number): Observable<MeasurementResponse> {
+    public getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurement`, {
                 params: new HttpParams({
@@ -95,40 +116,86 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         meterMeasurementTypeId: response['meterMeasurementTypeId'],
                         measurementTypeName: response['measurementTypeName'],
                     }) as MeasurementResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<any> {
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public deleteMeasurement(measurementId: number): Observable<boolean> {
+    public deleteMeasurement(measurementId: number): Observable<CommandExecutionResult> {
         return this.http
             .delete(`${this.apiPrefix}/deleteMeasurement`,
                 { params: new HttpParams().set('measurementId', `${measurementId}`) })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public sendMeasurements(measurementIds: Array<number>): Observable<boolean> {
+    public sendMeasurements(measurementIds: Array<number>): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/sendMeasurements`, measurementIds)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
     // #endregion measurements
 
     // #region measurement types
 
-    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public getMeasurementTypes(): Observable<Array<MeasurementTypeResponse>> {
+    public getMeasurementTypes(): Observable<QueryExecutionResult<Array<MeasurementTypeResponse>>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurementTypes`)
             .pipe(
@@ -141,11 +208,21 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         paymentTypeId: measurementType['paymentTypeId'],
                         paymentTypeName: measurementType['paymentTypeName']
                     }) as MeasurementTypeResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getMeasurementType(id: number): Observable<MeasurementTypeResponse> {
+    public getMeasurementType(id: number): Observable<QueryExecutionResult<MeasurementTypeResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getMeasurementType`, {
                 params: new HttpParams({
@@ -162,21 +239,49 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         paymentTypeId: response['paymentTypeId'],
                         paymentTypeName: response['paymentTypeName'],
                     }) as MeasurementTypeResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<any> {
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updateMeasurementType`, { id, ...measurementTypeData })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
+    public deleteMeasurementType(measurementTypeId: number): Observable<CommandExecutionResult> {
         return this.http
             .delete(`${this.apiPrefix}/deleteMeasurementType`,
                 { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
     // #endregion measurement types

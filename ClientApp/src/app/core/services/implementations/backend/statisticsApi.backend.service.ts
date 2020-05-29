@@ -9,6 +9,7 @@ import { isNullOrUndefined } from 'util';
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 
 import { GetPaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 import { StatisticsFilter } from 'models/statisticsFilter';
 
 @Injectable()
@@ -22,7 +23,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
     ) {
     }
 
-    public getPaymentStatistics(filter?: StatisticsFilter): Observable<GetPaymentStatsResponse> {
+    public getPaymentStatistics(filter?: StatisticsFilter): Observable<QueryExecutionResult<GetPaymentStatsResponse>> {
         let params: HttpParams =
             new HttpParams().set('includeMeasurements', `${filter.includeMeasurements}`);
 
@@ -42,6 +43,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             new HttpHeaders({
                 'Content-Type': 'application/json'
             });
+
         return this.http
             .get(`${this.apiPrefix}/getStatistics`, { headers, params })
             .pipe(
@@ -50,7 +52,17 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                         dates: response['dates'],
                         items: response['items']
                     }) as GetPaymentStatsResponse),
-                catchError(error => of(error))
+                catchError(error => of(error.error)),
+                map(x => isNullOrUndefined(x.Success)
+                    ? ({
+                        success: true,
+                        result: x
+                    })
+                    : ({
+                        success: false,
+                        error: x['Message'],
+                    })
+                ),
             );
     }
 }

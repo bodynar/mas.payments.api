@@ -86,7 +86,7 @@ export default class MeasurementGroupComponent implements OnInit {
     }
 
     public ngOnInit(): void {
-        this.showAsGroups.subscribe(x => console.error(x));
+        this.showAsGroups.subscribe();
 
         const monthName: string =
             getMonthName(+this.measurementGroup.month);

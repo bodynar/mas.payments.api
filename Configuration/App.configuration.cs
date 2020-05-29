@@ -1,4 +1,5 @@
 using MAS.Payments.DataBase;
+using MAS.Payments.Infrastructure.Middleware;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,17 +20,18 @@ namespace MAS.Payments.Configuration
                 app.UseHsts();
             }
 
-
-            app.UseHttpsRedirection();
-            app.UseStaticFiles();
-            app.UseSpaStaticFiles();
-
-            app.UseMvc(routes =>
-            {
-                routes.MapRoute(
-                    name: "default",
-                    template: "api/{controller}/{action}/{id?}");
-            });
+            app
+                .UseMiddleware<ExceptionHandlerMiddleware>()
+                .UseHttpsRedirection()
+                .UseStaticFiles()
+                .UseSimpleInjector(container, options => { })
+                .UseMvc(routes =>
+                {
+                    routes.MapRoute(
+                        name: "default",
+                        template: "api/{controller}/{action}/{id?}");
+                })
+                .UseSpaStaticFiles();
 
             app.UseSpa(spa =>
             {
@@ -41,10 +43,9 @@ namespace MAS.Payments.Configuration
                 }
             });
 
-            app.UseSimpleInjector(container, options => { });
-
-            container.Configure();
-            container.Verify();
+            container
+                .Configure()
+                .Verify();
 
             using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
             {

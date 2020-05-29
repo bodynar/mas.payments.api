@@ -43,12 +43,12 @@ namespace MAS.Payments.Controllers
             IResolver resolver
         )
         {
-            Resolver = resolver;
+            Resolver = resolver ?? throw new ArgumentNullException(nameof(Resolver));
 
-            commandProcessor = new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>());
-            queryProcessor = new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>());
-            notificationProcessor = new Lazy<INotificationProcessor>(Resolver.Resolve<INotificationProcessor>());
-            mailProcessor = new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>());
+            commandProcessor = new Lazy<ICommandProcessor>(resolver.Resolve<ICommandProcessor>());
+            queryProcessor = new Lazy<IQueryProcessor>(resolver.Resolve<IQueryProcessor>());
+            notificationProcessor = new Lazy<INotificationProcessor>(resolver.Resolve<INotificationProcessor>());
+            mailProcessor = new Lazy<IMailProcessor>(resolver.Resolve<IMailProcessor>());
         }
     }
 }

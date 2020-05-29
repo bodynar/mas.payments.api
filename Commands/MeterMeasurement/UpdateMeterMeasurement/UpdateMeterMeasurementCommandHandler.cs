@@ -27,7 +27,7 @@ namespace MAS.Payments.Commands
 
             if (meterMeasurementType == null)
             {
-                throw new CommandExecutionException(
+                throw new CommandExecutionException(CommandType,
                     $"Measurement type with id {command.MeterMeasurementTypeId} doesn't exist");
             }
 

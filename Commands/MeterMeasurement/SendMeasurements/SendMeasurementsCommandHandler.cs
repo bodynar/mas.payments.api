@@ -36,7 +36,7 @@ namespace MAS.Payments.Commands
 
             if (isAlreadySentMeasurements.Any())
             {
-                throw new CommandExecutionException("Some of measurements marked as sent. Measurements: " + string.Join(", ", isAlreadySentMeasurements));
+                throw new CommandExecutionException(CommandType, "Some of measurements marked as sent. Measurements: " + string.Join(", ", isAlreadySentMeasurements));
             }
 
             var isAllMeasurementsInOneMonth = CheckIsAllMeasurementsInOneMonth(measurements);

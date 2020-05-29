@@ -31,7 +31,7 @@ namespace MAS.Payments.Commands
 
             if (!isUnique)
             {
-                throw new CommandExecutionException(
+                throw new CommandExecutionException(CommandType,
                     $"Measurement type with name {command.Name} is already exist");
             }
 
@@ -40,7 +40,7 @@ namespace MAS.Payments.Commands
 
             if (paymentType == null)
             {
-                throw new CommandExecutionException(
+                throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
             }
 

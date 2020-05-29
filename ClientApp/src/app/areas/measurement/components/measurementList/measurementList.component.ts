@@ -89,20 +89,27 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     this.isFilterApplied$.next(this.filters.isEmpty);
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
-                tap(_ => this.isLoading$.next(false))
+                tap(_ => this.isLoading$.next(false)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
             )
-            .subscribe(measurements => this.measurements$.next(measurements));
+            .subscribe(({ result }) => this.measurements$.next(result));
 
         this.whenMeasurementDelete$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
                 switchMap(id => this.measurementService.deleteMeasurement(id)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due deleting type. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
-                    return !hasError;
+                    return response.success;
                 }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
@@ -129,9 +136,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     this.isMeasurementsSentFlagActive$.next(false);
                 }),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due sending measurements. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
                     return true;
                 }),
@@ -151,13 +158,22 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.measurementService
             .getMeasurementTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurementTypes => {
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => {
                 this.measurementTypes$.next([
                     {
                         name: '',
                         systemName: '',
-                    }, ...measurementTypes
+                    }, ...result
                 ]);
                 this.whenSubmitFilters$.next();
             });

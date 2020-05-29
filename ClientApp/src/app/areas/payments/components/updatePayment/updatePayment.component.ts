@@ -31,10 +31,10 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
         new ReplaySubject(1);
 
     public months$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public years$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     private paymentId: number;
 
@@ -53,34 +53,40 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                 filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
                 map(params => params['id']),
                 tap(id => this.paymentId = id),
-                switchMap(id => this.paymentService.getPayment(id))
+                switchMap(id => this.paymentService.getPayment(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
             )
-          .subscribe(params => {
-            this.paymentRequest = {
-              amount: params.amount,
-              description: params.description,
-              paymentTypeId: params.paymentTypeId,
-              year: params.year,
-              month: (parseInt(params.month) - 1).toString()
-            }
-          });
+            .subscribe(({ result }) => {
+                this.paymentRequest = {
+                    amount: result.amount,
+                    description: result.description,
+                    paymentTypeId: result.paymentTypeId,
+                    year: result.year,
+                    month: (parseInt(result.month) - 1).toString()
+                }
+            });
 
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid(this.paymentRequest)),
                 tap(_ => {
-                  this.paymentRequest.month = (parseInt(this.paymentRequest.month) + 1).toString();
+                    this.paymentRequest.month = (parseInt(this.paymentRequest.month) + 1).toString();
                 }),
                 switchMap(_ => this.paymentService.updatePayment(this.paymentId, this.paymentRequest)),
-                filter(withoutError => {
-                    if (!withoutError) {
-                        this.notificationService.error('Error due saving data. Please, try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Payment was successfully updated.');
                     }
 
-                    return withoutError;
+                    return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
@@ -89,16 +95,24 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.paymentService
             .getPaymentTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(paymentTypes => this.paymentTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...paymentTypes]));
+            }, ...result]));
 
-      const currentDate = new Date();
+        const currentDate = new Date();
 
-      this.months$.next(months);
-      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+        this.months$.next(months);
+        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
     }
 
     public ngOnDestroy(): void {

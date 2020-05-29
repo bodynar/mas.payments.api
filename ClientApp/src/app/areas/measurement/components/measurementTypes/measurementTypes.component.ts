@@ -36,16 +36,16 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
                 switchMap(id => this.measurementService.deleteMeasurementType(id)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due deleting type. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
-                    return !hasError;
+                    return response.success;
                 }),
                 switchMapTo(this.measurementService.getMeasurementTypes()),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(measurementTypes => this.measurementTypes$.next(measurementTypes));
+            .subscribe(({ result }) => this.measurementTypes$.next(result));
 
         this.whenTypeEdit$
             .pipe(
@@ -61,8 +61,16 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.measurementService
             .getMeasurementTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurementTypes => this.measurementTypes$.next(measurementTypes));
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.measurementTypes$.next(result));
     }
 
     public ngOnDestroy(): void {

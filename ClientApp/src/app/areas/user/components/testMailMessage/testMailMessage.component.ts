@@ -5,10 +5,10 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
+import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
-import { INotificationService } from 'services/INotificationService';
 
 @Component({
     templateUrl: 'testMailMessage.template.pug'
@@ -39,12 +39,12 @@ class TestMailMessageComponent implements OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(request => !isNullOrUndefined(request.recipient) && request.recipient !== ''),
                 switchMap(request => this.userService.sendTestMailMessage(request)),
-                filter(isOperationSucceeded => {
-                    if (!isOperationSucceeded) {
-                        this.notificationService.error('Error occurred due adding message to queue');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
 
-                    return isOperationSucceeded;
+                    return response.success;
                 })
             )
             .subscribe(_ => {

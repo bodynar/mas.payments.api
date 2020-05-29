@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -11,8 +11,10 @@ import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.b
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 class PaymentApiBackendService implements IPaymentApiBackendService {
@@ -25,7 +27,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
     ) {
     }
 
-    public getPayment(id: number): Observable<PaymentResponse> {
+    public getPayment(id: number): Observable<QueryExecutionResult<PaymentResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getPayment`, {
                 params: new HttpParams({
@@ -43,11 +45,21 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         paymentTypeName: response['paymentTypeName'],
                         paymentTypeId: response['paymentTypeId'],
                     }) as PaymentResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
+    public getPaymentType(id: number): Observable<QueryExecutionResult<PaymentTypeResponse>> {
         return this.http
             .get(`${this.apiPrefix}/getPaymentType`, {
                 params: new HttpParams({
@@ -63,35 +75,81 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         systemName: response['systemName'],
                         description: response['description'],
                     }) as PaymentTypeResponse),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<any> {
+    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/addPaymentType`, paymentTypeData)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public addPayment(paymentData: AddPaymentRequest): Observable<any> {
+    public addPayment(paymentData: AddPaymentRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/addPayment`, paymentData)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<any> {
+    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updatePaymentType`, { id, ...paymentTypeData })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<any> {
+    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updatePayment`, { id, ...paymentData })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public getPaymentTypes(): Observable<Array<PaymentTypeResponse>> {
+    public getPaymentTypes(): Observable<QueryExecutionResult<Array<PaymentTypeResponse>>> {
         return this.http
             .get(`${this.apiPrefix}/getPaymentTypes`)
             .pipe(
@@ -103,11 +161,21 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         description: paymentType['description'],
                         company: paymentType['company']
                     }) as PaymentTypeResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                        })
+                    ),
             );
     }
 
-    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
+    public getPayments(filter?: PaymentsFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
         let params: HttpParams =
             new HttpParams();
 
@@ -149,22 +217,51 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         paymentTypeName: payment['paymentTypeName'],
                         paymentTypeId: payment['paymentTypeId']
                     }) as PaymentResponse)),
-                catchError(error => of(error))
+                    catchError(error => of(error.error)),
+                    map(x => isNullOrUndefined(x.Success)
+                        ? ({
+                            success: true,
+                            result: x
+                        })
+                        : ({
+                            success: false,
+                            error: x['Message'],
+                            result: [],
+                        })
+                    ),
             );
     }
 
-    public deletePaymentType(paymentTypeId: number): Observable<boolean> {
+    public deletePaymentType(paymentTypeId: number): Observable<CommandExecutionResult> {
         return this.http
             .delete(`${this.apiPrefix}/deletePaymentType`,
                 { params: new HttpParams().set('paymentTypeId', `${paymentTypeId}`) })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
-    public deletePayment(paymentId: number): Observable<boolean> {
+    public deletePayment(paymentId: number): Observable<CommandExecutionResult> {
         return this.http
             .delete(`${this.apiPrefix}/deletePayment`,
                 { params: new HttpParams().set('paymentId', `${paymentId}`) })
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 }
 

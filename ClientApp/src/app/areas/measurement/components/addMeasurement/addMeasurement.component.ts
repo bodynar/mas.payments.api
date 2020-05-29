@@ -21,16 +21,16 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 class AddMeasurementComponent implements OnInit, OnDestroy {
 
     public addMeasurementRequest: AddMeasurementRequest =
-      {};
+        {};
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public months$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public years$: Subject<Array<{ id?: number, name: string }>> =
-      new ReplaySubject(1);
+        new ReplaySubject(1);
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
@@ -48,14 +48,14 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid && this.isFormValid()),
                 switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
-                filter(withoutError => {
-                    if (!withoutError) {
-                        this.notificationService.error('Error due saving data. Please, try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurement was successfully added.');
                     }
 
-                    return withoutError;
+                    return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
@@ -64,19 +64,29 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
     public ngOnInit(): void {
         this.measurementService
             .getMeasurementTypes()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(measurementTypes => this.measurementTypes$.next([{
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => this.measurementTypes$.next([{
                 name: '',
                 systemName: '',
-            }, ...measurementTypes]));
+            }, ...result]));
 
-      const currentDate = new Date();
+        const currentDate: Date =
+            new Date();
 
-      this.months$.next(months);
-      this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+        this.months$.next(months);
+        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
 
-      this.addMeasurementRequest.month = currentDate.getMonth().toString();
-      this.addMeasurementRequest.year = currentDate.getFullYear();
+        this.addMeasurementRequest.month = currentDate.getMonth().toString();
+        this.addMeasurementRequest.year = currentDate.getFullYear();
     }
 
     public ngOnDestroy(): void {

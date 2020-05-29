@@ -40,14 +40,14 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 switchMap(_ => this.measurementService.addMeasurementType(this.addMeasurementTypeRequest)),
-                filter(withoutError => {
-                    if (!withoutError) {
-                        this.notificationService.error('Error due saving data. Please, try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurement type was successfully added.');
                     }
 
-                    return withoutError;
+                    return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateArea(['types']));

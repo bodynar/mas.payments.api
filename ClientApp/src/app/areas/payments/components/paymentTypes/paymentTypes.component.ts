@@ -36,11 +36,11 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
                 switchMap(id => this.paymentService.deletePaymentType(id)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due deleting type. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
-                    return !hasError;
+                    return response.success;
                 }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))

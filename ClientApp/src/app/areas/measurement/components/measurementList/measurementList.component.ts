@@ -98,11 +98,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
                 switchMap(id => this.measurementService.deleteMeasurement(id)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due deleting type. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
-                    return !hasError;
+                    return response.success;
                 }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
@@ -129,9 +129,9 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     this.isMeasurementsSentFlagActive$.next(false);
                 }),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
-                filter(hasError => {
-                    if (hasError) {
-                        this.notificationService.error('Error due sending measurements. Try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     }
                     return true;
                 }),

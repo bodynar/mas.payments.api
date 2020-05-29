@@ -8,9 +8,10 @@ import { isNullOrUndefined } from 'util';
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';
 
-import { MeasurementsFilter } from 'models/measurementsFilter';
+import MeasurementsFilter from 'models/measurementsFilter';
 import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
@@ -26,7 +27,7 @@ export default class MeasurementService implements IMeasurementService {
 
     // #region measurements
 
-    public addMeasurement(measurementData: AddMeasurementRequest): Observable<boolean> {
+    public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
         // data validation
         const parsedMonth: number =
             parseInt(measurementData.month) + 1;
@@ -40,7 +41,6 @@ export default class MeasurementService implements IMeasurementService {
                 month: month.toString()
             })
             .pipe(
-                map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -71,11 +71,10 @@ export default class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend.getMeasurement(id);
     }
 
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<boolean> {
+    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
             .updateMeasurement(id, measurementData)
             .pipe(
-                map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -84,29 +83,26 @@ export default class MeasurementService implements IMeasurementService {
             );
     }
 
-    public deleteMeasurement(measurementId: number): Observable<boolean> {
+    public deleteMeasurement(measurementId: number): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
-            .deleteMeasurement(measurementId)
-            .pipe(map(response => !isNullOrUndefined(response)));
+            .deleteMeasurement(measurementId);
     }
 
-    public sendMeasurements(measurementIds: Array<number>): Observable<boolean> {
+    public sendMeasurements(measurementIds: Array<number>): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
-            .sendMeasurements(measurementIds)
-            .pipe(map(response => !isNullOrUndefined(response)));
+            .sendMeasurements(measurementIds);
     }
 
     // #endregion measurements
 
     // #region measurement types
 
-    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
+    public addMeasurementType(measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult> {
         // data validation
 
         return this.measurementApiBackend
             .addMeasurementType(measurementTypeData)
             .pipe(
-                map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -137,11 +133,10 @@ export default class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend.getMeasurementType(id);
     }
 
-    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<boolean> {
+    public updateMeasurementType(id: number, measurementTypeData: AddMeasurementTypeRequest): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
             .updateMeasurementType(id, measurementTypeData)
             .pipe(
-                map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -150,10 +145,9 @@ export default class MeasurementService implements IMeasurementService {
             );
     }
 
-    public deleteMeasurementType(measurementTypeId: number): Observable<boolean> {
+    public deleteMeasurementType(measurementTypeId: number): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
-            .deleteMeasurementType(measurementTypeId)
-            .pipe(map(response => !isNullOrUndefined(response)));
+            .deleteMeasurementType(measurementTypeId);
     }
 
     // #endregion measurement types

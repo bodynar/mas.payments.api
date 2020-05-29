@@ -11,6 +11,7 @@ import { IPaymentService } from 'services/IPaymentService';
 import { PaymentsFilter } from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
@@ -23,30 +24,9 @@ class PaymentService implements IPaymentService {
         // private loggingService: ILoggingService
     ) { }
 
-    public getPayment(id: number): Observable<PaymentResponse> {
-        return this.paymentApiBackend.getPayment(id);
-    }
+    // #region payments
 
-    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
-        return this.paymentApiBackend.getPaymentType(id);
-    }
-
-    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<boolean> {
-        // data validation
-
-        return this.paymentApiBackend
-            .addPaymentType(paymentTypeData)
-            .pipe(
-                map(response => isNullOrUndefined(response)),
-                tap(withoutError => {
-                    if (!withoutError) {
-                        // this.loggingService.error()
-                    }
-                }),
-            );
-    }
-
-    public addPayment(paymentData: AddPaymentRequest): Observable<boolean> {
+    public addPayment(paymentData: AddPaymentRequest): Observable<CommandExecutionResult> {
         // data validation
         const parsedMonth: number =
             parseInt(paymentData.month) + 1;
@@ -61,7 +41,6 @@ class PaymentService implements IPaymentService {
               month: month.toString()
             })
             .pipe(
-                map(response => isNullOrUndefined(response)),
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -70,24 +49,55 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<boolean> {
+    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
         return this.paymentApiBackend
-            .updatePaymentType(id, paymentTypeData)
+            .getPayments(filter)
             .pipe(
-                map(response => isNullOrUndefined(response)),
-                tap(withoutError => {
-                    if (!withoutError) {
-                        // this.loggingService.error()
+                map(response => {
+                    const hasError: CommandExecutionResult =
+                        isNullOrUndefined(response) || !(response instanceof Array);
+
+                    if (hasError) {
+                        // this.notificationService.error();
+                        // this.loggingService.error(response);
                     }
+
+                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<boolean> {
+    public getPayment(id: number): Observable<PaymentResponse> {
+        return this.paymentApiBackend.getPayment(id);
+    }
+
+    public updatePayment(id: number, paymentData: AddPaymentRequest): Observable<CommandExecutionResult> {
         return this.paymentApiBackend
             .updatePayment(id, paymentData)
             .pipe(
-                map(response => isNullOrUndefined(response)),
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
+                    }
+                }),
+            );
+    }
+
+    public deletePayment(paymentId: number): Observable<CommandExecutionResult> {
+        return this.paymentApiBackend
+            .deletePayment(paymentId);
+    }
+
+    // #endregion payments
+
+    // #region payment types
+
+    public addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult> {
+        // data validation
+
+        return this.paymentApiBackend
+            .addPaymentType(paymentTypeData)
+            .pipe(
                 tap(withoutError => {
                     if (!withoutError) {
                         // this.loggingService.error()
@@ -101,7 +111,7 @@ class PaymentService implements IPaymentService {
             .getPaymentTypes()
             .pipe(
                 map(response => {
-                    const hasError: boolean =
+                    const hasError: CommandExecutionResult =
                         isNullOrUndefined(response) || !(response instanceof Array);
 
                     if (hasError) {
@@ -114,35 +124,28 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public getPayments(filter?: PaymentsFilter): Observable<Array<PaymentResponse>> {
+    public getPaymentType(id: number): Observable<PaymentTypeResponse> {
+        return this.paymentApiBackend.getPaymentType(id);
+    }
+
+    public updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult> {
         return this.paymentApiBackend
-            .getPayments(filter)
+            .updatePaymentType(id, paymentTypeData)
             .pipe(
-                map(response => {
-                    const hasError: boolean =
-                        isNullOrUndefined(response) || !(response instanceof Array);
-
-                    if (hasError) {
-                        // this.notificationService.error();
-                        // this.loggingService.error(response);
+                tap(withoutError => {
+                    if (!withoutError) {
+                        // this.loggingService.error()
                     }
-
-                    return hasError ? [] : response;
                 }),
             );
     }
 
-    public deletePaymentType(paymentTypeId: number): Observable<boolean> {
+    public deletePaymentType(paymentTypeId: number): Observable<CommandExecutionResult> {
         return this.paymentApiBackend
-            .deletePaymentType(paymentTypeId)
-            .pipe(map(response => !isNullOrUndefined(response)));
+            .deletePaymentType(paymentTypeId);
     }
 
-    public deletePayment(paymentId: number): Observable<boolean> {
-        return this.paymentApiBackend
-            .deletePayment(paymentId)
-            .pipe(map(response => !isNullOrUndefined(response)));
-    }
+    // #endregion payment types
 }
 
 export { PaymentService };

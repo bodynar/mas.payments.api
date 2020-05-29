@@ -57,14 +57,14 @@ class UpdateMeasurementTypeComponent implements OnInit, OnDestroy {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 switchMap(_ => this.measurementService.updateMeasurementType(this.measurementTypeId, this.measurementTypeRequest)),
-                filter(withoutError => {
-                    if (!withoutError) {
-                        this.notificationService.error('Error due saving data. Please, try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurement type was successfully updated.');
                     }
 
-                    return withoutError;
+                    return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateArea(['types']));

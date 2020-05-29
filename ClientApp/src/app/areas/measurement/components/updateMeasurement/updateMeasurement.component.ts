@@ -74,14 +74,14 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
                   this.measurementRequest.month = (parseInt(this.measurementRequest.month) + 1).toString();
                 }),
                 switchMap(_ => this.measurementService.updateMeasurement(this.measurementId, this.measurementRequest)),
-                filter(withoutError => {
-                    if (!withoutError) {
-                        this.notificationService.error('Error due saving data. Please, try again later');
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurement was successfully updated.');
                     }
 
-                    return withoutError;
+                    return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());

@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -10,6 +10,7 @@ import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -37,7 +38,7 @@ class UserApiBackendService implements IUserApiBackendService {
             );
     }
 
-    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<any> {
+    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<CommandExecutionResult> {
         const url: string =
             isNullOrUndefined(testMailMessage.name)
                 ? `${this.apiPrefix}/testMailMessage`
@@ -45,7 +46,16 @@ class UserApiBackendService implements IUserApiBackendService {
 
         return this.http
             .post(url, testMailMessage)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 
     public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
@@ -75,10 +85,34 @@ class UserApiBackendService implements IUserApiBackendService {
             );
     }
 
-    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<boolean> {
+    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/updateUserSettings`, updatedSettings)
-            .pipe(catchError(error => of(error)));
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
+    }
+
+    public exception(): Observable<CommandExecutionResult> {
+        return this.http
+            .post(`${this.apiPrefix}/exception`, {})
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({ success: true })
+                ),
+            );
     }
 }
 

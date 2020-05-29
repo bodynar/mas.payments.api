@@ -10,6 +10,7 @@ import { IUserService } from 'services/IUserService';
 
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
+import CommandExecutionResult from 'models/response/commandExecutionResult';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -38,10 +39,9 @@ class UserService implements IUserService {
             );
     }
 
-    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<boolean> {
+    public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<CommandExecutionResult> {
         return this.userApiBackend
-            .sendTestMailMessage(testMailMessage)
-            .pipe(map(response => isNullOrUndefined(response)));
+            .sendTestMailMessage(testMailMessage);
     }
 
     public getUserSettings(): Observable<Array<GetUserSettingsResponse>> {
@@ -61,10 +61,9 @@ class UserService implements IUserService {
             );
     }
 
-    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<boolean> {
+    public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult> {
         return this.userApiBackend
-            .updateUserSettings(updatedSettings)
-            .pipe(map(response => isNullOrUndefined(response)));
+            .updateUserSettings(updatedSettings);
     }
 }
 

@@ -88,7 +88,7 @@ class BellComponent implements OnInit, OnDestroy {
     }
 
     private isBellList(element: HTMLElement): boolean {
-        let isRootBell: boolean =
+        const isRootBell: boolean =
             element.nodeName.toLowerCase() === 'app-bell';
 
         if (isRootBell) {

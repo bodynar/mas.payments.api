@@ -1,17 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MAS.Payments.Commands;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.MailMessages;
-using MAS.Payments.Models;
-using MAS.Payments.Notifications;
-using MAS.Payments.Queries;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.Commands;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.MailMessages;
+    using MAS.Payments.Models;
+    using MAS.Payments.Notifications;
+    using MAS.Payments.Queries;
+
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {

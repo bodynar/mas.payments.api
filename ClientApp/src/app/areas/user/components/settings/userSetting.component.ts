@@ -94,15 +94,15 @@ export default class UserSettingComponent implements OnDestroy, OnInit {
             this.userService
                 .updateUserSettings(changedSettings)
                 .pipe(
-                    tap(isOperationSucceeded => {
-                        if (!isOperationSucceeded) {
-                            this.notificationService.error('Error occured due saving settings.');
+                    tap(response => {
+                        if (!response.success) {
+                            this.notificationService.error(response.error);
                         }
                         else {
                             this.notificationService.success('Settings successfully saved.');
                         }
 
-                        return isOperationSucceeded;
+                        return response.success;
                     }),
                 )
                 .subscribe(_ => this.whenRequestUserSettings$.next(null));

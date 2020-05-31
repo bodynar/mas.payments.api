@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app.routing';
+
 import { CoreModule } from './core/core.module';
 
 import { AppContainerComponent } from './component/appContainer.component';

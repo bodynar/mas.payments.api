@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
+import { BehaviorSubject, Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -12,7 +12,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
-import { PaymentsFilter } from 'models/paymentsFilter';
+import PaymentsFilter from 'models/paymentsFilter';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
@@ -21,7 +21,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 })
 class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
-        {};
+        new PaymentsFilter();
 
     public payments$: Subject<Array<PaymentResponse>> =
         new Subject();
@@ -32,7 +32,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
-    public amountFilterType: '' | 'between' | 'exactly' =
+    public amountFilterType: string =
         '';
 
     public months: Array<{ name: string, id?: number }>;
@@ -42,7 +42,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public actions: Array<string> =
         ['add', 'types'];
 
-    public amountFilterType$: BehaviorSubject<'' | 'between' | 'exactly'> =
+    public amountFilterType$: BehaviorSubject<string> =
         new BehaviorSubject('');
 
 

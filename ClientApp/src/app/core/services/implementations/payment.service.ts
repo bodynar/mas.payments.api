@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'util';
 import { IPaymentApiBackendService } from 'services/backend/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
-import { PaymentsFilter } from 'models/paymentsFilter';
+import PaymentsFilter from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs';
 
-import { PaymentsFilter } from 'models/paymentsFilter';
+import PaymentsFilter from 'models/paymentsFilter';
 import { AddPaymentRequest } from 'models/request/addPaymentRequest';
 import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';

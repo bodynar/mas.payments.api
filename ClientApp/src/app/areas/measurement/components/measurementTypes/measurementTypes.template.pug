@@ -1,0 +1,26 @@
+doctype html
+
+div
+    button.btn.btn-outline-success.btn-sm(
+        type='button',
+        (click)='onAddClick()'
+    ) Add
+    .list_item(
+        *ngFor='let type of (measurementTypes$ | async)'
+    )
+        .info
+            .name {{ type.name }}
+            p.description {{ type.description}}
+        .type
+            .app-badge(
+                [ngClass]='getPaymentTypeClass(type.paymentTypeName)'
+            ) {{ type.paymentTypeName }}
+        .options
+            .oi.oi-pencil.oi-medium-extra(
+                (click)='onEditClick(type.id)',
+                title='Edit'
+            )
+            .oi.oi-trash.oi-medium-extra(
+                (click)='onDeleteClick(type.id)',
+                title='Delete'
+            )

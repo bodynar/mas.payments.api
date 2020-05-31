@@ -1,0 +1,48 @@
+doctype html
+
+h2 testMailMessage
+
+form.needs-validation(
+    #testMailMessage='ngForm',
+    (submit)='onFormSend(testMailMessage)'
+)
+    .custom-control.custom-checkbox
+        input.custom-control-input#modelMode(
+            type='checkbox',
+            (change)='onModelModeChange($event.target.checked)'
+        )
+        label.custom-control-label(
+            for='modelMode'
+        ) With model
+    .form-group
+        label(for='recipient') Recipient
+        input.form-control.m-form-control.form-control-sm#recipient(
+            type='text',
+            placeholder='Enter recipient mail',
+            name='recipient',
+            [(ngModel)]='mailMessageRequest.recipient',
+            #recipient='ngModel',
+            required='required',
+        )
+    div(
+        *ngIf='(isModelMode$ | async)'
+    )
+        .form-group
+            label(for='name') Name
+            input.form-control.m-form-control#name(
+                type='text',
+                name='name',
+                [(ngModel)]='mailMessageRequest.name',
+                #name='ngModel'
+            )
+
+        .form-group
+            label(for='counter') Counter
+            input.form-control.m-form-control#counter(
+                type='number',
+                name='counter',
+                [(ngModel)]='mailMessageRequest.counter',
+                #counter='ngModel'
+            )
+
+    button.btn.btn-outline-primary(type='submit') Add message to queue

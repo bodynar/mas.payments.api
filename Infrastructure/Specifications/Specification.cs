@@ -29,7 +29,7 @@ namespace MAS.Payments.Infrastructure.Specification
                 var expression = IsSatisfied();
                 if (expression == null)
                 {
-                    throw new Exception($"Specification {GetType()} doesn't implemented");
+                    throw new Exception($"Specification {GetType()} isn't implemented");
                 }
 
                 return expression;
@@ -43,7 +43,7 @@ namespace MAS.Payments.Infrastructure.Specification
                 var expression = IsSatisfied();
                 if (expression == null)
                 {
-                    throw new Exception($"Specification {GetType()} doesn't implemented");
+                    throw new Exception($"Specification {GetType()} isn't implemented");
                 }
 
                 return expression.Compile();

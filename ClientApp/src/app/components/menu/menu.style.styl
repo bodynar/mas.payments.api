@@ -1,0 +1,77 @@
+@import '../../../common/colors.styl'
+
+.menubar
+    position sticky
+    top 0
+
+    padding 0.6em 1em
+    background-color color-black-pearl
+
+    display flex
+    justify-content space-between
+    flex-direction row
+    align-items center
+
+    list-style none
+    z-index 1
+
+    &-logo
+        color white
+        padding-left 0.5em
+        cursor default
+        user-select none
+
+        width 42vw
+
+        .search
+            outline 0
+            border-width 0
+            width 70%
+
+            cursor default
+
+            margin-left 5px
+
+            background none
+            color white
+    &-right
+        display flex
+        flex-direction row
+        flex-wrap nowrap
+        align-items center
+
+        .menu-icon
+            margin 0 0.3em
+
+        .panel
+            display flex
+            flex-direction row
+            margin 0
+            padding 0
+
+            .item
+                display flex
+                flex-direction row
+.menu
+    display flex
+    justify-content flex-end
+    margin 0
+    padding 0
+
+    &-item
+        list-style none
+        margin 0 0.5em
+        a
+            text-decoration none
+            color white
+            cursor pointer
+            transition 0.2s ease all
+
+            &[disabled]
+                cursor not-allowed
+                color color-gray-asphalt-wet
+            &:not([disabled])
+                &.active
+                    color color-blue-asphalt
+                &:hover
+                    color color-blue-sky

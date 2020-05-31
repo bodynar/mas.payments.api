@@ -1,0 +1,65 @@
+doctype html
+
+form.needs-validation(
+    #form='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(form)'
+)
+    .form-group
+        label(for='amount') Amount
+        input.form-control.m-form-control.form-control-sm#amount(
+            type='text',
+            placeholder='Enter amount',
+            name='amount',
+            [(ngModel)]='paymentRequest.amount',
+            #name='ngModel',
+            required='required',
+        )
+
+    .form-group
+        label(for='paymentTypeId') Payment type
+        select.custom-select.m-form-control.custom-select-sm#paymentTypeId(
+            required='required',
+            name='paymentTypeId',
+            [(ngModel)]='paymentRequest.paymentTypeId'
+        )
+            option(
+                *ngFor='let paymentType of (paymentTypes$ | async)',
+                [value]='paymentType.id'
+            ) {{ paymentType.name }}
+
+    .form-group.form-row
+      .col-2
+        label(for='month') Month
+        select.custom-select.custom-select-sm#month(
+            required='required',
+            name='month',
+            [(ngModel)]='paymentRequest.month'
+        )
+            option(
+                *ngFor='let month of (months$ | async)',
+                [value]='month.id'
+            ) {{ month.name }}
+      .col-1
+        label(for='year') Year
+        select.custom-select.custom-select-sm#year(
+              required='required',
+              name='year',
+              [(ngModel)]='paymentRequest.year'
+          )
+              option(
+                  *ngFor='let year of (years$ | async)',
+                  [value]='year.id'
+              ) {{ year.name }}
+
+    .form-group
+        label(for='description') Description
+        input.form-control.m-form-control.form-control-sm#description(
+            type='text',
+            placeholder='Payment description',
+            name='description',
+            [(ngModel)]='paymentRequest.description',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Update

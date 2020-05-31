@@ -5,10 +5,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "build:ssr": "ng run mas.payments:server:dev",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "postinstall": "node ./ng-add-pug-loader.js"
   },
   "private": true,
@@ -27,7 +25,9 @@
     "aspnet-prerendering": "^3.0.1",
     "bootstrap": "^4.3.1",
     "core-js": "^2.5.4",
+    "jquery": "^3.5.1",
     "ng-cli-pug-loader": "^0.1.7",
+    "open-iconic": "^1.1.1",
     "popper.js": "^1.14.3",
     "rxjs": "6.0.0",
     "zone.js": "^0.8.26"

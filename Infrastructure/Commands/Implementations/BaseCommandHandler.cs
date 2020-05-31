@@ -1,38 +1,53 @@
+using System;
+using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
+using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 
 namespace MAS.Payments.Infrastructure.Command
 {
-    internal class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
+    public abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
         where TCommand : ICommand
     {
+        #region Private fields
+
+        private Lazy<IQueryProcessor> _queryProcessor
+            => new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>);
+
+        private Lazy<ICommandProcessor> _commandProcessor
+            => new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>);
+
+        private Lazy<IMailProcessor> _mailProcessor
+            => new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>);
+
+        #endregion
+
         protected IResolver Resolver { get; }
 
-        private IQueryProcessor _queryProcessor;
-
         protected IQueryProcessor QueryProcessor
-            => _queryProcessor ?? Resolver.Resolve<IQueryProcessor>();
-
-
-        private ICommandProcessor _commandProcessor;
+            => _queryProcessor.Value;
 
         protected ICommandProcessor CommandProcessor
-            => _commandProcessor ?? Resolver.Resolve<ICommandProcessor>();
+            => _commandProcessor.Value;
+
+        protected IMailProcessor MailProcessor
+            => _mailProcessor.Value;
+
+        protected Type CommandType { get; }
 
         public BaseCommandHandler(
             IResolver resolver
         )
         {
             Resolver = resolver;
+
+            CommandType = typeof(TCommand);
         }
 
-        public virtual void Handle(TCommand command)
-        {
-
-        }
+        public abstract void Handle(TCommand command);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
-            where TEntity : class
+            where TEntity : Entity
         {
             return Resolver.Resolve<IRepository<TEntity>>();
         }

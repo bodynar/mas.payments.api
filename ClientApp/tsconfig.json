@@ -6,15 +6,22 @@
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
+    "module": "esnext",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2018",
     "paths": {
       "services/*": [
-        "src/services/contracts/*"
+        "src/app/core/services/contracts/*"
       ],
       "models/*": [
-        "src/models/*"
+        "src/app/core/models/*"
+      ],
+      "static/*": [
+        "src/static"
+      ],
+      "common": [
+        "src/common"
       ]
     },
     "typeRoots": [

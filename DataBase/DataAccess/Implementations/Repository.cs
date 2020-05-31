@@ -1,10 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.Infrastructure.Extensions;
+using MAS.Payments.Infrastructure.Projector;
+using MAS.Payments.Infrastructure.Specification;
 
 namespace MAS.Payments.DataBase.Access
 {
     internal class Repository<TEntity> : IRepository<TEntity>
-        where TEntity : class
+        where TEntity : Entity
     {
         private DataBaseContext DataBaseContext { get; }
 
@@ -14,21 +18,9 @@ namespace MAS.Payments.DataBase.Access
         }
 
         public void Add(TEntity entity)
-            => DataBaseContext.Add(entity);
+            => DataBaseContext.Set<TEntity>().Add(entity);
 
-        public void Delete(Guid id)
-        {
-            var entity = Get(id);
-            DataBaseContext.Remove(entity);
-        }
-
-        public TEntity Get(Guid id)
-            => (TEntity)DataBaseContext.Find(typeof(TEntity), id);
-
-        public IQueryable<TEntity> GetAll()
-            => DataBaseContext.Set<TEntity>().AsQueryable();
-
-        public void Update(Guid id, TEntity updatedEntity)
+        public void Delete(long id)
         {
             var entity = Get(id);
             if (entity == null)
@@ -36,7 +28,54 @@ namespace MAS.Payments.DataBase.Access
                 throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
             }
 
-            DataBaseContext.Update(updatedEntity);
+            DataBaseContext.Remove(entity);
         }
+
+        public void Update(long id, object updatedEntity)
+        {
+            var entity = Get(id);
+            if (entity == null)
+            {
+                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
+            }
+
+            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedEntity); 
+        }
+
+        public TEntity Get(long id)
+            => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+
+        public IQueryable<TEntity> GetAll()
+            => DataBaseContext.Set<TEntity>().AsQueryable();
+
+        public IQueryable<TEntity> Where(Specification<TEntity> filter)
+            => DataBaseContext.Set<TEntity>().Where(filter);
+
+        public bool Any(Specification<TEntity> predicate)
+            => DataBaseContext.Set<TEntity>().Any(predicate);
+
+        public int Count(Specification<TEntity> predicate)
+            => DataBaseContext.Set<TEntity>().Count(predicate);
+
+        public TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
+            where TDestination : class
+        {
+            var entity = Get(id);
+
+            if (entity == null)
+            {
+                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
+            }
+
+            return projector.Project(entity);
+        }
+
+        public IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector)
+            where TDestination : class
+            => GetAll().Select(projector.Project);
+
+        public IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector)
+            where TDestination : class
+            => Where(filter).Select(projector.Project);
     }
 }

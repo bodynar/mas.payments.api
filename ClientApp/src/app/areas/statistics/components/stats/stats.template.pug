@@ -1,0 +1,19 @@
+doctype html
+
+button.btn.btn-outline-primary(
+    type='submit',
+    (click)='onFormSubmit()'
+) Display
+
+.table
+    ul.row
+        li 
+        li(*ngFor='let date of (dates$ | async)') {{ date | date:'MMMM|yyyy' }}
+    ul.payments
+        li(*ngFor='let statsItem of (stats$ | async)') {{ statsItem.paymentTypeName }}
+            ul
+                li(*ngFor='let paymentItem of statsItem.payments') {{ paymentItem.name }}
+                    ul.row
+                        li(*ngFor='let measurementItem of paymentItem.measurements') {{  measurementItem.date | date:'MMMM|yyyy' }}
+                            ul.measurements
+                                li(*ngFor='let value of measurementItem.measurements') {{ value.systemName }} - {{ value.measurement }}

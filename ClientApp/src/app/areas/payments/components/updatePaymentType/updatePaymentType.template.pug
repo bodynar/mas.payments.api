@@ -1,0 +1,38 @@
+doctype html
+
+form.needs-validation(
+    #form='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(form)'
+)
+    .form-group
+        label(for='name') Name
+        input.form-control.m-form-control.form-control-sm#name(
+            type='text',
+            placeholder='Enter payment type name',
+            name='name',
+            [(ngModel)]='paymentTypeRequest.name',
+            #name='ngModel',
+            required='required'
+        )
+
+    .form-group
+        label(for='name') Company
+        input.form-control.m-form-control.form-control-sm#company(
+            type='text',
+            placeholder='Enter payment type name',
+            name='company',
+            [(ngModel)]='paymentTypeRequest.company',
+            #name='ngModel'
+        )
+        
+    .form-group
+        label(for='description') Description
+        textarea.form-control.m-form-control.form-control-sm#description(
+            placeholder='Enter description',
+            name='description',
+            [(ngModel)]='paymentTypeRequest.description',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Update

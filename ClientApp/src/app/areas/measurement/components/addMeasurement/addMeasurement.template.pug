@@ -1,0 +1,65 @@
+doctype html
+
+form.needs-validation(
+    #addMeasurementForm='ngForm',
+    [class.was-validated]='!!(whenSubmittedForm$ | async)',
+    (submit)='onFormSubmit(addMeasurementForm)'
+)
+    .form-group
+        label(for='measurement') Measurement value
+        input.form-control.m-form-control.form-control-sm#measurement(
+            type='text',
+            placeholder='Enter measurement',
+            name='measurement',
+            [(ngModel)]='addMeasurementRequest.measurement',
+            #measurement='ngModel',
+            required='required',
+        )
+
+    .form-group
+        label(for='meterMeasurementTypeId') Measurement type
+        select.custom-select.m-form-control.custom-select-sm#meterMeasurementTypeId(
+            required='required',
+            name='meterMeasurementTypeId',
+            [(ngModel)]='addMeasurementRequest.meterMeasurementTypeId'
+        )
+            option(
+                *ngFor='let measurementType of (measurementTypes$ | async)',
+                [value]='measurementType.id'
+            ) {{ measurementType.name }}
+
+    .form-group.form-row
+      .col-2
+        label(for='month') Month
+        select.custom-select.custom-select-sm#month(
+            required='required',
+            name='month',
+            [(ngModel)]='addMeasurementRequest.month'
+        )
+            option(
+                *ngFor='let month of (months$ | async)',
+                [value]='month.id'
+            ) {{ month.name }}
+      .col-1
+        label(for='year') Year
+        select.custom-select.custom-select-sm#year(
+              required='required',
+              name='year',
+              [(ngModel)]='addMeasurementRequest.year'
+          )
+              option(
+                  *ngFor='let year of (years$ | async)',
+                  [value]='year.id'
+              ) {{ year.name }}
+
+    .form-group
+        label(for='comment') Comment
+        input.form-control.m-form-control.form-control-sm#comment(
+            type='text',
+            placeholder='Enter comment',
+            name='comment',
+            [(ngModel)]='addMeasurementRequest.comment',
+            #name='ngModel'
+        )
+    
+    button.btn.btn-outline-primary(type='submit') Add

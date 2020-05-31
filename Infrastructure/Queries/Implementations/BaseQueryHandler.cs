@@ -1,22 +1,37 @@
+using System;
+using MAS.Payments.DataBase;
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure.Command;
+using MAS.Payments.Infrastructure.MailMessaging;
 
 namespace MAS.Payments.Infrastructure.Query
 {
-    internal class BaseQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
+    internal abstract class BaseQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult>
     {
+        #region Private fields
+
+        private Lazy<IQueryProcessor> _queryProcessor
+            => new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>);
+
+        private Lazy<ICommandProcessor> _commandProcessor
+            => new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>);
+
+        private Lazy<IMailProcessor> _mailProcessor
+            => new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>);
+
+        #endregion
+
         protected IResolver Resolver { get; }
 
-        private IQueryProcessor _queryProcessor;
-
         protected IQueryProcessor QueryProcessor
-            => _queryProcessor ?? Resolver.Resolve<IQueryProcessor>();
-
-        private ICommandProcessor _commandProcessor;
+            => _queryProcessor.Value;
 
         protected ICommandProcessor CommandProcessor
-            => _commandProcessor ?? Resolver.Resolve<ICommandProcessor>();
+            => _commandProcessor.Value;
+
+        protected IMailProcessor MailProcessor
+            => _mailProcessor.Value;
 
         public BaseQueryHandler(
             IResolver resolver
@@ -25,13 +40,10 @@ namespace MAS.Payments.Infrastructure.Query
             Resolver = resolver;
         }
 
-        public virtual TResult Handle(TQuery Query)
-        {
-            return default(TResult);
-        }
+        public abstract TResult Handle(TQuery query);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
-            where TEntity: class
+            where TEntity : Entity
         {
             return Resolver.Resolve<IRepository<TEntity>>();
         }

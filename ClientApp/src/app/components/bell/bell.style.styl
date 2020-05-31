@@ -1,0 +1,81 @@
+@import '../../../common/colors.styl'
+
+.notification
+    .bell
+        color white
+        position relative
+
+        .oi-bell
+            transition 0.2s ease all
+            
+            &:hover
+                color color-red-orange
+
+        .badge
+            position absolute
+            top -0.5em
+            right -1em
+            border-radius 50%
+            background-color color-red-fiery-coral
+            color white
+            cursor pointer
+            font-size 8px
+            user-select none
+
+    
+    .notification-list
+        position absolute
+        right 1em
+        margin 0
+        padding 10px 5px
+
+        overflow auto
+        width 20em
+        max-height 40vh
+
+        background-color color-white
+        box-shadow 0 0 20px 5px rgba(0, 0, 0, 0.5)
+        border-radius 4px
+        list-style none
+
+        transition all 0.3s ease
+
+        li
+            border-left-width 3px
+            border-left-style solid
+            border-bottom-left-radius 3px
+            border-top-left-radius 3px
+            box-shadow 0 0 3px 0px rgba(0, 0, 0, 0.4)
+            margin-bottom 1em
+            padding 1em
+
+            &:last-of-type
+                margin-bottom 0
+            &.info
+                border-left-color color-blue-thunder-light
+            &.warning
+                border-left-color color-orange-bee
+            
+
+            .header
+                display flex
+                align-items end
+                justify-content space-between
+                .title
+                    font-weight bold
+                    font-size 14px
+                    &:hover
+                        cursor pointer
+            .description
+                margin 0px
+                padding 0px
+                max-height 5.5em
+                overflow hidden
+
+    &:not(.collapsed) .notification-list
+        opacity 1
+        visibility visible
+    &.collapsed .notification-list
+        opacity 0
+        visibility collapse
+    

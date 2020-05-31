@@ -18,7 +18,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
-export default class MeasurementService implements IMeasurementService {
+export class MeasurementService implements IMeasurementService {
 
     constructor(
         private measurementApiBackend: IMeasurementApiBackendService,

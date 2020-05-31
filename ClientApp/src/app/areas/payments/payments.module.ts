@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { PaymentsRoutingModule } from './payments.routing';
-
 import { PaymentsComponent } from './component/payments.component';
 
 import { AddPaymentComponent } from './components/addPayment/addPayment.component';
@@ -21,7 +19,6 @@ import { UpdatePaymentTypeComponent } from './components/updatePaymentType/updat
         RouterModule,
         FormsModule,
         CommonModule,
-        PaymentsRoutingModule,
     ],
     exports: [],
     declarations: [

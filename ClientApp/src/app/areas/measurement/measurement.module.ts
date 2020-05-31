@@ -3,8 +3,6 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { MeasurementRoutingModule } from './measurement.routing';
-
 import { MeasurementsComponent } from './component/measurement.component';
 
 import { AddMeasurementComponent } from './components/addMeasurement/addMeasurement.component';
@@ -22,7 +20,6 @@ import { UpdateMeasurementTypeComponent } from './components/updateMeasurementTy
         CommonModule,
         FormsModule,
         RouterModule,
-        MeasurementRoutingModule
     ],
     exports: [],
     declarations: [

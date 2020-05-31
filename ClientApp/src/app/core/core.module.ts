@@ -11,7 +11,7 @@ import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.
 import { MeasurementApiBackendService } from './services/implementations/backend/measurementApi.backend.service';
 
 import { IMeasurementService } from 'services/IMeasurementService';
-import MeasurementService from './services/implementations/measurement.service';
+import { MeasurementService } from './services/implementations/measurement.service';
 
 import { IRouterService } from 'services/IRouterService';
 import { RouterService } from './services/implementations/router.service';

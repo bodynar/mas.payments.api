@@ -11,7 +11,7 @@ import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/re
     templateUrl: 'measurementGroup.template.pug',
     styleUrls: ['measurementGroup.style.styl']
 })
-export default class MeasurementGroupComponent implements OnInit {
+export class MeasurementGroupComponent implements OnInit {
     @Input()
     public measurementGroup: MeasurementsResponse;
 

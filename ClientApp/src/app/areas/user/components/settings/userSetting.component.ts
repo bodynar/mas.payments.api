@@ -13,7 +13,7 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
 @Component({
     templateUrl: 'userSetting.template.pug'
 })
-export default class UserSettingComponent implements OnDestroy, OnInit {
+export class UserSettingComponent implements OnDestroy, OnInit {
 
     public userSettings$: Subject<Array<GetUserSettingsResponse>> =
         new ReplaySubject();

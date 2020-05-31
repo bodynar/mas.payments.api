@@ -5,6 +5,10 @@ import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './pages/notFound/notFound.component';
 
+import { routes as PaymentRoutes } from './areas/payments/payments.routing';
+import { routes as MeasurementRoutes } from './areas/measurement/measurement.routing';
+import { routes as UserRoutes } from './areas/user/user.routing';
+
 import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
 import { PaymentsComponent } from './areas/payments/component/payments.component';
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
@@ -27,22 +31,22 @@ const routes: Routes = [
             {
                 path: 'payments',
                 component: PaymentsComponent,
-                loadChildren: () => import('./areas/payments/payments.module').then(x => x.PaymentsModule)
+                children: [...PaymentRoutes]
             },
             {
                 path: 'measurements',
                 component: MeasurementsComponent,
-                loadChildren: () => import('./areas/measurement/measurement.module').then(x => x.MeasurementModule)
+                children: [...MeasurementRoutes]
             },
             // {
             //     path: 'stats',
             //     component: StatisticsComponent,
-            //     loadChildren: () => import('./areas/statistics/statistics.module').then(x => x.StatisticsModule)
+            //     loadChildren: () => StatisticsModule
             // },
             {
                 path: 'user',
                 component: UserComponent,
-                loadChildren: () => import('./areas/user/user.module').then(x => x.UserModule)
+                children: [...UserRoutes]
             }
         ]
     },

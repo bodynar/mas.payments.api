@@ -1,5 +1,6 @@
-interface PaymentsFilter {
+export default class PaymentsFilter {
     month?: number;
+    year?: number;
     paymentTypeId?: number;
 
     amount?: {
@@ -8,6 +9,3 @@ interface PaymentsFilter {
         exact?: number;
     };
 }
-
-
-export { PaymentsFilter };

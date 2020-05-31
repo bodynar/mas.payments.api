@@ -1,11 +1,14 @@
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure.Query;
-
 namespace MAS.Payments.Queries
 {
+    using System.Collections.Generic;
+
+    using MAS.Payments.Infrastructure.Query;
+
     public class GetPaymentsQuery : IQuery<IEnumerable<GetPaymentsResponse>>
     {
         public byte? Month { get; }
+
+        public short? Year { get; }
 
         public long? PaymentTypeId { get; }
 
@@ -19,10 +22,11 @@ namespace MAS.Payments.Queries
         { }
 
         public GetPaymentsQuery(
-            byte? month, long? paymentTypeId,
+            byte? month, short? year, long? paymentTypeId,
             double? exactAmount, double? minAmount, double? maxAmount)
         { 
             Month = month;
+            Year = year;
             PaymentTypeId = paymentTypeId;
             ExactAmount = exactAmount;
             MinAmount = minAmount;

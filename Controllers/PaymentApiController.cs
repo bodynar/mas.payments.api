@@ -69,7 +69,7 @@ namespace MAS.Payments.Controllers
         public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery]GetPaymentsRequest request)
         {
             return QueryProcessor.Execute(
-                new GetPaymentsQuery(request.Month, request.PaymentTypeId,
+                new GetPaymentsQuery(request.Month, request.Year, request.PaymentTypeId,
                     request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
         }
 

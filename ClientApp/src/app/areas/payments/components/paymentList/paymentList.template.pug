@@ -1,70 +1,90 @@
 doctype html
 
-.actions
-    button.btn.btn-outline-info(
+.btn-toolbar(
+    role='toolbar',
+    aria-label='action buttons'
+)
+    button.btn.btn-outline-info.mr-2(
         *ngFor='let action of actions',
         (click)='onActionClick(action)'
     ) {{ action }}
-
 hr
 
 .accordion
     input.accordion-switcher#filters-display(type='checkbox')
     label.accordion-label(for='filters-display') Payments filter
     .accordion-tab
-        form.filters(
+        form(
             #filtersForm='ngForm',
             (submit)='onSubmitClick(filtersForm)'
         )
-            .filters_row
-                label.filters_row_label.col-form-label-sm Payment for
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#month(
-                    name='month',
-                    [(ngModel)]='filters.month'
+            .row
+                label.col-sm-2.col-form-label-sm Payment for
+                .col-sm-2
+                    select.form-control-sm.form-control#month(
+                        name='month',
+                        [(ngModel)]='filters.month'
+                    )
+                        option(
+                            *ngFor='let month of months',
+                            [ngValue]='month.id'
+                        ) {{ month.name }}
+                .col-sm-2
+                    select.form-control-sm.form-control#year(
+                        name='year',
+                        [(ngModel)]='filters.year',
+                        placeholder='Year'
+                    )
+                        option(
+                            *ngFor='let year of years',
+                            [ngValue]='year.id'
+                        ) {{ year.name }}
+            .row
+                label.col-sm-2.col-form-label-sm Payment type
+                .col-sm-3
+                    select.form-control-sm.form-control#paymentType(
+                        name='paymentType',
+                        [(ngModel)]='filters.paymentTypeId'
+                    )
+                        option(
+                            *ngFor='let paymentType of (paymentTypes$ | async)',
+                            [ngValue]='paymentType.id'
+                        ) {{ paymentType.name }}
+            .row
+                label.col-sm-2.col-form-label-sm Amount
+                .col-sm-3
+                    select.form-control-sm.form-control(
+                        (change)='onAmountFilterChanged($event.target.value)',
+                        [(ngModel)]='amountFilterType',
+                        [ngModelOptions]='{standalone: true}',
+                    )
+                        option() 
+                        option(value='between') Between
+                        option(value='exactly') Exactly
+                .col-sm-3(
+                    *ngIf='(amountFilterType$ | async) == "exactly"'
                 )
-                    option(
-                        *ngFor='let month of months',
-                        [ngValue]='month.id'
-                    ) {{ month.name }}
-
-            .filters_row
-                label.filters_row_label.col-form-label-sm(for='paymentType') Payment type
-                select.filters_row_filter.custom-select.m-form-control.custom-select-sm#paymentType(
-                    name='paymentType',
-                    [(ngModel)]='filters.paymentTypeId'
-                )
-                    option(
-                        *ngFor='let paymentType of (paymentTypes$ | async)',
-                        [ngValue]='paymentType.id'
-                    ) {{ paymentType.name }}
-
-            .filters_row
-                label.filters_row_label.col-form-label-sm Amount
-                select.filters_row_filter.small.custom-select.m-form-control.custom-select-sm(
-                    (change)='onAmountFilterChanged($event.target.value)'
-                )
-                    option() 
-                    option(value='between') Between
-                    option(value='exactly') Exactly
-                input.form-control.m-form-control.form-control-sm#exact(
-                    *ngIf='(amountFilterType$ | async) == "exactly"',
-                    type='text',
-                    placeholder='Enter payment amount exact value',
-                    name='exact',
-                    [(ngModel)]='filters.amount.exact',
-                    #exact='ngModel'
-                )
-                .filters_row.filters_row_multi-filers(
+                    input.form-control.form-control-sm#exact(
+                        type='text',
+                        #exact='ngModel'
+                        name='exact',
+                        placeholder='Enter payment amount exact value',
+                        [(ngModel)]='filters.amount.exact',
+                    )
+                .col-sm-3(
                     *ngIf='(amountFilterType$ | async) == "between"'
                 )
-                    input.date-filter.filters_row_filter.form-control.form-control-sm(
+                    input.form-control.form-control-sm(
                         type='text',
                         name='minAmount',
                         [(ngModel)]='filters.amount.min',
                         #periodStart='ngModel',
                         placeholder='Minimum'
                     )
-                    input.date-filter.filters_row_filter.form-control.form-control-sm(
+                .col-sm-3(
+                    *ngIf='(amountFilterType$ | async) == "between"'
+                )
+                    input.form-control.form-control-sm(
                         type='text',
                         name='periodEnd',
                         [(ngModel)]='filters.amount.max',
@@ -72,17 +92,81 @@ hr
                         placeholder='Maximum'
                     )
 
-            .filters_buttons
-                button.btn.btn-outline-primary(type='submit') Filter
+            .btn-toolbar(
+                role='toolbar',
+                aria-label='filter buttons'
+            )
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='filter button'
+                )
+                    button.btn.btn-primary.btn-sm(
+                        type='submit'
+                    ) Filter
+                .btn-group.mr-2(
+                    role='group',
+                    aria-label='clear filter button'
+                )
+                    button.btn.btn-outline-secondary.btn-sm(
+                        type='button',
+                        (click)='clearFilters()'
+                    ) Clear
 
-                button.btn.btn-outline-secondary(
-                    type='button',
-                    (click)='clearFilters()'
-                ) Clear
 
-.payments-list(
+div(
     [class.hidden]='isLoading$ | async'
 )
+    .payments-header(
+        *ngIf='(hasData$ | async)'
+    )
+        .payments-header__year.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "year"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "year"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("year")'
+            )
+            span(
+                (click)='onSortColumn("year")'
+            ) Year
+        .payments-header__month.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "month"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "month"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("month")'
+            )
+            span(
+                (click)='onSortColumn("month")'
+            ) Month
+        .payments-header__type.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "type"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "type"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("type")'
+            )
+            span(
+                (click)='onSortColumn("type")'
+            ) Type
+        .payments-header__value.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "value"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "value"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("value")'
+            )
+            span(
+                (click)='onSortColumn("value")'
+            ) Amount
+        .payments-header__comment
+            span Comment
+        .payments-header__actions
+            span Actions
     app-payment-item(
         *ngFor='let payment of (payments$ | async)',
         [payment]='payment',

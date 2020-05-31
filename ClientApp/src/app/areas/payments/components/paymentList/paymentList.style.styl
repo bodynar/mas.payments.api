@@ -1,14 +1,46 @@
-.actions
-    display flex
-    flex-direction row
-    justify-content flex-start
+@import '../../../../../common/colors.styl'
 
-    button 
-        margin-right 8px
+.payments-header
+    display grid
+    grid-template-columns 0.15fr 0.25fr 0.3fr 0.25fr 1fr 0.25fr
+    gap: 0.5em
+    grid-template-areas "Year Month Type Amount Comment Actions"
 
-.filters_row_multi-filers
-    display flex
-    flex-direction row
-    margin-bottom 0
-    input 
-        max-width 25%
+    padding 1em 1.2em
+    margin-bottom 1em
+    align-items center
+    justify-items center
+
+    font-weight bold
+
+    &--clickable
+        span.oi
+            font-size 0.75em
+            margin-right 0.5em
+            transition 0.2s transform transitionFunction
+
+            &--rotated
+                transform rotate(180deg)
+        span
+            cursor pointer
+    &--filter-column
+        user-select none
+
+
+    &__year
+        grid-area Year
+
+    &__month
+        grid-area Month
+
+    &__type
+        grid-area Type
+
+    &__amount
+        grid-area Amount
+
+    &__comment
+        grid-area Comment
+
+    &__actions
+        grid-area Actions

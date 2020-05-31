@@ -1,18 +1,16 @@
 doctype html
 
 .payment
-    .date
-        .month {{ formatMonth(payment.month) }}
-        .year {{ payment.year }}
-    .info
-        .amount {{ payment.amount }}
-        p.description {{ payment.description }}
-    .type
+    .payment__year {{ payment.year }}
+    .payment__month {{ formattedMonth }}
+    .payment__type
         .app-badge(
             [ngClass]='getPaymentTypeClass(payment.paymentTypeName)',
             (click)='typeClick.emit(payment.paymentTypeId)'
         ) {{ payment.paymentTypeName }}
-    .options
+    .payment__amount {{ payment.amount }}
+    .payment__comment {{ payment.description }}
+    .payment__actions
         .oi.oi-pencil.oi-medium-extra(
             (click)='editClick.emit(payment.id)',
             title='Edit'

@@ -43,10 +43,10 @@ class MenuComponent implements OnInit, OnDestroy {
 
         const currentRoute: string =
             this.routerService
-            .getCurrentRoute()
-            .split('/')
-            .slice(1)
-            .join('/');
+                .getCurrentRoute()
+                .split('/')
+                .slice(1)
+                .join('/');
 
         this.highlightMenuItem(currentRoute);
     }
@@ -68,7 +68,11 @@ class MenuComponent implements OnInit, OnDestroy {
     }
 
     public onMenuItemClick(menuItemLink: string) {
-        this.routerService.navigate(['app', menuItemLink]);
+        if (menuItemLink !== '') {
+            this.routerService.navigate(['app', menuItemLink]);
+        } else {
+            this.routerService.navigate(['app']);
+        }
     }
 
     private highlightMenuItem(menuItemName: string): void {

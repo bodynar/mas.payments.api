@@ -13,7 +13,7 @@ import { MeasurementListComponent } from './components/measurementList/measureme
 import { UpdateMeasurementComponent } from './components/updateMeasurement/updateMeasurement.component';
 
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
-import MeasurementGroupComponent from './components/measurementGroup/measurementGroup.component';
+import { MeasurementGroupComponent } from './components/measurementGroup/measurementGroup.component';
 import { MeasurementTypesComponent } from './components/measurementTypes/measurementTypes.component';
 import { UpdateMeasurementTypeComponent } from './components/updateMeasurementType/updateMeasurementType.component';
 

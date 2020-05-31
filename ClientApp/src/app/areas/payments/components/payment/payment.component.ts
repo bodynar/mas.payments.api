@@ -1,15 +1,15 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-
-import PaymentResponse from 'models/response/payments/paymentResponse';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { getMonthName } from 'src/static/months';
+
+import PaymentResponse from 'models/response/payments/paymentResponse';
 
 @Component({
     selector: 'app-payment-item',
     templateUrl: 'payment.template.pug',
     styleUrls: ['payment.style.styl']
 })
-class PaymentComponent {
+class PaymentComponent implements OnInit {
     @Input()
     public payment: PaymentResponse;
 
@@ -25,12 +25,14 @@ class PaymentComponent {
     public typeClick: EventEmitter<number> =
         new EventEmitter();
 
+    public formattedMonth: string;
+
     constructor(
     ) {
     }
 
-    public formatMonth(monthNumber: number): string {
-      return getMonthName(monthNumber);
+    public ngOnInit(): void {
+        this.formattedMonth = getMonthName(+this.payment.month);
     }
 
     public getPaymentTypeClass(paymentTypeName: string): string {

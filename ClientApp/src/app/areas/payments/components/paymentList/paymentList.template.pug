@@ -113,9 +113,60 @@ hr
                     ) Clear
 
 
-.payments-list(
+div(
     [class.hidden]='isLoading$ | async'
 )
+    .payments-header(
+        *ngIf='(hasData$ | async)'
+    )
+        .payments-header__year.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "year"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "year"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("year")'
+            )
+            span(
+                (click)='onSortColumn("year")'
+            ) Year
+        .payments-header__month.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "month"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "month"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("month")'
+            )
+            span(
+                (click)='onSortColumn("month")'
+            ) Month
+        .payments-header__type.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "type"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "type"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("type")'
+            )
+            span(
+                (click)='onSortColumn("type")'
+            ) Type
+        .payments-header__value.payments-header--clickable(
+            [class.payments-header--filter-column]='(currentSortColumn$ | async) === "value"'
+        )
+            span.oi.oi-chevron-bottom(
+                *ngIf='(currentSortColumn$ | async) === "value"',
+                [class.oi--rotated]='isDescSortOrder$ | async',
+                (click)='onSortColumn("value")'
+            )
+            span(
+                (click)='onSortColumn("value")'
+            ) Amount
+        .payments-header__comment
+            span Comment
+        .payments-header__actions
+            span Actions
     app-payment-item(
         *ngFor='let payment of (payments$ | async)',
         [payment]='payment',

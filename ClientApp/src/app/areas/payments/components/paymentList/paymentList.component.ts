@@ -17,7 +17,8 @@ import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({
-    templateUrl: 'paymentList.template.pug'
+    templateUrl: 'paymentList.template.pug',
+    styleUrls: ['paymentList.style.styl'],
 })
 class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
@@ -32,6 +33,18 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
+    public amountFilterType$: BehaviorSubject<string> =
+        new BehaviorSubject('');
+
+    public isDescSortOrder$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public currentSortColumn$: Subject<string> =
+        new Subject();
+
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public amountFilterType: string =
         '';
 
@@ -41,9 +54,6 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     public actions: Array<string> =
         ['add', 'types'];
-
-    public amountFilterType$: BehaviorSubject<string> =
-        new BehaviorSubject('');
 
 
     private whenSubmitFilters$: Subject<null> =
@@ -57,6 +67,14 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     private whenComponentDestroy$: Subject<null> =
         new Subject();
+
+    private currentSortOrder: 'asc' | 'desc' =
+        'asc';
+
+    private currentSortColumn: string;
+
+    private payments: Array<PaymentResponse> =
+        [];
 
     constructor(
         private paymentService: IPaymentService,
@@ -80,8 +98,12 @@ class PaymentListComponent implements OnInit, OnDestroy {
                     }
                     return response.success;
                 }),
+                tap(({ result }) => this.hasData$.next(result.length > 0)),
             )
-            .subscribe(({ result }) => this.payments$.next(result));
+            .subscribe(({ result }) => {
+                this.payments = result;
+                this.onSortColumn(this.currentSortColumn, this.currentSortOrder === 'desc' ? 'asc' : 'desc');
+            });
 
         this.whenPaymentDelete$
             .pipe(
@@ -185,6 +207,75 @@ class PaymentListComponent implements OnInit, OnDestroy {
         this.amountFilterType$.next('');
 
         this.onSubmitClick();
+    }
+
+    public onSortColumn(columnName: string, sortOrder?: 'asc' | 'desc'): void {
+        let sortingFunc: (left: PaymentResponse, right: PaymentResponse) => number;
+
+        if (this.currentSortColumn !== columnName) {
+            this.currentSortOrder = 'asc';
+            this.currentSortColumn = columnName;
+        }
+
+        const usedStoredValue: boolean =
+            isNullOrUndefined(sortOrder);
+
+        sortOrder = sortOrder || this.currentSortOrder;
+
+        switch (columnName) {
+            case 'month':
+                if (sortOrder === 'asc') {
+                    sortingFunc = (left, right) => +left.month - (+right.month);
+                } else {
+                    sortingFunc = (left, right) => +right.month - (+left.month);
+                }
+                break;
+
+            case 'year':
+                if (sortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.year - right.year;
+                } else {
+                    sortingFunc = (left, right) => right.year - left.year;
+                }
+                break;
+
+            case 'type':
+                if (sortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.paymentTypeId - right.paymentTypeId;
+                } else {
+                    sortingFunc = (left, right) => right.paymentTypeId - left.paymentTypeId;
+                }
+                break;
+            case 'value':
+                if (sortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.amount - right.amount;
+                } else {
+                    sortingFunc = (left, right) => right.amount - left.amount;
+                }
+                break;
+            default:
+                if (sortOrder === 'asc') {
+                    sortingFunc = (left, right) => left.year - right.year;
+                } else {
+                    sortingFunc = (left, right) => right.year - left.year;
+                }
+                break;
+        }
+
+        if (usedStoredValue) {
+            this.currentSortOrder =
+                this.currentSortOrder === 'asc'
+                    ? 'desc'
+                    : 'asc';
+
+            this.currentSortColumn$.next(columnName);
+            this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
+        }
+
+        const sortedPayments: Array<PaymentResponse> =
+            this.payments.sort(sortingFunc);
+
+        this.payments$.next(sortedPayments);
     }
 }
 

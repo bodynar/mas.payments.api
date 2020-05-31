@@ -1,51 +1,30 @@
 @import '../../../../../common/colors.styl'
 
 .payment
-    display flex
-    align-items center
-    justify-content space-between
-    
-    margin 1em 0
-    padding 1em 1.2em
+    display grid
+    grid-template-columns 0.15fr 0.25fr 0.3fr 0.25fr 1fr 0.25fr
+    gap: 0.5em
+    grid-template-areas "Year Month Type Amount Comment Actions"
 
     box-shadow 0px 0px 2px 0px rgba(0, 0, 0, 0.25)
-
-    cursor default
-
+    padding 1em 1.2em
+    margin-bottom 1em
+    align-items center
+    
     &:hover
         box-shadow 0px 0px 2px 0px rgb(69, 212, 222, 0.25)
 
-    .date
-        display flex
-        flex-direction column
-        align-items center
+    & > *:not(&__actions) 
+        justify-self center
 
-        width 10%
-        .month
-            font-size 1.5em
-        .year
-            font-size 1.2em
+    &__year
+        grid-area Year
 
-    .info
-        display flex
-        flex-direction column
+    &__month
+        grid-area Month
 
-        width 60%
-        .amount
-            font-size 1.5em
-            &:after
-                content '₽'
-                font-size 0.9em
-                margin-left 5px
-        .description
-            margin 0
-            padding 0
-    .type
-        margin 0 5px
-        width 10%
-
-        justify-content center
-        display flex
+    &__type
+        grid-area Type
 
         .app-badge
             &.house
@@ -58,7 +37,15 @@
                 &:hover
                     background-color color-blue-sky
                     color color-white-paint
-    .options
+
+    &__amount
+        grid-area Amount
+
+    &__comment
+        grid-area Comment
+
+    &__actions
+        grid-area Actions
+        align-self center
         display flex
-        & > *
-            margin 0 1em
+        justify-content space-around

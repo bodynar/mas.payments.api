@@ -1,9 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, Subject, ReplaySubject } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
+
+import { yearsRange } from 'src/common/years';
+import { months } from 'src/static/months';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -13,11 +16,8 @@ import { PaymentsFilter } from 'models/paymentsFilter';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
-import { months } from 'src/static/months';
-
 @Component({
-    templateUrl: 'paymentList.template.pug',
-    styleUrls: ['paymentList.style.styl']
+    templateUrl: 'paymentList.template.pug'
 })
 class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
@@ -32,12 +32,17 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
+    public amountFilterType: '' | 'between' | 'exactly' =
+        '';
+
     public months: Array<{ name: string, id?: number }>;
+
+    public years: Array<{ name: string, id?: number }>;
 
     public actions: Array<string> =
         ['add', 'types'];
 
-    public amountFilterType$: BehaviorSubject<string> =
+    public amountFilterType$: BehaviorSubject<'' | 'between' | 'exactly'> =
         new BehaviorSubject('');
 
 
@@ -59,6 +64,9 @@ class PaymentListComponent implements OnInit, OnDestroy {
         private notificationService: INotificationService,
     ) {
         this.months = [{ name: '' }, ...months];
+        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+
+        this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
 
         this.whenSubmitFilters$
             .pipe(
@@ -144,7 +152,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
         this.whenSubmitFilters$.next();
     }
 
-    public onAmountFilterChanged(filterType: string): void {
+    public onAmountFilterChanged(filterType: '' | 'between' | 'exactly'): void {
         const availableTypes: Array<string> =
             ['between', 'exactly'];
 
@@ -153,7 +161,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
         } else {
             this.filters.amount = undefined;
         }
-        this.amountFilterType$.next(filterType.toLowerCase());
+        this.amountFilterType$.next(filterType);
     }
 
     public onDeleteRecordClick(paymentId: number): void {
@@ -174,6 +182,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
 
     public clearFilters(): void {
         this.filters = {};
+        this.amountFilterType$.next('');
 
         this.onSubmitClick();
     }

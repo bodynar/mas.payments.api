@@ -4,7 +4,7 @@
     public enum SettingDataValueType
     {
         Boolean,
-        Number,
+        Int32,
         String,
     }
 }

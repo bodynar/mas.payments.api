@@ -72,7 +72,7 @@ class UserApiBackendService implements IUserApiBackendService {
     public getUserSettings(): Observable<QueryExecutionResult<Array<GetUserSettingsResponse>>> {
         const getMappedValue = (typeName: string, rawValue: string): any => {
             if (typeName === 'Boolean') {
-                return !!!rawValue;
+                return rawValue.toLocaleLowerCase() === 'true';
             } else if (typeName === 'Number') {
                 return +rawValue;
             } else {

@@ -80,6 +80,10 @@ class UserApiBackendService implements IUserApiBackendService {
             }
         };
 
+        const updateTypeName = (typeName: string): string => {
+            return typeName === 'Int32' ? 'Number' : typeName;
+        };
+
         return this.http
             .get(`${this.apiPrefix}/getSettings`)
             .pipe(
@@ -87,7 +91,7 @@ class UserApiBackendService implements IUserApiBackendService {
                     response.map(setting => ({
                         id: setting['id'],
                         name: setting['name'],
-                        typeName: setting['typeName'],
+                        typeName: updateTypeName(setting['typeName']),
                         rawValue: setting['rawValue'],
                         displayName: setting['displayName'],
                         value: getMappedValue(setting['typeName'], setting['rawValue'])

@@ -19,7 +19,7 @@ namespace MAS.Payments.Commands
         }
 
         public AddUserSettingCommand(string name, int value)
-            : this(name, value.ToString(), SettingDataValueType.Number)
+            : this(name, value.ToString(), SettingDataValueType.Int32)
         {
         }
 

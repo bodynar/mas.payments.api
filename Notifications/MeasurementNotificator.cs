@@ -1,14 +1,15 @@
-using System.Linq;
-using System;
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Queries;
-
 namespace MAS.Payments.Notifications
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Queries;
+    using MAS.Payments.Utilities;
+
     internal class MeasurementNotificator : BaseNotificator
     {
-
         public MeasurementNotificator(
             IResolver resolver
         ) : base(resolver)
@@ -19,7 +20,10 @@ namespace MAS.Payments.Notifications
         {
             var today = DateTime.Today;
 
-            if (today.Day >= 20)
+            var displayNotificationSetting = QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.DisplayMeasurementsNotification.ToString()));
+            var displayNotificationSettingValue = UserSettingUtilities.GetTypedSettingValue<Boolean>(displayNotificationSetting);
+
+            if (displayNotificationSettingValue && today.Day >= 20)
             {
                 var measurements =
                     QueryProcessor.Execute(

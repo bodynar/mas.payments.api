@@ -1,10 +1,12 @@
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Models;
-using MAS.Payments.Queries;
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Controllers
 {
+    using System;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Models;
+    using MAS.Payments.Queries;
+
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("api/stats")]
     public class StatisticsApiController : BaseApiController
     {
@@ -15,24 +17,14 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public GetStatisticsResponse GetStatistics([FromQuery]GetStatisticsRequest request)
+        public GetStatisticsResponse GetPaymentsStatistics([FromQuery]GetStatisticsRequest request)
         {
-            GetStatisticsQuery query = null;
-
-            if (request.Year.HasValue)
+            if (request == null || !request.Year.HasValue || !request.PaymentTypeId.HasValue)
             {
-                query = new GetStatisticsQuery(request.Year.Value, request.IncludeMeasurements);
-            }
-            else if (request.IsDatePeriodSpecified)
-            {
-                query = new GetStatisticsQuery(request.From.Value, request.To.Value, request.IncludeMeasurements);
-            }
-            else
-            {
-                query = new GetStatisticsQuery(request.IncludeMeasurements);
+                throw new Exception("Year and Payment type must be specified.");
             }
 
-            return QueryProcessor.Execute(query);
+            return QueryProcessor.Execute(new GetStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
         }
     }
 }

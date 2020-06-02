@@ -1,38 +1,17 @@
-using System;
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure.Query;
-
 namespace MAS.Payments.Queries
 {
+    using MAS.Payments.Infrastructure.Query;
+
     public class GetStatisticsQuery : IQuery<GetStatisticsResponse>
     {
-        public bool IncludeMeasurements { get; }
+        public short Year { get; }
 
-        public bool IsDatePeriodSpecified
-            => From.HasValue && To.HasValue;
+        public long PaymentTypeId { get; }
 
-        public int? Year { get; }
-
-        public DateTime? From { get; }
-
-        public DateTime? To { get; }
-
-        public GetStatisticsQuery(bool includeMeasurements = false)
-        {
-            IncludeMeasurements = includeMeasurements;
-        }
-
-        public GetStatisticsQuery(int year, bool includeMeasurements = false)
+        public GetStatisticsQuery(short year, long paymentTypeId)
         {
             Year = year;
-            IncludeMeasurements = includeMeasurements;
-        }
-
-        public GetStatisticsQuery(DateTime from, DateTime to, bool includeMeasurements = false)
-        {
-            From = from;
-            To = to;
-            IncludeMeasurements = includeMeasurements;
+            PaymentTypeId = paymentTypeId;
         }
     }
 }

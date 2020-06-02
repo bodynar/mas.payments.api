@@ -205,6 +205,11 @@ class PaymentListComponent implements OnInit, OnDestroy {
     public clearFilters(): void {
         this.filters = {};
         this.amountFilterType$.next('');
+        this.currentSortOrder = 'asc';
+        this.currentSortColumn = '';
+
+        this.currentSortColumn$.next('');
+        this.isDescSortOrder$.next(false);
 
         this.onSubmitClick();
     }

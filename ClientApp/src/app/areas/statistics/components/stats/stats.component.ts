@@ -4,13 +4,11 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
-
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { PaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
-import { StatisticsFilter } from 'models/statisticsFilter';
+import { GetPaymentsStatisticsResponse } from 'models/response/payments/paymentStatsResponse';
+import StatisticsFilter from 'models/statisticsFilter';
 
 @Component({
     templateUrl: 'stats.template.pug',
@@ -18,14 +16,10 @@ import { StatisticsFilter } from 'models/statisticsFilter';
 })
 class StatsComponent implements OnDestroy {
 
-    public statisticsFilter: StatisticsFilter = {
-        includeMeasurements: true,
-    };
+    public statisticsFilter: StatisticsFilter =
+        new StatisticsFilter();
 
-    public stats$: Subject<Array<PaymentStatsResponse>> =
-        new ReplaySubject(1);
-
-    public dates$: Subject<Array<Date>> =
+    public payments$: Subject<GetPaymentsStatisticsResponse> =
         new ReplaySubject(1);
 
     private whenSubmitForm$: Subject<NgForm> =
@@ -49,13 +43,7 @@ class StatsComponent implements OnDestroy {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => {
-                this.stats$.next(result.items);
-
-                if (this.statisticsFilter.includeMeasurements && !isNullOrUndefined(result.dates)) {
-                    this.dates$.next(result.dates);
-                }
-            });
+            .subscribe(({ result }) => this.payments$.next(result));
     }
 
     public ngOnDestroy(): void {

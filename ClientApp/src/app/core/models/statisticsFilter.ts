@@ -1,8 +1,4 @@
-interface StatisticsFilter {
-    includeMeasurements: boolean;
-    year?: number;
-    from?: Date;
-    to?: Date;
+export default class StatisticsFilter {
+    year: number;
+    paymentTypeId: number;
 }
-
-export { StatisticsFilter };

@@ -1,35 +1,11 @@
-interface PaymentStatsMeasurementResponse {
-    name: string;
-    systemName: string;
-    measurement: number;
-}
-
-interface PaymentStatsMeasurementsResponse {
-    date: Date;
-    measurements: Array<PaymentStatsMeasurementResponse>;
-}
-
-interface PaymentStatsPayment {
-    id: number;
+export interface GetPaymentsStatisticsDataItem {
+    month: number;
+    year: number;
     amount: number;
-    date?: Date;
-    measurements: Array<PaymentStatsMeasurementsResponse>;
 }
 
-interface PaymentStatsResponse {
-    paymentTypeName: string;
+export interface GetPaymentsStatisticsResponse {
+    year: number;
     paymentTypeId: number;
-    payments: Array<PaymentStatsPayment>;
+    statisticsData: Array<GetPaymentsStatisticsDataItem>;
 }
-
-interface GetPaymentStatsResponse {
-    dates?: Array<Date>;
-    items: Array<PaymentStatsResponse>;
-}
-
-export {
-    PaymentStatsResponse,
-    PaymentStatsMeasurementsResponse,
-    PaymentStatsMeasurementResponse,
-    GetPaymentStatsResponse
-};

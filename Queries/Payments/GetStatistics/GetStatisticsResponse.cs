@@ -4,9 +4,9 @@ namespace MAS.Payments.Queries
 
     public class GetStatisticsResponse
     {
-        public short? Year { get; set; }
+        public short Year { get; set; }
 
-        public long? PaymentTypeId { get; set; }
+        public long PaymentTypeId { get; set; }
 
         public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
 

@@ -1,7 +1,7 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { INotificationService } from 'services/INotificationService';
@@ -14,13 +14,9 @@ import StatisticsFilter from 'models/statisticsFilter';
     templateUrl: 'stats.template.pug',
     styleUrls: ['stats.style.styl']
 })
-class StatsComponent implements OnDestroy {
-
+class StatsComponent implements OnInit, OnDestroy {
     public statisticsFilter: StatisticsFilter =
         new StatisticsFilter();
-
-    public payments$: Subject<GetPaymentsStatisticsResponse> =
-        new ReplaySubject(1);
 
     private whenSubmitForm$: Subject<NgForm> =
         new Subject();
@@ -43,7 +39,10 @@ class StatsComponent implements OnDestroy {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => this.payments$.next(result));
+            .subscribe(({ result }) => this.onPaymentsStatsRecieved(result));
+    }
+
+    public ngOnInit(): void {
     }
 
     public ngOnDestroy(): void {
@@ -53,6 +52,10 @@ class StatsComponent implements OnDestroy {
 
     public onFormSubmit(): void {
         this.whenSubmitForm$.next();
+    }
+
+    public onPaymentsStatsRecieved(paymentStats: GetPaymentsStatisticsResponse): void {
+
     }
 }
 

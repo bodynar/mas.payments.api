@@ -51,10 +51,5 @@ namespace MAS.Payments.Infrastructure.Command
         {
             return Resolver.Resolve<IRepository<TEntity>>();
         }
-
-        protected IUnitOfWork CreateUnitOfWorkScope()
-        {
-            return Resolver.Resolve<IUnitOfWork>();
-        }
     }
 }

@@ -1,3 +1,5 @@
+using MAS.Payments.DataBase;
+
 namespace MAS.Payments.Infrastructure.Command
 {
     internal class TransactionCommandHandlerDecorator<TCommand> : BaseCommandHandler<TCommand>
@@ -5,21 +7,26 @@ namespace MAS.Payments.Infrastructure.Command
     {
         private readonly ICommandHandler<TCommand> decorated;
 
+        private readonly DataBaseContext dataBaseContext;
+
         public TransactionCommandHandlerDecorator(
             ICommandHandler<TCommand> decorated,
+            DataBaseContext dbContext,
             IResolver resolver
         ) : base(resolver)
         {
             this.decorated = decorated;
+            dataBaseContext = dbContext;
         }
 
         public override void Handle(TCommand command)
         {
-            using (var scope = CreateUnitOfWorkScope())
+            using (var scope = dataBaseContext.Database.BeginTransaction())
             {
-                this.decorated.Handle(command);
+                decorated.Handle(command);
 
                 scope.Commit();
+                dataBaseContext.SaveChanges();
             }
         }
     }

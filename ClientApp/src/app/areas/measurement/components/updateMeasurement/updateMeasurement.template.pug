@@ -8,7 +8,7 @@ form.needs-validation(
     .form-group
         label(for='measurement') Measurement value
         input.form-control.m-form-control.form-control-sm#measurement(
-            type='text',
+            type='number',
             placeholder='Enter measurement',
             name='measurement',
             [(ngModel)]='measurementRequest.measurement',
@@ -54,7 +54,7 @@ form.needs-validation(
 
     .form-group
         label(for='comment') Comment
-        input.form-control.m-form-control.form-control-sm#comment(
+        textarea.form-control.m-form-control.form-control-sm#comment(
             type='text',
             placeholder='Enter comment',
             name='comment',

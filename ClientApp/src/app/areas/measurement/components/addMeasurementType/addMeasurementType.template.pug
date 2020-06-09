@@ -13,7 +13,9 @@ form.needs-validation(
             name='name',
             [(ngModel)]='addMeasurementTypeRequest.name',
             #name='ngModel',
-            required='required'
+            required='required',
+            minlength='3',
+            maxlength='15'
         )
         
     .form-group

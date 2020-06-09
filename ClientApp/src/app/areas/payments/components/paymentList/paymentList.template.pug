@@ -65,7 +65,7 @@ hr
                     *ngIf='(amountFilterType$ | async) == "exactly"'
                 )
                     input.form-control.form-control-sm#exact(
-                        type='text',
+                        type='number',
                         #exact='ngModel'
                         name='exact',
                         placeholder='Enter payment amount exact value',
@@ -75,7 +75,7 @@ hr
                     *ngIf='(amountFilterType$ | async) == "between"'
                 )
                     input.form-control.form-control-sm(
-                        type='text',
+                        type='number',
                         name='minAmount',
                         [(ngModel)]='filters.amount.min',
                         #periodStart='ngModel',
@@ -85,7 +85,7 @@ hr
                     *ngIf='(amountFilterType$ | async) == "between"'
                 )
                     input.form-control.form-control-sm(
-                        type='text',
+                        type='number',
                         name='periodEnd',
                         [(ngModel)]='filters.amount.max',
                         #periodEnd='ngModel',

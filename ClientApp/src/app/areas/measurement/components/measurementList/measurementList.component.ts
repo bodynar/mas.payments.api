@@ -134,6 +134,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 tap(_ => {
                     this.isLoading$.next(true);
                     this.isMeasurementsSentFlagActive$.next(false);
+                    this.isAnyMeasurementSelectedToSend$.next(false);
                 }),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
                 filter(response => {

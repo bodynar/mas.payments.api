@@ -1,0 +1,22 @@
+﻿namespace MAS.Payments.Queries
+{
+    using System.Collections.Generic;
+
+    public class GetMeasurementStatisticsQueryResponse
+    {
+        public short Year { get; set; }
+
+        public long MeasurementTypeId { get; set; }
+
+        public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
+
+        public class StatisticsDataItem
+        {
+            public int Month { get; set; }
+
+            public int Year { get; set; }
+
+            public double MeasurementDiff { get; set; }
+        }
+    }
+}

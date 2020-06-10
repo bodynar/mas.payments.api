@@ -28,6 +28,15 @@ namespace MAS.Payments.Controllers
             return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
         }
 
+        [HttpGet("[action]")]
+        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery]GetMeasurementStatisticsRequest request)
+        {
+            if (request == null || !request.Year.HasValue || !request.MeasurementTypeId.HasValue)
+            {
+                throw new Exception("Year and Measurement type must be specified.");
+            }
+
+            return QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.Year.Value, request.MeasurementTypeId.Value));
         }
     }
 }

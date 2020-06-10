@@ -24,10 +24,15 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
     }
 
     public getPaymentStatistics(filter: StatisticsFilter): Observable<QueryExecutionResult<GetPaymentsStatisticsResponse>> {
-        const params: HttpParams =
-            new HttpParams()
-                .set('year', `${filter.year}`)
-                .set('paymentTypeId', `${filter.paymentTypeId}`);
+        let params: HttpParams =
+            new HttpParams();
+
+        if (!isNullOrUndefined(filter.year)) {
+            params = params.set('year', `${filter.year}`);
+        }
+        if (!isNullOrUndefined(filter.paymentTypeId)) {
+            params = params.set('paymentTypeId', `${filter.paymentTypeId}`);
+        }
 
         const headers: HttpHeaders =
             new HttpHeaders({
@@ -35,7 +40,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             });
 
         return this.http
-            .get(`${this.apiPrefix}/getStatistics`, { headers, params })
+            .get(`${this.apiPrefix}/getPaymentsStatistics`, { headers, params })
             .pipe(
                 map((response: any) =>
                     ({

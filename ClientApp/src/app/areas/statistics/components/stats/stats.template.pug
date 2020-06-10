@@ -24,7 +24,44 @@ ul.nav.nav-tabs(
         role='tabpanel',
         aria-labelledby='paymentsTab'
     )
-        h2 Payment statistics
+        form.mt-2.container.form-inline(
+           (ngSubmit)='onFormSubmit()'
+        )
+            label.mb-2(
+                for='year'
+            ) Year
+            select.mx-sm-3.mb-2.form-control-sm.form-control#year(
+                name='year',
+                [(ngModel)]='statisticsFilter.year',
+                required='required'
+            )
+                option(
+                    *ngFor='let year of years',
+                    [ngValue]='year.id'
+                ) {{ year.name }}
+            label.mb-2(
+                for='year'
+            ) Payment type
+            select.mx-sm-3.mb-2.form-control-sm.form-control#year(
+                name='paymentType',
+                [(ngModel)]='statisticsFilter.paymentTypeId',
+                required='required'
+            )
+                option(
+                    *ngFor='let paymentType of (paymentTypes$ | async)',
+                    [ngValue]='paymentType.id'
+                ) {{ paymentType.name }}
+            button.btn.btn-primary.mb-2(
+                type='submit',
+                style='margin-left: auto'
+            ) Display data
+        div.mt-3
+            app-stats-chart(
+                [series]='paymentsChart.series',
+                [xaxis]='paymentsChart.xaxis',
+                [title]='paymentsChart.title'
+            )
+    
     .tab-pane.fade#measurementStats(
         role='tabpanel',
         aria-labelledby='measurementsTab'

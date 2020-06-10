@@ -8,32 +8,32 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
 
-    internal class GetStatisticsQueryHandler : BaseQueryHandler<GetStatisticsQuery, GetStatisticsResponse>
+    internal class GetPaymentStatisticsQueryHandler : BaseQueryHandler<GetPaymentStatisticsQuery, GetPaymentStatisticsResponse>
     {
         private IRepository<Payment> PaymentRepository { get; }
 
-        public GetStatisticsQueryHandler(
+        public GetPaymentStatisticsQueryHandler(
             IResolver resolver
         ) : base(resolver)
         {
             PaymentRepository = GetRepository<Payment>();
         }
 
-        public override GetStatisticsResponse Handle(GetStatisticsQuery query)
+        public override GetPaymentStatisticsResponse Handle(GetPaymentStatisticsQuery query)
         {
             Specification<Payment> filter =
                 new CommonSpecification<Payment>(x =>
                     x.Date.Value.Year == query.Year
                     && x.PaymentTypeId == query.PaymentTypeId);
 
-            var response = new GetStatisticsResponse
+            var response = new GetPaymentStatisticsResponse
             {
                 PaymentTypeId = query.PaymentTypeId,
                 Year = query.Year,
                 StatisticsData =
                     PaymentRepository
                         .Where(filter)
-                        .Select(x => new GetStatisticsResponse.StatisticsDataItem
+                        .Select(x => new GetPaymentStatisticsResponse.StatisticsDataItem
                         {
                             Month = x.Date.Value.Month,
                             Year = x.Date.Value.Year,

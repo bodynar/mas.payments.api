@@ -1,6 +1,6 @@
 namespace MAS.Payments.Models
 {
-    public class GetStatisticsRequest
+    public class GetPaymentsStatisticsRequest
     {
         public short? Year { get; set;  }
 

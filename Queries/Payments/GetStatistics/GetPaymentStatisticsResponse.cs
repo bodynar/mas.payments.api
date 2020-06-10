@@ -2,7 +2,7 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
 
-    public class GetStatisticsResponse
+    public class GetPaymentStatisticsResponse
     {
         public short Year { get; set; }
 

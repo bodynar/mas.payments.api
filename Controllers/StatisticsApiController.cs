@@ -1,6 +1,7 @@
 namespace MAS.Payments.Controllers
 {
     using System;
+
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Models;
     using MAS.Payments.Queries;
@@ -17,14 +18,16 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public GetStatisticsResponse GetPaymentsStatistics([FromQuery]GetStatisticsRequest request)
+        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery]GetPaymentsStatisticsRequest request)
         {
             if (request == null || !request.Year.HasValue || !request.PaymentTypeId.HasValue)
             {
                 throw new Exception("Year and Payment type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
+            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
+        }
+
         }
     }
 }

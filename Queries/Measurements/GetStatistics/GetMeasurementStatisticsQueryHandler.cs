@@ -1,6 +1,7 @@
 ﻿namespace MAS.Payments.Queries
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -33,7 +34,7 @@
                 .ToList();
 
             double measurement = 0.0;
-            // TODO: think about missed months
+
             var mappedMeasurements =
                 measurements.Select(x => {
                     var diff = Math.Abs(x.Measurement - measurement);
@@ -44,18 +45,18 @@
                         Month = x.Date.Month,
                         Diff = diff
                     };
-                });
+                }).ToDictionary(x => x.Month, x => x.Diff as double?);
 
             var response = new GetMeasurementStatisticsQueryResponse
             {
                 Year = query.Year,
                 MeasurementTypeId = query.MeasurementTypeId,
                 StatisticsData =
-                    mappedMeasurements.Select(x => new GetMeasurementStatisticsQueryResponse.StatisticsDataItem
+                    Enumerable.Range(1, 12).Select(x => new GetMeasurementStatisticsQueryResponse.StatisticsDataItem
                     {
+                        Month = x,
                         Year = query.Year,
-                        MeasurementDiff = x.Diff,
-                        Month = x.Month
+                        MeasurementDiff = mappedMeasurements.GetValueOrDefault(x, null)
                     })
             };
 

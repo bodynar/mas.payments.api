@@ -16,7 +16,7 @@
 
             public int Year { get; set; }
 
-            public double MeasurementDiff { get; set; }
+            public double? MeasurementDiff { get; set; }
         }
     }
 }

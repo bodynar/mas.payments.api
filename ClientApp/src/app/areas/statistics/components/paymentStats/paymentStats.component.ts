@@ -5,22 +5,22 @@ import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
+import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import { yearsRange } from 'src/common/years';
 import { getMonthName, months } from 'src/static/months';
 
-import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
+import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
+import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
 
 @Component({
-    selector: 'app-stats-measurement',
-    templateUrl: 'measurementStats.template.pug'
+    selector: 'app-stats-payments',
+    templateUrl: 'paymentStats.template.pug'
 })
-export class MeasurementStatsComponent implements OnInit, OnDestroy {
+export class PaymentStatsComponent implements OnInit, OnDestroy {
     public chart: {
         series: ApexAxisChartSeries,
         xaxis: ApexXAxis,
@@ -34,14 +34,14 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                 ],
                 title: { text: 'Month' }
             },
-            title: { text: 'Measurement statistics' }
+            title: { text: 'Payment statistics' }
         };
 
-    public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
+    public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
-    public statisticsFilter: MeasurementStatisticsFilter =
-        new MeasurementStatisticsFilter();
+    public statisticsFilter: PaymentStatisticsFilter =
+        new PaymentStatisticsFilter();
 
     public years: Array<{ name: string, id?: number }>;
 
@@ -51,11 +51,11 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
-    private measurementTypes: Array<MeasurementTypeResponse>
+    private paymentTypes: Array<PaymentTypeResponse>
         = [];
 
     constructor(
-        private measurementService: IMeasurementService,
+        private paymentService: IPaymentService,
         private statisticsService: IStatisticsService,
         private notificationService: INotificationService,
     ) {
@@ -65,7 +65,7 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
+                switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -73,12 +73,12 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => this.onStatsRecieved(result));
+            .subscribe(({ result }) => this.onPaymentsStatsRecieved(result));
     }
 
     public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
+        this.paymentService
+            .getPaymentTypes()
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
@@ -89,10 +89,10 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                 }),
             )
             .subscribe(({ result }) => {
-                this.measurementTypes = result;
-                this.measurementTypes$.next(this.measurementTypes);
+                this.paymentTypes = result;
+                this.paymentTypes$.next(this.paymentTypes);
 
-                this.statisticsFilter.measurementTypeId = result.slice(0, 1).pop().id;
+                this.statisticsFilter.paymentTypeId = result.slice(0, 1).pop().id;
 
                 this.whenSubmitForm$.next(null);
             });
@@ -107,13 +107,13 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
         this.whenSubmitForm$.next(null);
     }
 
-    public onStatsRecieved(stats: GetMeasurementStatisticsResponse): void {
+    public onPaymentsStatsRecieved(paymentStats: GetPaymentsStatisticsResponse): void {
         const paymentTypeName: string =
-            this.measurementTypes.filter(x => x.id === stats.measurementTypeId).pop().name;
+            this.paymentTypes.filter(x => x.id === paymentStats.paymentTypeId).pop().name;
 
         this.chart.series = [{
-            name: `${paymentTypeName} for ${stats.year}`,
-            data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.diff }))]
+            name: `${paymentTypeName} for ${paymentStats.year}`,
+            data: [...paymentStats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.amount }))]
         }];
     }
 }

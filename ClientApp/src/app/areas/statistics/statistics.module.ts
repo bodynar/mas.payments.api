@@ -7,6 +7,7 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { StatisticsComponent } from './component/statistics.component';
 import { MeasurementStatsComponent } from './components/measurementStats/measurementStats.component';
+import { PaymentStatsComponent } from './components/paymentStats/paymentStats.component';
 import { StatsComponent } from './components/stats/stats.component';
 import { StatsChartComponent } from './components/statsChart/statsChart.component';
 
@@ -20,7 +21,7 @@ import { StatsChartComponent } from './components/statsChart/statsChart.componen
     exports: [],
     declarations: [
         StatisticsComponent,
-        MeasurementStatsComponent,
+        MeasurementStatsComponent, PaymentStatsComponent,
         StatsComponent, StatsChartComponent
     ],
     providers: [],

@@ -14,8 +14,8 @@ const mainSiteMenu: Array<MenuItem> = [
     {
         name: 'Statistics',
         link: 'stats',
-        description: 'Payments statistics and predictions for next payments',
-        isEnabled: false,
+        description: 'Visual statistics in charts',
+        isEnabled: true,
     }
 ];
 

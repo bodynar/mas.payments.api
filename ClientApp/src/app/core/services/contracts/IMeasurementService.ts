@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 
 import MeasurementsFilter from 'models/measurementsFilter';
-import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
-import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
+import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
+import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';

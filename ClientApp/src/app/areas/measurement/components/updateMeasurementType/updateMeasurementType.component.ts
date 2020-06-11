@@ -12,7 +12,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
+import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({

@@ -68,7 +68,7 @@ class UpdatePaymentComponent implements OnInit, OnDestroy {
                     paymentTypeId: result.paymentTypeId,
                     year: result.year,
                     month: (parseInt(result.month) - 1).toString()
-                }
+                };
             });
 
         this.whenSubmittedForm$

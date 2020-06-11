@@ -13,7 +13,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddPaymentRequest } from 'models/request/addPaymentRequest';
+import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({

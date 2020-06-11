@@ -13,9 +13,9 @@ import { IStatisticsService } from 'services/IStatisticsService';
 import { yearsRange } from 'src/common/years';
 import { getMonthName, months } from 'src/static/months';
 
-import { GetPaymentsStatisticsResponse } from 'models/response/payments/paymentStatsResponse';
+import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
-import StatisticsFilter from 'models/statisticsFilter';
+import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
 
 @Component({
     templateUrl: 'stats.template.pug',
@@ -41,8 +41,8 @@ class StatsComponent implements OnInit, OnDestroy {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
-    public statisticsFilter: StatisticsFilter =
-        new StatisticsFilter();
+    public statisticsFilter: PaymentStatisticsFilter =
+        new PaymentStatisticsFilter();
 
     public years: Array<{ name: string, id?: number }>;
 

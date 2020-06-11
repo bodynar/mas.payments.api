@@ -6,9 +6,9 @@ import { tap } from 'rxjs/operators';
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { GetPaymentsStatisticsResponse } from 'models/response/payments/paymentStatsResponse';
+import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
+import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
-import StatisticsFilter from 'models/statisticsFilter';
 
 @Injectable()
 class StatisticsService implements IStatisticsService {
@@ -18,7 +18,7 @@ class StatisticsService implements IStatisticsService {
         // private loggingService: ILoggingService
     ) { }
 
-    public getPaymentStatistics(filter: StatisticsFilter): Observable<QueryExecutionResult<GetPaymentsStatisticsResponse>> {
+    public getPaymentStatistics(filter: PaymentStatisticsFilter): Observable<QueryExecutionResult<GetPaymentsStatisticsResponse>> {
         return this.statsApiBackend
             .getPaymentStatistics(filter)
             .pipe(

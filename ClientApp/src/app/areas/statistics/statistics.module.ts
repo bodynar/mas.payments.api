@@ -6,6 +6,7 @@ import { RouterModule } from '@angular/router';
 import { NgApexchartsModule } from 'ng-apexcharts';
 
 import { StatisticsComponent } from './component/statistics.component';
+import { MeasurementStatsComponent } from './components/measurementStats/measurementStats.component';
 import { StatsComponent } from './components/stats/stats.component';
 import { StatsChartComponent } from './components/statsChart/statsChart.component';
 
@@ -18,7 +19,9 @@ import { StatsChartComponent } from './components/statsChart/statsChart.componen
     ],
     exports: [],
     declarations: [
-        StatisticsComponent, StatsComponent, StatsChartComponent
+        StatisticsComponent,
+        MeasurementStatsComponent,
+        StatsComponent, StatsChartComponent
     ],
     providers: [],
 })

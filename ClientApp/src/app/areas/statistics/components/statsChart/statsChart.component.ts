@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoData } from 'ng-apexcharts';
 
 @Component({
     selector: 'app-stats-chart',
@@ -38,6 +38,18 @@ export class StatsChartComponent {
             },
             zoom: {
                 enabled: false,
+            }
+        };
+
+    public noDataOptions: ApexNoData =
+        {
+            text: 'No data found',
+            align: 'center',
+            verticalAlign: 'middle',
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+                fontFamily: 'consolas'
             }
         };
 

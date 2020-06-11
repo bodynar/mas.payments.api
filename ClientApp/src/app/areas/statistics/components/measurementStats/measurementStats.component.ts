@@ -5,6 +5,8 @@ import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
@@ -111,9 +113,20 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
         const paymentTypeName: string =
             this.measurementTypes.filter(x => x.id === stats.measurementTypeId).pop().name;
 
-        this.chart.series = [{
-            name: `${paymentTypeName} for ${stats.year}`,
-            data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.diff }))]
-        }];
+        const hasAnyData: boolean =
+            stats.statisticsData.some(x => !isNullOrUndefined(x.diff));
+
+        if (hasAnyData) {
+            this.chart.series = [{
+                name: `${paymentTypeName} for ${stats.year}`,
+                data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.diff }))]
+            }];
+        } else {
+            this.chart.series = [{
+                name: `${paymentTypeName} for ${stats.year}`,
+                data: []
+            }];
+        }
+
     }
 }

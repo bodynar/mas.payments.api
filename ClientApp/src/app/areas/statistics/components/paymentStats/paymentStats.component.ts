@@ -5,12 +5,14 @@ import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
+import { isNullOrUndefined } from 'util';
+
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import { yearsRange } from 'src/common/years';
-import { getMonthName, months } from 'src/static/months';
+import { getMonthName } from 'src/static/months';
 
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
@@ -107,13 +109,23 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
         this.whenSubmitForm$.next(null);
     }
 
-    public onPaymentsStatsRecieved(paymentStats: GetPaymentsStatisticsResponse): void {
+    public onPaymentsStatsRecieved(stats: GetPaymentsStatisticsResponse): void {
         const paymentTypeName: string =
-            this.paymentTypes.filter(x => x.id === paymentStats.paymentTypeId).pop().name;
+            this.paymentTypes.filter(x => x.id === stats.paymentTypeId).pop().name;
 
-        this.chart.series = [{
-            name: `${paymentTypeName} for ${paymentStats.year}`,
-            data: [...paymentStats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.amount }))]
-        }];
+        const hasAnyData: boolean =
+            stats.statisticsData.some(x => !isNullOrUndefined(x.amount));
+
+        if (hasAnyData) {
+            this.chart.series = [{
+                name: `${paymentTypeName} for ${stats.year}`,
+                data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.amount }))]
+            }];
+        } else {
+            this.chart.series = [{
+                name: `${paymentTypeName} for ${stats.year}`,
+                data: []
+            }];
+        }
     }
 }

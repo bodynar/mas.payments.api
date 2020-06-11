@@ -51,7 +51,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                         statisticsData: (response['statisticsData'] || []).map(dataItem => ({
                             month: dataItem['month'],
                             year: dataItem['year'],
-                            amount: dataItem['amount'],
+                            amount: dataItem['amount'] || null,
                         }) as GetPaymentsStatisticsDataItem)
                     }) as GetPaymentsStatisticsResponse),
                 catchError(error => of(error.error)),

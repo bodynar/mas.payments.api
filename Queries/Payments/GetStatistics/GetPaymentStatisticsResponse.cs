@@ -16,7 +16,7 @@ namespace MAS.Payments.Queries
 
             public int Year { get; set; }
 
-            public double Amount { get; set; }
+            public double? Amount { get; set; }
         }
     }
 }

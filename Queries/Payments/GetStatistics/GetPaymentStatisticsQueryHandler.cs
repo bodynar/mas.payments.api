@@ -1,5 +1,6 @@
 namespace MAS.Payments.Queries
 {
+    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -21,25 +22,31 @@ namespace MAS.Payments.Queries
 
         public override GetPaymentStatisticsResponse Handle(GetPaymentStatisticsQuery query)
         {
-            Specification<Payment> filter =
-                new CommonSpecification<Payment>(x =>
-                    x.Date.Value.Year == query.Year
-                    && x.PaymentTypeId == query.PaymentTypeId);
+            var payments =
+                PaymentRepository.Where(
+                    new CommonSpecification<Payment>(x =>
+                        x.Date.Value.Year == query.Year
+                        && x.PaymentTypeId == query.PaymentTypeId)
+                )
+                .OrderBy(x => x.Date)
+                .ToList();
+
+            var mappedPayments =
+               payments
+                   .Select(x => new { Month = x.Date.Value.Month, Amount = x.Amount })
+                   .ToDictionary(x => x.Month, x => x.Amount as double?);
 
             var response = new GetPaymentStatisticsResponse
             {
                 PaymentTypeId = query.PaymentTypeId,
                 Year = query.Year,
                 StatisticsData =
-                    PaymentRepository
-                        .Where(filter)
-                        .Select(x => new GetPaymentStatisticsResponse.StatisticsDataItem
-                        {
-                            Month = x.Date.Value.Month,
-                            Year = x.Date.Value.Year,
-                            Amount = x.Amount,
-                        })
-                        .ToList()
+                    Enumerable.Range(1, 12).Select(x => new GetPaymentStatisticsResponse.StatisticsDataItem
+                    {
+                        Month = x,
+                        Year = query.Year,
+                        Amount = mappedPayments.GetValueOrDefault(x, null)
+                    })
             };
 
             return response;

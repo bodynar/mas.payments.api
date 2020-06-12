@@ -12,7 +12,8 @@ br
             *ngFor='let menuItem of menuItems',
             [class.active]='menuItem.isActive',
             [attr.disabled]='menuItem.isEnabled ? null : ""',
-            (click)='menuItem.isEnabled ? onMenuItemClick(menuItem.link):  null'
+            (click)='(menuItem.isEnabled && !menuItem.isActive) ? onMenuItemClick(menuItem.link) : null',
+            [title]='menuItem.isActive ? "You are here" : ""'
         ) {{ menuItem.name }}
     .content
         router-outlet

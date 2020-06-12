@@ -6,14 +6,6 @@ form.needs-validation(
     #testMailMessage='ngForm',
     (submit)='onFormSend()'
 )
-    .custom-control.custom-checkbox
-        input.custom-control-input#modelMode(
-            type='checkbox',
-            (change)='onModelModeChange($event.target.checked)'
-        )
-        label.custom-control-label(
-            for='modelMode'
-        ) With model
     .form-group
         label(for='recipient') Recipient
         input.form-control.m-form-control.form-control-sm#recipient(
@@ -24,6 +16,14 @@ form.needs-validation(
             #recipient='ngModel',
             required='required',
         )
+    .custom-control.custom-checkbox
+        input.custom-control-input#modelMode(
+            type='checkbox',
+            (change)='onModelModeChange($event.target.checked)'
+        )
+        label.custom-control-label(
+            for='modelMode'
+        ) With model
     div(
         *ngIf='(isModelMode$ | async)'
     )

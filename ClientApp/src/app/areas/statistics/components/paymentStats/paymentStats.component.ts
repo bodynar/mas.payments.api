@@ -12,7 +12,7 @@ import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import { yearsRange } from 'src/common/years';
-import { getMonthName } from 'src/static/months';
+import { getMonthName, months } from 'src/static/months';
 
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';

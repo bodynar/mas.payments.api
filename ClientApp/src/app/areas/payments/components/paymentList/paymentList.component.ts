@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -20,7 +20,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-class PaymentListComponent implements OnInit, OnDestroy {
+export class PaymentListComponent implements OnInit, OnDestroy {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -40,7 +40,7 @@ class PaymentListComponent implements OnInit, OnDestroy {
         new BehaviorSubject(false);
 
     public currentSortColumn$: Subject<string> =
-        new Subject();
+        new ReplaySubject(1);
 
     public hasData$: Subject<boolean> =
         new BehaviorSubject(false);
@@ -71,7 +71,8 @@ class PaymentListComponent implements OnInit, OnDestroy {
     private currentSortOrder: 'asc' | 'desc' =
         'asc';
 
-    private currentSortColumn: string;
+    private currentSortColumn: string
+        = 'month';
 
     private payments: Array<PaymentResponse> =
         [];
@@ -273,9 +274,10 @@ class PaymentListComponent implements OnInit, OnDestroy {
                     ? 'desc'
                     : 'asc';
 
-            this.currentSortColumn$.next(columnName);
             this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
         }
+
+        this.currentSortColumn$.next(columnName);
 
         const sortedPayments: Array<PaymentResponse> =
             this.payments.sort(sortingFunc);
@@ -283,5 +285,3 @@ class PaymentListComponent implements OnInit, OnDestroy {
         this.payments$.next(sortedPayments);
     }
 }
-
-export { PaymentListComponent };

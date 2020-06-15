@@ -65,7 +65,7 @@ export class MeasurementGroupComponent implements OnInit {
         new BehaviorSubject(false);
 
     public currentSortColumn$: Subject<string> =
-        new Subject();
+        new ReplaySubject();
 
     public formattedGroupName: string;
 

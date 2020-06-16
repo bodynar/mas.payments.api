@@ -1,6 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
-import { BehaviorSubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
@@ -20,11 +21,7 @@ class TestMailMessageComponent implements OnDestroy {
             recipient: ''
         };
 
-    public isModelMode$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-
-    private whenSendRequest$: Subject<TestMailMessageRequest> =
+    private whenSendRequest$: Subject<NgForm> =
         new Subject();
 
     private whenComponentDestroy$: Subject<null> =
@@ -37,8 +34,9 @@ class TestMailMessageComponent implements OnDestroy {
         this.whenSendRequest$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(request => !isNullOrUndefined(request.recipient) && request.recipient !== ''),
-                switchMap(request => this.userService.sendTestMailMessage(request)),
+                filter(({ valid }) => valid),
+                filter(_ => !isNullOrUndefined(this.mailMessageRequest.recipient) && this.mailMessageRequest.recipient !== ''),
+                switchMap(_ => this.userService.sendTestMailMessage(this.mailMessageRequest)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -57,12 +55,8 @@ class TestMailMessageComponent implements OnDestroy {
         this.whenComponentDestroy$.complete();
     }
 
-    public onFormSend(): void {
-        this.whenSendRequest$.next(this.mailMessageRequest);
-    }
-
-    public onModelModeChange(value: boolean): void {
-        this.isModelMode$.next(value);
+    public onFormSend(form: NgForm): void {
+        this.whenSendRequest$.next(form);
     }
 }
 

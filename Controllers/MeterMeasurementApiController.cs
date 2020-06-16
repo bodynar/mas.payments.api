@@ -7,7 +7,7 @@ using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
-
+using MAS.Payments.Utilities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -109,6 +109,13 @@ namespace MAS.Payments.Controllers
             }
 
             var recipientEmail = QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.EmailToSendMeasurements.ToString()));
+
+            var isValidEmail = Validate.Email(recipientEmail.RawValue);
+
+            if (!isValidEmail)
+            {
+                throw new ArgumentException($"User setting \"{recipientEmail.RawValue}\" isn't recognized as email.");
+            }
 
             CommandProcessor.Execute(new SendMeasurementsCommand(recipientEmail.RawValue, measurementIdentifiers));
         }

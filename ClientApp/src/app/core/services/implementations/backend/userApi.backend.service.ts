@@ -50,13 +50,8 @@ class UserApiBackendService implements IUserApiBackendService {
     }
 
     public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<CommandExecutionResult> {
-        const url: string =
-            isNullOrUndefined(testMailMessage.name)
-                ? `${this.apiPrefix}/testMailMessage`
-                : `${this.apiPrefix}/testMailWithModelMessage`;
-
         return this.http
-            .post(url, testMailMessage)
+            .post(`${this.apiPrefix}/testMailMessage`, testMailMessage)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x

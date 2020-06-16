@@ -41,7 +41,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
                 messageWrapper = reader.ReadToEnd();
             }
 
-            return messageWrapper.Replace("{{ body }}", messageContent);
+            return messageWrapper.Replace("{{ body }}", messageContent).Replace("{{ BaseCurrentYear }}", DateTime.Now.Year.ToString());
         }
 
         private string GetMessageTemplate(string templateName, object model = null)

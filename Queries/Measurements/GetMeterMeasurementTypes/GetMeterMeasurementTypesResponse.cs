@@ -13,5 +13,7 @@ namespace MAS.Payments.Queries
         public long PaymentTypeId { get; set; }
 
         public string PaymentTypeName { get; set; }
+
+        public bool HasRelatedMeasurements { get; set; }
     }
 }

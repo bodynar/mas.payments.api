@@ -198,7 +198,9 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         name: paymentType['name'],
                         systemName: response['systemName'],
                         description: paymentType['description'],
-                        company: paymentType['company']
+                        company: paymentType['company'],
+                        hasRelatedPayments: paymentType['hasRelatedPayments'] || false,
+                        hasRelatedMeasurementTypes: paymentType['hasRelatedMeasurementTypes'] || false,
                     }) as PaymentTypeResponse)),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)

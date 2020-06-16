@@ -26,6 +26,9 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
+    private measurementTypes: Array<MeasurementTypeResponse> =
+        [];
+
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
@@ -35,6 +38,9 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                filter(id =>
+                    !this.measurementTypes.find(x => x.id === id).hasRelatedMeasurements
+                    || confirm('Type related with measurement.\nAre you sure want to delete it?')),
                 switchMap(id => this.measurementService.deleteMeasurementType(id)),
                 filter(response => {
                     if (!response.success) {
@@ -70,7 +76,10 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => this.measurementTypes$.next(result));
+            .subscribe(({ result }) => {
+                this.measurementTypes = result;
+                this.measurementTypes$.next(result);
+            });
     }
 
     public ngOnDestroy(): void {

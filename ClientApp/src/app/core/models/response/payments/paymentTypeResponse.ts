@@ -4,4 +4,6 @@ export default interface PaymentTypeResponse {
     name: string;
     description?: string;
     company?: string;
+    hasRelatedPayments?: boolean;
+    hasRelatedMeasurementTypes?: boolean;
 }

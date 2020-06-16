@@ -26,6 +26,9 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
+    private paymentTypes: Array<PaymentTypeResponse> =
+        [];
+
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
@@ -35,6 +38,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                filter(id => this.confirmUserDelete(id)),
                 switchMap(id => this.paymentService.deletePaymentType(id)),
                 filter(response => {
                     if (!response.success) {
@@ -76,7 +80,10 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => this.paymentTypes$.next(result));
+            .subscribe(({ result }) => {
+                this.paymentTypes = result;
+                this.paymentTypes$.next(result);
+            });
     }
 
     public ngOnDestroy(): void {
@@ -94,6 +101,22 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
 
     public onAddClick(): void {
         this.routerService.navigateArea(['addType']);
+    }
+
+    private confirmUserDelete(id: number): boolean {
+        const { hasRelatedPayments, hasRelatedMeasurementTypes } = this.paymentTypes.find(x => x.id === id);
+
+        const relatedObjectsName: string =
+            hasRelatedPayments && hasRelatedMeasurementTypes
+                ? 'payments and measurement types'
+                : hasRelatedPayments
+                    ? 'payments'
+                    : hasRelatedMeasurementTypes
+                        ? 'measurement types'
+                        : '';
+
+        return !(hasRelatedPayments || hasRelatedMeasurementTypes)
+            || confirm(`Type related with ${relatedObjectsName}.\nAre you sure want to delete it?`);
     }
 }
 

@@ -206,7 +206,8 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         systemName: measurementType['systemName'],
                         description: measurementType['description'],
                         paymentTypeId: measurementType['paymentTypeId'],
-                        paymentTypeName: measurementType['paymentTypeName']
+                        paymentTypeName: measurementType['paymentTypeName'],
+                        hasRelatedMeasurements: measurementType['hasRelatedMeasurements'] || false,
                     }) as MeasurementTypeResponse)),
                     catchError(error => of(error.error)),
                     map(x => isNullOrUndefined(x.Success)

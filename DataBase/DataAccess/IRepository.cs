@@ -11,6 +11,8 @@ namespace MAS.Payments.DataBase.Access
     {
         void Add(TEntity entity);
 
+        void AddRange(IEnumerable<TEntity> entities);
+
         void Delete(long id);
 
         TEntity Get(long id);

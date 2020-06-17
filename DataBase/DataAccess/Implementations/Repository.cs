@@ -20,6 +20,9 @@ namespace MAS.Payments.DataBase.Access
         public void Add(TEntity entity)
             => DataBaseContext.Set<TEntity>().Add(entity);
 
+        public void AddRange(IEnumerable<TEntity> entities)
+            => DataBaseContext.Set<TEntity>().AddRange(entities);
+
         public void Delete(long id)
         {
             var entity = Get(id);

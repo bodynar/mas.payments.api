@@ -3,6 +3,7 @@ namespace MAS.Payments.Notifications
     using System;
     using System.Collections.Generic;
     using System.Linq;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Queries;
@@ -16,7 +17,7 @@ namespace MAS.Payments.Notifications
         {
         }
 
-        public override IEnumerable<Notification> GetNotifications()
+        public override IEnumerable<UserNotification> GetNotifications()
         {
             var today = DateTime.Today;
 
@@ -25,36 +26,39 @@ namespace MAS.Payments.Notifications
 
             if (displayNotificationSettingValue && today.Day >= 20)
             {
-                var measurements =
-                    QueryProcessor.Execute(
-                        new GetMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
-                    )
-                    .SelectMany(x => x.Measurements.Select(y => y.MeterMeasurementTypeId))
-                    .Distinct();
+                var wasNotificationFormed = CheckWasNotificationFormed($"MeasurementNotificationFor{today.Year}{today.Month}");
 
-                var measurementTypes =
-                    QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
-
-                if (measurementTypes.Count() != measurements.Count())
+                if (!wasNotificationFormed)
                 {
-                    var notFilledIds =
-                        measurementTypes
-                            .Select(x => x.Id)
-                            .Except(measurements)
-                            .ToArray();
+                    var measurements =
+                        QueryProcessor.Execute(
+                            new GetMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
+                        )
+                        .SelectMany(x => x.Measurements.Select(y => y.MeterMeasurementTypeId))
+                        .Distinct();
 
-                    var measurementTypesWithoutMeasurement =
-                        measurementTypes.Where(x => notFilledIds.Contains(x.Id));
+                    var measurementTypes =
+                        QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
 
-                    foreach (var measurementType in measurementTypesWithoutMeasurement)
+                    if (measurementTypes.Count() != measurements.Count())
                     {
-                        var type = today.Day <= 23 ? NotificationType.Info : NotificationType.Warning;
+                        var notFilledIds =
+                            measurementTypes
+                                .Select(x => x.Id)
+                                .Except(measurements)
+                                .ToArray();
 
-                        yield return new Notification
+                        var measurementTypesWithoutMeasurement =
+                            measurementTypes.Where(x => notFilledIds.Contains(x.Id));
+
+                        var type = today.Day <= 23 ? UserNotificationType.Info : UserNotificationType.Warning;
+
+                        yield return new UserNotification
                         {
-                            Type = type,
-                            Name = "Measurement not added",
-                            Description = $"Measurenemt for {measurementType.Name} for [{today.ToString("MMMM yyyy")}] not added"
+                            Type = (short)type,
+                            Title = "Measurement not added",
+                            Key = $"MeasurementNotificationFor{today.Year}{today.Month}",
+                            Text = $"Measurenemt for [{today.ToString("MMMM yyyy")}] not added for next types: {string.Join(", ", measurementTypesWithoutMeasurement)}"
                         };
                     }
                 }

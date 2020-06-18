@@ -51,6 +51,12 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
+        public void HideNotifications([FromBody]IEnumerable<long> userNotificationIds)
+        {
+            CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationIds));
+        }
+
+        [HttpPost("[action]")]
         public void TestMailMessage([FromBody]TestMailMessageRequest request)
         {
             var isValidEmail = Validate.Email(request.Recipient);

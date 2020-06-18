@@ -3,6 +3,7 @@ namespace MAS.Payments.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.Commands;
     using MAS.Payments.DataBase;
@@ -24,17 +25,24 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetNotificationsResponse> GetNotifications()
+        public async Task<IEnumerable<GetNotificationsResponse>> GetNotifications()
         {
             var userNotifications = NotificationProcessor.GetNotifications();
 
             if (userNotifications.Any())
             {
-                CommandProcessor.Execute(new AddUserNotificationCommand(userNotifications));
+                await Task.Run(
+                    () => CommandProcessor.Execute(new AddUserNotificationCommand(userNotifications))
+                ).ConfigureAwait(true);
             }
 
+            var notHiddenNotifications =
+                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Hidden));
+
             return
-                userNotifications.Select(notification => new GetNotificationsResponse
+                userNotifications
+                .Union(notHiddenNotifications)
+                .Select(notification => new GetNotificationsResponse
                 {
                     Name = notification.Title,
                     Description = notification.Text,

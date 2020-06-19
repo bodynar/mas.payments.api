@@ -1,5 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
+    using System;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -25,6 +27,8 @@
             foreach (var userNotification in notificationsToHide)
             {
                 userNotification.IsHidden = true;
+                userNotification.HiddenAt = DateTime.Now;
+
                 Repository.Update(userNotification.Id, userNotification);
             }
         }

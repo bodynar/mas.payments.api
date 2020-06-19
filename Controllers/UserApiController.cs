@@ -50,6 +50,12 @@ namespace MAS.Payments.Controllers
                 });
         }
 
+        [HttpGet("[action]")]
+        public IEnumerable<UserNotification> GetUserNotifications()
+        {
+            return QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.All));
+        }
+
         [HttpPost("[action]")]
         public void HideNotifications([FromBody]IEnumerable<long> userNotificationIds)
         {

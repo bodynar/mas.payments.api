@@ -27,7 +27,7 @@ class UserApiBackendService implements IUserApiBackendService {
 
     public getNotifications(): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>> {
         return this.http
-            .get(`${this.apiPrefix}/getNotifications`)
+            .get(`${this.apiPrefix}/getActiveUserNotifications`)
             .pipe(
                 map((response: Array<any>) =>
                     response.map(notification => ({

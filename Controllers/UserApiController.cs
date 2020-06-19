@@ -25,7 +25,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetNotificationsResponse>> GetNotifications()
+        public async Task<IEnumerable<GetNotificationsResponse>> GetActiveUserNotifications()
         {
             var userNotifications = NotificationProcessor.GetNotifications();
 

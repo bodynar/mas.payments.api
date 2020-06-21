@@ -37,7 +37,7 @@ namespace MAS.Payments.Controllers
             }
 
             var notHiddenNotifications =
-                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Hidden));
+                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));
 
             return
                 userNotifications

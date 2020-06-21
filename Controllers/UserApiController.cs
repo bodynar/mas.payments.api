@@ -46,6 +46,7 @@ namespace MAS.Payments.Controllers
                     Key = notification.Key,
                     Text = notification.Text,
                     Title = notification.Title,
+                    CreatedAt = notification.CreatedAt,
                     Type = Enum.GetName(typeof(UserNotificationType), notification.Type)
                 })
                 .Union(notHiddenNotifications);

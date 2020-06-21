@@ -6,6 +6,7 @@ import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { isNullOrUndefined } from 'util';
 
 import { INotificationService } from 'services/INotificationService';
+import { IRouterService } from 'services/IRouterService';
 import { IUserService } from 'services/IUserService';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
@@ -41,6 +42,7 @@ class BellComponent implements OnInit, OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
+        private routerService: IRouterService,
     ) {
         this.pageClicks$
             .pipe(
@@ -121,7 +123,11 @@ class BellComponent implements OnInit, OnDestroy {
 
     public notificationsToggle(target: HTMLElement): void {
         if (this.isBellChild(target) && !this.isBellList(target)) {
-            this.isNotificationsHidden = !this.isNotificationsHidden;
+            if (this.notifications.length > 0) {
+                this.isNotificationsHidden = !this.isNotificationsHidden;
+            } else {
+                this.onNotificationListClick();
+            }
         }
     }
 
@@ -134,6 +140,10 @@ class BellComponent implements OnInit, OnDestroy {
             this.notifications.map(x => x.key);
 
         this.onHideNotifications$.next(keys);
+    }
+
+    public onNotificationListClick(): void {
+        this.routerService.navigate(['app', 'user', 'notifications']);
     }
 
     private isBellChild(element: HTMLElement): boolean {

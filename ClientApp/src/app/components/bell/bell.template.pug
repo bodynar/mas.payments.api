@@ -1,8 +1,11 @@
 .notification(
     [class.collapsed]='isNotificationsHidden',
-    (click)='notificationsToggle($event.target)'
+    (click)='notificationsToggle($event.target)',
 )
-    .bell(title='Notifications')
+    .bell(
+        [title]=`(notifications$ | async)?.length === 0 ? "No active notifications.
+Click to see all." : "Notifications"`
+    )
         span.oi.oi-bell
         span.badge(
             *ngIf='(notifications$ | async)?.length > 0'
@@ -10,6 +13,10 @@
     .notification-dropdown(
         *ngIf='(notifications$ | async)?.length > 0'
     )
+        .dismiss-btn
+            button.btn.btn-outline-secondary.btn-sm.mb-2.btn-block(
+                (click)='onNotificationListClick()'
+            ) Show all
         ul.notification-list
             li(
                 *ngFor='let notification of (notifications$ | async)',

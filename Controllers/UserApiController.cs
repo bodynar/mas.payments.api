@@ -29,15 +29,15 @@ namespace MAS.Payments.Controllers
         {
             var userNotifications = NotificationProcessor.GetNotifications();
 
+            var notHiddenNotifications =
+                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));
+
             if (userNotifications.Any())
             {
                 await Task.Run(
                     () => CommandProcessor.Execute(new AddUserNotificationCommand(userNotifications))
                 ).ConfigureAwait(true);
             }
-
-            var notHiddenNotifications =
-                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));
 
             return
                 userNotifications

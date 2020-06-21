@@ -1,5 +1,6 @@
 import { Observable } from 'rxjs';
 
+import GetUserNotificationRequest from 'models/request/user/getUserNotificationRequest';
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
@@ -8,7 +9,9 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
 abstract class IUserApiBackendService {
-    abstract getNotifications(): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>>;
+    abstract getNotifications(request: GetUserNotificationRequest): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>>;
+
+    abstract hideNotification(keys: Array<string>): Observable<CommandExecutionResult>;
 
     abstract sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<CommandExecutionResult>;
 

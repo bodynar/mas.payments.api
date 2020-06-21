@@ -32,6 +32,9 @@ class BellComponent implements OnInit, OnDestroy {
     private onHideNotification$: Subject<string> =
         new Subject();
 
+    private onHideNotifications$: Subject<Array<string>> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
@@ -48,14 +51,32 @@ class BellComponent implements OnInit, OnDestroy {
             )
             .subscribe(_ => this.isNotificationsHidden = !this.isNotificationsHidden);
 
-        this.onHideNotification$
+        this.onHideNotifications$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(key =>
                     !isNullOrUndefined(key)
                     && key.length > 0
-                    && this.notifications.some(x => x.key === key)
+                    && !key.some(x => isNullOrUndefined(x))
                 ),
+                switchMap(keys => this.userService.hideNotification(keys)),
+                filter(result => {
+                    if (!result.success) {
+                        this.notificationService.error(result.error);
+                    }
+
+                    return result.success;
+                })
+            )
+            .subscribe(_ => {
+                this.notifications = [];
+                this.notifications$.next(this.notifications);
+            });
+
+        this.onHideNotification$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(key => this.notifications.some(x => x.key === key)),
                 switchMap(key => this.userService.hideNotification([key])),
                 filter(result => {
                     if (!result.success) {
@@ -109,7 +130,10 @@ class BellComponent implements OnInit, OnDestroy {
     }
 
     public hideAll(): void {
+        const keys: Array<string> =
+            this.notifications.map(x => x.key);
 
+        this.onHideNotifications$.next(keys);
     }
 
     private isBellChild(element: HTMLElement): boolean {

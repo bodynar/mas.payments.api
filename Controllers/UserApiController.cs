@@ -25,7 +25,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetNotificationsResponse>> GetActiveUserNotifications()
+        public async Task<IEnumerable<GetUserNotificationsQueryResult>> GetActiveUserNotifications()
         {
             var userNotifications = NotificationProcessor.GetNotifications();
 
@@ -41,17 +41,18 @@ namespace MAS.Payments.Controllers
 
             return
                 userNotifications
-                .Union(notHiddenNotifications)
-                .Select(notification => new GetNotificationsResponse
+                .Select(notification => new GetUserNotificationsQueryResult
                 {
-                    Name = notification.Title,
-                    Description = notification.Text,
+                    Key = notification.Key,
+                    Text = notification.Text,
+                    Title = notification.Title,
                     Type = Enum.GetName(typeof(UserNotificationType), notification.Type)
-                });
+                })
+                .Union(notHiddenNotifications);
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<UserNotification> GetUserNotifications()
+        public IEnumerable<GetUserNotificationsQueryResult> GetUserNotifications()
         {
             return QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.All));
         }

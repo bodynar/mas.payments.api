@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
 
-    using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure.Query;
 
     public enum GetUserNotificationsType
@@ -12,7 +11,7 @@
         Hidden = 3,
     }
 
-    public class GetUserNotificationsQuery: IQuery<IEnumerable<UserNotification>>
+    public class GetUserNotificationsQuery: IQuery<IEnumerable<GetUserNotificationsQueryResult>>
     {
         public GetUserNotificationsType NotificationsType { get; }
 

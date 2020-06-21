@@ -12,12 +12,12 @@
     )
         li(
             *ngFor='let notification of (notifications$ | async)',
-           [ngClass]='notification.type',
-           data-bell-list-child='true'
+            [ngClass]='notification.type',
+            data-bell-list-child='true'
         )
             .header
-                h5.title {{ notification.name }}
+                h5.title {{ notification.title }}
                 span.oi.oi-x.oi-medium(
-                    (click)='removeNotification(notification)'
+                    (click)='hideNotification(notification.key)'
                 )
-            p.description {{ notification.description }}
+            p.description {{ notification.text }}

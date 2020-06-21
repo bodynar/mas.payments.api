@@ -73,7 +73,10 @@ class UserApiBackendService implements IUserApiBackendService {
                         success: false,
                         error: x['Message'],
                     }) as CommandExecutionResult)
-                    : ({ success: true })
+                    : ({
+                        success: true,
+                        args: keys
+                     })
                 ),
             );
     }

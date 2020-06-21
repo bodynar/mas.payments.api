@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
@@ -29,6 +29,9 @@ class BellComponent implements OnInit, OnDestroy {
     private pageClicks$: Observable<Event> =
         fromEvent(document, 'click');
 
+    private onHideNotification$: Subject<string> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
@@ -44,11 +47,36 @@ class BellComponent implements OnInit, OnDestroy {
                 filter((target: HTMLElement) => !this.isBellChild(target))
             )
             .subscribe(_ => this.isNotificationsHidden = !this.isNotificationsHidden);
+
+        this.onHideNotification$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(key =>
+                    !isNullOrUndefined(key)
+                    && key.length > 0
+                    && this.notifications.some(x => x.key === key)
+                ),
+                switchMap(key => this.userService.hideNotification([key])),
+                filter(result => {
+                    if (!result.success) {
+                        this.notificationService.error(result.error);
+                    }
+
+                    return result.success;
+                })
+            )
+            .subscribe(({ args }) => {
+                const key: string =
+                    (args as Array<string>).pop();
+
+                this.notifications = this.notifications.filter(notificationItem => notificationItem.key !== key);
+                this.notifications$.next(this.notifications);
+            });
     }
 
     public ngOnInit(): void {
         this.userService
-            .getNotifications()
+            .getNotifications({ onlyActive: true })
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
@@ -76,9 +104,12 @@ class BellComponent implements OnInit, OnDestroy {
         }
     }
 
-    public removeNotification(notification: GetNotificationsResponse): void {
-        this.notifications = this.notifications.filter(notificationItem => notificationItem != notification);
-        this.notifications$.next(this.notifications);
+    public hideNotification(key: string): void {
+        this.onHideNotification$.next(key);
+    }
+
+    public hideAll(): void {
+
     }
 
     private isBellChild(element: HTMLElement): boolean {

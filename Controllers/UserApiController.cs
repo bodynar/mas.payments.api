@@ -49,7 +49,8 @@ namespace MAS.Payments.Controllers
                     CreatedAt = notification.CreatedAt,
                     Type = Enum.GetName(typeof(UserNotificationType), notification.Type)
                 })
-                .Union(notHiddenNotifications);
+                .Union(notHiddenNotifications)
+                .OrderBy(x => x.CreatedAt);
         }
 
         [HttpGet("[action]")]

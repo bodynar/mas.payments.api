@@ -56,6 +56,7 @@
 
             return Repository
                 .Where(specification, Projector)
+                .OrderBy(x => x.CreatedAt)
                 .ToList();
         }
     }

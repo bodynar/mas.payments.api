@@ -6,16 +6,16 @@
 
     public class HideUserNotificationCommand : ICommand
     {
-        public IEnumerable<long> NotificationIds { get; }
+        public IEnumerable<string> NotificationKeys { get; }
 
-        public HideUserNotificationCommand(IEnumerable<long> notificationIds)
+        public HideUserNotificationCommand(IEnumerable<string> notificationKeys)
         {
-            NotificationIds = new List<long>(notificationIds);
+            NotificationKeys = new List<string>(notificationKeys);
         }
 
-        public HideUserNotificationCommand(long notificationId)
+        public HideUserNotificationCommand(string notificationKey)
         {
-            NotificationIds = new List<long>() { notificationId };
+            NotificationKeys = new List<string>() { notificationKey };
         }
     }
 }

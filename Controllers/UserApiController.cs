@@ -57,9 +57,9 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void HideNotifications([FromBody]IEnumerable<long> userNotificationIds)
+        public void HideNotifications([FromBody]IEnumerable<string> userNotificationKeys)
         {
-            CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationIds));
+            CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationKeys));
         }
 
         [HttpPost("[action]")]

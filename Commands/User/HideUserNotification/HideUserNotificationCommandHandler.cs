@@ -1,11 +1,13 @@
 ﻿namespace MAS.Payments.Commands
 {
     using System;
+    using System.Linq;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Specification;
 
     public class HideUserNotificationCommandHandler : BaseCommandHandler<HideUserNotificationCommand>
     {
@@ -21,7 +23,7 @@
         {
             var notificationsToHide = 
                 Repository.Where(
-                    new CommonSpecification.IdIn<UserNotification>(command.NotificationIds)
+                    new CommonSpecification<UserNotification>(x => command.NotificationKeys.Contains(x.Key))
                 );
 
             foreach (var userNotification in notificationsToHide)

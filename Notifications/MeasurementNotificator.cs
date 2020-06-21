@@ -49,7 +49,7 @@ namespace MAS.Payments.Notifications
                                 .ToArray();
 
                         var measurementTypesWithoutMeasurement =
-                            measurementTypes.Where(x => notFilledIds.Contains(x.Id));
+                            measurementTypes.Where(x => notFilledIds.Contains(x.Id)).Select(x => x.Name);
 
                         var type = today.Day <= 23 ? UserNotificationType.Info : UserNotificationType.Warning;
 

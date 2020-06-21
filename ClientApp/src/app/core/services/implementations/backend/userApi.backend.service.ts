@@ -32,7 +32,7 @@ class UserApiBackendService implements IUserApiBackendService {
         const apiMethod: string =
             request.onlyActive
                 ? `${this.apiPrefix}/getActiveUserNotifications`
-                : `${this.apiPrefix}/getNotifications`;
+                : `${this.apiPrefix}/getUserNotifications`;
 
         return this.http
             .get(apiMethod)

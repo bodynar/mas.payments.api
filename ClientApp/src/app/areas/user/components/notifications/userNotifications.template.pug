@@ -2,10 +2,9 @@ doctype html
 
 h3 User notifications
 
-ul.notifications(
-    *ngFor='let notification of (notifications$ | async)',
-)
+ul.notifications
     li.card.m-card(
+        *ngFor='let notification of (notifications$ | async)',
         [ngClass]='notification.type.toLowerCase()',
     )
         .card-body

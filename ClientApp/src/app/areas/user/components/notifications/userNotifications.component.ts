@@ -3,13 +3,16 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
+import * as moment from 'moment';
+
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
 @Component({
-    templateUrl: 'userNotifications.template.pug'
+    templateUrl: 'userNotifications.template.pug',
+    styleUrls: ['userNotifications.style.styl'],
 })
 export class UserNotificationsComponent implements OnInit, OnDestroy {
 
@@ -50,5 +53,9 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     public ngOnDestroy(): void {
         this.whenComponentDestroy$.next(null);
         this.whenComponentDestroy$.complete();
+    }
+
+    public formatDate(date: Date): string {
+        return moment(date).format('DD.MM.YYYY');
     }
 }

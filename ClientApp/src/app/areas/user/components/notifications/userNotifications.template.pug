@@ -2,7 +2,17 @@ doctype html
 
 h3 User notifications
 
-ul(
+ul.notifications(
     *ngFor='let notification of (notifications$ | async)',
 )
-    li {{ notification.text }}
+    li.card.m-card(
+        [ngClass]='notification.type.toLowerCase()',
+    )
+        .card-body
+            h6.card-title {{ notification.title }}
+            p.card-text {{ notification.text }}
+            .card-text
+                small.text-muted Created at {{ formatDate(notification.createdAt) }}
+                small.text-muted.float-right(
+                    *ngIf='notification.isHidden'
+                ) Hidden at {{ formatDate(notification.hiddenAt) }}

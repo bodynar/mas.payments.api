@@ -14,22 +14,23 @@ Click to see all." : "Notifications"`
         *ngIf='(notifications$ | async)?.length > 0'
     )
         .dismiss-btn
-            button.btn.btn-outline-secondary.btn-sm.mb-2.btn-block(
+            button.btn.btn-outline-secondary.btn-sm.mb-1.btn-block(
                 (click)='onNotificationListClick()'
             ) Show all
         ul.notification-list
-            li(
+            li.m-card.card(
                 *ngFor='let notification of (notifications$ | async)',
-                [ngClass]='notification.type',
+                [ngClass]='notification.type.toLowerCase()',
                 data-bell-list-child='true'
             )
-                .header
-                    h5.title {{ notification.title }}
-                    span.oi.oi-x.oi-medium(
-                        (click)='hideNotification(notification.key)'
+                .card-body
+                    h6.card-title {{ notification.title }}
+                    span.oi.oi-x.oi-medium.float-right(
+                        (click)='hideNotification(notification.key)',
+                        title='Hide from active'
                     )
-                p.description {{ notification.text }}
+                    p.card-text {{ notification.text }}
         .dismiss-btn
-            button.btn.btn-outline-secondary.btn-sm.mb-2.btn-block(
+            button.btn.btn-outline-secondary.btn-sm.mb-2.mt-1.btn-block(
                 (click)='hideAll()'
             ) Hide all

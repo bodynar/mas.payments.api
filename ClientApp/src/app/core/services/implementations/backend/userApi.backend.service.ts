@@ -8,8 +8,10 @@ import { isNullOrUndefined } from 'util';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
+import GetUserNotificationRequest from 'models/request/user/getUserNotificationRequest';
 import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
+
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
@@ -20,20 +22,32 @@ class UserApiBackendService implements IUserApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/user';
+
     constructor(
         private http: HttpClient
     ) {
     }
 
-    public getNotifications(): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>> {
+    public getNotifications(request: GetUserNotificationRequest): Observable<QueryExecutionResult<Array<GetNotificationsResponse>>> {
+        const apiMethod: string =
+            request.onlyActive
+                ? `${this.apiPrefix}/getActiveUserNotifications`
+                : `${this.apiPrefix}/getUserNotifications`;
+
         return this.http
-            .get(`${this.apiPrefix}/getNotifications`)
+            .get(apiMethod)
             .pipe(
                 map((response: Array<any>) =>
-                    response.map(notification => ({
-                        name: notification['name'],
-                        description: notification['description'],
-                        type: notification['type'].toLowerCase()
+                    response.map(x => ({
+                        title: x['title'],
+                        text: x['text'],
+                        key: x['key'],
+                        type: x['type'],
+                        createdAt: x['createdAt'],
+
+                        id: request.onlyActive ? undefined : x['id'],
+                        hiddenAt: request.onlyActive ? undefined : x['hiddenAt'],
+                        isHidden: request.onlyActive ? undefined : x['isHidden'],
                     }) as GetNotificationsResponse)),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)
@@ -45,6 +59,24 @@ class UserApiBackendService implements IUserApiBackendService {
                         success: false,
                         error: x['Message'],
                     })
+                ),
+            );
+    }
+
+    public hideNotification(keys: Array<string>): Observable<CommandExecutionResult> {
+        return this.http
+            .post(`${this.apiPrefix}/hideNotifications`, keys)
+            .pipe(
+                catchError(error => of(error.error)),
+                map(x => x
+                    ? (({
+                        success: false,
+                        error: x['Message'],
+                    }) as CommandExecutionResult)
+                    : ({
+                        success: true,
+                        args: keys
+                     })
                 ),
             );
     }
@@ -91,17 +123,17 @@ class UserApiBackendService implements IUserApiBackendService {
                         displayName: setting['displayName'],
                         value: getMappedValue(setting['typeName'], setting['rawValue'])
                     }) as GetUserSettingsResponse)),
-                    catchError(error => of(error.error)),
-                    map(x => isNullOrUndefined(x.Success)
-                        ? ({
-                            success: true,
-                            result: x
-                        })
-                        : ({
-                            success: false,
-                            error: x['Message'],
-                        })
-                    ),
+                catchError(error => of(error.error)),
+                map(x => isNullOrUndefined(x.Success)
+                    ? ({
+                        success: true,
+                        result: x
+                    })
+                    : ({
+                        success: false,
+                        error: x['Message'],
+                    })
+                ),
             );
     }
 

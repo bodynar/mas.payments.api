@@ -1,8 +1,10 @@
-using System.Collections.Generic;
-using MAS.Payments.Infrastructure;
-
 namespace MAS.Payments.Notifications
 {
+    using System.Collections.Generic;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure;
+
     internal class TestNotificator : BaseNotificator
     {
         public TestNotificator(
@@ -11,14 +13,20 @@ namespace MAS.Payments.Notifications
         {
         }
 
-        public override IEnumerable<Notification> GetNotifications()
+        public override IEnumerable<UserNotification> GetNotifications()
         {
-            yield return new Notification
+            var wasNotificationFormed = CheckWasNotificationFormed("testNotification");
+
+            if (!wasNotificationFormed)
             {
-                Name = " Test ",
-                Description = " lorem ipsum ",
-                Type = NotificationType.Info
-            };
+                yield return new UserNotification
+                {
+                    Title = " Test ",
+                    Text = " lorem ipsum ",
+                    Key = "testNotification",
+                    Type = (short)UserNotificationType.Info
+                };
+            }
         }
     }
 }

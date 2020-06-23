@@ -1,0 +1,24 @@
+doctype html
+
+h3 User notifications
+
+ul.notifications
+    li.card.m-card(
+        *ngFor='let notification of (notifications$ | async)',
+        [ngClass]='notification.type.toLowerCase()',
+    )
+        .card-body
+            h6.card-title {{ notification.title }}
+            p.card-text {{ notification.text }}
+            .card-text
+                small.text-muted Created at {{ formatDate(notification.createdAt) }}
+                small.text-muted.float-right(
+                    *ngIf='notification.isHidden'
+                ) Hidden at {{ formatDate(notification.hiddenAt) }}
+
+br
+app-paginator(
+    *ngIf='(paginatorConfig$ | async)?.enabled',
+    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+    (pageChange)='onPageChange($event)'
+)

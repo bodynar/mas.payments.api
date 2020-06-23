@@ -54,7 +54,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(({ result }) => {
-                this.notifications = [...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result, ...result];
+                this.notifications = result;
 
                 this.onPageChange(0);
 

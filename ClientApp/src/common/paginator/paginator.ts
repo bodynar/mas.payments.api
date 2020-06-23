@@ -27,8 +27,29 @@ export function getPaginatorConfig(items: Array<any>, pageSize: number): Paginat
 export function generatePageNumbers(currentPage: number, pagesCount: number): Array<number> {
     const result = [];
 
-    for (let i = 0; i <= pagesCount; i++) {
-        if (i > 0) {
+    if (pagesCount > 6) {
+        const leftFromPointer: Array<number> =
+            [];
+
+        for (let i = currentPage - 2; i < currentPage; i++) {
+            if (i > 0) {
+                leftFromPointer.push(i);
+            }
+        }
+        const rightFromPointerAmount: number = leftFromPointer.length === 0 ? 4 : 3;
+        const rightFromPointer: Array<number> =
+            [];
+
+        for (let i = currentPage; i <= currentPage + rightFromPointerAmount && i <= pagesCount; i++) {
+            if (i > 0) {
+                rightFromPointer.push(i);
+            }
+        }
+
+        return [...leftFromPointer, ...rightFromPointer];
+    }
+    else {
+        for (let i = 1; i <= pagesCount; i++) {
             result.push(i);
         }
     }

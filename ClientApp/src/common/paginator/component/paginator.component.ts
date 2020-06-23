@@ -49,11 +49,6 @@ export class PaginatorComponent implements OnInit {
             throw new Error('[Paginator]: Current page cannot be greated than pages count.');
         }
 
-        const pageNumbers: Array<number> =
-            generatePageNumbers(currentPage, this.pagesCount);
-
-        this.pageNumbers$.next(pageNumbers);
-
         this.updateValues(currentPage);
     }
 
@@ -80,6 +75,11 @@ export class PaginatorComponent implements OnInit {
         this.canGoBack$.next(currentPage > 0);
         this.canGoForward$.next(currentPage < this.pagesCount - 1);
         this.currentPage$.next(currentPage);
+
+        const pageNumbers: Array<number> =
+            generatePageNumbers(currentPage, this.pagesCount);
+
+        this.pageNumbers$.next(pageNumbers);
 
         this.currentPage = currentPage;
     }

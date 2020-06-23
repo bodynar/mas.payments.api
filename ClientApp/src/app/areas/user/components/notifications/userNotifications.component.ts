@@ -71,13 +71,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
             .onNotificationsHidden()
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(keys => {
-                    debugger
-                    const a = this.notifications.some(x => keys.includes(x.key));
-
-                    return a;
-                }
-                )
+                filter(keys => this.notifications.some(x => keys.includes(x.key)))
             )
             .subscribe(_ => this.whenUpdateNotifications$.next(null));
     }

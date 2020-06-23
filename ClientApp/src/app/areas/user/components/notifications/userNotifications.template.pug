@@ -15,3 +15,10 @@ ul.notifications
                 small.text-muted.float-right(
                     *ngIf='notification.isHidden'
                 ) Hidden at {{ formatDate(notification.hiddenAt) }}
+
+br
+app-paginator(
+    *ngIf='(paginatorConfig$ | async)?.enabled',
+    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+    (pageChange)='onPageChange($event)'
+)

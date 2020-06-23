@@ -1,0 +1,41 @@
+doctype html
+
+nav
+    ul.pagination
+        li.page-item(
+            *ngIf='(pageNumbers$ | async)?.length > 3',
+            [class.disabled]='!(canGoBack$ | async)'
+        )
+            span.page-link(
+                *ngIf='!(canGoBack$ | async)'
+            ) Previous
+            a.page-link(
+                href='#',
+                *ngIf='canGoBack$ | async',
+                (click)='$event.preventDefault(); onArrowClick(false)'
+            ) Previous
+
+        li.page-item(
+            *ngFor='let pageNumber of (pageNumbers$ | async)',
+            [class.active]='(currentPage$ | async) == (pageNumber - 1)',
+        )
+            a.page-link(
+                href='#',
+                (click)='$event.preventDefault(); onPageClick(pageNumber)'
+            ) {{ pageNumber }}
+            span.sr-only(
+                *ngIf='(currentPage$ | async) == (pageNumber - 1)'
+            ) (current)
+        
+        li.page-item(
+            *ngIf='(pageNumbers$ | async)?.length > 3',
+            [class.disabled]='!(canGoForward$ | async)'
+        )
+            span.page-link(
+                *ngIf='!(canGoForward$ | async)'
+            ) Next
+            a.page-link(
+                href='#',
+                *ngIf='canGoForward$ | async',
+                (click)='$event.preventDefault(); onArrowClick(true)'
+            ) Next

@@ -18,6 +18,8 @@ abstract class IUserService {
     abstract getUserSettings(): Observable<QueryExecutionResult<Array<GetUserSettingsResponse>>>;
 
     abstract updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult>;
+
+    abstract onNotificationsHidden(): Observable<Array<string>>;
 }
 
 export { IUserService };

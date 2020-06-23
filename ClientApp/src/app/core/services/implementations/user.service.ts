@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { Observable } from 'rxjs';
+import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
@@ -17,6 +17,10 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
 
 @Injectable()
 class UserService implements IUserService {
+
+    private whenHideNotifications$: Subject<Array<string>> =
+        new ReplaySubject(1);
+
     constructor(
         private userApiBackend: IUserApiBackendService,
         // private loggingService: ILoggingService
@@ -37,7 +41,18 @@ class UserService implements IUserService {
 
     public hideNotification(keys: Array<string>): Observable<CommandExecutionResult> {
         return this.userApiBackend
-            .hideNotification(keys);
+            .hideNotification(keys)
+            .pipe(
+                tap(response => {
+                    if (response.success) {
+                        this.whenHideNotifications$.next(keys);
+                    }
+                })
+            );
+    }
+
+    public onNotificationsHidden(): Observable<Array<string>> {
+        return this.whenHideNotifications$.asObservable();
     }
 
     public sendTestMailMessage(testMailMessage: TestMailMessageRequest): Observable<CommandExecutionResult> {

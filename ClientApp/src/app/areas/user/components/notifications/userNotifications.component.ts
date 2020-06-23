@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, takeUntil } from 'rxjs/operators';
+import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -28,6 +28,9 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
+    private whenUpdateNotifications$: Subject<null> =
+        new Subject();
+
     private notifications: Array<GetNotificationsResponse> =
         [];
 
@@ -38,13 +41,10 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
-    }
-
-    public ngOnInit(): void {
-        this.userService
-            .getNotifications({ onlyActive: false })
+        this.whenUpdateNotifications$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                switchMapTo(this.userService.getNotifications({ onlyActive: false })),
                 filter(result => {
                     if (!result.success) {
                         this.notificationService.error(result.error);
@@ -62,6 +62,24 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
                     getPaginatorConfig(this.notifications, this.pageSize);
                 this.paginatorConfig$.next(paginatorConfig);
             });
+    }
+
+    public ngOnInit(): void {
+        this.whenUpdateNotifications$.next(null);
+
+        this.userService
+            .onNotificationsHidden()
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(keys => {
+                    debugger
+                    const a = this.notifications.some(x => keys.includes(x.key));
+
+                    return a;
+                }
+                )
+            )
+            .subscribe(_ => this.whenUpdateNotifications$.next(null));
     }
 
     public ngOnDestroy(): void {

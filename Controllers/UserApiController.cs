@@ -89,5 +89,11 @@ namespace MAS.Payments.Controllers
         {
             CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
         }
+
+        [HttpGet("[action]")]
+        public IEnumerable<GetMailMessageLogItemsQueryResult> GetMailMessageLogs()
+        {
+            return QueryProcessor.Execute(new GetMailMessageLogItemsQuery());
+        }
     }
 }

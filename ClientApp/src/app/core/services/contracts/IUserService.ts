@@ -5,6 +5,7 @@ import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -20,6 +21,8 @@ abstract class IUserService {
     abstract updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult>;
 
     abstract onNotificationsHidden(): Observable<Array<string>>;
+
+    abstract getMailLogs(): Observable<QueryExecutionResult<Array<GetMailLogsResponse>>>;
 }
 
 export { IUserService };

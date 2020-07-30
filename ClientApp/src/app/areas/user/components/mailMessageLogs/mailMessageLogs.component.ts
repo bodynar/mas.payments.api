@@ -40,31 +40,31 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
         private notificationService: INotificationService,
     ) {
         this.whenUpdateMailMessageLogs$
-        .pipe(
-            takeUntil(this.whenComponentDestroy$),
-            switchMapTo(this.userService.getMailLogs()),
-            filter(result => {
-                if (!result.success) {
-                    this.notificationService.error(result.error);
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                switchMapTo(this.userService.getMailLogs()),
+                filter(result => {
+                    if (!result.success) {
+                        this.notificationService.error(result.error);
+                    }
+
+                    return result.success;
+                })
+            )
+            .subscribe(({ result }) => {
+                this.logItems = [...result, ...result, ...result, ...result, ...result];
+
+                const paginatorConfig: PaginatorConfig =
+                    getPaginatorConfig(this.logItems, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.logItems$.next(this.logItems);
                 }
 
-                return result.success;
-            })
-        )
-        .subscribe(({ result }) => {
-            this.logItems = [...result, ...result, ...result, ...result, ...result];
-
-            const paginatorConfig: PaginatorConfig =
-                getPaginatorConfig(this.logItems, this.pageSize);
-
-            if (paginatorConfig.enabled) {
-                this.onPageChange(0);
-            } else {
-                this.logItems$.next(this.logItems);
-            }
-
-            this.paginatorConfig$.next(paginatorConfig);
-        });
+                this.paginatorConfig$.next(paginatorConfig);
+            });
     }
 
     public ngOnInit(): void {
@@ -85,5 +85,9 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
             this.logItems.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
 
         this.logItems$.next(slicedNotifications);
+    }
+
+    public displayBody(logItemId: number): void {
+
     }
 }

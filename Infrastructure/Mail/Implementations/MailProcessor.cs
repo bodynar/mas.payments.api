@@ -1,6 +1,7 @@
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
     using System;
+    using System.Linq;
     using System.Net.Mail;
 
     using MAS.Payments.Commands;
@@ -69,9 +70,20 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
         private void SaveMessageLogItem(MailMessage mailMessage)
         {
+            var messageBody = GetMessageBody(mailMessage.Body);
+            var recipients = string.Join(", ", mailMessage.To.Select(x => x.Address));
+
             CommandProcessor.Execute(
                 new SaveMailMessageLogCommand(
-                    mailMessage.To[0].Address, mailMessage.Subject, mailMessage.Body, DateTime.Now));
+                    recipients, mailMessage.Subject, messageBody, DateTime.Now));
+        }
+
+        private static string GetMessageBody(string htmlMailMessage)
+        {
+            var bodyEnd = htmlMailMessage.ToLower().IndexOf("</body>");
+            var bodyStart = htmlMailMessage.ToLower().IndexOf("<body>") + "<body>".Length;
+
+            return htmlMailMessage.Substring(bodyStart, bodyEnd - bodyStart);
         }
     }
 }

@@ -1,0 +1,25 @@
+doctype html
+
+h3 Mail message logs
+
+table.table.table-hover.table-sm
+    thead.thead-dark
+        tr.d-flex
+            th.col-2(scope='col') Sent date
+            th.col-3(scope='col') Recipient
+            th.col-5(scope='col') Subject
+            th.col-2(scope='col')
+    tbody
+        tr.d-flex(*ngFor='let logItem of (logItems$ | async)')
+            td.col-2 {{ formatDate(logItem.sentDate) }}
+            td.col-3 {{ logItem.recipient }}
+            td.col-5 {{ logItem.subject }}
+            td.col-2
+                button Heh
+
+br
+app-paginator(
+    *ngIf='(paginatorConfig$ | async)?.enabled',
+    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+    (pageChange)='onPageChange($event)'
+)

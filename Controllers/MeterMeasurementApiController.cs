@@ -8,6 +8,7 @@ using MAS.Payments.Infrastructure;
 using MAS.Payments.Models;
 using MAS.Payments.Queries;
 using MAS.Payments.Utilities;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace MAS.Payments.Controllers
@@ -50,8 +51,8 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpDelete("[action]")]
-        public void DeleteMeasurementType(long measurementTypeId)
+        [HttpPost("[action]")]
+        public void DeleteMeasurementType([FromBody]long measurementTypeId)
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementTypeCommand(measurementTypeId));
@@ -93,8 +94,8 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpDelete("[action]")]
-        public void DeleteMeasurement(long measurementId)
+        [HttpPost("[action]")]
+        public void DeleteMeasurement([FromBody]long measurementId)
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementCommand(measurementId));

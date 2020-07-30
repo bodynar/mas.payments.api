@@ -18,7 +18,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
-class PaymentApiBackendService implements IPaymentApiBackendService {
+export class PaymentApiBackendService implements IPaymentApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/payment';
@@ -155,8 +155,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     public deletePayment(paymentId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deletePayment`,
-                { params: new HttpParams().set('paymentId', `${paymentId}`) })
+            .post(`${this.apiPrefix}/deletePayment`, paymentId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -263,8 +262,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     public deletePaymentType(paymentTypeId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deletePaymentType`,
-                { params: new HttpParams().set('paymentTypeId', `${paymentTypeId}`) })
+            .post(`${this.apiPrefix}/deletePaymentType`, paymentTypeId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -279,5 +277,3 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     // #endregion payment type
 }
-
-export { PaymentApiBackendService };

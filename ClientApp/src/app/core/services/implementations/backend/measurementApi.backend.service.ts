@@ -18,7 +18,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
-class MeasurementApiBackendService implements IMeasurementApiBackendService {
+export class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/measurement';
@@ -147,8 +147,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     public deleteMeasurement(measurementId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deleteMeasurement`,
-                { params: new HttpParams().set('measurementId', `${measurementId}`) })
+            .post(`${this.apiPrefix}/deleteMeasurement`, measurementId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -271,8 +270,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     public deleteMeasurementType(measurementTypeId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deleteMeasurementType`,
-                { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
+            .post(`${this.apiPrefix}/deleteMeasurementType`, measurementTypeId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -287,5 +285,3 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     // #endregion measurement types
 }
-
-export { MeasurementApiBackendService };

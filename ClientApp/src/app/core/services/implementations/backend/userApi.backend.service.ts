@@ -159,6 +159,7 @@ class UserApiBackendService implements IUserApiBackendService {
             .pipe(
                 map((response: Array<any>) =>
                     response.map(logItem => ({
+                        id: logItem['id'],
                         recipient: logItem['recipient'],
                         subject: logItem['subject'],
                         body: logItem['body'],

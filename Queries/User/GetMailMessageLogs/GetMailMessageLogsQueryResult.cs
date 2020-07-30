@@ -4,6 +4,8 @@ namespace MAS.Payments.Queries
 
     public class GetMailMessageLogsQueryResult
     {
+        public long Id {get; set; }
+        
         public string Recipient { get; set; }
 
         public string Subject { get; set; }

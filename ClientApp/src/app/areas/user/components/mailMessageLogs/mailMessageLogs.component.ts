@@ -1,5 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
@@ -11,7 +13,9 @@ import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
+import { TextInModalComponent } from 'src/app/components/modal/text/text.component';
 import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import { isNullOrUndefined } from 'util';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
@@ -38,6 +42,7 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
+        private modalService: NgbModal
     ) {
         this.whenUpdateMailMessageLogs$
             .pipe(
@@ -88,6 +93,14 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
     }
 
     public displayBody(logItemId: number): void {
+        const logItem: GetMailLogsResponse =
+            this.logItems.filter(x => x.id === logItemId).pop();
 
+        if (!isNullOrUndefined(logItem)) {
+            const modalRef = this.modalService.open(TextInModalComponent, { size: 'lg' });
+            modalRef.componentInstance.text = logItem.body;
+            modalRef.componentInstance.isHtml = true;
+            modalRef.componentInstance.title = logItem.subject;
+        }
     }
 }

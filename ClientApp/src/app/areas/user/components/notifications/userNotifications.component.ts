@@ -56,10 +56,15 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
             .subscribe(({ result }) => {
                 this.notifications = result;
 
-                this.onPageChange(0);
-
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.notifications, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.notifications$.next(this.notifications);
+                }
+
                 this.paginatorConfig$.next(paginatorConfig);
             });
     }

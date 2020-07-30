@@ -57,7 +57,7 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(({ result }) => {
-                this.logItems = [...result, ...result, ...result, ...result, ...result];
+                this.logItems = result;
 
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.logItems, this.pageSize);

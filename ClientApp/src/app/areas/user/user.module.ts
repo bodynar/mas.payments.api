@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 
 import { AppCommonModule } from 'src/common/common.module';
 import { UserComponent } from './component/user.component';
+import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';
 import { UserNotificationsComponent } from './components/notifications/userNotifications.component';
 import { UserSettingComponent } from './components/settings/userSetting.component';
 import { TestMailMessageComponent } from './components/testMailMessage/testMailMessage.component';
@@ -24,7 +25,8 @@ import { UserCardComponent } from './components/userCard/userCard.component';
         UserCardComponent,
         UserSettingComponent,
         UserNotificationsComponent,
-        TestMailMessageComponent
+        TestMailMessageComponent,
+        MailMessageLogsComponent
     ],
     providers: [],
 })

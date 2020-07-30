@@ -1,9 +1,8 @@
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Threading.Tasks;
-
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
+    using System.Net.Mail;
+    using System.Threading.Tasks;
+
     public class MailSender : IMailSender
     {
         private ISmtpClientFactory Factory { get; }
@@ -19,7 +18,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
         {
             var smtpClient = Factory.CreateSmtpClient();
 
-            await smtpClient.SendMailAsync(message);
+            await smtpClient.SendMailAsync(message).ConfigureAwait(true);
         }
     }
 }

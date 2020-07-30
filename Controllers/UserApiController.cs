@@ -60,13 +60,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void HideNotifications([FromBody]IEnumerable<string> userNotificationKeys)
+        public void HideNotifications([FromBody] IEnumerable<string> userNotificationKeys)
         {
             CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationKeys));
         }
 
         [HttpPost("[action]")]
-        public void TestMailMessage([FromBody]TestMailMessageRequest request)
+        public void TestMailMessage([FromBody] TestMailMessageRequest request)
         {
             var isValidEmail = Validate.Email(request.Recipient);
 
@@ -85,9 +85,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void UpdateUserSettings([FromBody]IEnumerable<UpdateUserSettingsRequest> settings)
+        public void UpdateUserSettings([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
         {
             CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<GetMailMessageLogsQueryResult> GetMailMessageLogs()
+        {
+            return QueryProcessor.Execute(new GetMailMessageLogsQuery());
         }
     }
 }

@@ -39,6 +39,11 @@ const userSideMenu: Array<MenuItem> = [
         name: 'Email test',
         link: 'mailTest',
         isEnabled: true,
+    },
+    {
+        name: 'Mail message logs',
+        link: 'mailLogs',
+        isEnabled: true
     }
 ];
 

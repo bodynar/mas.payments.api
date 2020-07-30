@@ -14,6 +14,7 @@ import UpdateUserSettingRequest from 'models/request/user/updateUserSettingReque
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -76,7 +77,7 @@ class UserApiBackendService implements IUserApiBackendService {
                     : ({
                         success: true,
                         args: keys
-                     })
+                    })
                 ),
             );
     }
@@ -148,6 +149,32 @@ class UserApiBackendService implements IUserApiBackendService {
                         error: x['Message'],
                     }) as CommandExecutionResult)
                     : ({ success: true })
+                ),
+            );
+    }
+
+    public getMailLogs(): Observable<QueryExecutionResult<Array<GetMailLogsResponse>>> {
+        return this.http
+            .get(`${this.apiPrefix}/getMailMessageLogs`)
+            .pipe(
+                map((response: Array<any>) =>
+                    response.map(logItem => ({
+                        id: logItem['id'],
+                        recipient: logItem['recipient'],
+                        subject: logItem['subject'],
+                        body: logItem['body'],
+                        sentDate: logItem['sentDate'],
+                    }) as GetMailLogsResponse)),
+                catchError(error => of(error.error)),
+                map(x => isNullOrUndefined(x.Success)
+                    ? ({
+                        success: true,
+                        result: x
+                    })
+                    : ({
+                        success: false,
+                        error: x['Message'],
+                    })
                 ),
             );
     }

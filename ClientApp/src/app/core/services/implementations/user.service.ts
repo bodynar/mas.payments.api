@@ -12,6 +12,7 @@ import UpdateUserSettingRequest from 'models/request/user/updateUserSettingReque
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
 
@@ -75,6 +76,18 @@ class UserService implements IUserService {
     public updateUserSettings(updatedSettings: Array<UpdateUserSettingRequest>): Observable<CommandExecutionResult> {
         return this.userApiBackend
             .updateUserSettings(updatedSettings);
+    }
+
+    public getMailLogs(): Observable<QueryExecutionResult<Array<GetMailLogsResponse>>> {
+        return this.userApiBackend
+            .getMailLogs()
+            .pipe(
+                tap(response => {
+                    if (!response.success) {
+                        // this.loggingService.error(response);
+                    }
+                }),
+            );
     }
 }
 

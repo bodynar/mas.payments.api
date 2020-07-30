@@ -1,25 +1,27 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
-import { INotificationService } from 'services/INotificationService';
-import { IUserService } from 'services/IUserService';
-
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-
-import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
-@Component({
-    templateUrl: 'userNotifications.template.pug',
-    styleUrls: ['userNotifications.style.styl'],
-})
-export class UserNotificationsComponent implements OnInit, OnDestroy {
+import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-    public notifications$: Subject<Array<GetNotificationsResponse>> =
+import { INotificationService } from 'services/INotificationService';
+import { IUserService } from 'services/IUserService';
+import { TextInModalComponent } from 'src/app/components/modal/text/text.component';
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import { isNullOrUndefined } from 'util';
+
+@Component({
+    templateUrl: 'mailMessageLogs.template.pug'
+})
+export class MailMessageLogsComponent implements OnInit, OnDestroy {
+    public logItems$: Subject<Array<GetMailLogsResponse>> =
         new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
@@ -28,23 +30,24 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
-    private whenUpdateNotifications$: Subject<null> =
+    private whenUpdateMailMessageLogs$: Subject<null> =
         new Subject();
 
-    private notifications: Array<GetNotificationsResponse> =
+    private logItems: Array<GetMailLogsResponse> =
         [];
 
     private pageSize: number =
-        5;
+        15;
 
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
+        private modalService: NgbModal
     ) {
-        this.whenUpdateNotifications$
+        this.whenUpdateMailMessageLogs$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                switchMapTo(this.userService.getNotifications({ onlyActive: false })),
+                switchMapTo(this.userService.getMailLogs()),
                 filter(result => {
                     if (!result.success) {
                         this.notificationService.error(result.error);
@@ -54,15 +57,15 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(({ result }) => {
-                this.notifications = result;
+                this.logItems = result;
 
                 const paginatorConfig: PaginatorConfig =
-                    getPaginatorConfig(this.notifications, this.pageSize);
+                    getPaginatorConfig(this.logItems, this.pageSize);
 
                 if (paginatorConfig.enabled) {
                     this.onPageChange(0);
                 } else {
-                    this.notifications$.next(this.notifications);
+                    this.logItems$.next(this.logItems);
                 }
 
                 this.paginatorConfig$.next(paginatorConfig);
@@ -70,15 +73,7 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.whenUpdateNotifications$.next(null);
-
-        this.userService
-            .onNotificationsHidden()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(keys => this.notifications.some(x => keys.includes(x.key)))
-            )
-            .subscribe(_ => this.whenUpdateNotifications$.next(null));
+        this.whenUpdateMailMessageLogs$.next(null);
     }
 
     public ngOnDestroy(): void {
@@ -91,9 +86,21 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
     }
 
     public onPageChange(pageNumber: number): void {
-        const slicedNotifications: Array<GetNotificationsResponse> =
-            this.notifications.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
+        const slicedNotifications: Array<GetMailLogsResponse> =
+            this.logItems.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
 
-        this.notifications$.next(slicedNotifications);
+        this.logItems$.next(slicedNotifications);
+    }
+
+    public displayBody(logItemId: number): void {
+        const logItem: GetMailLogsResponse =
+            this.logItems.filter(x => x.id === logItemId).pop();
+
+        if (!isNullOrUndefined(logItem)) {
+            const modalRef = this.modalService.open(TextInModalComponent, { size: 'lg' });
+            modalRef.componentInstance.text = logItem.body;
+            modalRef.componentInstance.isHtml = true;
+            modalRef.componentInstance.title = logItem.subject;
+        }
     }
 }

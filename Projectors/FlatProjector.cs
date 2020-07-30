@@ -166,7 +166,8 @@ namespace MAS.Payments.Projectors
                     typeof(long),
                     typeof(float),
                     typeof(double),
-                    typeof(decimal)
+                    typeof(decimal),
+                    typeof(DateTime),
                 };
             }
 

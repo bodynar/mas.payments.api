@@ -155,14 +155,14 @@ class UserApiBackendService implements IUserApiBackendService {
 
     public getMailLogs(): Observable<QueryExecutionResult<Array<GetMailLogsResponse>>> {
         return this.http
-            .get(`${this.apiPrefix}/getMailLogs`)
+            .get(`${this.apiPrefix}/getMailMessageLogs`)
             .pipe(
                 map((response: Array<any>) =>
                     response.map(logItem => ({
-                        recipient: logItem['Recipient'],
-                        subject: logItem['Subject'],
-                        body: logItem['Body'],
-                        sentDate: logItem['SentDate'],
+                        recipient: logItem['recipient'],
+                        subject: logItem['subject'],
+                        body: logItem['body'],
+                        sentDate: logItem['sentDate'],
                     }) as GetMailLogsResponse)),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)

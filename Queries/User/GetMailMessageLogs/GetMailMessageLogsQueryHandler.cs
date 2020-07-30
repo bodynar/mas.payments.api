@@ -7,6 +7,7 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Projector;
     using MAS.Payments.Infrastructure.Query;
+    using MAS.Payments.Projectors;
 
     internal class GetMailMessageLogsQueryHandler : BaseQueryHandler<GetMailMessageLogsQuery, IEnumerable<GetMailMessageLogsQueryResult>>
     {
@@ -19,6 +20,7 @@ namespace MAS.Payments.Queries
         ) : base(resolver)
         {
             Repository = GetRepository<MailMessageLogItem>();
+            Projector = new Projector.ToFlat<MailMessageLogItem, GetMailMessageLogsQueryResult>();
         }
 
         public override IEnumerable<GetMailMessageLogsQueryResult> Handle(GetMailMessageLogsQuery query)

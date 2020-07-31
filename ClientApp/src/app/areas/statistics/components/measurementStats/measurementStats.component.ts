@@ -11,7 +11,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { getMonthName, months } from 'src/static/months';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';

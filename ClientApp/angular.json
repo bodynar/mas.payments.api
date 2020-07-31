@@ -23,8 +23,8 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/open-iconic/font/css/open-iconic-bootstrap.min.css",
-              "src/common/styles.styl",
-              "src/common/colors.styl"
+              "src/common/styles/styles.styl",
+              "src/common/styles/colors.styl"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",

@@ -1,0 +1,18 @@
+doctype html
+
+.modal-header
+    h4.modal-title {{ title }}
+    button.close(
+        type='button',
+        aria-label='close',
+        (click)='activeModal.dismiss()',
+        style='outline: none;'
+    )
+        span(aria-hidden='true') &times;
+.modal-body
+    div {{ modalBody }}
+.modal-footer
+    button.btn.btn-outline-dark(
+        type='button',
+        (click)='activeModal.dismiss()'
+    ) Close

@@ -7,7 +7,7 @@ import IModalComponent from '../../types/modalComponent.interface';
 @Component({
     templateUrl: 'confirm.template.pug'
 })
-export class ConfirmInModalComponent extends IModalComponent {
+export class ConfirmInModalComponent implements IModalComponent {
     @Input()
     public confirmBtnText: string
         = 'Ok';
@@ -22,7 +22,5 @@ export class ConfirmInModalComponent extends IModalComponent {
     constructor(
         public activeModal: NgbActiveModal
     ) {
-        super();
-        const a: typeof NgbActiveModal = NgbActiveModal;
     }
 }

@@ -1,4 +1,4 @@
-export default class IModalComponent {
-    public title: string;
-    public modalBody?: string;
+export default interface IModalComponent {
+    title: string;
+    modalBody?: string;
 }

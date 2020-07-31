@@ -7,7 +7,7 @@ import IModalComponent from '../../types/modalComponent.interface';
 @Component({
     templateUrl: 'text.template.pug'
 })
-export class TextInModalComponent extends IModalComponent {
+export class TextInModalComponent implements IModalComponent {
     @Input()
     public title: string;
 
@@ -21,6 +21,5 @@ export class TextInModalComponent extends IModalComponent {
     constructor(
         public activeModal: NgbActiveModal
     ) {
-        super();
     }
 }

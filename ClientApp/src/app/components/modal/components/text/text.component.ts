@@ -2,16 +2,17 @@ import { Component, Input } from '@angular/core';
 
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 
+import IModalComponent from '../../types/modalComponent.interface';
+
 @Component({
     templateUrl: 'text.template.pug'
 })
-
-export class TextInModalComponent {
+export class TextInModalComponent extends IModalComponent {
     @Input()
     public title: string;
 
     @Input()
-    public text: string;
+    public modalBody: string;
 
     @Input()
     public isHtml: boolean =
@@ -19,5 +20,7 @@ export class TextInModalComponent {
 
     constructor(
         public activeModal: NgbActiveModal
-    ) { }
+    ) {
+        super();
+    }
 }

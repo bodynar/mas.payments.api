@@ -12,11 +12,11 @@ doctype html
 .modal-body
     div(
         *ngIf='isHtml',
-        [innerHTML]='text'
+        [innerHTML]='modalBody'
     )
     div(
         *ngIf='!isHtml',
-    ) {{ text }}
+    ) {{ modalBody }}
 .modal-footer
     button.btn.btn-outline-dark(
         type='button',

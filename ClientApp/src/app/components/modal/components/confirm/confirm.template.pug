@@ -9,8 +9,8 @@ doctype html
         style='outline: none;'
     )
         span(aria-hidden='true') &times;
-.modal-body
-    div {{ modalBody }}
+.modal-body.m-modal-body
+    div {{ body.content }}
 .modal-footer
     button.btn.btn-outline-danger(
         type='button',

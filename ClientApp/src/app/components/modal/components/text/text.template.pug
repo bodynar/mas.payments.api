@@ -9,14 +9,14 @@ doctype html
         style='outline: none;'
     )
         span(aria-hidden='true') &times;
-.modal-body
+.modal-body.m-modal-body
     div(
-        *ngIf='isHtml',
-        [innerHTML]='modalBody'
+        *ngIf='body.isHtml',
+        [innerHTML]='body.content'
     )
     div(
-        *ngIf='!isHtml',
-    ) {{ modalBody }}
+        *ngIf='!body.isHtml',
+    ) {{ body.content }}
 .modal-footer
     button.btn.btn-outline-dark(
         type='button',

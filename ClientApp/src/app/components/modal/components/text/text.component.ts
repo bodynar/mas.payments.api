@@ -2,21 +2,22 @@ import { Component, Input } from '@angular/core';
 
 import { IModalService } from '../../IModalService';
 
-import IModalComponent from '../../types/modalComponent.interface';
+import IModalComponent, { IModalBodyOptions } from '../../types/modalComponent.interface';
 
 @Component({
-    templateUrl: 'text.template.pug'
+    templateUrl: 'text.template.pug',
+    styleUrls: ['../modal.style.styl']
 })
 export class TextInModalComponent implements IModalComponent {
     @Input()
     public title: string;
 
     @Input()
-    public modalBody: string;
-
-    @Input()
-    public isHtml: boolean =
-        false;
+    public body: IModalBodyOptions =
+        {
+            content: '',
+            isHtml: false
+        };
 
     constructor(
         public modalService: IModalService

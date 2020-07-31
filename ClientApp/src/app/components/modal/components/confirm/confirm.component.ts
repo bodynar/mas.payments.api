@@ -2,10 +2,11 @@ import { Component, Input } from '@angular/core';
 
 import { IModalService } from '../../IModalService';
 
-import IModalComponent from '../../types/modalComponent.interface';
+import IModalComponent, { IModalBodyOptions } from '../../types/modalComponent.interface';
 
 @Component({
-    templateUrl: 'confirm.template.pug'
+    templateUrl: 'confirm.template.pug',
+    styleUrls: ['../modal.style.styl']
 })
 export class ConfirmInModalComponent implements IModalComponent {
     @Input()
@@ -17,8 +18,11 @@ export class ConfirmInModalComponent implements IModalComponent {
         = 'Cancel';
 
     @Input()
-    public modalBody: string =
-        '';
+    public body: IModalBodyOptions =
+        {
+            content: '',
+            isHtml: false
+        };
 
     @Input()
     public title: string;

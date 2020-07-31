@@ -7,7 +7,9 @@ import { PaginatorComponent } from './paginator/component/paginator.component';
     imports: [
         CommonModule
     ],
-    exports: [PaginatorComponent],
+    exports: [
+        PaginatorComponent
+    ],
     declarations: [
         PaginatorComponent
     ],

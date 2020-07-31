@@ -1,17 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, of, Subject } from 'rxjs';
+import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
+
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
@@ -24,6 +27,9 @@ import { ConfirmInModalComponent } from 'src/app/components/modal/components/con
 class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
+
+    public paginatorConfig$: Subject<PaginatorConfig> =
+        new ReplaySubject(1);
 
     public measurements$: Subject<Array<MeasurementsResponse>> =
         new Subject();
@@ -77,6 +83,12 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     private measurements: Array<MeasurementsResponseMeasurement> =
         [];
 
+    private measurementGroups: Array<MeasurementsResponse> =
+        [];
+
+    private pageSize: number =
+        3;
+
     constructor(
         private measurementService: IMeasurementService,
         private routerService: IRouterService,
@@ -106,7 +118,18 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             )
             .subscribe(({ result }) => {
                 this.measurements = [].concat(...result.map(x => x.measurements));
-                this.measurements$.next(result);
+                this.measurementGroups = result;
+
+                const paginatorConfig: PaginatorConfig =
+                    getPaginatorConfig(this.measurementGroups, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.measurements$.next(this.measurementGroups);
+                }
+
+                this.paginatorConfig$.next(paginatorConfig);
             });
 
         this.whenMeasurementDelete$
@@ -175,11 +198,12 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
+                    } else {
+                        this.notificationService.success('Measurements sent');
                     }
                     return true;
                 }),
                 tap(_ => {
-                    this.notificationService.success('Measurements sent');
                     this.isLoading$.next(false);
                 }),
             )
@@ -255,17 +279,23 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         const passedMeasurement: MeasurementsResponseMeasurement =
             this.measurements.filter(x => x.id === measurement.id).pop();
 
-        if (measurement.checked) {
+        const addedMeasurement: {
+            isSent: boolean,
+            id: number,
+        } = this.selectedMeasurementsToSend.filter(x => x.id === measurement.id).pop();
+
+        if (measurement.checked && isNullOrUndefined(addedMeasurement)) {
             this.selectedMeasurementsToSend.push({
                 id: measurement.id,
                 isSent: passedMeasurement.isSent
             });
         } else {
-            const addedMeasurement = this.selectedMeasurementsToSend.filter(x => x.id === measurement.id).pop();
-            this.selectedMeasurementsToSend.splice(
-                this.selectedMeasurementsToSend.indexOf(addedMeasurement),
-                1
-            );
+            if (!isNullOrUndefined(addedMeasurement)) {
+                this.selectedMeasurementsToSend.splice(
+                    this.selectedMeasurementsToSend.indexOf(addedMeasurement),
+                    1
+                );
+            }
         }
 
         this.isAnyMeasurementSelectedToSend$.next(this.selectedMeasurementsToSend.length > 0);
@@ -291,6 +321,13 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             this.isAnyMeasurementSelectedToSend$.next(false);
             this.selectedMeasurementsCount$.next('');
         }
+    }
+
+    public onPageChange(pageNumber: number): void {
+        const slicedItems: Array<MeasurementsResponse> =
+            this.measurementGroups.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
+
+        this.measurements$.next(slicedItems);
     }
 }
 

@@ -101,10 +101,10 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
             this.modalService.show(TextInModalComponent, {
                 size: 'large',
                 title: logItem.subject,
-                modalBody: logItem.body,
-                additionalParameters: {
+                body: {
+                    content: logItem.body,
                     isHtml: true
-                }
+                },
             });
         }
     }

@@ -33,7 +33,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
         {
             var builtMessage = BuildMailMessage(message: message);
 
-            SaveMessageLogItem(builtMessage as MailMessage); // todo: re-design mail message components to store log items correctly
+            // SaveMessageLogItem(builtMessage as MailMessage); // todo: re-design mail message components to store log items correctly
 
             await MailSender.SendMailAsync(builtMessage).ConfigureAwait(true);
         }
@@ -44,7 +44,7 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
             await MailSender.SendMailAsync(builtMessage).ConfigureAwait(true);
 
-            SaveMessageLogItem(builtMessage as MailMessage);
+            // SaveMessageLogItem(builtMessage as MailMessage);
         }
 
         private MailMessage BuildMailMessage(IMailMessage message = null, IMailMessage<object> messageWithModel = null)

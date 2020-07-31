@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { IModalService } from '../../IModalService';
 
 import IModalComponent from '../../types/modalComponent.interface';
 
@@ -19,7 +19,7 @@ export class TextInModalComponent implements IModalComponent {
         false;
 
     constructor(
-        public activeModal: NgbActiveModal
+        public modalService: IModalService
     ) {
     }
 }

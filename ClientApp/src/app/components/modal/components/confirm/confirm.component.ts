@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { IModalService } from '../../IModalService';
 
 import IModalComponent from '../../types/modalComponent.interface';
 
@@ -13,14 +13,18 @@ export class ConfirmInModalComponent implements IModalComponent {
         = 'Ok';
 
     @Input()
-    public message: string =
+    public cancelBtnText: string
+        = 'Cancel';
+
+    @Input()
+    public modalBody: string =
         '';
 
     @Input()
     public title: string;
 
     constructor(
-        public activeModal: NgbActiveModal
+        public modalService: IModalService
     ) {
     }
 }

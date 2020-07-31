@@ -5,7 +5,7 @@ doctype html
     button.close(
         type='button',
         aria-label='close',
-        (click)='activeModal.dismiss()',
+        (click)='modalService.close()',
         style='outline: none;'
     )
         span(aria-hidden='true') &times;
@@ -20,5 +20,5 @@ doctype html
 .modal-footer
     button.btn.btn-outline-dark(
         type='button',
-        (click)='activeModal.dismiss()'
+        (click)='modalService.close()'
     ) Close

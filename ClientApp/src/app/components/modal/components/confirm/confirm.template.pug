@@ -5,14 +5,18 @@ doctype html
     button.close(
         type='button',
         aria-label='close',
-        (click)='activeModal.dismiss()',
+        (click)='modalService.close(false)',
         style='outline: none;'
     )
         span(aria-hidden='true') &times;
 .modal-body
     div {{ modalBody }}
 .modal-footer
-    button.btn.btn-outline-dark(
+    button.btn.btn-outline-danger(
         type='button',
-        (click)='activeModal.dismiss()'
-    ) Close
+        (click)='modalService.close(false)'
+    ) {{ cancelBtnText }}
+    button.btn.btn-outline-success(
+        type='button',
+        (click)='modalService.close(true)'
+    ) {{ confirmBtnText }}

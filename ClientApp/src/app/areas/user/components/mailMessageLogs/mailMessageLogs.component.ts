@@ -1,7 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
@@ -13,13 +11,12 @@ import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
 import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-
 import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'

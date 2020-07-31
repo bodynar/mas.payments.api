@@ -1,21 +1,22 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
+import { isNullOrUndefined } from 'util';
+
+import { INotificationService } from 'services/INotificationService';
+import { IUserService } from 'services/IUserService';
+import { IModalService } from 'src/app/components/modal/IModalService';
+
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
 import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-import { INotificationService } from 'services/INotificationService';
-import { IUserService } from 'services/IUserService';
-import { TextInModalComponent } from 'src/app/components/modal/text/text.component';
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import { isNullOrUndefined } from 'util';
+import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
@@ -42,7 +43,7 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
-        private modalService: NgbModal
+        private modalService: IModalService
     ) {
         this.whenUpdateMailMessageLogs$
             .pipe(
@@ -85,6 +86,10 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
         return moment(date).format('DD.MM.YYYY');
     }
 
+    public formatTime(date: Date): string {
+        return moment(date).format('hh:mm:ss');
+    }
+
     public onPageChange(pageNumber: number): void {
         const slicedNotifications: Array<GetMailLogsResponse> =
             this.logItems.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
@@ -97,10 +102,14 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
             this.logItems.filter(x => x.id === logItemId).pop();
 
         if (!isNullOrUndefined(logItem)) {
-            const modalRef = this.modalService.open(TextInModalComponent, { size: 'lg' });
-            modalRef.componentInstance.text = logItem.body;
-            modalRef.componentInstance.isHtml = true;
-            modalRef.componentInstance.title = logItem.subject;
+            this.modalService.show(TextInModalComponent, {
+                size: 'large',
+                title: logItem.subject,
+                body: {
+                    content: logItem.body,
+                    isHtml: true
+                },
+            });
         }
     }
 }

@@ -11,7 +11,9 @@ table.table.table-hover.table-sm
             th.col-2(scope='col') Body
     tbody
         tr.d-flex(*ngFor='let logItem of (logItems$ | async)')
-            td.col-2.pl-3 {{ formatDate(logItem.sentDate) }}
+            td.col-2.pl-3(
+                [title]='formatTime(logItem.sentDate)'
+            ) {{ formatDate(logItem.sentDate) }}
             td.col-3 {{ logItem.recipient }}
             td.col-5 {{ logItem.subject }}
             td.col-2

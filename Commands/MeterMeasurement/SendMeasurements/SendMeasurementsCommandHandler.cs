@@ -32,13 +32,6 @@ namespace MAS.Payments.Commands
                         x => command.MeterMeasurementIdentifiers.Contains(x.Id)))
                 .ToList();
 
-            var isAlreadySentMeasurements = measurements.Where(x => x.IsSent).Select(x => $"{x.MeasurementType.Name} {x.Measurement}");
-
-            if (isAlreadySentMeasurements.Any())
-            {
-                throw new CommandExecutionException(CommandType, "Some of measurements marked as sent. Measurements: " + string.Join(", ", isAlreadySentMeasurements));
-            }
-
             var isAllMeasurementsInOneMonth = CheckIsAllMeasurementsInOneMonth(measurements);
 
             if (!isAllMeasurementsInOneMonth)

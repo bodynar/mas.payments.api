@@ -23,8 +23,8 @@ export const routes: Routes = [
         path: 'notifications',
         component: UserNotificationsComponent
     },
-    {
-        path: 'mailLogs',
-        component: MailMessageLogsComponent
-    }
+    //{
+    //    path: 'mailLogs',
+    //    component: MailMessageLogsComponent
+    //}
 ];

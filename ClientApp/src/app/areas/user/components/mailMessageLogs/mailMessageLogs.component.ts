@@ -7,15 +7,19 @@ import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
+import { isNullOrUndefined } from 'util';
+
+import { INotificationService } from 'services/INotificationService';
+import { IUserService } from 'services/IUserService';
+import { IModalService } from 'src/app/components/modal/IModalService';
+
 import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-import { INotificationService } from 'services/INotificationService';
-import { IUserService } from 'services/IUserService';
-import { TextInModalComponent } from 'src/app/components/modal/text/text.component';
+
+import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
 import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import { isNullOrUndefined } from 'util';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
@@ -42,7 +46,7 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
-        private modalService: NgbModal
+        private modalService: IModalService
     ) {
         this.whenUpdateMailMessageLogs$
             .pipe(
@@ -97,10 +101,14 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
             this.logItems.filter(x => x.id === logItemId).pop();
 
         if (!isNullOrUndefined(logItem)) {
-            const modalRef = this.modalService.open(TextInModalComponent, { size: 'lg' });
-            modalRef.componentInstance.text = logItem.body;
-            modalRef.componentInstance.isHtml = true;
-            modalRef.componentInstance.title = logItem.subject;
+            this.modalService.show(TextInModalComponent, {
+                size: 'large',
+                title: logItem.subject,
+                modalBody: logItem.body,
+                additionalParameters: {
+                    isHtml: true
+                }
+            });
         }
     }
 }

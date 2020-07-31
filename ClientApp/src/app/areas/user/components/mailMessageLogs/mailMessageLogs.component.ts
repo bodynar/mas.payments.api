@@ -86,6 +86,10 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
         return moment(date).format('DD.MM.YYYY');
     }
 
+    public formatTime(date: Date): string {
+        return moment(date).format('hh:mm:ss');
+    }
+
     public onPageChange(pageNumber: number): void {
         const slicedNotifications: Array<GetMailLogsResponse> =
             this.logItems.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);

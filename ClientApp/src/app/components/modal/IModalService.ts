@@ -7,4 +7,6 @@ import IModalComponent from './types/modalComponent.interface';
 
 export abstract class IModalService {
     abstract show(modalComponent: Type<IModalComponent>, modalOptions: IModalComponentOptions): Observable<any>;
+
+    abstract close(result?: any): void;
 }

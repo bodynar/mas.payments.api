@@ -19,18 +19,22 @@ export class ModalService implements IModalService {
     public modalComponent: IModalComponent;
 
     constructor(
-        private modalService: NgbModal
+        private modalService: NgbModal,
     ) { }
 
     public show(modalComponent: Type<IModalComponent>, modalOptions: IModalComponentOptions): Observable<any> {
         this.modalRef = this.modalService.open(modalComponent, {
-            size: modalOptions.size === 'large' ? 'lg' : 'sm',
+            size: modalOptions.size === 'large'
+                ? 'lg'
+                : modalOptions.size === 'small'
+                    ? 'sm'
+                    : undefined,
         });
 
         this.modalComponent = this.modalRef.componentInstance;
 
         if (isNullOrUndefined(this.modalComponent)) {
-            throw Error('Modal component is\'nt initialized.');
+            throw Error('Modal component isn\'t initialized.');
         }
 
         this.modalComponent.title = modalOptions.title;
@@ -47,5 +51,13 @@ export class ModalService implements IModalService {
         }
 
         return from(this.modalRef.result);
+    }
+
+    public close(result?: any): void {
+        if (isNullOrUndefined(this.modalRef)) {
+            throw Error('Active modal isn\'t defined.');
+        }
+
+        this.modalRef.close(result);
     }
 }

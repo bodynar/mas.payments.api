@@ -36,6 +36,9 @@ class MeasurementComponent implements OnInit {
         id: number,
     }>;
 
+    public isStateChaged: boolean =
+        false;
+
     public formattedDate: string;
 
     constructor(
@@ -52,6 +55,8 @@ class MeasurementComponent implements OnInit {
         const checked: boolean =
             target instanceof HTMLInputElement
             && target.checked;
+
+        this.isStateChaged = true;
 
         this.onSendFlagClick.next({
             checked: checked,

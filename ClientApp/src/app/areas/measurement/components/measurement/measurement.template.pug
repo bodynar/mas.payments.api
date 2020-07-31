@@ -7,14 +7,14 @@ doctype html
     .measurement__date
         span {{ formattedDate }}
     .measurement__flag(
-        *ngIf='(isSentFlagActive | async)'
+        *ngIf='(isSentFlagActive | async)',
+        [class.measurement__flag--clear]='!isStateChaged'
     )
         .custom-control.custom-checkbox
             input.custom-control-input(
                 [id]='measurement.id',
 				[checked]='measurement.isSent',
                 type='checkbox',
-                [disabled]='measurement.isSent',
                 (change)='onChecked($event)',
             )
             label.custom-control-label(

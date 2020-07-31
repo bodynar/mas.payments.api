@@ -38,7 +38,7 @@ export class ModalService implements IModalService {
         }
 
         this.modalComponent.title = modalOptions.title;
-        this.modalComponent.modalBody = modalOptions.modalBody;
+        this.modalComponent.body = modalOptions.body;
 
         if (!isNullOrUndefined(modalOptions.additionalParameters)) {
             for (const key in modalOptions.additionalParameters) {

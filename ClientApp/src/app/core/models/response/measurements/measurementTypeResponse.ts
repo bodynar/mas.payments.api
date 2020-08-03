@@ -5,4 +5,5 @@ export default interface MeasurementTypeResponse {
     description?: string;
     paymentTypeId?: number;
     paymentTypeName?: string;
+    hasRelatedMeasurements?: boolean;
 }

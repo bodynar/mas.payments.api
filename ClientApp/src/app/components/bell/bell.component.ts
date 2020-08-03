@@ -1,11 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
 import { INotificationService } from 'services/INotificationService';
+import { IRouterService } from 'services/IRouterService';
 import { IUserService } from 'services/IUserService';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
@@ -29,12 +30,19 @@ class BellComponent implements OnInit, OnDestroy {
     private pageClicks$: Observable<Event> =
         fromEvent(document, 'click');
 
+    private onHideNotification$: Subject<string> =
+        new Subject();
+
+    private onHideNotifications$: Subject<Array<string>> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
+        private routerService: IRouterService,
     ) {
         this.pageClicks$
             .pipe(
@@ -44,11 +52,54 @@ class BellComponent implements OnInit, OnDestroy {
                 filter((target: HTMLElement) => !this.isBellChild(target))
             )
             .subscribe(_ => this.isNotificationsHidden = !this.isNotificationsHidden);
+
+        this.onHideNotifications$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(key =>
+                    !isNullOrUndefined(key)
+                    && key.length > 0
+                    && !key.some(x => isNullOrUndefined(x))
+                ),
+                switchMap(keys => this.userService.hideNotification(keys)),
+                filter(result => {
+                    if (!result.success) {
+                        this.notificationService.error(result.error);
+                    }
+
+                    return result.success;
+                })
+            )
+            .subscribe(_ => {
+                this.notifications = [];
+                this.notifications$.next(this.notifications);
+            });
+
+        this.onHideNotification$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(key => this.notifications.some(x => x.key === key)),
+                switchMap(key => this.userService.hideNotification([key])),
+                filter(result => {
+                    if (!result.success) {
+                        this.notificationService.error(result.error);
+                    }
+
+                    return result.success;
+                })
+            )
+            .subscribe(({ args }) => {
+                const key: string =
+                    (args as Array<string>).pop();
+
+                this.notifications = this.notifications.filter(notificationItem => notificationItem.key !== key);
+                this.notifications$.next(this.notifications);
+            });
     }
 
     public ngOnInit(): void {
         this.userService
-            .getNotifications()
+            .getNotifications({ onlyActive: true })
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
@@ -72,13 +123,27 @@ class BellComponent implements OnInit, OnDestroy {
 
     public notificationsToggle(target: HTMLElement): void {
         if (this.isBellChild(target) && !this.isBellList(target)) {
-            this.isNotificationsHidden = !this.isNotificationsHidden;
+            if (this.notifications.length > 0) {
+                this.isNotificationsHidden = !this.isNotificationsHidden;
+            } else {
+                this.onNotificationListClick();
+            }
         }
     }
 
-    public removeNotification(notification: GetNotificationsResponse): void {
-        this.notifications = this.notifications.filter(notificationItem => notificationItem != notification);
-        this.notifications$.next(this.notifications);
+    public hideNotification(key: string): void {
+        this.onHideNotification$.next(key);
+    }
+
+    public hideAll(): void {
+        const keys: Array<string> =
+            this.notifications.map(x => x.key);
+
+        this.onHideNotifications$.next(keys);
+    }
+
+    public onNotificationListClick(): void {
+        this.routerService.navigate(['app', 'user', 'notifications']);
     }
 
     private isBellChild(element: HTMLElement): boolean {

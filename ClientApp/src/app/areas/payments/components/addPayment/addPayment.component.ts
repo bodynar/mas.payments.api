@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { months } from 'src/static/months';
 import { isNullOrUndefined } from 'util';
 
@@ -12,7 +12,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddPaymentRequest } from 'models/request/addPaymentRequest';
+import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({

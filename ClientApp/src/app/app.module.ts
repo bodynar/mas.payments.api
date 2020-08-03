@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+
 import { AppRoutingModule } from './app.routing';
 
 import { CoreModule } from './core/core.module';
@@ -19,6 +21,7 @@ import { MeasurementModule } from './areas/measurement/measurement.module';
 import { PaymentsModule } from './areas/payments/payments.module';
 import { StatisticsModule } from './areas/statistics/statistics.module';
 import { UserModule } from './areas/user/user.module';
+import { ModalComponentsModule } from './components/modal/modalComponents.module';
 import { PagesModule } from './pages/pages.module';
 
 @NgModule({
@@ -36,8 +39,10 @@ import { PagesModule } from './pages/pages.module';
     AppRoutingModule,
     FormsModule,
     CommonModule,
+    NgbModule.forRoot(),
 
     CoreModule,
+    ModalComponentsModule,
 
     PaymentsModule,
     MeasurementModule,

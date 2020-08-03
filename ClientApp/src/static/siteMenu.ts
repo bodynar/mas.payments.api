@@ -14,27 +14,37 @@ const mainSiteMenu: Array<MenuItem> = [
     {
         name: 'Statistics',
         link: 'stats',
-        description: 'Payments statistics and predictions for next payments',
-        isEnabled: false,
+        description: 'Visual statistics in charts',
+        isEnabled: true,
     }
 ];
 
 const userSideMenu: Array<MenuItem> = [
     {
-        name: 'User card',
+        name: 'My card',
         link: '',
         isEnabled: true,
     },
     {
-        name: 'User settings',
+        name: 'My notifications',
+        link: 'notifications',
+        isEnabled: true,
+    },
+    {
+        name: 'My settings',
         link: 'settings',
         isEnabled: true,
     },
     {
-        name: 'Test mail message',
+        name: 'Email test',
         link: 'mailTest',
         isEnabled: true,
-    }
+    },
+    //{
+    //    name: 'Mail message logs',
+    //    link: 'mailLogs',
+    //    isEnabled: true
+    //}
 ];
 
 export {

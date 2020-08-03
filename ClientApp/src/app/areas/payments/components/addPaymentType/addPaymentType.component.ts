@@ -8,7 +8,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
+import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequest';
 
 @Component({
     templateUrl: 'addPaymentType.template.pug'

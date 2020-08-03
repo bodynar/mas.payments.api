@@ -48,8 +48,8 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpDelete("[action]")]
-        public void DeletePaymentType(long paymentTypeId)
+        [HttpPost("[action]")]
+        public void DeletePaymentType([FromBody]long paymentTypeId)
         {
             CommandProcessor.Execute(
                 new DeletePaymentTypeCommand(paymentTypeId));
@@ -92,14 +92,13 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpDelete("[action]")]
-        public void DeletePayment(long paymentId)
+        [HttpPost("[action]")]
+        public void DeletePayment([FromBody]long paymentId)
         {
             CommandProcessor.Execute(
                 new DeletePaymentCommand(paymentId));
         }
 
         #endregion
-
     }
 }

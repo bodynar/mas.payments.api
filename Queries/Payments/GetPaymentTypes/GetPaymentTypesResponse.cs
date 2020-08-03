@@ -11,5 +11,9 @@ namespace MAS.Payments.Queries
         public string Description { get; set; }
 
         public string Company { get; set; }
+
+        public bool HasRelatedPayments { get; set; }
+
+        public bool HasRelatedMeasurementTypes { get; set; }
     }
 }

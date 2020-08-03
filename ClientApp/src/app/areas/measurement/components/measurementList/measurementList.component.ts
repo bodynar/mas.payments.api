@@ -1,20 +1,25 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { months } from 'src/static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
+import { IModalService } from 'src/app/components/modal/IModalService';
+
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/measurementsFilter';
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
+import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({
     templateUrl: 'measurementList.template.pug'
@@ -22,6 +27,9 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 class MeasurementListComponent implements OnInit, OnDestroy {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
+
+    public paginatorConfig$: Subject<PaginatorConfig> =
+        new ReplaySubject(1);
 
     public measurements$: Subject<Array<MeasurementsResponse>> =
         new Subject();
@@ -66,16 +74,26 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
-    private onSendMeasurementsClick$: Subject<Array<number>>
+    private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>>
         = new Subject();
 
-    private selectedMeasurementsToSend: Array<number> =
+    private selectedMeasurementsToSend: Array<{ id: number, isSent: boolean }> =
         [];
+
+    private measurements: Array<MeasurementsResponseMeasurement> =
+        [];
+
+    private measurementGroups: Array<MeasurementsResponse> =
+        [];
+
+    private pageSize: number =
+        3;
 
     constructor(
         private measurementService: IMeasurementService,
         private routerService: IRouterService,
         private notificationService: INotificationService,
+        private modalService: IModalService,
     ) {
         this.months = [{ name: '' }, ...months];
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
@@ -98,7 +116,21 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     return response.success;
                 })
             )
-            .subscribe(({ result }) => this.measurements$.next(result));
+            .subscribe(({ result }) => {
+                this.measurements = [].concat(...result.map(x => x.measurements));
+                this.measurementGroups = result;
+
+                const paginatorConfig: PaginatorConfig =
+                    getPaginatorConfig(this.measurementGroups, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.measurements$.next(this.measurementGroups);
+                }
+
+                this.paginatorConfig$.next(paginatorConfig);
+            });
 
         this.whenMeasurementDelete$
             .pipe(
@@ -130,21 +162,48 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         this.onSendMeasurementsClick$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x === 0)),
+                filter(array => array.length > 0 && !array.some(x => isNullOrUndefined(x) || x.id === 0)),
+                switchMap(array => {
+                    const hasAlreadySentItems: boolean =
+                        array.some(x => x.isSent);
+
+                    if (hasAlreadySentItems) {
+                        return this.modalService.show(ConfirmInModalComponent, {
+                            size: 'medium',
+                            title: 'Measurements already sent',
+                            body: {
+                                content: 'Some of measurements is already sent.\nDo you want to send them again?',
+                                isHtml: false,
+                            },
+                            additionalParameters: {
+                                confirmBtnText: 'Yes',
+                                cancelBtnText: 'No',
+                            }
+                        }).pipe(
+                            map(response => response as boolean),
+                            map(filterValue => ({ array, filterValue }))
+                        );
+                    } else {
+                        return of({ array, filterValue: true });
+                    }
+                }),
+                filter(({ filterValue }) => filterValue),
                 tap(_ => {
                     this.isLoading$.next(true);
                     this.isMeasurementsSentFlagActive$.next(false);
                     this.isAnyMeasurementSelectedToSend$.next(false);
                 }),
+                map(({ array }) => array.map(x => x.id)),
                 switchMap(array => this.measurementService.sendMeasurements(array)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
+                    } else {
+                        this.notificationService.success('Measurements sent');
                     }
                     return true;
                 }),
                 tap(_ => {
-                    this.notificationService.success('Measurements sent');
                     this.isLoading$.next(false);
                 }),
             )
@@ -217,13 +276,26 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         checked: boolean,
         id: number,
     }): void {
-        if (measurement.checked) {
-            this.selectedMeasurementsToSend.push(measurement.id);
+        const passedMeasurement: MeasurementsResponseMeasurement =
+            this.measurements.filter(x => x.id === measurement.id).pop();
+
+        const addedMeasurement: {
+            isSent: boolean,
+            id: number,
+        } = this.selectedMeasurementsToSend.filter(x => x.id === measurement.id).pop();
+
+        if (measurement.checked && isNullOrUndefined(addedMeasurement)) {
+            this.selectedMeasurementsToSend.push({
+                id: measurement.id,
+                isSent: passedMeasurement.isSent
+            });
         } else {
-            this.selectedMeasurementsToSend.splice(
-                this.selectedMeasurementsToSend.indexOf(measurement.id),
-                1
-            );
+            if (!isNullOrUndefined(addedMeasurement)) {
+                this.selectedMeasurementsToSend.splice(
+                    this.selectedMeasurementsToSend.indexOf(addedMeasurement),
+                    1
+                );
+            }
         }
 
         this.isAnyMeasurementSelectedToSend$.next(this.selectedMeasurementsToSend.length > 0);
@@ -249,6 +321,13 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             this.isAnyMeasurementSelectedToSend$.next(false);
             this.selectedMeasurementsCount$.next('');
         }
+    }
+
+    public onPageChange(pageNumber: number): void {
+        const slicedItems: Array<MeasurementsResponse> =
+            this.measurementGroups.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
+
+        this.measurements$.next(slicedItems);
     }
 }
 

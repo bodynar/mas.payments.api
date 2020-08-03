@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure;
 
 namespace MAS.Payments.Notifications
@@ -19,9 +20,9 @@ namespace MAS.Payments.Notifications
             Resolver = resolver;
         }
 
-        public IEnumerable<Notification> GetNotifications()
+        public IEnumerable<UserNotification> GetNotifications()
         {
-            var notifications = new List<Notification>();
+            var notifications = new List<UserNotification>();
 
             foreach (var notificatorType in NotificatorsTypesMap.Value)
             {
@@ -29,6 +30,8 @@ namespace MAS.Payments.Notifications
 
                 notifications.AddRange(notificator.GetNotifications());
             }
+
+            notifications.ForEach(x => x.CreatedAt = DateTime.Now);
 
             return notifications;
         }

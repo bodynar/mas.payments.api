@@ -1,22 +1,27 @@
 doctype html
 
-div
-    button.btn.btn-outline-success.btn-sm(
-        type='button',
-        (click)='onAddClick()'
-    ) Add
-    .list_item(
-        *ngFor='let type of (paymentTypes$ | async)'
-    )
-        .info
-            .name {{ type.name }}
-            p.description {{ type.description}}
-        .options
-            .oi.oi-pencil.oi-medium-extra(
-                (click)='onEditClick(type.id)',
-                title='Edit'
-            )
-            .oi.oi-trash.oi-medium-extra(
-                (click)='onDeleteClick(type.id)',
-                title='Delete'
-            )
+button.btn.btn-outline-success.btn-sm(
+    type='button',
+    (click)='onAddClick()'
+) Add
+.list_item(
+    *ngFor='let type of (paymentTypes$ | async)'
+)
+    .info
+        .name {{ type.name }}
+        p.description {{ type.description}}
+    .options
+        .oi.oi-pencil.oi-medium-extra(
+            (click)='onEditClick(type.id)',
+            title='Edit'
+        )
+        .oi.oi-trash.oi-medium-extra(
+            (click)='onDeleteClick(type.id)',
+            title='All related objects will be deleted too.'
+        )
+br
+app-paginator(
+    *ngIf='(paginatorConfig$ | async)?.enabled',
+    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+    (pageChange)='onPageChange($event)'
+)

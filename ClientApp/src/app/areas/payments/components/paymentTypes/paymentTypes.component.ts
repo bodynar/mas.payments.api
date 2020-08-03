@@ -1,13 +1,20 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { ReplaySubject, Subject, of, Observable } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
+
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import PaginatorConfig from 'src/common/paginator/paginatorConfig';
+
+import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 
-import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import { IRouterService } from 'services/IRouterService';
+import { IModalService } from 'src/app/components/modal/IModalService';
+
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 
 @Component({
     templateUrl: 'paymentTypes.template.pug',
@@ -17,31 +24,36 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
+    public paginatorConfig$: Subject<PaginatorConfig> =
+        new ReplaySubject(1);
+
     private whenTypeDelete$: Subject<number> =
         new Subject();
 
     private whenTypeEdit$: Subject<number> =
         new Subject();
 
+    private whenGetPaymentTypes$: Subject<null> =
+        new Subject();
+
     private whenComponentDestroy$: Subject<null> =
         new Subject();
+
+    private paymentTypes: Array<PaymentTypeResponse> =
+        [];
+
+    private pageSize: number =
+        5;
 
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
         private routerService: IRouterService,
+        private modalService: IModalService,
     ) {
-        this.whenTypeDelete$
+        this.whenGetPaymentTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(id => id !== 0),
-                switchMap(id => this.paymentService.deletePaymentType(id)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
                 filter(response => {
                     if (!response.success) {
@@ -49,9 +61,39 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                     }
                     return response.success;
                 }),
-                tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(({ result }) => this.paymentTypes$.next(result));
+            .subscribe(({ result }) => {
+                this.paymentTypes = result;
+
+                const paginatorConfig: PaginatorConfig =
+                    getPaginatorConfig(this.paymentTypes, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.paymentTypes$.next(this.paymentTypes);
+                }
+
+                this.paginatorConfig$.next(paginatorConfig);
+            });
+
+        this.whenTypeDelete$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(id => id !== 0),
+                switchMap(id => this.hasRelatedObjects(id)),
+                filter(({ canDelete }) => canDelete),
+                switchMap(({ id }) => this.paymentService.deletePaymentType(id)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    } else {
+                        this.notificationService.success('Delete performed sucessfully');
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(() => this.whenGetPaymentTypes$.next(null));
 
         this.whenTypeEdit$
             .pipe(
@@ -65,18 +107,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     }
 
     public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.paymentTypes$.next(result));
+        this.whenGetPaymentTypes$.next(null)
     }
 
     public ngOnDestroy(): void {
@@ -94,6 +125,46 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
 
     public onAddClick(): void {
         this.routerService.navigateArea(['addType']);
+    }
+
+    public onPageChange(pageNumber: number): void {
+        const slicedItems: Array<PaymentTypeResponse> =
+            this.paymentTypes.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
+
+        this.paymentTypes$.next(slicedItems);
+    }
+
+    private hasRelatedObjects(id: number): Observable<{id: number, canDelete: boolean }> {
+        const { hasRelatedPayments, hasRelatedMeasurementTypes } = this.paymentTypes.find(x => x.id === id);
+
+        if (hasRelatedPayments || hasRelatedMeasurementTypes) {
+            const relatedObjectsName: string =
+                hasRelatedPayments && hasRelatedMeasurementTypes
+                    ? 'payments and measurement types'
+                    : hasRelatedPayments
+                        ? 'payments'
+                        : hasRelatedMeasurementTypes
+                            ? 'measurement types'
+                            : '';
+
+            return this.modalService.show(ConfirmInModalComponent, {
+                size: 'medium',
+                title: 'Warning! Measurement type related with measurement.',
+                body: {
+                    isHtml: false,
+                    content: `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?`
+                },
+                additionalParameters: {
+                    confirmBtnText: 'Yes',
+                    cancelBtnText: 'No',
+                }
+            }).pipe(
+                map(response => response as boolean),
+                map(response => ({ id: id, canDelete: response }))
+            );
+        } else {
+            return of({ id: id, canDelete: true });
+        }
     }
 }
 

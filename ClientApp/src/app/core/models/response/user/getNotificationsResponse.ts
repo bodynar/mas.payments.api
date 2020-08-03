@@ -1,5 +1,10 @@
 export default interface GetNotificationsResponse {
-    name: string;
-    description: string;
+    title: string;
+    text: string;
+    key: string;
     type: string;
+    createdAt: Date;
+    id?: number;
+    hiddenAt?: Date;
+    isHidden?: boolean;
 }

@@ -6,9 +6,11 @@ import { tap } from 'rxjs/operators';
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { GetPaymentStatsResponse } from 'models/response/payments/paymentStatsResponse';
+import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
+import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
-import { StatisticsFilter } from 'models/statisticsFilter';
+import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
+import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
 
 @Injectable()
 class StatisticsService implements IStatisticsService {
@@ -18,7 +20,7 @@ class StatisticsService implements IStatisticsService {
         // private loggingService: ILoggingService
     ) { }
 
-    public getPaymentStatistics(filter?: StatisticsFilter): Observable<QueryExecutionResult<GetPaymentStatsResponse>> {
+    public getPaymentStatistics(filter: PaymentStatisticsFilter): Observable<QueryExecutionResult<GetPaymentsStatisticsResponse>> {
         return this.statsApiBackend
             .getPaymentStatistics(filter)
             .pipe(
@@ -27,7 +29,21 @@ class StatisticsService implements IStatisticsService {
                         // this.loggingService.error(response);
                     }
                 }),
-            );;
+            );
+    }
+
+    public getMeasurementStatistics(filter: MeasurementStatisticsFilter)
+        : Observable<QueryExecutionResult<GetMeasurementStatisticsResponse>> {
+
+        return this.statsApiBackend
+            .getMeasurementStatistics(filter)
+            .pipe(
+                tap(response => {
+                    if (!response.success) {
+                        // this.loggingService.error(response);
+                    }
+                }),
+            );
     }
 }
 

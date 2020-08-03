@@ -1,23 +1,36 @@
 .notification(
     [class.collapsed]='isNotificationsHidden',
-    (click)='notificationsToggle($event.target)'
+    (click)='notificationsToggle($event.target)',
 )
-    .bell(title='Notifications')
+    .bell(
+        [title]=`(notifications$ | async)?.length === 0 ? "No active notifications.
+Click to see all." : "Notifications"`
+    )
         span.oi.oi-bell
         span.badge(
             *ngIf='(notifications$ | async)?.length > 0'
         ) {{ (notifications$ | async)?.length }}
-    ul.notification-list(
+    .notification-dropdown(
         *ngIf='(notifications$ | async)?.length > 0'
     )
-        li(
-            *ngFor='let notification of (notifications$ | async)',
-           [ngClass]='notification.type',
-           data-bell-list-child='true'
-        )
-            .header
-                h5.title {{ notification.name }}
-                span.oi.oi-x.oi-medium(
-                    (click)='removeNotification(notification)'
-                )
-            p.description {{ notification.description }}
+        .dismiss-btn
+            button.btn.btn-outline-secondary.btn-sm.mb-1.btn-block(
+                (click)='onNotificationListClick()'
+            ) Show all
+        ul.notification-list
+            li.m-card.card(
+                *ngFor='let notification of (notifications$ | async)',
+                [ngClass]='notification.type.toLowerCase()',
+                data-bell-list-child='true'
+            )
+                .card-body
+                    h6.card-title {{ notification.title }}
+                    span.oi.oi-x.oi-medium.float-right(
+                        (click)='hideNotification(notification.key)',
+                        title='Hide from active'
+                    )
+                    p.card-text {{ notification.text }}
+        .dismiss-btn
+            button.btn.btn-outline-secondary.btn-sm.mb-2.mt-1.btn-block(
+                (click)='hideAll()'
+            ) Hide all

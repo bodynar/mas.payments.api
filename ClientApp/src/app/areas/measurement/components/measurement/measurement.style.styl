@@ -1,4 +1,4 @@
-@import '../../../../../common/colors.styl'
+@import '../../../../../common/styles/colors.styl'
 
 .measurement
     display grid
@@ -33,6 +33,9 @@
     &__flag
         grid-area Flag
         align-self center
+
+        &--clear .custom-control-label::before
+            background-color rgba(0, 123, 255, 0.5)
 
     &__type
         grid-area Type

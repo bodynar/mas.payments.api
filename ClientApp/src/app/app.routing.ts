@@ -5,8 +5,9 @@ import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './pages/notFound/notFound.component';
 
-import { routes as PaymentRoutes } from './areas/payments/payments.routing';
 import { routes as MeasurementRoutes } from './areas/measurement/measurement.routing';
+import { routes as PaymentRoutes } from './areas/payments/payments.routing';
+import { routes as StatisticsRoutes } from './areas/statistics/statistics.routing';
 import { routes as UserRoutes } from './areas/user/user.routing';
 
 import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
@@ -38,11 +39,11 @@ const routes: Routes = [
                 component: MeasurementsComponent,
                 children: [...MeasurementRoutes]
             },
-            // {
-            //     path: 'stats',
-            //     component: StatisticsComponent,
-            //     loadChildren: () => StatisticsModule
-            // },
+            {
+                path: 'stats',
+                component: StatisticsComponent,
+                children: [...StatisticsRoutes]
+            },
             {
                 path: 'user',
                 component: UserComponent,

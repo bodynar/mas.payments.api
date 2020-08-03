@@ -18,6 +18,10 @@ namespace MAS.Payments.DataBase
 
         public DbSet<UserSettings> UserSetting { get; set; }
 
+        public DbSet<UserNotification> UserNotification { get; set; }
+
+        public DbSet<MailMessageLogItem> MailMessageLog { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // todo: use DefaultUserSetting enum and its attribute

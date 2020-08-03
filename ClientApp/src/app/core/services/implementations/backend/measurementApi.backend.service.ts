@@ -9,8 +9,8 @@ import { isNullOrUndefined } from 'util';
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 
 import MeasurementsFilter from 'models/measurementsFilter';
-import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
-import { AddMeasurementTypeRequest } from 'models/request/addMeasurementTypeRequest';
+import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
+import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
@@ -18,7 +18,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
-class MeasurementApiBackendService implements IMeasurementApiBackendService {
+export class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/measurement';
@@ -147,8 +147,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     public deleteMeasurement(measurementId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deleteMeasurement`,
-                { params: new HttpParams().set('measurementId', `${measurementId}`) })
+            .post(`${this.apiPrefix}/deleteMeasurement`, measurementId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -206,7 +205,8 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
                         systemName: measurementType['systemName'],
                         description: measurementType['description'],
                         paymentTypeId: measurementType['paymentTypeId'],
-                        paymentTypeName: measurementType['paymentTypeName']
+                        paymentTypeName: measurementType['paymentTypeName'],
+                        hasRelatedMeasurements: measurementType['hasRelatedMeasurements'] || false,
                     }) as MeasurementTypeResponse)),
                     catchError(error => of(error.error)),
                     map(x => isNullOrUndefined(x.Success)
@@ -270,8 +270,7 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     public deleteMeasurementType(measurementTypeId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deleteMeasurementType`,
-                { params: new HttpParams().set('measurementTypeId', `${measurementTypeId}`) })
+            .post(`${this.apiPrefix}/deleteMeasurementType`, measurementTypeId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -286,5 +285,3 @@ class MeasurementApiBackendService implements IMeasurementApiBackendService {
 
     // #endregion measurement types
 }
-
-export { MeasurementApiBackendService };

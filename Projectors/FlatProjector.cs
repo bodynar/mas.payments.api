@@ -75,7 +75,22 @@ namespace MAS.Payments.Projectors
                                     .Where(x => x.Name.ToLower().StartsWith(propertyName));
 
                             if (destinationComplexProperties.Any())
+                            {
+                                if (destinationComplexProperties.Count() == 1)
+                                {
+                                    var destinationComplexProperty = destinationComplexProperties.First();
+                                    
+                                    if (destinationComplexProperty.PropertyType == sourceProperty.PropertyType
+                                        && destinationComplexProperty.Name.ToLower() == propertyName)
+                                    {
+                                        var sourceValue = sourceProperty.GetValue(source);
+                                        destinationComplexProperty.SetValue(destination, sourceValue);
+                                        continue;
+                                    }
+                                }
+
                                 SetComplexProperties(source, destination, sourceProperty, destinationComplexProperties, 1);
+                            }
                         }
                         else
                         {
@@ -166,7 +181,7 @@ namespace MAS.Payments.Projectors
                     typeof(long),
                     typeof(float),
                     typeof(double),
-                    typeof(decimal)
+                    typeof(decimal),
                 };
             }
 

@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { months } from 'src/static/months';
 import { isNullOrUndefined } from 'util';
 
@@ -13,7 +13,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddMeasurementRequest } from 'models/request/addMeasurementRequest';
+import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({

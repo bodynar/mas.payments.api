@@ -175,6 +175,13 @@ div(
         (typeClick)='onTypeClick($event)'
     )
 
+    br
+    app-paginator(
+        *ngIf='(paginatorConfig$ | async)?.enabled',
+        [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+        (pageChange)='onPageChange($event)'
+    )
+
 img.loading-indicator(
     alt='loading..',
     src='images/loading.svg',

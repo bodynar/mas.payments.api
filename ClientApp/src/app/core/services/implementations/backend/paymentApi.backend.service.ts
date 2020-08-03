@@ -9,8 +9,8 @@ import { isNullOrUndefined } from 'util';
 import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.backend';
 
 import PaymentsFilter from 'models/paymentsFilter';
-import { AddPaymentRequest } from 'models/request/addPaymentRequest';
-import { AddPaymentTypeRequest } from 'models/request/addPaymentTypeRequest';
+import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
+import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequest';
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import PaymentResponse from 'models/response/payments/paymentResponse';
@@ -18,7 +18,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
-class PaymentApiBackendService implements IPaymentApiBackendService {
+export class PaymentApiBackendService implements IPaymentApiBackendService {
 
     private readonly apiPrefix: string =
         '/api/payment';
@@ -155,8 +155,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     public deletePayment(paymentId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deletePayment`,
-                { params: new HttpParams().set('paymentId', `${paymentId}`) })
+            .post(`${this.apiPrefix}/deletePayment`, paymentId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -198,7 +197,9 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
                         name: paymentType['name'],
                         systemName: response['systemName'],
                         description: paymentType['description'],
-                        company: paymentType['company']
+                        company: paymentType['company'],
+                        hasRelatedPayments: paymentType['hasRelatedPayments'] || false,
+                        hasRelatedMeasurementTypes: paymentType['hasRelatedMeasurementTypes'] || false,
                     }) as PaymentTypeResponse)),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)
@@ -261,8 +262,7 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     public deletePaymentType(paymentTypeId: number): Observable<CommandExecutionResult> {
         return this.http
-            .delete(`${this.apiPrefix}/deletePaymentType`,
-                { params: new HttpParams().set('paymentTypeId', `${paymentTypeId}`) })
+            .post(`${this.apiPrefix}/deletePaymentType`, paymentTypeId)
             .pipe(
                 catchError(error => of(error.error)),
                 map(x => x
@@ -277,5 +277,3 @@ class PaymentApiBackendService implements IPaymentApiBackendService {
 
     // #endregion payment type
 }
-
-export { PaymentApiBackendService };

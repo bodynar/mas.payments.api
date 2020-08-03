@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { AppCommonModule } from 'src/common/common.module';
 import { UserComponent } from './component/user.component';
+import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';
+import { UserNotificationsComponent } from './components/notifications/userNotifications.component';
 import { UserSettingComponent } from './components/settings/userSetting.component';
 import { TestMailMessageComponent } from './components/testMailMessage/testMailMessage.component';
 import { UserCardComponent } from './components/userCard/userCard.component';
@@ -14,13 +17,16 @@ import { UserCardComponent } from './components/userCard/userCard.component';
         FormsModule,
         ReactiveFormsModule,
         CommonModule,
+        AppCommonModule
     ],
     exports: [],
     declarations: [
         UserComponent,
         UserCardComponent,
         UserSettingComponent,
-        TestMailMessageComponent
+        UserNotificationsComponent,
+        TestMailMessageComponent,
+        MailMessageLogsComponent
     ],
     providers: [],
 })

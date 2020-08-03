@@ -4,17 +4,17 @@ import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoDat
 
 @Component({
     selector: 'app-stats-chart',
-    templateUrl: 'statsChart.template.html',
+    templateUrl: 'statsChart.template.pug',
 })
 export class StatsChartComponent {
-    @Input('series')
-    public series: Array<ApexAxisChartSeries>;
+    @Input()
+    public series: Array<ApexAxisChartSeries> = [];
 
-    @Input('xaxis')
-    public xaxis: Array<ApexXAxis>;
+    @Input()
+    public xaxis: Array<ApexXAxis> = [];
 
-    @Input('title')
-    public title: Array<ApexTitleSubtitle>;
+    @Input()
+    public title: Array<ApexTitleSubtitle> = [];
 
     public chart: ApexChart =
         {

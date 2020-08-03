@@ -21,7 +21,7 @@ class TestMailMessageComponent implements OnDestroy {
             recipient: ''
         };
 
-    private whenSendRequest$: Subject<NgForm> =
+    public whenSendRequest$: Subject<NgForm> =
         new Subject();
 
     private whenComponentDestroy$: Subject<null> =

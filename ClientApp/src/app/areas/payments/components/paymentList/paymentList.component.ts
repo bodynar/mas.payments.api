@@ -5,8 +5,11 @@ import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'util';
 
-import { yearsRange } from 'src/common/years';
+import { yearsRange } from 'src/common/utils/years';
 import { months } from 'src/static/months';
+
+import { getPaginatorConfig } from 'src/common/paginator/paginator';
+import PaginatorConfig from 'src/common/paginator/paginatorConfig';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -45,6 +48,9 @@ export class PaymentListComponent implements OnInit, OnDestroy {
     public hasData$: Subject<boolean> =
         new BehaviorSubject(false);
 
+    public paginatorConfig$: Subject<PaginatorConfig> =
+        new ReplaySubject(1);
+
     public amountFilterType: string =
         '';
 
@@ -77,6 +83,14 @@ export class PaymentListComponent implements OnInit, OnDestroy {
     private payments: Array<PaymentResponse> =
         [];
 
+    private paginatorConfig: PaginatorConfig;
+
+    private pageSize: number =
+        10;
+
+    private currentPage: number =
+        0;
+
     constructor(
         private paymentService: IPaymentService,
         private routerService: IRouterService,
@@ -86,6 +100,7 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
+        this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
 
         this.whenSubmitFilters$
             .pipe(
@@ -103,6 +118,17 @@ export class PaymentListComponent implements OnInit, OnDestroy {
             )
             .subscribe(({ result }) => {
                 this.payments = result;
+
+                const paginatorConfig: PaginatorConfig =
+                    getPaginatorConfig(this.payments, this.pageSize);
+
+                if (paginatorConfig.enabled) {
+                    this.onPageChange(0);
+                } else {
+                    this.payments$.next(this.payments);
+                }
+
+                this.paginatorConfig$.next(paginatorConfig);
                 this.onSortColumn(this.currentSortColumn, this.currentSortOrder === 'desc' ? 'asc' : 'desc');
             });
 
@@ -216,8 +242,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
     }
 
     public onSortColumn(columnName: string, sortOrder?: 'asc' | 'desc'): void {
-        let sortingFunc: (left: PaymentResponse, right: PaymentResponse) => number;
-
         if (this.currentSortColumn !== columnName) {
             this.currentSortOrder = 'asc';
             this.currentSortColumn = columnName;
@@ -225,6 +249,41 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
         const usedStoredValue: boolean =
             isNullOrUndefined(sortOrder);
+
+        if (usedStoredValue) {
+            this.currentSortOrder =
+                this.currentSortOrder === 'asc'
+                    ? 'desc'
+                    : 'asc';
+
+            this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
+        }
+
+        this.currentSortColumn$.next(columnName);
+        this.onPageChange(this.currentPage);
+    }
+
+    public onPageChange(pageNumber: number): void {
+        const sortingFunc: (left: PaymentResponse, right: PaymentResponse) => number =
+            this.getSortFunction(this.currentSortColumn);
+
+        let items: Array<PaymentResponse>;
+
+        if (this.paginatorConfig.enabled) {
+            items =
+                this.payments
+                    .sort(sortingFunc)
+                    .slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
+        } else {
+            items = this.payments.sort(sortingFunc);
+        }
+
+        this.payments$.next(items);
+        this.currentPage = pageNumber;
+    }
+
+    private getSortFunction(columnName: string, sortOrder?: 'asc' | 'desc'): (left: PaymentResponse, right: PaymentResponse) => number {
+        let sortingFunc: (left: PaymentResponse, right: PaymentResponse) => number;
 
         sortOrder = sortOrder || this.currentSortOrder;
 
@@ -268,20 +327,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 break;
         }
 
-        if (usedStoredValue) {
-            this.currentSortOrder =
-                this.currentSortOrder === 'asc'
-                    ? 'desc'
-                    : 'asc';
-
-            this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
-        }
-
-        this.currentSortColumn$.next(columnName);
-
-        const sortedPayments: Array<PaymentResponse> =
-            this.payments.sort(sortingFunc);
-
-        this.payments$.next(sortedPayments);
+        return sortingFunc;
     }
 }

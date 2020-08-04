@@ -6,7 +6,7 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';

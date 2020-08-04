@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';

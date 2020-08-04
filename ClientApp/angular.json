@@ -35,6 +35,9 @@
               "node_modules/popper.js/dist/umd/popper.min.js",
               "node_modules/bootstrap/dist/js/bootstrap.js",
               "node_modules/apexcharts/dist/apexcharts.min.js"
+            ],
+            "allowedCommonJsDependencies": [
+              "apexcharts"
             ]
           },
           "configurations": {
@@ -86,14 +89,19 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
-            "assets": [
-              "src/favicon.ico",
-              "src/assets"
-            ],
+            "assets": [],
             "styles": [
-              "src/styles.styl"
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
+              "node_modules/open-iconic/font/css/open-iconic-bootstrap.min.css",
+              "src/app/common/styles/styles.styl",
+              "src/app/common/styles/colors.styl"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.js",
+              "node_modules/apexcharts/dist/apexcharts.min.js"
+            ]
           }
         },
         "lint": {
@@ -107,18 +115,6 @@
             "exclude": [
               "**/node_modules/**"
             ]
-          }
-        },
-        "e2e": {
-          "builder": "@angular-devkit/build-angular:protractor",
-          "options": {
-            "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "mas.payments:serve"
-          },
-          "configurations": {
-            "production": {
-              "devServerTarget": "mas.payments:serve:production"
-            }
           }
         }
       }

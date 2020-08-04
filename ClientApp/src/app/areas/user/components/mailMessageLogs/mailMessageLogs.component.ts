@@ -5,7 +5,7 @@ import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';

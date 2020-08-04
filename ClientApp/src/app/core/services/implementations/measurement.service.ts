@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';

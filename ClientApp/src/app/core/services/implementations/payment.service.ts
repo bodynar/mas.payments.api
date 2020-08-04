@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { IPaymentApiBackendService } from 'services/backend/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';

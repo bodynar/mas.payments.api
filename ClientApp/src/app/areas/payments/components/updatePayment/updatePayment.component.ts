@@ -5,9 +5,9 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { yearsRange } from 'src/common/utils/years';
-import { months } from 'src/static/months';
-import { isNullOrUndefined } from 'util';
+import { yearsRange } from 'common/utils/years';
+import { months } from 'static/months';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';

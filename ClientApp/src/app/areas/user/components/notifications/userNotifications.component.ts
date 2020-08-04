@@ -8,8 +8,8 @@ import * as moment from 'moment';
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import PaginatorConfig from 'src/common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'common/paginator/paginator';
+import PaginatorConfig from 'common/paginator/paginatorConfig';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 

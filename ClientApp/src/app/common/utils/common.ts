@@ -21,3 +21,7 @@ export function generateGuid(): string {
         hashSigns[d2 & 0x3f | 0x80] + hashSigns[d2 >> 8 & 0xff] + '-' + hashSigns[d2 >> 16 & 0xff] + hashSigns[d2 >> 24 & 0xff] +
         hashSigns[d3 & 0xff] + hashSigns[d3 >> 8 & 0xff] + hashSigns[d3 >> 16 & 0xff] + hashSigns[d3 >> 24 & 0xff];
 }
+
+export function isNullOrUndefined(arg: any): boolean {
+    return arg === undefined || arg === null;
+}

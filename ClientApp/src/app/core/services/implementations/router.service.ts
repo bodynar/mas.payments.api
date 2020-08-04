@@ -4,7 +4,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { Observable, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, pairwise } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { IRouterService } from 'services/IRouterService.ts';
 

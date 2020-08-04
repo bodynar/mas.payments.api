@@ -5,14 +5,14 @@ import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import PaginatorConfig from 'src/common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'common/paginator/paginator';
+import PaginatorConfig from 'common/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 

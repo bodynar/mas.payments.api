@@ -1,4 +1,4 @@
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
 export default class MeasurementsFilter {
     month?: number;

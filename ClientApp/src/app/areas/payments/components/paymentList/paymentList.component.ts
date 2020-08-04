@@ -3,13 +3,13 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
-import { yearsRange } from 'src/common/utils/years';
-import { months } from 'src/static/months';
+import { yearsRange } from 'common/utils/years';
+import { months } from 'static/months';
 
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import PaginatorConfig from 'src/common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'common/paginator/paginator';
+import PaginatorConfig from 'common/paginator/paginatorConfig';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';

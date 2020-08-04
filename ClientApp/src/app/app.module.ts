@@ -39,7 +39,7 @@ import { PagesModule } from './pages/pages.module';
     AppRoutingModule,
     FormsModule,
     CommonModule,
-    NgbModule.forRoot(),
+    NgbModule,
 
     CoreModule,
     ModalComponentsModule,
@@ -53,6 +53,4 @@ import { PagesModule } from './pages/pages.module';
   providers: [],
   bootstrap: [AppContainerComponent]
 })
-class AppModule { }
-
-export { AppModule };
+export class AppModule { }

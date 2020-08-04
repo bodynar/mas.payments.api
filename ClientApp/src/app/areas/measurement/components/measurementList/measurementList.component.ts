@@ -3,18 +3,18 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'util';
+import { isNullOrUndefined } from 'common/utils/common';
 
-import { yearsRange } from 'src/common/utils/years';
-import { months } from 'src/static/months';
+import { yearsRange } from 'common/utils/years';
+import { months } from 'static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import { getPaginatorConfig } from 'src/common/paginator/paginator';
-import PaginatorConfig from 'src/common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'common/paginator/paginator';
+import PaginatorConfig from 'common/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';

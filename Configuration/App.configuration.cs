@@ -1,8 +1,10 @@
 using MAS.Payments.DataBase;
 using MAS.Payments.Infrastructure.Middleware;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.DependencyInjection;
+
 using SimpleInjector;
 
 namespace MAS.Payments.Configuration
@@ -25,16 +27,14 @@ namespace MAS.Payments.Configuration
                 .UseHttpsRedirection()
                 .UseStaticFiles()
                 .UseSimpleInjector(container, options => { })
-                .UseMvc(routes =>
-                {
+                .UseMvc(routes => {
                     routes.MapRoute(
                         name: "default",
                         template: "api/{controller}/{action}/{id?}");
                 })
                 .UseSpaStaticFiles();
 
-            app.UseSpa(spa =>
-            {
+            app.UseSpa(spa => {
                 spa.Options.SourcePath = "ClientApp";
 
                 if (isDevelopment)

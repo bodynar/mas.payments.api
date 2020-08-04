@@ -1,10 +1,12 @@
 using System;
+
 using MAS.Payments.DataBase.Access;
 using MAS.Payments.Infrastructure;
 using MAS.Payments.Infrastructure.Command;
 using MAS.Payments.Infrastructure.MailMessaging;
 using MAS.Payments.Infrastructure.Query;
 using MAS.Payments.Notifications;
+
 using SimpleInjector;
 
 namespace MAS.Payments.Configuration
@@ -46,9 +48,7 @@ namespace MAS.Payments.Configuration
 
             container.Register(typeof(INotificationProcessor), typeof(NotificationProcessor), Lifestyle.Singleton);
 
-            // container.Register(
-            //     typeof(INotificator),
-            //     typeof(INotificator).Assembly);
+            container.Collection.Register<INotificator>(typeof(INotificator).Assembly);
 
             #endregion
 
@@ -62,6 +62,8 @@ namespace MAS.Payments.Configuration
             container.Register<ISmtpClientFactory, SmtpClientFactory>();
 
             #endregion
+
+            container.Options.ResolveUnregisteredConcreteTypes = true;
 
             return container;
         }

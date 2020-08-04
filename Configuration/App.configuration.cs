@@ -3,6 +3,7 @@ using MAS.Payments.Infrastructure.Middleware;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 using SimpleInjector;

@@ -122,13 +122,14 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.payments, this.pageSize);
 
+                this.paginatorConfig$.next(paginatorConfig);
+
                 if (paginatorConfig.enabled) {
                     this.onPageChange(0);
                 } else {
                     this.payments$.next(this.payments);
                 }
-
-                this.paginatorConfig$.next(paginatorConfig);
+                
                 this.onSortColumn(this.currentSortColumn, this.currentSortOrder === 'desc' ? 'asc' : 'desc');
             });
 

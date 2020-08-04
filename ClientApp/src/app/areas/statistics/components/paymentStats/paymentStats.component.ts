@@ -11,8 +11,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { yearsRange } from 'src/common/utils/years';
-import { getMonthName, months } from 'src/static/months';
+import { yearsRange } from 'common/utils/years';
+import { getMonthName, months } from 'static/months';
 
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';

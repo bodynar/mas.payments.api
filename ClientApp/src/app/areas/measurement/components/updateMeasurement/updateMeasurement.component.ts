@@ -5,8 +5,8 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import { yearsRange } from 'src/common/utils/years';
-import { months } from 'src/static/months';
+import { yearsRange } from 'common/utils/years';
+import { months } from 'static/months';
 import { isNullOrUndefined } from 'util';
 
 import { IMeasurementService } from 'services/IMeasurementService';

@@ -1,6 +1,6 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
-import { getMonthName } from 'src/static/months';
+import { getMonthName } from 'static/months';
 
 import PaymentResponse from 'models/response/payments/paymentResponse';
 

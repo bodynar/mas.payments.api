@@ -53,6 +53,4 @@ import { PagesModule } from './pages/pages.module';
   providers: [],
   bootstrap: [AppContainerComponent]
 })
-class AppModule { }
-
-export { AppModule }
+export class AppModule { }

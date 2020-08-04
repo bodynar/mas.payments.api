@@ -24,10 +24,10 @@
         "src/app/core/models/*"
       ],
       "static/*": [
-        "src/static"
+        "src/app/static/*"
       ],
-      "common": [
-        "src/common"
+      "common/*": [
+        "src/app/common/*"
       ]
     },
   }

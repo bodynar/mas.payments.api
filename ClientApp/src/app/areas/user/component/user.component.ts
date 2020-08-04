@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { isNullOrUndefined } from 'util';
 
-import { userSideMenu } from '../../../../static/siteMenu';
+import { userSideMenu } from 'static/siteMenu';
 
 import { IRouterService } from 'services/IRouterService';
 

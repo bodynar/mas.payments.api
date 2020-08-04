@@ -27,8 +27,8 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "node_modules/open-iconic/font/css/open-iconic-bootstrap.min.css",
-              "src/common/styles/styles.styl",
-              "src/common/styles/colors.styl"
+              "src/app/common/styles/styles.styl",
+              "src/app/common/styles/colors.styl"
             ],
             "scripts": [
               "node_modules/jquery/dist/jquery.js",
@@ -39,12 +39,6 @@
           },
           "configurations": {
             "production": {
-              "fileReplacements": [
-                {
-                  "replace": "src/environments/environment.ts",
-                  "with": "src/environments/environment.prod.ts"
-                }
-              ],
               "optimization": true,
               "outputHashing": "all",
               "sourceMap": false,

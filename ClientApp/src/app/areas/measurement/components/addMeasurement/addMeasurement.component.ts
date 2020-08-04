@@ -4,8 +4,8 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import { yearsRange } from 'src/common/utils/years';
-import { months } from 'src/static/months';
+import { yearsRange } from 'common/utils/years';
+import { months } from 'static/months';
 import { isNullOrUndefined } from 'util';
 
 import { IMeasurementService } from 'services/IMeasurementService';

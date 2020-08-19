@@ -1,12 +1,15 @@
 doctype html
 
 .notifications
-    .notification(
-        *ngFor='let notification of (notifications$ | async)',
-        [ngClass]='notification.type.toLowerCase()'
+    ngb-toast.notification(
+        *ngFor='let notification of notifications',
+        [class]='getClassName(notification.type)',
+        [autohide]='true',
+        [delay]='notification.delay',
+        (hide)='removeNotification(notification)',
     )
-        .notification-header {{ notification.type }}
-            span.close(
-                (click)='removeNotification(notification.id)'
-            ) &times;
-        .notification-body {{ notification.message }}
+        ng-template(
+            ngbToastHeader
+        )
+            strong.mx-1 {{ getTypeName(notification.type) }}
+        | {{ notification.message }}

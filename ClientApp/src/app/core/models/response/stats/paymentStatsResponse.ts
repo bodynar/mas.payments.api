@@ -4,7 +4,7 @@ export interface GetPaymentsStatisticsDataItem {
     amount: number;
 }
 
-export interface TypeStatisticsItem {
+export interface PaymentTypeStatisticsItem {
     paymentTypeId: number;
     paymentTypeName: string;
     statisticsData: Array<GetPaymentsStatisticsDataItem>;
@@ -12,6 +12,5 @@ export interface TypeStatisticsItem {
 
 export interface GetPaymentsStatisticsResponse {
     year: number;
-    paymentTypeId: number;
-    typeStatistics: Array<TypeStatisticsItem>;
+    typeStatistics: Array<PaymentTypeStatisticsItem>;
 }

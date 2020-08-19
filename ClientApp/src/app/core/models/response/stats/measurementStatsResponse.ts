@@ -4,8 +4,13 @@ export interface GetMeasurementStatisticsDataItem {
     diff?: number;
 }
 
+export interface MeasurementTypeStatisticsItem {
+    measurementTypeId: number;
+    measurementTypeName: string;
+    statisticsData: Array<GetMeasurementStatisticsDataItem>;
+}
+
 export interface GetMeasurementStatisticsResponse {
     year: number;
-    measurementTypeId: number;
-    statisticsData: Array<GetMeasurementStatisticsDataItem>;
+    typeStatistics: Array<MeasurementTypeStatisticsItem>;
 }

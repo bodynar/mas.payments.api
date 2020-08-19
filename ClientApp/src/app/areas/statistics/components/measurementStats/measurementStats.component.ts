@@ -91,10 +91,17 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                 }),
             )
             .subscribe(({ result }) => {
-                this.measurementTypes = result;
+                this.measurementTypes = [
+                    {
+                        name: 'All',
+                        id: 0,
+                        systemName: 'all'
+                    },
+                    ...result
+                ];
                 this.measurementTypes$.next(this.measurementTypes);
 
-                this.statisticsFilter.measurementTypeId = result.slice(0, 1).pop().id;
+                this.statisticsFilter.measurementTypeId = 0;
 
                 this.whenSubmitForm$.next(null);
             });
@@ -110,20 +117,25 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
     }
 
     public onStatsRecieved(stats: GetMeasurementStatisticsResponse): void {
-        const paymentTypeName: string =
-            this.measurementTypes.filter(x => x.id === stats.measurementTypeId).pop().name;
+        const typeName: string =
+            this.statisticsFilter.measurementTypeId
+                ? this.measurementTypes.filter(x => x.id === this.statisticsFilter.measurementTypeId).pop().name
+                : 'All';
 
         const hasAnyData: boolean =
-            stats.statisticsData.some(x => !isNullOrUndefined(x.diff));
+            stats.typeStatistics.some(x => !isNullOrUndefined(x));
 
         if (hasAnyData) {
-            this.chart.series = [{
-                name: `${paymentTypeName} for ${stats.year}`,
-                data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.diff }))]
-            }];
+            this.chart.series = stats.typeStatistics.map(x => ({
+                name: `${x.measurementTypeName} for ${stats.year}`,
+                data: [...x.statisticsData.map(y => ({
+                    x: getMonthName(y.month),
+                    y: y.diff
+                }))]
+            }));
         } else {
             this.chart.series = [{
-                name: `${paymentTypeName} for ${stats.year}`,
+                name: `${typeName} for ${stats.year}`,
                 data: []
             }];
         }

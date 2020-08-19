@@ -118,8 +118,8 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
 
     public onPaymentsStatsRecieved(stats: GetPaymentsStatisticsResponse): void {
         const paymentTypeName: string =
-            stats.paymentTypeId
-                ? this.paymentTypes.filter(x => x.id === stats.paymentTypeId).pop().name
+            this.statisticsFilter.paymentTypeId
+                ? this.paymentTypes.filter(x => x.id === this.statisticsFilter.paymentTypeId).pop().name
                 : 'All';
 
         const hasAnyData: boolean =

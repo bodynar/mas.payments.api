@@ -3,7 +3,8 @@ import { NotificationType } from './notificationType';
 interface Notification {
     id?: number;
     message: string;
-    type: NotificationType | string;
+    type: NotificationType;
+    delay: number;
 }
 
 export { Notification };

@@ -12,7 +12,7 @@ import MeasurementStatisticsFilter from 'models/request/stats/measurementStatist
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 import { GetMeasurementStatisticsDataItem, GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
-import { GetPaymentsStatisticsDataItem, GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
+import { GetPaymentsStatisticsDataItem, GetPaymentsStatisticsResponse, TypeStatisticsItem } from 'models/response/stats/paymentStatsResponse';
 
 @Injectable()
 class StatisticsApiBackendService implements IStatisticsApiBackendService {
@@ -37,7 +37,7 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         if (!isNullOrUndefined(filter.year)) {
             params = params.set('year', `${filter.year}`);
         }
-        if (!isNullOrUndefined(filter.paymentTypeId)) {
+        if (!isNullOrUndefined(filter.paymentTypeId) && filter.paymentTypeId !== 0) {
             params = params.set('paymentTypeId', `${filter.paymentTypeId}`);
         }
 
@@ -48,11 +48,15 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                     ({
                         year: response['year'],
                         paymentTypeId: response['paymentTypeId'],
-                        statisticsData: (response['statisticsData'] || []).map(dataItem => ({
-                            month: dataItem['month'],
-                            year: dataItem['year'],
-                            amount: dataItem['amount'] || null,
-                        }) as GetPaymentsStatisticsDataItem)
+                        typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
+                            paymentTypeId: typeItem['paymentTypeId'],
+                            paymentTypeName: typeItem['paymentTypeName'],
+                            statisticsData: (typeItem['statisticsData'] || []).map(statsItem => ({
+                                amount: statsItem['amount'],
+                                month: statsItem['month'],
+                                year: statsItem['year']
+                            }) as GetPaymentsStatisticsDataItem)
+                        }) as TypeStatisticsItem)
                     }) as GetPaymentsStatisticsResponse),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)

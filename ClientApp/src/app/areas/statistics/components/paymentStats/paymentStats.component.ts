@@ -91,10 +91,17 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
                 }),
             )
             .subscribe(({ result }) => {
-                this.paymentTypes = result;
+                this.paymentTypes = [
+                    {
+                        name: 'All',
+                        id: 0,
+                        systemName: 'all'
+                    },
+                    ...result
+                ];
                 this.paymentTypes$.next(this.paymentTypes);
 
-                this.statisticsFilter.paymentTypeId = result.slice(0, 1).pop().id;
+                this.statisticsFilter.paymentTypeId = 0;
 
                 this.whenSubmitForm$.next(null);
             });
@@ -111,16 +118,21 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
 
     public onPaymentsStatsRecieved(stats: GetPaymentsStatisticsResponse): void {
         const paymentTypeName: string =
-            this.paymentTypes.filter(x => x.id === stats.paymentTypeId).pop().name;
+            stats.paymentTypeId
+                ? this.paymentTypes.filter(x => x.id === stats.paymentTypeId).pop().name
+                : 'All';
 
         const hasAnyData: boolean =
-            stats.statisticsData.some(x => !isNullOrUndefined(x.amount));
+            stats.typeStatistics.some(x => !isNullOrUndefined(x));
 
         if (hasAnyData) {
-            this.chart.series = [{
-                name: `${paymentTypeName} for ${stats.year}`,
-                data: [...stats.statisticsData.map(x => ({ x: getMonthName(x.month), y: x.amount }))]
-            }];
+            this.chart.series = stats.typeStatistics.map(x => ({
+                name: `${x.paymentTypeName} for ${stats.year}`,
+                data: [...x.statisticsData.map(y => ({
+                    x: getMonthName(y.month),
+                    y: y.amount
+                }))]
+            }));
         } else {
             this.chart.series = [{
                 name: `${paymentTypeName} for ${stats.year}`,

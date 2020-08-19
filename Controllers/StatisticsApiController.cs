@@ -20,12 +20,12 @@ namespace MAS.Payments.Controllers
         [HttpGet("[action]")]
         public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery]GetPaymentsStatisticsRequest request)
         {
-            if (request == null || !request.Year.HasValue || !request.PaymentTypeId.HasValue)
+            if (request == null || !request.Year.HasValue)
             {
                 throw new Exception("Year and Payment type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
+            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId));
         }
 
         [HttpGet("[action]")]

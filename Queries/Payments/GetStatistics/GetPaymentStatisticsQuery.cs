@@ -6,9 +6,9 @@ namespace MAS.Payments.Queries
     {
         public short Year { get; }
 
-        public long PaymentTypeId { get; }
+        public long? PaymentTypeId { get; }
 
-        public GetPaymentStatisticsQuery(short year, long paymentTypeId)
+        public GetPaymentStatisticsQuery(short year, long? paymentTypeId)
         {
             Year = year;
             PaymentTypeId = paymentTypeId;

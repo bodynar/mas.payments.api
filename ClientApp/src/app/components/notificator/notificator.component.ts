@@ -39,7 +39,7 @@ class NotificatorComponent implements OnDestroy {
     public getClassName(notificationType: NotificationType): string {
         switch (notificationType) {
             case NotificationType.Error:
-                return 'bg-error';
+                return 'm-bg-danger';
             case NotificationType.Success:
                 return 'm-bg-success';
             case NotificationType.Warning:

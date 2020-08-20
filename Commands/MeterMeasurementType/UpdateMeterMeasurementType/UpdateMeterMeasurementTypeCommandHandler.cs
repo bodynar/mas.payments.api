@@ -33,9 +33,10 @@ namespace MAS.Payments.Commands
 
             Repository.Update(command.Id, new
             {
-                Name = command.Name,
-                PaymentTypeId = command.PaymentTypeId,
-                Description = command.Description,
+                command.Name,
+                command.PaymentTypeId,
+                command.Description,
+                command.Color,
             });
         }
     }

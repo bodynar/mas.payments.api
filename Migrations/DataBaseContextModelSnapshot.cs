@@ -15,7 +15,7 @@ namespace MAS.Payments.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
+                .HasAnnotation("ProductVersion", "3.1.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -23,15 +23,20 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Body");
+                    b.Property<string>("Body")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Recipient");
+                    b.Property<string>("Recipient")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("SentDate");
+                    b.Property<DateTime>("SentDate")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Subject");
+                    b.Property<string>("Subject")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -42,17 +47,23 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Comment");
+                    b.Property<string>("Comment")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Date");
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsSent");
+                    b.Property<bool>("IsSent")
+                        .HasColumnType("bit");
 
-                    b.Property<double>("Measurement");
+                    b.Property<double>("Measurement")
+                        .HasColumnType("float");
 
-                    b.Property<long>("MeterMeasurementTypeId");
+                    b.Property<long>("MeterMeasurementTypeId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -65,15 +76,23 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PaymentTypeId");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SystemName");
+                    b.Property<long>("PaymentTypeId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -86,15 +105,20 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<double>("Amount");
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
 
-                    b.Property<DateTime?>("Date");
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime2");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<long>("PaymentTypeId");
+                    b.Property<long>("PaymentTypeId")
+                        .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
@@ -107,15 +131,23 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Company");
+                    b.Property<string>("Color")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Company")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("SystemName");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SystemName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -126,21 +158,29 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<DateTime>("CreatedAt");
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("HiddenAt");
+                    b.Property<DateTime?>("HiddenAt")
+                        .HasColumnType("datetime2");
 
-                    b.Property<bool>("IsHidden");
+                    b.Property<bool>("IsHidden")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Key");
+                    b.Property<string>("Key")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Text");
+                    b.Property<string>("Text")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Title");
+                    b.Property<string>("Title")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<short>("Type");
+                    b.Property<short>("Type")
+                        .HasColumnType("smallint");
 
                     b.HasKey("Id");
 
@@ -151,15 +191,20 @@ namespace MAS.Payments.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("DisplayName");
+                    b.Property<string>("DisplayName")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Name");
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("RawValue");
+                    b.Property<string>("RawValue")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("TypeName");
+                    b.Property<string>("TypeName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -189,7 +234,8 @@ namespace MAS.Payments.Migrations
                     b.HasOne("MAS.Payments.DataBase.MeterMeasurementType", "MeasurementType")
                         .WithMany("MeterMeasurements")
                         .HasForeignKey("MeterMeasurementTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
@@ -197,7 +243,8 @@ namespace MAS.Payments.Migrations
                     b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
                         .WithMany("MeasurementTypes")
                         .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
@@ -205,7 +252,8 @@ namespace MAS.Payments.Migrations
                     b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
                         .WithMany("Payments")
                         .HasForeignKey("PaymentTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

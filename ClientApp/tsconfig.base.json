@@ -28,6 +28,9 @@
       ],
       "common/*": [
         "src/app/common/*"
+      ],
+      "sharedComponents/*": [
+        "src/app/common/components/*"
       ]
     },
   }

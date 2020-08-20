@@ -8,10 +8,10 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { getPaginatorConfig } from 'common/paginator/paginator';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({

@@ -3,8 +3,8 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ReplaySubject, Subject, of, Observable } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 

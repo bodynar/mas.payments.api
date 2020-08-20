@@ -28,6 +28,29 @@ form.needs-validation(
         )
 
     .form-group
+        .row
+            .col-2
+                label(for='color') Badge color
+                input.form-control.form-control-sm#color(
+                    type='color',
+                    name='color',
+                    [(ngModel)]='addMeasurementTypeRequest.color',
+                    #name='ngModel'
+                )
+            .col
+                label(
+                    title='Hover text below to see difference'
+                ) Preview
+                span.app-badge(
+                    style='display: table',
+                    [style.background-color]='badgeHovered ? addMeasurementTypeRequest.color : null',
+                    [style.border-color]='addMeasurementTypeRequest.color',
+                    
+                    (mouseover)='badgeHovered = true',
+                    (mouseleave)='badgeHovered = false'
+                ) {{ addMeasurementTypeRequest.name || 'Name will be displayed here' }}
+                //- [style.color]='badgeHovered ? getFontColor(addMeasurementTypeRequest.color) : "#000"',
+    .form-group
         label(for='paymentType') Payment type
         select.custom-select.m-form-control.custom-select-sm(
             required='required',

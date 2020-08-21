@@ -12,7 +12,8 @@ export class BadgeComponent {
     public mainColor: string;
 
     @Input()
-    public fontColor: string;
+    public fontColor: string =
+        '#000';
 
     @Input()
     public text: string;

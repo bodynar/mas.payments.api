@@ -63,23 +63,6 @@ class MeasurementComponent implements OnInit {
             id: this.measurement.id,
         });
     }
-
-    public getMeasurementTypeClass(paymentTypeName: string): string {
-        // todo: remove method and update model
-
-        switch (paymentTypeName.toLowerCase()) {
-            case 'холодная вода':
-                return 'cold-water';
-            case 'горячая вода':
-                return 'hot-water';
-            case 'электричество (день)':
-                return 'electricity-day';
-            case 'электричество (ночь)':
-                return 'electricity-night';
-            default:
-                return '';
-        }
-    }
 }
 
 export { MeasurementComponent };

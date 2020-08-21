@@ -11,9 +11,11 @@ button.btn.btn-outline-success.btn-sm(
         .name {{ type.name }}
         p.description {{ type.description}}
     .type
-        .app-badge(
-            [ngClass]='getPaymentTypeClass(type.paymentTypeName)'
-        ) {{ type.paymentTypeName }}
+        app-badge(
+            [mainColor]='type.paymentTypeColor',
+            [text]='type.paymentTypeName',
+            (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
+        )
     .options
         .oi.oi-pencil.oi-medium-extra(
             (click)='onEditClick(type.id)',

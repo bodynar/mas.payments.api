@@ -147,21 +147,6 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
         this.routerService.navigateArea(['addType']);
     }
 
-    public getPaymentTypeClass(paymentTypeName: string): string {
-        // todo: remove method and update model
-
-        switch (paymentTypeName.toLowerCase()) {
-            case 'жкх':
-                return 'house';
-            case 'электричество':
-                return 'electricity';
-            case 'интернет':
-                return 'internet';
-            default:
-                return '';
-        }
-    }
-
     public onPageChange(pageNumber: number): void {
         const slicedItems: Array<MeasurementTypeResponse> =
             this.measurementTypes.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);

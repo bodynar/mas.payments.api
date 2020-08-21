@@ -28,6 +28,26 @@ form.needs-validation(
         )
 
     .form-group
+        .row
+            .col-2
+                label(for='color') Badge color
+                input.form-control.form-control-sm#color(
+                    type='color',
+                    name='color',
+                    [(ngModel)]='measurementTypeRequest.color',
+                    #name='ngModel'
+                )
+            .col
+                label(
+                    title='Hover text below to see difference'
+                ) Preview
+                app-badge(
+                    style='display: table',
+                    [mainColor]='measurementTypeRequest.color',
+                    [text]='measurementTypeRequest.name'
+                )
+
+    .form-group
         label(for='paymentType') Payment type
         select.custom-select.m-form-control.custom-select-sm(
             required='required',

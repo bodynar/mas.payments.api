@@ -4,8 +4,6 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-// import { getFontColor } from '../../../../common/utils/colors';
-
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
@@ -18,10 +16,6 @@ import { IPaymentService } from 'services/IPaymentService';
     templateUrl: 'addMeasurementType.template.pug'
 })
 export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
-
-    public badgeHovered: boolean =
-        false;
-
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
         {
             color: 'rgb(240, 71, 71)'
@@ -87,9 +81,4 @@ export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
-
-    // todo: calculate font color depending on bg
-    // public getFontColor(backgroundColor: string): string {
-    //     return getFontColor(backgroundColor);
-    // }
 }

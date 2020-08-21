@@ -38,6 +38,8 @@ namespace MAS.Payments.Queries
 
         public long MeterMeasurementTypeId { get; set; }
 
+        public string MeasurementTypeColor { get; set; }
+
         public string MeasurementTypeName { get; set; }
     }
 }

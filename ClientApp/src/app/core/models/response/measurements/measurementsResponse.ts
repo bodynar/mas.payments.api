@@ -4,6 +4,7 @@ export interface MeasurementsResponseMeasurement {
     comment?: string;
     meterMeasurementTypeId: number;
     measurementTypeName: string;
+    measurementTypeColor?: string;
     isSent: boolean;
     month: number;
     year: number;

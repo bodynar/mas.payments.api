@@ -13,7 +13,7 @@ import { AddMeasurementRequest } from 'models/request/measurement/addMeasurement
 import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
+import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
@@ -79,10 +79,11 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                             comment: x['comment'],
                             meterMeasurementTypeId: x['meterMeasurementTypeId'],
                             measurementTypeName: x['measurementTypeName'],
+                            measurementTypeColor: x['measurementTypeColor'],
                             isSent: x['isSent'],
                             year: measurement['dateYear'],
                             month: measurement['dateMonth'],
-                        })),
+                        }) as MeasurementsResponseMeasurement),
                     }) as MeasurementsResponse)),
                     catchError(error => of(error.error)),
                     map(x => isNullOrUndefined(x.Success)

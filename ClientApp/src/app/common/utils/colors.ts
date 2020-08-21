@@ -1,5 +1,27 @@
 import { isNullOrUndefined } from './common';
 
+export function isRgbColor(colorString: string): boolean {
+    return colorString.trim().startsWith('rgb');
+}
+
+export function getRgbColor(colorString: string): {
+    red: number,
+    green: number,
+    blue: number,
+} {
+    if (!isRgbColor(colorString)) {
+        return undefined;
+    }
+    const colorGroups: Array<string> =
+        colorString.trim().match(/\d+/g);
+
+    return {
+        red: parseInt(colorGroups[0], 10),
+        green: parseInt(colorGroups[1], 10),
+        blue: parseInt(colorGroups[2], 10),
+    };
+}
+
 export function hexToRgb(hexColor: string): {
     red: number,
     green: number,
@@ -27,12 +49,14 @@ export function hexToRgb(hexColor: string): {
 const blackHex: string = '#000';
 const whiteHex: string = '#fff';
 
-export function getFontColor(hexColor: string): string {
+export function getFontColor(colorString: string): string {
     const rgbColor: {
         red: number,
         green: number,
         blue: number,
-    } = hexToRgb(hexColor);
+    } = isRgbColor(colorString)
+            ? getRgbColor(colorString)
+            : hexToRgb(colorString);
 
     if (!isNullOrUndefined(rgbColor)) {
         const intensity: number

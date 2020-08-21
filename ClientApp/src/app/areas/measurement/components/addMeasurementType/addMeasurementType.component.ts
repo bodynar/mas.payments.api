@@ -18,7 +18,7 @@ import { IPaymentService } from 'services/IPaymentService';
 export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
         {
-            color: 'rgb(240, 71, 71)'
+            color: '#f04747'
         };
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =

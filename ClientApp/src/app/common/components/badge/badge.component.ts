@@ -24,9 +24,10 @@ export class BadgeComponent {
     public isHovered: boolean =
         false;
 
-    constructor() {}
+    constructor(
+    ) {
+    }
 
-    // todo: calculate font color depending on bg
     public getFontColor(): string {
         return getFontColor(this.mainColor);
     }

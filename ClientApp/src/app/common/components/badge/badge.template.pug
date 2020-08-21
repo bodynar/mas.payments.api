@@ -1,0 +1,7 @@
+span.app-badge(
+    [style.color]='adjustFontColor && isHovered ? getFontColor() : fontColor',
+    [style.border-color]='mainColor',
+    [style.background]='isHovered ? mainColor : null',
+    (mouseover)='isHovered = true',
+    (mouseleave)='isHovered = false'
+) {{ text }}

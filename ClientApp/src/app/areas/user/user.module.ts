@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { AppCommonModule } from 'common/components/common.module';
+import { AppCommonModule } from 'common/common.module';
 
 import { UserComponent } from './component/user.component';
 import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';

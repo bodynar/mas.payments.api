@@ -3,7 +3,7 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
-import { AppCommonModule } from 'common/components/common.module';
+import { AppCommonModule } from 'common/common.module';
 
 import { PaymentsComponent } from './component/payments.component';
 

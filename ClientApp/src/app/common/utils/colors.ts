@@ -4,6 +4,11 @@ export function isRgbColor(colorString: string): boolean {
     return colorString.trim().startsWith('rgb');
 }
 
+export function isHexColor(colorString: string): boolean {
+    return !isNullOrUndefined(colorString)
+        && /^#[0-9A-F]{6}$/i.test(colorString);
+}
+
 export function getRgbColor(colorString: string): {
     red: number,
     green: number,

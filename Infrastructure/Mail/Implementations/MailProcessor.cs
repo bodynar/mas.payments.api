@@ -40,18 +40,18 @@ namespace MAS.Payments.Infrastructure.MailMessaging
 
         public async void Send<TModel>(IMailMessage<TModel> message)
         {
-            var builtMessage = BuildMailMessage(messageWithModel: message as IMailMessage<object>);
+            var builtMessage = BuildMailMessage(message, message.Model);
 
             await MailSender.SendMailAsync(builtMessage).ConfigureAwait(true);
 
             // SaveMessageLogItem(builtMessage as MailMessage);
         }
 
-        private MailMessage BuildMailMessage(IMailMessage message = null, IMailMessage<object> messageWithModel = null)
+        private MailMessage BuildMailMessage(IMailMessage message, object messageModel = null)
         {
-            dynamic builder = GetMailBuilder(message ?? messageWithModel);
+            dynamic builder = GetMailBuilder(message);
 
-            var builtMessage = builder.Build((dynamic)(message ?? messageWithModel), (dynamic)messageWithModel?.Model);
+            var builtMessage = builder.Build((dynamic)message, (dynamic)messageModel);
 
             return builtMessage;
         }

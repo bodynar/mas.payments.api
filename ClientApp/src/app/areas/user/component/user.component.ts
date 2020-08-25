@@ -1,6 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+
+import { takeUntil, filter, map } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 import { isNullOrUndefined } from 'common/utils/common';
+import { ArrayUtils } from 'common/utils/array';
 
 import { userSideMenu } from 'static/siteMenu';
 
@@ -12,8 +16,14 @@ import { MenuItem } from 'models/menuItem';
     templateUrl: 'user.template.pug',
     styleUrls: ['user.style.styl']
 })
-class UserComponent implements OnInit {
+class UserComponent implements OnInit, OnDestroy {
     public menuItems: Array<MenuItem>;
+
+    private whenDestroyComponent$: Subject<null> =
+        new Subject();
+
+    private readonly userRoutePath: Array<string> =
+        ['app', 'user'];
 
     constructor(
         private routerService: IRouterService
@@ -22,6 +32,17 @@ class UserComponent implements OnInit {
     }
 
     public ngOnInit(): void {
+        this.routerService
+            .whenRouteChange()
+            .pipe(
+                takeUntil(this.whenDestroyComponent$),
+                filter(routePath =>
+                    ArrayUtils.startsWith<string>(routePath, this.userRoutePath)
+                    && (routePath.length === 3 || routePath.length === 2)),
+                map(routePath => routePath.length === 3 ? routePath.pop() : '')
+            )
+            .subscribe(menuItem => this.highlightMenuItem(menuItem));
+
         const currentRoute: string =
             this.routerService
                 .getCurrentRoute()
@@ -32,11 +53,16 @@ class UserComponent implements OnInit {
         this.highlightMenuItem(currentRoute);
     }
 
+    public ngOnDestroy(): void {
+        this.whenDestroyComponent$.next(null);
+        this.whenDestroyComponent$.complete();
+    }
+
     public onMenuItemClick(menuItem: string): void {
         if (menuItem !== '') {
-            this.routerService.navigate(['app', 'user', menuItem]);
+            this.routerService.navigate([...this.userRoutePath, menuItem]);
         } else {
-            this.routerService.navigate(['app', 'user']);
+            this.routerService.navigate(this.userRoutePath);
         }
         this.highlightMenuItem(menuItem);
     }

@@ -4,7 +4,6 @@ import { BehaviorSubject, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { IRouterService } from 'services/IRouterService';
-import { IUserService } from 'services/IUserService';
 
 @Component({
     selector: 'app-user',
@@ -19,7 +18,6 @@ class AppUserComponent implements OnInit, OnDestroy {
         new Subject();
 
     constructor(
-        private userService: IUserService,
         private routerService: IRouterService
     ) {
     }

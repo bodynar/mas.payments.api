@@ -39,6 +39,7 @@ namespace MAS.Payments.Commands
                 Company = command.Company,
                 Description = command.Description,
                 Name = command.Name,
+                Color = command.Color,
             });
         }
     }

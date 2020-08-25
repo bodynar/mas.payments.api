@@ -37,14 +37,14 @@ namespace MAS.Payments.Controllers
         public void AddPaymentType([FromBody]AddPaymentTypeRequest request)
         {
             CommandProcessor.Execute(
-                new AddPaymentTypeCommand(request.Name, request.Description, request.Company));
+                new AddPaymentTypeCommand(request.Name, request.Description, request.Company, request.Color));
         }
 
         [HttpPost("[action]")]
         public void UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
             CommandProcessor.Execute(
-                new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company)
+                new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company, request.Color)
             );
         }
 

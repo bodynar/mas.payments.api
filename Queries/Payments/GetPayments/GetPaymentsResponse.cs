@@ -13,6 +13,8 @@ namespace MAS.Payments.Queries
         public string Description { get; set; }
 
         public string PaymentTypeName { get; set; }
+        
+        public string PaymentTypeColor { get; set; }
 
         public long PaymentTypeId { get; set; }
     }

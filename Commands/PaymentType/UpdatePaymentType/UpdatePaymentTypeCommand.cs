@@ -12,12 +12,15 @@ namespace MAS.Payments.Commands
 
         public string Company { get; }
 
-        public UpdatePaymentTypeCommand(long id, string name, string description, string company)
+        public string Color { get; set; }
+
+        public UpdatePaymentTypeCommand(long id, string name, string description, string company, string color)
         {
             Id = id;
             Name = name;
             Description = description;
             Company = company;
+            Color = color;
         }
     }
 }

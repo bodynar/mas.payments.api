@@ -34,21 +34,6 @@ class PaymentComponent implements OnInit {
     public ngOnInit(): void {
         this.formattedMonth = getMonthName(+this.payment.month);
     }
-
-    public getPaymentTypeClass(paymentTypeName: string): string {
-        // todo: remove method and update model
-
-        switch (paymentTypeName.toLowerCase()) {
-            case 'жкх':
-                return 'house';
-            case 'электричество':
-                return 'electricity';
-            case 'интернет':
-                return 'internet';
-            default:
-                return '';
-        }
-    }
 }
 
 export { PaymentComponent };

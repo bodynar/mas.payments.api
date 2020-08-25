@@ -4,10 +4,12 @@ doctype html
     .payment__year {{ payment.year }}
     .payment__month {{ formattedMonth }}
     .payment__type
-        .app-badge(
-            [ngClass]='getPaymentTypeClass(payment.paymentTypeName)',
+        app-badge(
+            [mainColor]='payment.paymentTypeColor',
+            [text]='payment.paymentTypeName',
+            clickable='true',
             (click)='typeClick.emit(payment.paymentTypeId)'
-        ) {{ payment.paymentTypeName }}
+        )
     .payment__amount {{ payment.amount }}
     .payment__comment {{ payment.description }}
     .payment__actions

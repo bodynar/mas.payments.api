@@ -1,4 +1,5 @@
 span.app-badge(
+    [class.app-badge--clickable]='clickable',
     [style.color]='adjustFontColor && isHovered ? getFontColor() : fontColor',
     [style.border-color]='mainColor',
     [style.background]='isHovered ? mainColor : null',

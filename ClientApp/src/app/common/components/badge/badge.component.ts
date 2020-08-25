@@ -22,6 +22,10 @@ export class BadgeComponent {
     public adjustFontColor: boolean =
         false;
 
+    @Input()
+    public clickable: boolean =
+        false;
+
     public isHovered: boolean =
         false;
 

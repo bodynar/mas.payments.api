@@ -4,24 +4,27 @@ button.btn.btn-outline-success.btn-sm(
     type='button',
     (click)='onAddClick()'
 ) Add
-.list_item(
-    *ngFor='let type of (measurementTypes$ | async)'
-)
-    .info
-        .name {{ type.name }}
-        p.description {{ type.description}}
-    .type
+
+.type-list-item(*ngFor='let type of (measurementTypes$ | async)')
+    .name
+        span.color(
+            [attr.title]='type.hasColor ? type.color : \'Not set\'',
+            [style.background]='type.color',
+        )
+        h5 {{ type.name }}
+    p.description {{ type.description}}
+    .payment-type
         app-badge(
             [mainColor]='type.paymentTypeColor',
             [text]='type.paymentTypeName',
             (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
         )
-    .options
-        .oi.oi-pencil.oi-medium-extra(
+    .actions
+        .oi.oi-pencil.oi-large(
             (click)='onEditClick(type.id)',
             title='Edit'
         )
-        .oi.oi-trash.oi-medium-extra(
+        .oi.oi-trash.oi-large(
             (click)='onDeleteClick(type.id)',
             title='All related objects will be deleted too.'
         )

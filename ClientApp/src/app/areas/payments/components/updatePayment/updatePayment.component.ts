@@ -21,7 +21,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 @Component({
     templateUrl: 'updatePayment.template.pug'
 })
-class UpdatePaymentComponent extends BaseRoutingComponent {
+export class UpdatePaymentComponent extends BaseRoutingComponent {
 
     public paymentRequest: AddPaymentRequest =
         {};
@@ -120,5 +120,3 @@ class UpdatePaymentComponent extends BaseRoutingComponent {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { UpdatePaymentComponent };

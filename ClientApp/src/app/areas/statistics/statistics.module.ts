@@ -29,6 +29,4 @@ import { StatsChartComponent } from './components/statsChart/statsChart.componen
     ],
     providers: [],
 })
-class StatisticsModule { }
-
-export { StatisticsModule };
+export class StatisticsModule { }

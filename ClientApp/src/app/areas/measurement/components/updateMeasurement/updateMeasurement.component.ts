@@ -21,7 +21,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 @Component({
     templateUrl: 'updateMeasurement.template.pug'
 })
-class UpdateMeasurementComponent extends BaseRoutingComponent {
+export class UpdateMeasurementComponent extends BaseRoutingComponent {
 
     public measurementRequest: AddMeasurementRequest =
         {};
@@ -121,5 +121,3 @@ class UpdateMeasurementComponent extends BaseRoutingComponent {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { UpdateMeasurementComponent };

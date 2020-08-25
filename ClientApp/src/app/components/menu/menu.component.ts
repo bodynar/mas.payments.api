@@ -16,7 +16,7 @@ import { IRouterService } from 'services/IRouterService';
     templateUrl: 'menu.template.pug',
     styleUrls: ['menu.style.styl']
 })
-class MenuComponent implements OnInit, OnDestroy {
+export class MenuComponent implements OnInit, OnDestroy {
     public menuItems$: Subject<Array<MenuItem>> =
         new ReplaySubject(1);
 
@@ -56,7 +56,7 @@ class MenuComponent implements OnInit, OnDestroy {
         this.whenComponentDestroy$.complete();
     }
 
-    public onStartSearch() {
+    public onStartSearch(): void {
         if (this.searchPattern.trim() === '404') {
             this.routerService.navigate(['somePathWhichDoesntExist']);
         }
@@ -67,7 +67,7 @@ class MenuComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onMenuItemClick(menuItemLink: string) {
+    public onMenuItemClick(menuItemLink: string): void {
         if (menuItemLink !== '') {
             this.routerService.navigate(['app', menuItemLink]);
         } else {
@@ -92,5 +92,3 @@ class MenuComponent implements OnInit, OnDestroy {
         }
     }
 }
-
-export { MenuComponent };

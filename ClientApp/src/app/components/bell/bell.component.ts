@@ -16,7 +16,7 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
     templateUrl: 'bell.template.pug',
     styleUrls: ['bell.style.styl']
 })
-class BellComponent implements OnInit, OnDestroy {
+export class BellComponent implements OnInit, OnDestroy {
 
     public notifications$: Subject<Array<GetNotificationsResponse>> =
         new ReplaySubject();
@@ -183,5 +183,3 @@ class BellComponent implements OnInit, OnDestroy {
         return false;
     }
 }
-
-export { BellComponent };

@@ -10,7 +10,7 @@ import { IRouterService } from 'services/IRouterService';
     templateUrl: 'user.template.pug',
     styleUrls: ['user.style.styl']
 })
-class AppUserComponent implements OnInit, OnDestroy {
+export class AppUserComponent implements OnInit, OnDestroy {
     public isUserPage$: BehaviorSubject<boolean> =
         new BehaviorSubject(false);
 
@@ -46,5 +46,3 @@ class AppUserComponent implements OnInit, OnDestroy {
         this.routerService.navigate(['app', 'user']);
     }
 }
-
-export { AppUserComponent };

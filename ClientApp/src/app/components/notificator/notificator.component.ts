@@ -13,7 +13,7 @@ import { NotificationType } from 'models/notificationType';
     templateUrl: 'notificator.template.pug',
     styleUrls: ['notificator.style.styl']
 })
-class NotificatorComponent implements OnDestroy {
+export class NotificatorComponent implements OnDestroy {
     private whenComponentDestroy$: Subject<null> =
         new Subject();
 
@@ -57,5 +57,3 @@ class NotificatorComponent implements OnDestroy {
         this.notifications = this.notifications.filter(t => t !== notification);
     }
 }
-
-export { NotificatorComponent };

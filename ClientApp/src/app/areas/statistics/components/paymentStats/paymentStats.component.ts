@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+import { Subject, BehaviorSubject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -22,7 +22,8 @@ import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStat
 
 @Component({
     selector: 'app-stats-payments',
-    templateUrl: 'paymentStats.template.pug'
+    templateUrl: 'paymentStats.template.pug',
+    styleUrls: ['../stats/stats.style.styl'],
 })
 export class PaymentStatsComponent extends BaseComponent {
     public chart: {
@@ -46,6 +47,9 @@ export class PaymentStatsComponent extends BaseComponent {
 
     public statisticsFilter: PaymentStatisticsFilter =
         new PaymentStatisticsFilter();
+
+    public chartDataIsLoading$: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
 
     public years: Array<{ name: string, id?: number }>;
 
@@ -93,7 +97,10 @@ export class PaymentStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(() => this.chartDataIsLoading$.next(true)),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
+                delay(1.5 * 1000),
+                tap(() => this.chartDataIsLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);

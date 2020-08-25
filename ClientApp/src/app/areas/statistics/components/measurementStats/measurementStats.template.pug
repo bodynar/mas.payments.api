@@ -31,8 +31,17 @@ form.mt-2.container.form-inline(
         type='submit',
         style='margin-left: auto'
     ) Display data
-div.mt-3
+
+div.mt-3.chart-overlay-container
+    .chart-overlay(
+        *ngIf='chartDataIsLoading$ | async'
+    )
+        img.chart-cover-image(
+            src='assets/images/loading-01.svg',
+            alt='loading'
+        )
     app-stats-chart(
+        [class.chart-overlay-cover]='chartDataIsLoading$ | async',
         [series]='chart.series',
         [xaxis]='chart.xaxis',
         [title]='chart.title'

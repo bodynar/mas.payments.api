@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+import { Subject, BehaviorSubject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, delay, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -22,7 +22,8 @@ import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurem
 
 @Component({
     selector: 'app-stats-measurement',
-    templateUrl: 'measurementStats.template.pug'
+    templateUrl: 'measurementStats.template.pug',
+    styleUrls: ['../stats/stats.style.styl'],
 })
 export class MeasurementStatsComponent extends BaseComponent {
     public chart: {
@@ -43,6 +44,9 @@ export class MeasurementStatsComponent extends BaseComponent {
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
+
+    public chartDataIsLoading$: BehaviorSubject<boolean> =
+        new BehaviorSubject<boolean>(false);
 
     public statisticsFilter: MeasurementStatisticsFilter =
         new MeasurementStatisticsFilter();
@@ -94,7 +98,10 @@ export class MeasurementStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(() => this.chartDataIsLoading$.next(true)),
                 switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
+                delay(1.5 * 1000),
+                tap(() => this.chartDataIsLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);

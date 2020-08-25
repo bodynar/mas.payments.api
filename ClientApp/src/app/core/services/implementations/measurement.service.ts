@@ -114,6 +114,14 @@ export class MeasurementService implements IMeasurementService {
                         // this.loggingService.error(response);
                     }
                 }),
+                map(response =>
+                    response.success
+                        ? ({
+                            ...response,
+                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color)}))
+                        })
+                        : response
+                )
             );
     }
 

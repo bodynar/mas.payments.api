@@ -13,8 +13,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';

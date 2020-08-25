@@ -8,10 +8,10 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { getPaginatorConfig } from 'common/paginator/paginator';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({
@@ -87,7 +87,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                             title: 'Warning! Measurement type related with measurement.',
                             body: {
                                 isHtml: false,
-                                content: 'Measurement type related with measurement.\nAre you sure want to delete it?'
+                                content: 'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'
                             },
                             additionalParameters: {
                                 confirmBtnText: 'Yes',
@@ -95,10 +95,10 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                             }
                         }).pipe(
                             map(response => response as boolean),
-                            map(response => ({ id: id, canDelete: response }))
+                            map(response => ({ id, canDelete: response }))
                         );
                     } else {
-                        return of(({ id: id, canDelete: true }));
+                        return of(({ id, canDelete: true }));
                     }
                 }),
                 filter(({ canDelete }) => canDelete),
@@ -122,7 +122,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
             )
             .subscribe(id => this.routerService.navigateArea(
                 ['updateType'],
-                { queryParams: { 'id': id } }
+                { queryParams: { id } }
             ));
     }
 
@@ -145,21 +145,6 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
 
     public onAddClick(): void {
         this.routerService.navigateArea(['addType']);
-    }
-
-    public getPaymentTypeClass(paymentTypeName: string): string {
-        // todo: remove method and update model
-
-        switch (paymentTypeName.toLowerCase()) {
-            case 'жкх':
-                return 'house';
-            case 'электричество':
-                return 'electricity';
-            case 'интернет':
-                return 'internet';
-            default:
-                return '';
-        }
     }
 
     public onPageChange(pageNumber: number): void {

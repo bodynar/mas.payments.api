@@ -40,14 +40,14 @@ namespace MAS.Payments.Controllers
         public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
         {
             CommandProcessor.Execute(
-                new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description));
+                new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description, request.Color));
         }
 
         [HttpPost("[action]")]
         public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
         {
             CommandProcessor.Execute(
-                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description)
+                new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description, request.Color)
             );
         }
 

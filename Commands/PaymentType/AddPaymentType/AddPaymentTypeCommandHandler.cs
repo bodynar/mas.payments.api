@@ -35,7 +35,8 @@ namespace MAS.Payments.Commands
             {
                 Name = command.Name,
                 Description = command.Description,
-                Company = command.Company
+                Company = command.Company,
+                Color = command.Color,
             };
 
             Repository.Add(paymentType);

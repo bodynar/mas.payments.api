@@ -48,7 +48,8 @@ namespace MAS.Payments.Commands
             {
                 Name = command.Name,
                 Description = command.Description,
-                PaymentTypeId = command.PaymentTypeId
+                PaymentTypeId = command.PaymentTypeId,
+                Color = command.Color,
             };
 
             Repository.Add(meterMeasurementType);

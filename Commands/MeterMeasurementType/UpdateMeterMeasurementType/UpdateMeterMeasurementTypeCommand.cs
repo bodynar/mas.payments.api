@@ -12,12 +12,15 @@ namespace MAS.Payments.Commands
 
         public long PaymentTypeId { get; }
 
-        public UpdateMeterMeasurementTypeCommand(long id, long paymentTypeId, string name, string description)
+        public string Color { get; }
+
+        public UpdateMeterMeasurementTypeCommand(long id, long paymentTypeId, string name, string description, string color)
         {
             Id = id;
             Name = name;
             Description = description;
             PaymentTypeId = paymentTypeId;
+            Color = color;
         }
     }
 }

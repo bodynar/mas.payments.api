@@ -17,7 +17,7 @@ class AddPaymentTypeComponent implements OnDestroy {
 
     public addPaymentTypeRequest: AddPaymentTypeRequest =
         {
-            name: ''
+            color: '#f04747'
         };
 
     public whenSubmittedForm$: Subject<NgForm> =

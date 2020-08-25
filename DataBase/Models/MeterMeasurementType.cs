@@ -12,9 +12,11 @@ namespace MAS.Payments.DataBase
 
         public long PaymentTypeId { get; set; }
 
+        public string Color { get; set; }
+
         public virtual PaymentType PaymentType { get; set; }
 
-        public virtual ICollection<MeterMeasurement> MeterMeasurements { get; set; }
+        public virtual ICollection<MeterMeasurement> MeterMeasurements { get; }
 
         public MeterMeasurementType()
         {

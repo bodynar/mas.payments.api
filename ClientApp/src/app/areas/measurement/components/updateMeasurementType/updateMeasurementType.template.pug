@@ -15,7 +15,7 @@ form.needs-validation(
             #name='ngModel',
             required='required',
             minlength='3',
-            maxlength='15'
+            maxlength='25'
         )
         
     .form-group
@@ -26,6 +26,26 @@ form.needs-validation(
             [(ngModel)]='measurementTypeRequest.description',
             #name='ngModel'
         )
+
+    .form-group
+        .row
+            .col-2
+                label(for='color') Badge color
+                input.form-control.form-control-sm#color(
+                    type='color',
+                    name='color',
+                    [(ngModel)]='measurementTypeRequest.color',
+                    #name='ngModel'
+                )
+            .col
+                label(
+                    title='Hover text below to see difference'
+                ) Preview
+                app-badge(
+                    style='display: table',
+                    [mainColor]='measurementTypeRequest.color',
+                    [text]='measurementTypeRequest.name'
+                )
 
     .form-group
         label(for='paymentType') Payment type

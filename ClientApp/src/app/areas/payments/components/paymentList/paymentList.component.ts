@@ -8,8 +8,8 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -129,7 +129,7 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 } else {
                     this.payments$.next(this.payments);
                 }
-                
+
                 this.onSortColumn(this.currentSortColumn, this.currentSortOrder === 'desc' ? 'asc' : 'desc');
             });
 

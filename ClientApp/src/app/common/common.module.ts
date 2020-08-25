@@ -1,17 +1,27 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 
-import { PaginatorComponent } from './paginator/component/paginator.component';
+import { ColorValidatorDirective } from './directives/colorValidator/colorValidator.directive';
+import { HexColorValidatorDirective } from './directives/hexColorValidator/hexColorValidator.directive';
+
+import { PaginatorComponent } from './components/paginator/component/paginator.component';
+import { BadgeComponent } from './components/badge/badge.component';
 
 @NgModule({
     imports: [
         CommonModule
     ],
     exports: [
-        PaginatorComponent
+        PaginatorComponent,
+        BadgeComponent,
+        ColorValidatorDirective,
+        HexColorValidatorDirective
     ],
     declarations: [
-        PaginatorComponent
+        PaginatorComponent,
+        BadgeComponent,
+        ColorValidatorDirective,
+        HexColorValidatorDirective,
     ],
     providers: [],
 })

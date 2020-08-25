@@ -15,10 +15,11 @@ import { IPaymentService } from 'services/IPaymentService';
 @Component({
     templateUrl: 'addMeasurementType.template.pug'
 })
-class AddMeasurementTypeComponent implements OnInit, OnDestroy {
-
+export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
-        {};
+        {
+            color: '#f04747'
+        };
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -81,5 +82,3 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { AddMeasurementTypeComponent };

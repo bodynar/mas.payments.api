@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 import { ReplaySubject, Subject, of, Observable } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
@@ -102,7 +102,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
             )
             .subscribe(id => this.routerService.navigateArea(
                 ['updateType'],
-                { queryParams: { 'id': id } }
+                { queryParams: { id } }
             ));
     }
 
@@ -152,7 +152,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                 title: 'Warning! Measurement type related with measurement.',
                 body: {
                     isHtml: false,
-                    content: `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?`
+                    content: `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?\nDependant ${relatedObjectsName} will be deleted.`
                 },
                 additionalParameters: {
                     confirmBtnText: 'Yes',
@@ -160,10 +160,10 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
                 }
             }).pipe(
                 map(response => response as boolean),
-                map(response => ({ id: id, canDelete: response }))
+                map(response => ({ id, canDelete: response }))
             );
         } else {
-            return of({ id: id, canDelete: true });
+            return of({ id, canDelete: true });
         }
     }
 }

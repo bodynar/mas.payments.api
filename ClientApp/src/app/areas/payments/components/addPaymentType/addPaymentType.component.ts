@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -15,7 +15,7 @@ import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequ
 @Component({
     templateUrl: 'addPaymentType.template.pug'
 })
-export class AddPaymentTypeComponent extends BaseComponent {
+export class AddPaymentTypeComponent extends BaseRoutingComponent {
 
     public addPaymentTypeRequest: AddPaymentTypeRequest =
         {

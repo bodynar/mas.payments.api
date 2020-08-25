@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -13,7 +13,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -26,7 +26,7 @@ import { ConfirmInModalComponent } from 'src/app/components/modal/components/con
 @Component({
     templateUrl: 'measurementList.template.pug'
 })
-class MeasurementListComponent extends BaseComponent implements OnInit {
+export class MeasurementListComponent extends BaseRoutingComponent {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
 
@@ -92,6 +92,29 @@ class MeasurementListComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.measurementService.getMeasurementTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => {
+                this.measurementTypes$.next([
+                    {
+                        name: '',
+                        systemName: '',
+                    }, ...result
+                ]);
+                this.whenSubmitFilters$.next();
+            });
+
         this.months = [{ name: '' }, ...months];
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
@@ -212,30 +235,6 @@ class MeasurementListComponent extends BaseComponent implements OnInit {
             .subscribe(isFlagVisible => this.isMeasurementsSentFlagVisible = isFlagVisible);
     }
 
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-
-                    return response.success;
-                })
-            )
-            .subscribe(({ result }) => {
-                this.measurementTypes$.next([
-                    {
-                        name: '',
-                        systemName: '',
-                    }, ...result
-                ]);
-                this.whenSubmitFilters$.next();
-            });
-    }
-
     public onActionClick(actionName: string): void {
         this.routerService.navigateDeep([actionName]);
     }
@@ -322,5 +321,3 @@ class MeasurementListComponent extends BaseComponent implements OnInit {
         this.measurements$.next(slicedItems);
     }
 }
-
-export { MeasurementListComponent };

@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -20,7 +20,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 @Component({
     templateUrl: 'updateMeasurementType.template.pug'
 })
-export class UpdateMeasurementTypeComponent extends BaseComponent implements OnInit {
+export class UpdateMeasurementTypeComponent extends BaseRoutingComponent {
 
     public measurementTypeRequest: AddMeasurementTypeRequest =
         {};
@@ -42,6 +42,22 @@ export class UpdateMeasurementTypeComponent extends BaseComponent implements OnI
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
+                name: '',
+                systemName: '',
+            }, ...result]));
 
         this.activatedRoute
             .queryParams
@@ -75,24 +91,6 @@ export class UpdateMeasurementTypeComponent extends BaseComponent implements OnI
                 })
             )
             .subscribe(_ => this.routerService.navigateArea(['types']));
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.paymentTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
     }
 
     public onFormSubmit(form: NgForm): void {

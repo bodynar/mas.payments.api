@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
@@ -8,7 +8,7 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -25,7 +25,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-export class PaymentListComponent extends BaseComponent implements OnInit {
+export class PaymentListComponent extends BaseRoutingComponent {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -93,11 +93,32 @@ export class PaymentListComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
-        this.months = [{ name: '' }, ...months];
-        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
         this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.paymentTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                this.months = [{ name: '' }, ...months];
+                this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+
+                this.whenSubmitFilters$.next();
+            });
 
         this.whenSubmitFilters$
             .pipe(
@@ -163,27 +184,6 @@ export class PaymentListComponent extends BaseComponent implements OnInit {
                     { queryParams: { id } }
                 )
             );
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => {
-                this.paymentTypes$.next([{
-                    name: '',
-                    systemName: '',
-                }, ...result]);
-                this.whenSubmitFilters$.next();
-            });
     }
 
     public onActionClick(actionName: string): void {

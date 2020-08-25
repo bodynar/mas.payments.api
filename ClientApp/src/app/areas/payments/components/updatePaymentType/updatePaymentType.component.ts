@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -18,7 +18,7 @@ import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequ
 @Component({
     templateUrl: 'updatePaymentType.template.pug'
 })
-export class UpdatePaymentTypeComponent extends BaseComponent {
+export class UpdatePaymentTypeComponent extends BaseRoutingComponent {
 
     public paymentTypeRequest: AddPaymentTypeRequest =
         {};

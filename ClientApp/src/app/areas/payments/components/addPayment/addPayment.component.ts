@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
@@ -19,7 +19,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 @Component({
     templateUrl: 'addPayment.template.pug'
 })
-export class AddPaymentComponent extends BaseComponent implements OnInit {
+export class AddPaymentComponent extends BaseRoutingComponent {
 
     public addPaymentRequest: AddPaymentRequest =
         {};
@@ -42,6 +42,33 @@ export class AddPaymentComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.paymentTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                const currentDate = new Date();
+
+                this.months$.next(months);
+                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+
+                this.addPaymentRequest.month = currentDate.getMonth().toString();
+                this.addPaymentRequest.year = currentDate.getFullYear();
+            });
+
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -58,33 +85,6 @@ export class AddPaymentComponent extends BaseComponent implements OnInit {
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
-    }
-
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.paymentTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
-
-        const currentDate = new Date();
-
-        this.months$.next(months);
-        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
-
-        this.addPaymentRequest.month = currentDate.getMonth().toString();
-        this.addPaymentRequest.year = currentDate.getFullYear();
     }
 
     public onFormSubmit(form: NgForm): void {

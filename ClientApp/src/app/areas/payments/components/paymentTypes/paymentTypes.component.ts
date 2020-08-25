@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ReplaySubject, Subject, of, Observable } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
@@ -6,7 +6,7 @@ import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
@@ -22,7 +22,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentTypes.template.pug',
     styleUrls: ['paymentTypes.style.styl']
 })
-export class PaymentTypesComponent extends BaseComponent implements OnInit {
+export class PaymentTypesComponent extends BaseRoutingComponent {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
@@ -51,6 +51,10 @@ export class PaymentTypesComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .subscribe(() => this.whenGetPaymentTypes$.next(null));
+
         this.whenGetPaymentTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -104,10 +108,6 @@ export class PaymentTypesComponent extends BaseComponent implements OnInit {
                 ['updateType'],
                 { queryParams: { id } }
             ));
-    }
-
-    public ngOnInit(): void {
-        this.whenGetPaymentTypes$.next(null)
     }
 
     public onDeleteClick(typeId: number): void {

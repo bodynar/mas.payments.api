@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
@@ -13,7 +13,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
@@ -21,7 +21,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 @Component({
     templateUrl: 'updateMeasurement.template.pug'
 })
-class UpdateMeasurementComponent extends BaseComponent implements OnInit {
+class UpdateMeasurementComponent extends BaseRoutingComponent {
 
     public measurementRequest: AddMeasurementRequest =
         {};
@@ -48,6 +48,30 @@ class UpdateMeasurementComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.measurementService.getMeasurementTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.measurementTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                const currentDate = new Date();
+
+                this.months$.next(months);
+                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+            });
+
         this.activatedRoute
             .queryParams
             .pipe(
@@ -91,29 +115,6 @@ class UpdateMeasurementComponent extends BaseComponent implements OnInit {
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
-    }
-
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.measurementTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
-
-        const currentDate = new Date();
-
-        this.months$.next(months);
-        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
     }
 
     public onFormSubmit(form: NgForm): void {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ReplaySubject, Subject, of } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
@@ -7,7 +7,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import BaseComponent from 'common/components/BaseComponent';
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -20,7 +20,7 @@ import { ConfirmInModalComponent } from 'src/app/components/modal/components/con
     templateUrl: 'measurementTypes.template.pug',
     styleUrls: ['measurementTypes.style.styl']
 })
-export class MeasurementTypesComponent extends BaseComponent implements OnInit {
+export class MeasurementTypesComponent extends BaseRoutingComponent {
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
@@ -49,6 +49,9 @@ export class MeasurementTypesComponent extends BaseComponent implements OnInit {
         routerService: IRouterService,
     ) {
         super(routerService);
+
+        this.whenComponentInit$
+            .subscribe(() => this.whenGetMeasurementTypes$.next(null));
 
         this.whenGetMeasurementTypes$
             .pipe(
@@ -125,10 +128,6 @@ export class MeasurementTypesComponent extends BaseComponent implements OnInit {
                 ['updateType'],
                 { queryParams: { id } }
             ));
-    }
-
-    public ngOnInit(): void {
-        this.whenGetMeasurementTypes$.next(null);
     }
 
     public onDeleteClick(typeId: number): void {

@@ -14,6 +14,8 @@ form.needs-validation(
             [(ngModel)]='addMeasurementRequest.measurement',
             #measurement='ngModel',
             required='required',
+            min='0',
+            appIsPositiveNumber,
         )
 
     .form-group

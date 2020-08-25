@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { ColorValidatorDirective } from './directives/colorValidator/colorValidator.directive';
 import { HexColorValidatorDirective } from './directives/hexColorValidator/hexColorValidator.directive';
+import { PositiveNumberValidatorDirective } from './directives/positiveNumberValidator/positiveNumber.directive';
 
 import { PaginatorComponent } from './components/paginator/component/paginator.component';
 import { BadgeComponent } from './components/badge/badge.component';
@@ -15,13 +16,15 @@ import { BadgeComponent } from './components/badge/badge.component';
         PaginatorComponent,
         BadgeComponent,
         ColorValidatorDirective,
-        HexColorValidatorDirective
+        HexColorValidatorDirective,
+        PositiveNumberValidatorDirective,
     ],
     declarations: [
         PaginatorComponent,
         BadgeComponent,
         ColorValidatorDirective,
         HexColorValidatorDirective,
+        PositiveNumberValidatorDirective,
     ],
     providers: [],
 })

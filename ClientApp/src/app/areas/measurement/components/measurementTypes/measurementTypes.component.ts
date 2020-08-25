@@ -88,7 +88,7 @@ export class MeasurementTypesComponent extends BaseRoutingComponent {
                     if (this.measurementTypes.find(x => x.id === id).hasRelatedMeasurements) {
                         return this.modalService.show(ConfirmInModalComponent, {
                             size: 'medium',
-                            title: 'Warning! Measurement type related with measurement.',
+                            title: 'Warning! Measurement type related with measurements.',
                             body: {
                                 isHtml: false,
                                 content: 'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'

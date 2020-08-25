@@ -144,7 +144,7 @@ export class PaymentTypesComponent extends BaseRoutingComponent {
 
             return this.modalService.show(ConfirmInModalComponent, {
                 size: 'medium',
-                title: 'Warning! Measurement type related with measurement.',
+                title: 'Warning! Payment type related with objects.',
                 body: {
                     isHtml: false,
                     content: `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?\nDependant ${relatedObjectsName} will be deleted.`

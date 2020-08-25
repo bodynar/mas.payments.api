@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AddMeasurementComponent } from './components/addMeasurement/addMeasurement.component';
 import { AddMeasurementTypeComponent } from './components/addMeasurementType/addMeasurementType.component';
@@ -7,7 +8,7 @@ import { MeasurementTypesComponent } from './components/measurementTypes/measure
 import { UpdateMeasurementComponent } from './components/updateMeasurement/updateMeasurement.component';
 import { UpdateMeasurementTypeComponent } from './components/updateMeasurementType/updateMeasurementType.component';
 
-export const routes: Routes = [
+const routes: Routes = [
     {
         path: '',
         component: MeasurementListComponent
@@ -33,3 +34,10 @@ export const routes: Routes = [
         component: UpdateMeasurementTypeComponent
     }
 ];
+
+@NgModule({
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    declarations: [],
+})
+export class MeasurementRoutingModule { }

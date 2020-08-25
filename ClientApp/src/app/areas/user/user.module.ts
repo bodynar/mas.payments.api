@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { UserRoutingModule } from './user.routing';
+
 import { AppCommonModule } from 'common/common.module';
 
 import { UserComponent } from './component/user.component';
@@ -18,7 +20,8 @@ import { UserCardComponent } from './components/userCard/userCard.component';
         FormsModule,
         ReactiveFormsModule,
         CommonModule,
-        AppCommonModule
+        AppCommonModule,
+        UserRoutingModule
     ],
     exports: [],
     declarations: [

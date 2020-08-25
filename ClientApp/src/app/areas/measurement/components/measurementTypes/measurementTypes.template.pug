@@ -12,12 +12,12 @@ button.btn.btn-outline-success.btn-sm(
             [style.background]='type.color',
         )
         h5 {{ type.name }}
-    p.description {{ type.description}}
+    p.description {{ type.description }}
     .payment-type
         app-badge(
             [mainColor]='type.paymentTypeColor',
             [text]='type.paymentTypeName',
-            (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
+            clickable='false'
         )
     .actions
         .oi.oi-pencil.oi-large(

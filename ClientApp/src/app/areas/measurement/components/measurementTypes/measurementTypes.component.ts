@@ -87,7 +87,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                             title: 'Warning! Measurement type related with measurement.',
                             body: {
                                 isHtml: false,
-                                content: 'Measurement type related with measurement.\nAre you sure want to delete it?'
+                                content: 'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'
                             },
                             additionalParameters: {
                                 confirmBtnText: 'Yes',
@@ -95,10 +95,10 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                             }
                         }).pipe(
                             map(response => response as boolean),
-                            map(response => ({ id: id, canDelete: response }))
+                            map(response => ({ id, canDelete: response }))
                         );
                     } else {
-                        return of(({ id: id, canDelete: true }));
+                        return of(({ id, canDelete: true }));
                     }
                 }),
                 filter(({ canDelete }) => canDelete),
@@ -122,7 +122,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
             )
             .subscribe(id => this.routerService.navigateArea(
                 ['updateType'],
-                { queryParams: { 'id': id } }
+                { queryParams: { id } }
             ));
     }
 

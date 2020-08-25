@@ -24,6 +24,7 @@ doctype html
         app-badge(
             [mainColor]='measurement.measurementTypeColor',
             [text]='measurement.measurementTypeName',
+            clickable='true',
             (click)='onTypeClick.next(measurement.meterMeasurementTypeId)'
         )
     .measurement__value

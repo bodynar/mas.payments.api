@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 
 import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -22,7 +24,7 @@ import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStat
     selector: 'app-stats-payments',
     templateUrl: 'paymentStats.template.pug'
 })
-export class PaymentStatsComponent implements OnInit, OnDestroy {
+export class PaymentStatsComponent extends BaseComponent {
     public chart: {
         series: ApexAxisChartSeries,
         xaxis: ApexXAxis,
@@ -50,9 +52,6 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
     private whenSubmitForm$: Subject<null> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     private paymentTypes: Array<PaymentTypeResponse>
         = [];
 
@@ -61,27 +60,11 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
         private statisticsService: IStatisticsService,
         private notificationService: INotificationService,
     ) {
-        this.years = yearsRange(2019, new Date().getFullYear() + 5);
-        this.statisticsFilter.year = this.years[0].id;
+        super();
 
-        this.whenSubmitForm$
+        this.whenComponentInit$
             .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.onPaymentsStatsRecieved(result));
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
                     if (!response.success) {
@@ -99,17 +82,26 @@ export class PaymentStatsComponent implements OnInit, OnDestroy {
                     },
                     ...result
                 ];
-                this.paymentTypes$.next(this.paymentTypes);
-
+                this.years = yearsRange(2019, new Date().getFullYear() + 5);
+                this.statisticsFilter.year = this.years[0].id;
                 this.statisticsFilter.paymentTypeId = 0;
 
+                this.paymentTypes$.next(this.paymentTypes);
                 this.whenSubmitForm$.next(null);
             });
-    }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+        this.whenSubmitForm$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.onPaymentsStatsRecieved(result));
     }
 
     public onFormSubmit(): void {

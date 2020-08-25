@@ -1,11 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 
 import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -22,7 +24,7 @@ import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurem
     selector: 'app-stats-measurement',
     templateUrl: 'measurementStats.template.pug'
 })
-export class MeasurementStatsComponent implements OnInit, OnDestroy {
+export class MeasurementStatsComponent extends BaseComponent {
     public chart: {
         series: ApexAxisChartSeries,
         xaxis: ApexXAxis,
@@ -50,9 +52,6 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
     private whenSubmitForm$: Subject<null> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     private measurementTypes: Array<MeasurementTypeResponse>
         = [];
 
@@ -61,27 +60,11 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
         private statisticsService: IStatisticsService,
         private notificationService: INotificationService,
     ) {
-        this.years = yearsRange(2019, new Date().getFullYear() + 5);
-        this.statisticsFilter.year = this.years[0].id;
+        super();
 
-        this.whenSubmitForm$
+        this.whenComponentInit$
             .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.onStatsRecieved(result));
-    }
-
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
+                switchMapTo(this.measurementService.getMeasurementTypes()),
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
                     if (!response.success) {
@@ -99,17 +82,27 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                     },
                     ...result
                 ];
-                this.measurementTypes$.next(this.measurementTypes);
 
+                this.years = yearsRange(2019, new Date().getFullYear() + 5);
+                this.statisticsFilter.year = this.years[0].id;
                 this.statisticsFilter.measurementTypeId = 0;
 
+                this.measurementTypes$.next(this.measurementTypes);
                 this.whenSubmitForm$.next(null);
             });
-    }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+        this.whenSubmitForm$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => this.onStatsRecieved(result));
     }
 
     public onFormSubmit(): void {
@@ -139,6 +132,5 @@ export class MeasurementStatsComponent implements OnInit, OnDestroy {
                 data: []
             }];
         }
-
     }
 }

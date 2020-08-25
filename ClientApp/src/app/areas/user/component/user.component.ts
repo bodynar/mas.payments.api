@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { takeUntil, filter, map } from 'rxjs/operators';
 import { Subject } from 'rxjs';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 import { ArrayUtils } from 'common/utils/array';
@@ -16,7 +18,7 @@ import { MenuItem } from 'models/menuItem';
     templateUrl: 'user.template.pug',
     styleUrls: ['user.style.styl']
 })
-class UserComponent implements OnInit, OnDestroy {
+export class UserComponent extends BaseComponent {
     public menuItems: Array<MenuItem>;
 
     private whenDestroyComponent$: Subject<null> =
@@ -28,34 +30,32 @@ class UserComponent implements OnInit, OnDestroy {
     constructor(
         private routerService: IRouterService
     ) {
-        this.menuItems = userSideMenu;
-    }
+        super();
 
-    public ngOnInit(): void {
-        this.routerService
-            .whenRouteChange()
-            .pipe(
-                takeUntil(this.whenDestroyComponent$),
-                filter(routePath =>
-                    ArrayUtils.startsWith<string>(routePath, this.userRoutePath)
-                    && (routePath.length === 3 || routePath.length === 2)),
-                map(routePath => routePath.length === 3 ? routePath.pop() : '')
-            )
-            .subscribe(menuItem => this.highlightMenuItem(menuItem));
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.menuItems = userSideMenu;
 
-        const currentRoute: string =
-            this.routerService
-                .getCurrentRoute()
-                .split('/')
-                .slice(2)
-                .join('/');
+                this.routerService
+                    .whenRouteChange()
+                    .pipe(
+                        takeUntil(this.whenDestroyComponent$),
+                        filter(routePath =>
+                            ArrayUtils.startsWith<string>(routePath, this.userRoutePath)
+                            && (routePath.length === 3 || routePath.length === 2)),
+                        map(routePath => routePath.length === 3 ? routePath.pop() : '')
+                    )
+                    .subscribe(menuItem => this.highlightMenuItem(menuItem));
 
-        this.highlightMenuItem(currentRoute);
-    }
+                const currentRoute: string =
+                    this.routerService
+                        .getCurrentRoute()
+                        .split('/')
+                        .slice(2)
+                        .join('/');
 
-    public ngOnDestroy(): void {
-        this.whenDestroyComponent$.next(null);
-        this.whenDestroyComponent$.complete();
+                this.highlightMenuItem(currentRoute);
+            });
     }
 
     public onMenuItemClick(menuItem: string): void {
@@ -66,7 +66,6 @@ class UserComponent implements OnInit, OnDestroy {
         }
         this.highlightMenuItem(menuItem);
     }
-
 
     private highlightMenuItem(menuItemName: string): void {
         this.menuItems.forEach(item => item.isActive = false);
@@ -85,5 +84,3 @@ class UserComponent implements OnInit, OnDestroy {
         }
     }
 }
-
-export { UserComponent };

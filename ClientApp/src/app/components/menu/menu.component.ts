@@ -1,7 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -16,44 +18,39 @@ import { IRouterService } from 'services/IRouterService';
     templateUrl: 'menu.template.pug',
     styleUrls: ['menu.style.styl']
 })
-export class MenuComponent implements OnInit, OnDestroy {
+export class MenuComponent extends BaseComponent {
     public menuItems$: Subject<Array<MenuItem>> =
         new ReplaySubject(1);
 
     public searchPattern: string =
         '';
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     private menuItems: Array<MenuItem>;
 
     constructor(
         private routerService: IRouterService,
     ) {
-        this.menuItems = siteMenu;
-        this.menuItems$.next(this.menuItems);
-    }
+        super();
 
-    public ngOnInit(): void {
-        this.routerService
-            .whenRouteChange()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.menuItems = siteMenu;
+                this.menuItems$.next(this.menuItems);
 
-        const currentRoute: string =
-            this.routerService
-                .getCurrentRoute()
-                .split('/')
-                .slice(1)
-                .join('/');
+                this.routerService
+                    .whenRouteChange()
+                    .pipe(takeUntil(this.whenComponentDestroy$))
+                    .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
 
-        this.highlightMenuItem(currentRoute);
-    }
+                const currentRoute: string =
+                    this.routerService
+                        .getCurrentRoute()
+                        .split('/')
+                        .slice(1)
+                        .join('/');
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+                this.highlightMenuItem(currentRoute);
+            });
     }
 
     public onStartSearch(): void {

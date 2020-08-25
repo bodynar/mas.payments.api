@@ -1,8 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 import { Subject } from 'rxjs';
 
 import { getMonthName } from 'static/months';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 
@@ -11,7 +13,7 @@ import { MeasurementsResponseMeasurement } from 'models/response/measurements/me
     templateUrl: 'measurement.template.pug',
     styleUrls: ['measurement.style.styl']
 })
-class MeasurementComponent implements OnInit {
+export class MeasurementComponent extends BaseComponent {
     @Input()
     public measurement: MeasurementsResponseMeasurement;
 
@@ -43,12 +45,14 @@ class MeasurementComponent implements OnInit {
 
     constructor(
     ) {
-    }
+        super();
 
-    public ngOnInit(): void {
-        this.isSentFlagActive.subscribe();
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.isSentFlagActive.subscribe();
 
-        this.formattedDate = `${getMonthName(this.measurement.month)} ${this.measurement.year}`;
+                this.formattedDate = `${getMonthName(this.measurement.month)} ${this.measurement.year}`;
+            });
     }
 
     public onChecked({ target }: Event): void {
@@ -59,10 +63,8 @@ class MeasurementComponent implements OnInit {
         this.isStateChaged = true;
 
         this.onSendFlagClick.next({
-            checked: checked,
+            checked,
             id: this.measurement.id,
         });
     }
 }
-
-export { MeasurementComponent };

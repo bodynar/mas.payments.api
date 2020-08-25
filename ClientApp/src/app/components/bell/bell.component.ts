@@ -1,7 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { fromEvent, Observable, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -16,7 +18,7 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
     templateUrl: 'bell.template.pug',
     styleUrls: ['bell.style.styl']
 })
-export class BellComponent implements OnInit, OnDestroy {
+export class BellComponent extends BaseComponent {
 
     public notifications$: Subject<Array<GetNotificationsResponse>> =
         new ReplaySubject();
@@ -36,14 +38,30 @@ export class BellComponent implements OnInit, OnDestroy {
     private onHideNotifications$: Subject<Array<string>> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
         private routerService: IRouterService,
     ) {
+        super();
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.userService.getNotifications({ onlyActive: true })),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+                map(response => response.result),
+            )
+            .subscribe(notifications => {
+                this.notifications = notifications;
+                this.notifications$.next(this.notifications);
+            });
+
         this.pageClicks$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -95,30 +113,6 @@ export class BellComponent implements OnInit, OnDestroy {
                 this.notifications = this.notifications.filter(notificationItem => notificationItem.key !== key);
                 this.notifications$.next(this.notifications);
             });
-    }
-
-    public ngOnInit(): void {
-        this.userService
-            .getNotifications({ onlyActive: true })
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-                map(response => response.result),
-            )
-            .subscribe(notifications => {
-                this.notifications = notifications;
-                this.notifications$.next(this.notifications);
-            });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public notificationsToggle(target: HTMLElement): void {

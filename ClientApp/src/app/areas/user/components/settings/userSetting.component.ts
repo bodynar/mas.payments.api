@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
@@ -13,15 +15,12 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
 @Component({
     templateUrl: 'userSetting.template.pug'
 })
-export class UserSettingComponent implements OnDestroy, OnInit {
+export class UserSettingComponent extends BaseComponent {
 
     public userSettings$: Subject<Array<GetUserSettingsResponse>> =
         new ReplaySubject();
 
     public settingsForm: FormGroup;
-
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
 
     private whenRequestUserSettings$: Subject<null> =
         new Subject();
@@ -34,6 +33,17 @@ export class UserSettingComponent implements OnDestroy, OnInit {
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
+        super();
+
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.settingsForm = this.formBuilder.group({
+                    items: this.formBuilder.array([])
+                });
+
+                this.whenRequestUserSettings$.next(null);
+            });
+
         this.userSettings$
             .subscribe(settings => this.userSettings = settings);
 
@@ -61,19 +71,6 @@ export class UserSettingComponent implements OnDestroy, OnInit {
                 }),
             )
             .subscribe(({ result }) => this.userSettings$.next(result));
-    }
-
-    public ngOnInit(): void {
-        this.settingsForm = this.formBuilder.group({
-            items: this.formBuilder.array([])
-        });
-
-        this.whenRequestUserSettings$.next(null);
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onFormSubmit(): void {

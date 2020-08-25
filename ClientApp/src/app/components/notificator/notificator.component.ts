@@ -1,7 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 
@@ -13,27 +14,21 @@ import { NotificationType } from 'models/notificationType';
     templateUrl: 'notificator.template.pug',
     styleUrls: ['notificator.style.styl']
 })
-export class NotificatorComponent implements OnDestroy {
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
+export class NotificatorComponent extends BaseComponent {
     public notifications: Array<Notification> =
         [];
 
     constructor(
         private notificationService: INotificationService
     ) {
+        super();
+
         this.notificationService
             .whenMessageRecieved()
             .pipe(
                 takeUntil(this.whenComponentDestroy$)
             )
             .subscribe(notification => this.notifications.push(notification));
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public getClassName(notificationType: NotificationType): string {

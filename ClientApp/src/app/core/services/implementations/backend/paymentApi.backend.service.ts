@@ -124,7 +124,6 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         description: response['description'],
                         paymentTypeName: response['paymentTypeName'],
                         paymentTypeId: response['paymentTypeId'],
-                        paymentTypeColor: response['paymentTypeColor'],
                     }) as PaymentResponse),
                 catchError(error => of(error.error)),
                 map(x => isNullOrUndefined(x.Success)
@@ -200,7 +199,7 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         systemName: response['systemName'],
                         description: paymentType['description'],
                         company: paymentType['company'],
-                        color: response['color'],
+                        color: paymentType['color'],
                         hasRelatedPayments: paymentType['hasRelatedPayments'] || false,
                         hasRelatedMeasurementTypes: paymentType['hasRelatedMeasurementTypes'] || false,
                     }) as PaymentTypeResponse)),

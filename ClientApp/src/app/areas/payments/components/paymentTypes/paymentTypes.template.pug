@@ -9,6 +9,7 @@ doctype html
         type='button',
         (click)='onAddClick()'
     ) Create new
+hr
 
 .type-list-item(*ngFor='let type of (paymentTypes$ | async)')
     .name

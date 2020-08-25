@@ -4,6 +4,8 @@ doctype html
         type='button',
         (click)='onBackClick()'
     ) Back
+hr
+
 form.needs-validation(
     #addMeasurementForm='ngForm',
     [class.was-validated]='!!(whenSubmittedForm$ | async)',

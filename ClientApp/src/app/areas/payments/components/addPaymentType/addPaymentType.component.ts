@@ -1,8 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -13,7 +15,7 @@ import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequ
 @Component({
     templateUrl: 'addPaymentType.template.pug'
 })
-class AddPaymentTypeComponent implements OnDestroy {
+export class AddPaymentTypeComponent extends BaseComponent {
 
     public addPaymentTypeRequest: AddPaymentTypeRequest =
         {
@@ -23,14 +25,12 @@ class AddPaymentTypeComponent implements OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -49,14 +49,7 @@ class AddPaymentTypeComponent implements OnDestroy {
             .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { AddPaymentTypeComponent };

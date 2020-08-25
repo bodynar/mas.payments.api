@@ -1,10 +1,12 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { ReplaySubject, Subject, of, Observable } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
@@ -20,7 +22,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentTypes.template.pug',
     styleUrls: ['paymentTypes.style.styl']
 })
-class PaymentTypesComponent implements OnInit, OnDestroy {
+export class PaymentTypesComponent extends BaseComponent implements OnInit {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
@@ -36,9 +38,6 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     private whenGetPaymentTypes$: Subject<null> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     private paymentTypes: Array<PaymentTypeResponse> =
         [];
 
@@ -48,9 +47,10 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
         private modalService: IModalService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
         this.whenGetPaymentTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -110,11 +110,6 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
         this.whenGetPaymentTypes$.next(null)
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onDeleteClick(typeId: number): void {
         this.whenTypeDelete$.next(typeId);
     }
@@ -134,7 +129,7 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
         this.paymentTypes$.next(slicedItems);
     }
 
-    private hasRelatedObjects(id: number): Observable<{id: number, canDelete: boolean }> {
+    private hasRelatedObjects(id: number): Observable<{ id: number, canDelete: boolean }> {
         const { hasRelatedPayments, hasRelatedMeasurementTypes } = this.paymentTypes.find(x => x.id === id);
 
         if (hasRelatedPayments || hasRelatedMeasurementTypes) {
@@ -167,5 +162,3 @@ class PaymentTypesComponent implements OnInit, OnDestroy {
         }
     }
 }
-
-export { PaymentTypesComponent };

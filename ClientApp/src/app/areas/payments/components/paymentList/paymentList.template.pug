@@ -4,10 +4,16 @@ doctype html
     role='toolbar',
     aria-label='action buttons'
 )
-    button.btn.btn-outline-info.mr-2(
-        *ngFor='let action of actions',
-        (click)='onActionClick(action)'
-    ) {{ action }}
+    button.btn.btn-sm.btn-outline-primary.mr-2(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+    button.btn.btn-sm.btn-success.mr-2(
+        (click)='onActionClick(\'add\')'
+    ) Create new
+    button.btn.btn-sm.btn-outline-info.mr-2(
+        (click)='onActionClick(\'types\')'
+    ) Manage types
 hr
 
 .accordion

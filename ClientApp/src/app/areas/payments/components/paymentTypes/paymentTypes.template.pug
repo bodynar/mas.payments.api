@@ -1,9 +1,14 @@
 doctype html
 
-button.btn.btn-outline-success.btn-sm(
-    type='button',
-    (click)='onAddClick()'
-) Add
+.mb-2
+    button.btn.btn-sm.btn-outline-primary.mr-2(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+    button.btn.btn-success.btn-sm(
+        type='button',
+        (click)='onAddClick()'
+    ) Create new
 
 .type-list-item(*ngFor='let type of (paymentTypes$ | async)')
     .name

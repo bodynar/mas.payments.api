@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
@@ -7,6 +7,8 @@ import { isNullOrUndefined } from 'common/utils/common';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -23,7 +25,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-export class PaymentListComponent implements OnInit, OnDestroy {
+export class PaymentListComponent extends BaseComponent implements OnInit {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -58,9 +60,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     public years: Array<{ name: string, id?: number }>;
 
-    public actions: Array<string> =
-        ['add', 'types'];
-
 
     private whenSubmitFilters$: Subject<null> =
         new Subject();
@@ -69,9 +68,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenPaymentEdit$: Subject<number> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private currentSortOrder: 'asc' | 'desc' =
@@ -93,9 +89,10 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     constructor(
         private paymentService: IPaymentService,
-        private routerService: IRouterService,
         private notificationService: INotificationService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
         this.months = [{ name: '' }, ...months];
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
@@ -163,7 +160,7 @@ export class PaymentListComponent implements OnInit, OnDestroy {
             .subscribe(id =>
                 this.routerService.navigateDeep(
                     ['update'],
-                    { queryParams: { 'id': id } }
+                    { queryParams: { id } }
                 )
             );
     }
@@ -187,11 +184,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 }, ...result]);
                 this.whenSubmitFilters$.next();
             });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onActionClick(actionName: string): void {

@@ -40,22 +40,6 @@ form.needs-validation(
     .form-group
         .row
             .col-2
-                label(
-                    for='manualColor',
-                    title='Write hex color manually'
-                ) Manual hex color
-                input.form-control.form-control-sm#manualColor(
-                    type='text',
-                    name='manualColor',
-                    appIsValidHexColor,
-                    [(ngModel)]='addPaymentTypeRequest.color',
-                    #manualColor='ngModel',
-                    data-validate-onchange='true'
-                )
-                .invalid-feedback(
-                    *ngIf='manualColor.invalid'
-                ) Please, insert correct hex color
-            .col-2
                 label(for='color') Badge color
                 input.form-control.form-control-sm#color(
                     type='color',

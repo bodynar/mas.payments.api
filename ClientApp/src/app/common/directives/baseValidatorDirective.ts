@@ -22,4 +22,8 @@ export abstract class BaseValidatorDirective implements Validator, OnChanges {
     public getInvalidValidateResult(): { [key: string]: any } {
         return { [this.validatorName.toString()]: { valid: false } };
     }
+
+    public getValidationResult(condition: boolean): { [key: string]: any } {
+        return condition ? this.getInvalidValidateResult() : null;
+    }
 }

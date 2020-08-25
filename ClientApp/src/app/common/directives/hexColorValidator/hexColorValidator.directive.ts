@@ -24,9 +24,7 @@ export class HexColorValidatorDirective extends BaseValidatorDirective {
             const isValidColor: boolean =
                 isHexColor(value);
 
-            return isValidColor
-                ? null
-                : this.getInvalidValidateResult();
+            return this.getValidationResult(isValidColor);
         }
 
         return this.getInvalidValidateResult();

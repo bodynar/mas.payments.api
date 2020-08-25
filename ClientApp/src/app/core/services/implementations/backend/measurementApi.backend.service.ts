@@ -207,6 +207,7 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                         description: measurementType['description'],
                         paymentTypeId: measurementType['paymentTypeId'],
                         paymentTypeName: measurementType['paymentTypeName'],
+                        paymentTypeColor: measurementType['paymentTypeColor'],
                         color: measurementType['color'],
                         hasRelatedMeasurements: measurementType['hasRelatedMeasurements'] || false,
                     }) as MeasurementTypeResponse)),

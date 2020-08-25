@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -15,7 +17,7 @@ import { IPaymentService } from 'services/IPaymentService';
 @Component({
     templateUrl: 'addMeasurementType.template.pug'
 })
-export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
+export class AddMeasurementTypeComponent extends BaseComponent implements OnInit {
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
         {
             color: '#f04747'
@@ -27,15 +29,14 @@ export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private measurementService: IMeasurementService,
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
+
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -71,11 +72,6 @@ export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...result]));
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onFormSubmit(form: NgForm): void {

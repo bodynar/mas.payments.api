@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
@@ -6,7 +6,8 @@ import { filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
-import { isNullOrUndefined } from 'common/utils/common';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -18,7 +19,7 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 @Component({
     templateUrl: 'addMeasurement.template.pug'
 })
-class AddMeasurementComponent implements OnInit, OnDestroy {
+class AddMeasurementComponent extends BaseComponent implements OnInit {
 
     public addMeasurementRequest: AddMeasurementRequest =
         {};
@@ -35,18 +36,17 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
+
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid && this.isFormValid()),
+                filter(({ valid }) => valid),
                 switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
                 filter(response => {
                     if (!response.success) {
@@ -89,29 +89,8 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
         this.addMeasurementRequest.year = currentDate.getFullYear();
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
-    }
-
-    private isFormValid(): boolean {
-        // todo: fix => make normal validator on field
-        let isFormValid: boolean =
-            true;
-
-        if (!isNullOrUndefined(this.addMeasurementRequest.measurement)) {
-            const measurementValue: number =
-                parseFloat(`${this.addMeasurementRequest.measurement}`);
-
-            if (Number.isNaN(measurementValue)) {
-                isFormValid = false;
-            }
-        }
-        return isFormValid;
     }
 }
 

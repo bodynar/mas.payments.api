@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
@@ -13,6 +13,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
+import BaseComponent from 'common/components/BaseComponent';
+
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
@@ -24,7 +26,7 @@ import { ConfirmInModalComponent } from 'src/app/components/modal/components/con
 @Component({
     templateUrl: 'measurementList.template.pug'
 })
-class MeasurementListComponent implements OnInit, OnDestroy {
+class MeasurementListComponent extends BaseComponent implements OnInit {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
 
@@ -56,9 +58,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public years: Array<{ name: string, id?: number }>;
 
-    public actions: Array<string> =
-        ['add', 'types'];
-
     public isMeasurementsSentFlagVisible: boolean =
         false;
 
@@ -69,9 +68,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenSubmitFilters$: Subject<null> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>>
@@ -91,10 +87,11 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     constructor(
         private measurementService: IMeasurementService,
-        private routerService: IRouterService,
         private notificationService: INotificationService,
         private modalService: IModalService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
         this.months = [{ name: '' }, ...months];
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
@@ -155,7 +152,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .subscribe(id =>
                 this.routerService.navigateDeep(
                     ['update'],
-                    { queryParams: { 'id': id } }
+                    { queryParams: { id } }
                 )
             );
 
@@ -237,11 +234,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                 ]);
                 this.whenSubmitFilters$.next();
             });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onActionClick(actionName: string): void {

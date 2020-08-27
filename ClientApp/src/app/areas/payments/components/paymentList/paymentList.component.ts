@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -125,6 +125,7 @@ export class PaymentListComponent extends BaseRoutingComponent {
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
+                delay(1.5 * 1000),
                 tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {

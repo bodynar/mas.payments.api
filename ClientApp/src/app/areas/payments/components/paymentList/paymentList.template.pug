@@ -1,9 +1,6 @@
 doctype html
 
-.btn-toolbar(
-    role='toolbar',
-    aria-label='action buttons'
-)
+.row.m-row--nm
     button.btn.btn-sm.btn-outline-primary.mr-2(
         type='button',
         (click)='onBackClick()'
@@ -11,9 +8,22 @@ doctype html
     button.btn.btn-sm.btn-success.mr-2(
         (click)='onActionClick(\'add\')'
     ) Create new
-    button.btn.btn-sm.btn-outline-info.mr-2(
-        (click)='onActionClick(\'types\')'
-    ) Manage types
+
+    .drodown
+        button.btn.btn-sm.btn-outline-primary.dropdown-toggle#actions(
+            type='button',
+            data-toggle='dropdown',
+            aria-haspopup='true',
+            aria-expanded='false'
+        ) Actions
+        .dropdown-menu(
+            aria-labeledby='actions'
+        )
+            button.dropdown-item(
+                type='button',
+                href='#',
+                (click)='onActionClick(\'types\')'
+            ) Manage types
 hr
 
 .accordion

@@ -1,9 +1,6 @@
 doctype html
 
-.btn-toolbar(
-    role='toolbar',
-    aria-label='action buttons'
-)
+.row.m-row--nm
     button.btn.btn-sm.btn-outline-primary.mr-2(
         type='button',
         (click)='onBackClick()'
@@ -11,41 +8,45 @@ doctype html
     button.btn.btn-sm.btn-success.mr-2(
         (click)='onActionClick(\'add\')'
     ) Create new
-    button.btn.btn-sm.btn-outline-info.mr-2(
-        (click)='onActionClick(\'types\')'
-    ) Manage types
 
-    .btn-group(
-        role='group',
-        aria-label='send measurement button',
-        *ngIf='isMeasurementsSentFlagActive$ | async'
-    )
-        button.btn.btn-outline-primary(
-            type='button',
-            (click)='onSendMeasurementsClick()',
-            [disabled]='!(isAnyMeasurementSelectedToSend$ | async)',
-        ) Send {{ selectedMeasurementsCount$ | async }}
-        button.btn.btn-outline-primary.dropdown-toggle.dropdown-toggle-split(
+    .drodown
+        button.btn.btn-sm.btn-outline-primary.dropdown-toggle#measurementActions(
             type='button',
             data-toggle='dropdown',
             aria-haspopup='true',
             aria-expanded='false'
+        ) Actions
+        .dropdown-menu(
+            aria-labeledby='measurementActions'
         )
-            span.sr-only Toggle Dropdown
-        .dropdown-menu
             button.dropdown-item(
                 type='button',
+                href='#',
+                (click)='onActionClick(\'types\')'
+            ) Manage types
+            button.dropdown-item(
+                type='button',
+                href='#',
+                *ngIf='!(isMeasurementsSentFlagActive$ | async)',
+                (click)='onSelectMeasurementsClick(true)'
+            ) Send
+            button.dropdown-item(
+                type='button',
+                href='#',
+                *ngIf='isMeasurementsSentFlagActive$ | async',
+                (click)='onSendMeasurementsClick()',
+                [disabled]='!(isAnyMeasurementSelectedToSend$ | async)'
+            ) Send {{ selectedMeasurementsCount$ | async }}
+            .dropdown-divider(
+                *ngIf='isMeasurementsSentFlagActive$ | async'
+            )
+            button.dropdown-item(
+                type='button',
+                href='#',
+                *ngIf='isMeasurementsSentFlagActive$ | async',
                 (click)='onSelectMeasurementsClick(false)'
             ) Cancel
-    .btn-group(
-        role='group',
-        aria-label='send measurement button',
-        *ngIf='!(isMeasurementsSentFlagActive$ | async)'
-    )
-        button.btn.btn-outline-primary(
-            *ngIf='!(isMeasurementsSentFlagActive$ | async)',
-            (click)='onSelectMeasurementsClick(true)'
-        ) Send
+
 hr
 
 .accordion

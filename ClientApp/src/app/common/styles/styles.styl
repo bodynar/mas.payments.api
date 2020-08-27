@@ -21,48 +21,19 @@ label[title]
         margin-left 0
         margin-right 0
 
-colors_accordion = #F7F7F7
+[data-collapsable='true']
+    .card-header
+        .btn-link
+            box-shadow none
 
-.accordion
-    overflow hidden
-    box-shadow 0 4px 4px -2px rgba(0, 0, 0, 0.5)
-    border-radius 4px
-    margin-bottom 1.5em
-    &-tab
-        max-height 0
-        padding 0 1em
-        background white
-        transition all .35s
-    &-switcher
-        position absolute
-        opacity 0
-        z-index -1
-        &:checked
-            & + .accordion-label
-                background darken(colors_accordion, 10%)
-                &:after
-                    transform rotate(90deg)
-            & ~ .accordion-tab
-                max-height 100vh
-                padding 1em
-    &-label
-        display flex
-        justify-content space-between
-        
-        padding 1em
-        margin-bottom 0
+        [data-toggle="collapse"] .oi
+            transition transform 0.3s ease
+            color black
+            transform rotate(180deg)
+            
 
-        background colors_accordion
-        font-weight bold
-        cursor pointer
-        &:hover
-            background darken(colors_accordion, 10%)
-        &:after
-            content '\276F'
-            width 1em
-            height 1em
-            text-align center
-            transition all 0.35s
+        [data-toggle="collapse"].collapsed .oi
+            transform none
     
 .filters
     &_row
@@ -100,13 +71,13 @@ colors_accordion = #F7F7F7
         color color-blue-sky
     &:active
         color color-blue-sky-darken
-    &-small
+    &--sm
         font-size 0.5em
-    &-medium
+    &--md
         font-size 0.8em
-    &-medium-extra
+    &--lg
         font-size 1.2em
-    &-large
+    &--elg
         font-size 1.5em
 
 .module-name

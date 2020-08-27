@@ -23,7 +23,6 @@ import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurem
 @Component({
     selector: 'app-stats-measurement',
     templateUrl: 'measurementStats.template.pug',
-    styleUrls: ['../stats/stats.style.styl'],
 })
 export class MeasurementStatsComponent extends BaseComponent {
     public chart: {

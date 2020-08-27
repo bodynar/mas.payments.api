@@ -23,7 +23,6 @@ import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStat
 @Component({
     selector: 'app-stats-payments',
     templateUrl: 'paymentStats.template.pug',
-    styleUrls: ['../stats/stats.style.styl'],
 })
 export class PaymentStatsComponent extends BaseComponent {
     public chart: {

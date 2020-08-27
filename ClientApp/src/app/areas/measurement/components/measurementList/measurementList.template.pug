@@ -49,7 +49,7 @@ doctype html
 
 hr
 
-#filterContainer(
+.mb-3#filterContainer(
     data-collapsable='true'
 )
     .card
@@ -123,29 +123,31 @@ hr
                                 type='button',
                                 (click)='clearFilters()'
                             ) Clear
-
-div(
-    [class.hidden]='isLoading$ | async'
-)
-    app-measurement-group(
-        *ngFor='let measurementGroup of (measurements$ | async)',
-        [measurementGroup]='measurementGroup',
-        [showAsGroups]='isFilterApplied$',
-        [isSentFlagActive$]='isMeasurementsSentFlagActive$',
-        (deleteClick)='onDeleteRecordClick($event)',
-        (editClick)='onEditRecordClick($event)',
-        (typeClick)='onTypeClick($event)',
-        (sendFlagClick)='onSendFlagClick($event)',
+hr
+.loading-cover
+    .loading-cover_image-container(
+        *ngIf='isLoading$ | async'
     )
-
-img.loading-indicator(
-    alt='loading..',
-    src='assets/images/loading-02.svg',
-    *ngIf='isLoading$ | async'
-)
-br
-app-paginator(
-    *ngIf='(paginatorConfig$ | async)?.enabled',
-    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
-    (pageChange)='onPageChange($event)'
-)
+        img.loading-cover_image-container_img(
+            alt='loading..',
+            src='assets/images/loading-02.svg'
+        )
+    .loading-cover_content(
+        [attr.data-disabled]='isLoading$ | async'
+    )
+        app-measurement-group(
+            *ngFor='let measurementGroup of (measurements$ | async)',
+            [measurementGroup]='measurementGroup',
+            [showAsGroups]='isFilterApplied$',
+            [isSentFlagActive$]='isMeasurementsSentFlagActive$',
+            (deleteClick)='onDeleteRecordClick($event)',
+            (editClick)='onEditRecordClick($event)',
+            (typeClick)='onTypeClick($event)',
+            (sendFlagClick)='onSendFlagClick($event)',
+        )
+        br
+        app-paginator(
+            *ngIf='(paginatorConfig$ | async)?.enabled',
+            [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+            (pageChange)='onPageChange($event)'
+        )

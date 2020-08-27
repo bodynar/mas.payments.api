@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -127,6 +127,7 @@ export class MeasurementListComponent extends BaseRoutingComponent {
                     this.isFilterApplied$.next(this.filters.isEmpty);
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
+                delay(1.5 * 1000),
                 tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {

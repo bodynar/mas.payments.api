@@ -5,7 +5,7 @@ import { IRouterService } from 'services/IRouterService';
 @Component({
     templateUrl: 'notFound.template.pug',
 })
-class NotFoundComponent {
+export class NotFoundComponent {
     constructor(
         private routerService: IRouterService
     ) {
@@ -15,5 +15,3 @@ class NotFoundComponent {
         this.routerService.navigate(['app']);
     }
 }
-
-export { NotFoundComponent };

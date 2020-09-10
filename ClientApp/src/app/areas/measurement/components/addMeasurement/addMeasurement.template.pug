@@ -1,4 +1,10 @@
 doctype html
+.mb-2
+    button.btn.btn-sm.btn-outline-primary(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+hr
 
 form.needs-validation(
     #addMeasurementForm='ngForm',
@@ -64,4 +70,4 @@ form.needs-validation(
             #name='ngModel'
         )
     
-    button.btn.btn-outline-primary(type='submit') Add
+    button.btn.btn-sm.btn-success(type='submit') Add

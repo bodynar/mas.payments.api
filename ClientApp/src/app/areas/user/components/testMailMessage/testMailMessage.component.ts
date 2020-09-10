@@ -1,8 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -14,7 +16,7 @@ import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 @Component({
     templateUrl: 'testMailMessage.template.pug'
 })
-class TestMailMessageComponent implements OnDestroy {
+export class TestMailMessageComponent extends BaseComponent {
 
     public mailMessageRequest: TestMailMessageRequest =
         {
@@ -24,13 +26,12 @@ class TestMailMessageComponent implements OnDestroy {
     public whenSendRequest$: Subject<NgForm> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
+        super();
+
         this.whenSendRequest$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -50,14 +51,7 @@ class TestMailMessageComponent implements OnDestroy {
             });
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSend(form: NgForm): void {
         this.whenSendRequest$.next(form);
     }
 }
-
-export { TestMailMessageComponent };

@@ -32,11 +32,11 @@ doctype html
     .measurement__comment
         p {{ measurement.comment }}
     .measurement__actions
-        i.oi.oi-pencil.oi-medium-extra(
+        i.oi.oi-pencil.oi--lg(
             (click)='onEditClick.next(measurement.id)',
             title='Edit'
         )
-        i.oi.oi-trash.oi-medium-extra(
+        i.oi.oi-trash.oi--lg(
             (click)='onDeleteClick.next(measurement.id)',
             title='Delete'
         )

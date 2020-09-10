@@ -1,9 +1,11 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -16,7 +18,7 @@ import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequ
 @Component({
     templateUrl: 'updatePaymentType.template.pug'
 })
-class UpdatePaymentTypeComponent implements OnDestroy {
+export class UpdatePaymentTypeComponent extends BaseRoutingComponent {
 
     public paymentTypeRequest: AddPaymentTypeRequest =
         {};
@@ -26,15 +28,13 @@ class UpdatePaymentTypeComponent implements OnDestroy {
 
     private paymentTypeId: number;
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private activatedRoute: ActivatedRoute,
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
         this.activatedRoute
             .queryParams
             .pipe(
@@ -69,14 +69,7 @@ class UpdatePaymentTypeComponent implements OnDestroy {
             .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { UpdatePaymentTypeComponent };

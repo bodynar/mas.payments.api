@@ -33,6 +33,4 @@ import { UpdatePaymentTypeComponent } from './components/updatePaymentType/updat
     ],
     providers: [],
 })
-class PaymentsModule { }
-
-export { PaymentsModule };
+export class PaymentsModule { }

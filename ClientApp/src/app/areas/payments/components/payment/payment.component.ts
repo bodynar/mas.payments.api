@@ -2,6 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { getMonthName } from 'static/months';
 
+import BaseComponent from 'common/components/BaseComponent';
+
 import PaymentResponse from 'models/response/payments/paymentResponse';
 
 @Component({
@@ -9,7 +11,7 @@ import PaymentResponse from 'models/response/payments/paymentResponse';
     templateUrl: 'payment.template.pug',
     styleUrls: ['payment.style.styl']
 })
-class PaymentComponent implements OnInit {
+export class PaymentComponent extends BaseComponent {
     @Input()
     public payment: PaymentResponse;
 
@@ -29,11 +31,11 @@ class PaymentComponent implements OnInit {
 
     constructor(
     ) {
-    }
+        super();
 
-    public ngOnInit(): void {
-        this.formattedMonth = getMonthName(+this.payment.month);
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.formattedMonth = getMonthName(+this.payment.month);
+            });
     }
 }
-
-export { PaymentComponent };

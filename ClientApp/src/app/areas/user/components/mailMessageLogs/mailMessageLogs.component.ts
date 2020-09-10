@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
@@ -6,6 +6,8 @@ import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
 import * as moment from 'moment';
 
 import { isNullOrUndefined } from 'common/utils/common';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
@@ -21,15 +23,12 @@ import { TextInModalComponent } from 'src/app/components/modal/components/text/t
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
 })
-export class MailMessageLogsComponent implements OnInit, OnDestroy {
+export class MailMessageLogsComponent extends BaseComponent {
     public logItems$: Subject<Array<GetMailLogsResponse>> =
         new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
-
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
 
     private whenUpdateMailMessageLogs$: Subject<null> =
         new Subject();
@@ -45,6 +44,11 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
         private notificationService: INotificationService,
         private modalService: IModalService
     ) {
+        super();
+
+        this.whenComponentInit$
+            .subscribe(() => this.whenUpdateMailMessageLogs$.next(null));
+
         this.whenUpdateMailMessageLogs$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -71,15 +75,6 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
 
                 this.paginatorConfig$.next(paginatorConfig);
             });
-    }
-
-    public ngOnInit(): void {
-        this.whenUpdateMailMessageLogs$.next(null);
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public formatDate(date: Date): string {

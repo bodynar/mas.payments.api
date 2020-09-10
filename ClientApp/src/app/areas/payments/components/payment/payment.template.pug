@@ -13,11 +13,11 @@ doctype html
     .payment__amount {{ payment.amount }}
     .payment__comment {{ payment.description }}
     .payment__actions
-        .oi.oi-pencil.oi-medium-extra(
+        .oi.oi-pencil.oi--lg(
             (click)='editClick.emit(payment.id)',
             title='Edit'
         )
-        .oi.oi-trash.oi-medium-extra(
+        .oi.oi-trash.oi--lg(
             (click)='deleteClick.emit(payment.id)',
             title='Delete'
         )

@@ -1,5 +1,12 @@
 doctype html
 
+.mb-2
+    button.btn.btn-sm.btn-outline-primary(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+hr
+
 form.needs-validation(
     #form='ngForm',
     [class.was-validated]='!!(whenSubmittedForm$ | async)',
@@ -64,4 +71,4 @@ form.needs-validation(
             #name='ngModel'
         )
     
-    button.btn.btn-outline-primary(type='submit') Update
+    button.btn.btn-sm.btn-success(type='submit') Update

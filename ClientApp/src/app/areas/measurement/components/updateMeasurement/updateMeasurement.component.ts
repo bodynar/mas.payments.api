@@ -1,9 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
@@ -13,13 +13,15 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
+
 import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({
     templateUrl: 'updateMeasurement.template.pug'
 })
-class UpdateMeasurementComponent implements OnInit, OnDestroy {
+export class UpdateMeasurementComponent extends BaseRoutingComponent {
 
     public measurementRequest: AddMeasurementRequest =
         {};
@@ -39,15 +41,37 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
 
     private measurementId: number;
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private activatedRoute: ActivatedRoute,
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.measurementService.getMeasurementTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.measurementTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                const currentDate = new Date();
+
+                this.months$.next(months);
+                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+            });
+
         this.activatedRoute
             .queryParams
             .pipe(
@@ -75,7 +99,7 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid && this.isFormValid()),
+                filter(({ valid }) => valid),
                 tap(_ => {
                     this.measurementRequest.month = (parseInt(this.measurementRequest.month) + 1).toString();
                 }),
@@ -93,53 +117,7 @@ class UpdateMeasurementComponent implements OnInit, OnDestroy {
             .subscribe(_ => this.routerService.navigateUp());
     }
 
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => this.measurementTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
-
-        const currentDate = new Date();
-
-        this.months$.next(months);
-        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
-
-    private isFormValid(): boolean {
-        // todo: fix => make normal validator on field
-        let isFormValid: boolean =
-            true;
-
-        if (!isNullOrUndefined(this.measurementRequest.measurement)) {
-            const measurementValue: number =
-                parseFloat(`${this.measurementRequest.measurement}`);
-
-            if (Number.isNaN(measurementValue)) {
-                isFormValid = false;
-            }
-        }
-        return isFormValid;
-    }
 }
-
-export { UpdateMeasurementComponent };

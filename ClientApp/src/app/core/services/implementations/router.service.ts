@@ -70,6 +70,19 @@ class RouterService implements IRouterService {
         return this.previousRoute;
     }
 
+    public navigateBack(): void {
+        // if (!isNullOrUndefined(this.previousRoute)) {
+        //     const routePath: Array<string> =
+        //         this.previousRoute.split('/').filter(x => x !== '');
+
+        //     this.navigate(routePath, {});
+        // } else
+        if (!isNullOrUndefined(window) && !isNullOrUndefined(window.history)) {
+            window.history.back();
+        }
+
+    }
+
     public navigate(path: Array<string>, extras: any): void {
         const routePath: Array<string> =
             path.filter(part => !isNullOrUndefined(part) && part !== '');

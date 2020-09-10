@@ -1,8 +1,10 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 
 import { getMonthName } from 'static/months';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 
@@ -11,7 +13,7 @@ import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/re
     templateUrl: 'measurementGroup.template.pug',
     styleUrls: ['measurementGroup.style.styl']
 })
-export class MeasurementGroupComponent implements OnInit {
+export class MeasurementGroupComponent extends BaseComponent {
     @Input()
     public measurementGroup: MeasurementsResponse;
 
@@ -79,20 +81,23 @@ export class MeasurementGroupComponent implements OnInit {
 
     constructor(
     ) {
+        super();
+
         this.onDeleteClick$.subscribe(event => this.deleteClick.emit(event));
         this.onEditClick$.subscribe(event => this.editClick.emit(event));
         this.onTypeClick$.subscribe(event => this.typeClick.emit(event));
         this.onSendFlagClick$.subscribe(event => this.sendFlagClick.emit(event));
-    }
 
-    public ngOnInit(): void {
-        this.showAsGroups.subscribe();
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.showAsGroups.subscribe();
 
-        const monthName: string =
-            getMonthName(+this.measurementGroup.month);
+                const monthName: string =
+                    getMonthName(+this.measurementGroup.month);
 
-        this.formattedGroupName = `${monthName} ${this.measurementGroup.year}`;
-        this.onSortColumn('type');
+                this.formattedGroupName = `${monthName} ${this.measurementGroup.year}`;
+                this.onSortColumn('type');
+            });
     }
 
     public toggleState(): void {

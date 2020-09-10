@@ -34,6 +34,4 @@ import { UserCardComponent } from './components/userCard/userCard.component';
     ],
     providers: [],
 })
-class UserModule { }
-
-export { UserModule };
+export class UserModule { }

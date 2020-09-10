@@ -1,9 +1,18 @@
 doctype html
 
-button.btn.btn-outline-success.btn-sm(
-    type='button',
-    (click)='onAddClick()'
-) Add
+.btn-toolbar(
+    role='toolbar',
+    aria-label='action buttons'
+)
+    button.btn.btn-sm.btn-outline-primary.mr-2(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+    button.btn.btn-success.btn-sm(
+        type='button',
+        (click)='onAddClick()'
+    ) Create new
+hr
 
 .type-list-item(*ngFor='let type of (measurementTypes$ | async)')
     .name
@@ -20,11 +29,11 @@ button.btn.btn-outline-success.btn-sm(
             clickable='false'
         )
     .actions
-        .oi.oi-pencil.oi-large(
+        .oi.oi-pencil.oi--elg(
             (click)='onEditClick(type.id)',
             title='Edit'
         )
-        .oi.oi-trash.oi-large(
+        .oi.oi-trash.oi--elg(
             (click)='onDeleteClick(type.id)',
             title='All related objects will be deleted too.'
         )

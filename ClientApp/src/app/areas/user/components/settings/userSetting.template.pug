@@ -1,7 +1,5 @@
 ﻿doctype html
 
-h2 User settings
-
 form(
     [formGroup]='settingsForm',
     (ngSubmit)='onFormSubmit()'
@@ -52,7 +50,7 @@ form(
                         [formControlName]='setting.name',
                         [id]='setting.name',
                     )
-    .form-group.row(
+    .form-group.row.mt-3(
         *ngIf='(userSettings$ | async)?.length > 0'
     )
         .col-sm-10

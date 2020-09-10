@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -15,7 +17,7 @@ import { IPaymentService } from 'services/IPaymentService';
 @Component({
     templateUrl: 'addMeasurementType.template.pug'
 })
-export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
+export class AddMeasurementTypeComponent extends BaseRoutingComponent {
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
         {
             color: '#f04747'
@@ -27,15 +29,31 @@ export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private measurementService: IMeasurementService,
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => this.paymentTypes$.next([{
+                name: '',
+                systemName: '',
+            }, ...result]));
+
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
@@ -52,30 +70,6 @@ export class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                 })
             )
             .subscribe(_ => this.routerService.navigateArea(['types']));
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-
-                    return response.success;
-                })
-            )
-            .subscribe(({ result }) => this.paymentTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onFormSubmit(form: NgForm): void {

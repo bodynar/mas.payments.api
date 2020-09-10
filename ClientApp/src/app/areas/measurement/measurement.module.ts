@@ -41,6 +41,4 @@ import { UpdateMeasurementTypeComponent } from './components/updateMeasurementTy
     ],
     providers: [],
 })
-class MeasurementModule { }
-
-export { MeasurementModule };
+export class MeasurementModule { }

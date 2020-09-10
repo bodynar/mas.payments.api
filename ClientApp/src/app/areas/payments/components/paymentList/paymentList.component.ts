@@ -1,12 +1,14 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
+
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -23,7 +25,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-export class PaymentListComponent implements OnInit, OnDestroy {
+export class PaymentListComponent extends BaseRoutingComponent {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -58,9 +60,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     public years: Array<{ name: string, id?: number }>;
 
-    public actions: Array<string> =
-        ['add', 'types'];
-
 
     private whenSubmitFilters$: Subject<null> =
         new Subject();
@@ -69,9 +68,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenPaymentEdit$: Subject<number> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private currentSortOrder: 'asc' | 'desc' =
@@ -93,20 +89,43 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     constructor(
         private paymentService: IPaymentService,
-        private routerService: IRouterService,
         private notificationService: INotificationService,
+        routerService: IRouterService,
     ) {
-        this.months = [{ name: '' }, ...months];
-        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+        super(routerService);
 
         this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
         this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.paymentTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                this.months = [{ name: '' }, ...months];
+                this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+
+                this.whenSubmitFilters$.next();
+            });
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
+                delay(1.5 * 1000),
                 tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
@@ -163,35 +182,9 @@ export class PaymentListComponent implements OnInit, OnDestroy {
             .subscribe(id =>
                 this.routerService.navigateDeep(
                     ['update'],
-                    { queryParams: { 'id': id } }
+                    { queryParams: { id } }
                 )
             );
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => {
-                this.paymentTypes$.next([{
-                    name: '',
-                    systemName: '',
-                }, ...result]);
-                this.whenSubmitFilters$.next();
-            });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onActionClick(actionName: string): void {

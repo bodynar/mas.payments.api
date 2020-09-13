@@ -21,7 +21,7 @@ const mainSiteMenu: Array<MenuItem> = [
 
 const userSideMenu: Array<MenuItem> = [
     {
-        name: 'Card',
+        name: 'Application info',
         link: '',
         isEnabled: true,
     },

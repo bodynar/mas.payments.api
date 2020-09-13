@@ -14,9 +14,11 @@ import UpdateUserSettingRequest from 'models/request/user/updateUserSettingReque
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
+import GetAppInfoResponse from 'models/response/user/getAppInfoResponse';
 
 @Injectable()
 class UserApiBackendService implements IUserApiBackendService {
@@ -174,6 +176,28 @@ class UserApiBackendService implements IUserApiBackendService {
                     : ({
                         success: false,
                         error: x['Message'],
+                    })
+                ),
+            );
+    }
+
+    public getAppInfo(): Observable<QueryExecutionResult<GetAppInfoResponse>> {
+        return this.http
+            .get(`${this.apiPrefix}/getAppInfo`)
+            .pipe(
+                map(response => ({
+                    dataBaseName: response['dataBaseName'],
+                    serverAppVersion: response['serverAppVersion']
+                }) as GetAppInfoResponse),
+                catchError(error => of(error)),
+                map(x => isNullOrUndefined(x.Success) && (isNullOrUndefined(x.ok) || x.ok === true)
+                    ? ({
+                        success: true,
+                        result: x
+                    })
+                    : ({
+                        success: false,
+                        error: x['Message'] || x.error,
                     })
                 ),
             );

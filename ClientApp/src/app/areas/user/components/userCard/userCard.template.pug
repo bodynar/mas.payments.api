@@ -1,1 +1,36 @@
 doctype html
+
+form
+    .form-group.row
+        label.col-2.col-form-label(
+            for='dbName'
+        ) Database name
+        .col-5
+            input#dbName.form-control.form-control-sm(
+                type='text',
+                name='dbName',
+                [ngModel]='(applicationInfo$ | async)?.dataBaseName',
+                readonly
+            )
+    .form-group.row
+        label.col-2.col-form-label(
+            for='serverApp'
+        ) Server app version
+        .col-5
+            input#serverApp.form-control.form-control-sm(
+                type='text',
+                name='serverApp',
+                [ngModel]='(applicationInfo$ | async)?.serverAppVersion',
+                readonly
+            )
+    .form-group.row
+        label.col-2.col-form-label(
+            for='clientApp'
+        ) Client app version
+        .col-5
+            input#clientApp.form-control.form-control-sm(
+                type='text',
+                name='clientApp',
+                [ngModel]='(applicationInfo$ | async)?.clientAppVersion',
+                readonly
+            )

@@ -3,13 +3,11 @@ doctype html
 .notifications
     ngb-toast.notification(
         *ngFor='let notification of notifications',
+        [header]='getTypeName(notification.type)',
         [class]='getClassName(notification.type)',
         [autohide]='true',
         [delay]='notification.delay',
         (hide)='removeNotification(notification)',
     )
-        ng-template(
-            ngbToastHeader
-        )
-            strong.mx-1 {{ getTypeName(notification.type) }}
-        | {{ notification.message }}
+        .notification__body {{ notification.message }}
+        

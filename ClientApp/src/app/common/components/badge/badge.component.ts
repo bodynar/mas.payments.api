@@ -20,7 +20,7 @@ export class BadgeComponent {
 
     @Input()
     public adjustFontColor: boolean =
-        false;
+        true;
 
     @Input()
     public clickable: boolean =

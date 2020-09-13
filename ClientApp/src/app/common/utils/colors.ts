@@ -6,7 +6,7 @@ export function isRgbColor(colorString: string): boolean {
 
 export function isHexColor(colorString: string): boolean {
     return !isNullOrUndefined(colorString)
-        && /^#[0-9A-F]{6}$/i.test(colorString);
+        && /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i.test(colorString);
 }
 
 export function getRgbColor(colorString: string): {
@@ -35,8 +35,8 @@ export function hexToRgb(hexColor: string): {
     if (hexColor.startsWith('#')) {
         hexColor = hexColor.substring(1);
     }
-    const aRgbHex: RegExpMatchArray
-        = hexColor.substring(1).match(/.{1,2}/g);
+    const aRgbHex: RegExpMatchArray =
+        hexColor.match(/.{1,2}/g);
 
     const rgb: Array<number> = [
         parseInt(aRgbHex[0], 16),
@@ -69,7 +69,7 @@ export function getFontColor(colorString: string): string {
             + rgbColor.green * 0.587
             + rgbColor.blue * 0.114;
 
-        return intensity > 186 ? blackHex : whiteHex;
+        return intensity > 125 ? blackHex : whiteHex;
     }
 
     return blackHex;

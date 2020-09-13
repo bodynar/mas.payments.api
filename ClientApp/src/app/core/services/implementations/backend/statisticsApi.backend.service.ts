@@ -5,12 +5,14 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
+import { boxServerQueryResponse } from 'common/utils/api';
 
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 
+import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
-import QueryExecutionResult from 'models/response/queryExecutionResult';
 import { GetMeasurementStatisticsDataItem, GetMeasurementStatisticsResponse, MeasurementTypeStatisticsItem } from 'models/response/stats/measurementStatsResponse';
 import { GetPaymentsStatisticsDataItem, GetPaymentsStatisticsResponse, PaymentTypeStatisticsItem } from 'models/response/stats/paymentStatsResponse';
 
@@ -57,17 +59,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                             }) as GetPaymentsStatisticsDataItem)
                         }) as PaymentTypeStatisticsItem)
                     }) as GetPaymentsStatisticsResponse),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<GetPaymentsStatisticsResponse>(x))
             );
     }
 
@@ -99,17 +92,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
                             }) as GetMeasurementStatisticsDataItem)
                         }) as MeasurementTypeStatisticsItem)
                     }) as GetMeasurementStatisticsResponse),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<GetMeasurementStatisticsResponse>(x))
             );
     }
 }

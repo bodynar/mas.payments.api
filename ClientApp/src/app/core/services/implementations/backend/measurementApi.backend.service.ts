@@ -5,17 +5,21 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
+import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 
 import MeasurementsFilter from 'models/measurementsFilter';
+
+import CommandExecutionResult from 'models/response/commandExecutionResult';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
 import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
-import CommandExecutionResult from 'models/response/commandExecutionResult';
+
 import MeasurementResponse from 'models/response/measurements/measurementResponse';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 export class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -34,14 +38,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/addMeasurement`, measurementData)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -85,17 +83,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                             month: measurement['dateMonth'],
                         }) as MeasurementsResponseMeasurement),
                     }) as MeasurementsResponse)),
-                    catchError(error => of(error.error)),
-                    map(x => isNullOrUndefined(x.Success)
-                        ? ({
-                            success: true,
-                            result: x
-                        })
-                        : ({
-                            success: false,
-                            error: x['Message'],
-                        })
-                    ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<MeasurementsResponse>>(x)),
             );
     }
 
@@ -117,17 +106,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                         meterMeasurementTypeId: response['meterMeasurementTypeId'],
                         measurementTypeName: response['measurementTypeName'],
                     }) as MeasurementResponse),
-                    catchError(error => of(error.error)),
-                    map(x => isNullOrUndefined(x.Success)
-                        ? ({
-                            success: true,
-                            result: x
-                        })
-                        : ({
-                            success: false,
-                            error: x['Message'],
-                        })
-                    ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<MeasurementResponse>(x)),
             );
     }
 
@@ -135,14 +115,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -150,14 +124,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/deleteMeasurement`, measurementId)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -165,14 +133,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/sendMeasurements`, measurementIds)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -184,14 +146,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/addMeasurementType`, measurementTypeData)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -211,17 +167,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                         color: measurementType['color'],
                         hasRelatedMeasurements: measurementType['hasRelatedMeasurements'] || false,
                     }) as MeasurementTypeResponse)),
-                    catchError(error => of(error.error)),
-                    map(x => isNullOrUndefined(x.Success)
-                        ? ({
-                            success: true,
-                            result: x
-                        })
-                        : ({
-                            success: false,
-                            error: x['Message'],
-                        })
-                    ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<MeasurementTypeResponse>>(x)),
             );
     }
 
@@ -243,17 +190,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                         color: response['color'],
                         paymentTypeName: response['paymentTypeName'],
                     }) as MeasurementTypeResponse),
-                    catchError(error => of(error.error)),
-                    map(x => isNullOrUndefined(x.Success)
-                        ? ({
-                            success: true,
-                            result: x
-                        })
-                        : ({
-                            success: false,
-                            error: x['Message'],
-                        })
-                    ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<MeasurementTypeResponse>(x)),
             );
     }
 
@@ -261,14 +199,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/updateMeasurementType`, { id, ...measurementTypeData })
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -276,14 +208,8 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         return this.http
             .post(`${this.apiPrefix}/deleteMeasurementType`, measurementTypeId)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 

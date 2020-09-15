@@ -1,6 +1,6 @@
 {
   "name": "mas.payments",
-  "version": "1.2",
+  "version": "1.2.15",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --port \"5001\"",

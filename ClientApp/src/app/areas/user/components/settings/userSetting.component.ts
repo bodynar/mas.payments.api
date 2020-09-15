@@ -16,7 +16,6 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
     templateUrl: 'userSetting.template.pug'
 })
 export class UserSettingComponent extends BaseComponent {
-
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
@@ -24,6 +23,9 @@ export class UserSettingComponent extends BaseComponent {
         new ReplaySubject();
 
     public settingsForm: FormGroup;
+
+    private whenSaveSettings$: Subject<Array<UpdateUserSettingRequest>> =
+        new Subject();
 
     private whenRequestUserSettings$: Subject<null> =
         new Subject();
@@ -80,6 +82,29 @@ export class UserSettingComponent extends BaseComponent {
                 }),
             )
             .subscribe(({ result }) => this.userSettings$.next(result));
+
+        this.whenSaveSettings$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                switchMap(changedSettings => {
+                    this.isLoading$.next(true);
+                    return this.userService.updateUserSettings(changedSettings);
+                }),
+                delay(1.5 * 1000),
+                tap(response => {
+                    this.isLoading$.next(false);
+
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    else {
+                        this.notificationService.success('Settings successfully saved.');
+                    }
+
+                    return response.success;
+                }),
+            )
+            .subscribe(_ => this.whenRequestUserSettings$.next(null));
     }
 
     public onFormSubmit(): void {
@@ -103,21 +128,7 @@ export class UserSettingComponent extends BaseComponent {
         if (changedSettings.length === 0) {
             this.notificationService.warning('You haven\'t changed any settings');
         } else {
-            this.userService
-                .updateUserSettings(changedSettings)
-                .pipe(
-                    tap(response => {
-                        if (!response.success) {
-                            this.notificationService.error(response.error);
-                        }
-                        else {
-                            this.notificationService.success('Settings successfully saved.');
-                        }
-
-                        return response.success;
-                    }),
-                )
-                .subscribe(_ => this.whenRequestUserSettings$.next(null));
+            this.whenSaveSettings$.next(changedSettings);
         }
     }
 

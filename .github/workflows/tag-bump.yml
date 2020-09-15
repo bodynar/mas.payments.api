@@ -15,7 +15,7 @@ jobs:
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      - uses: actions/checkout@develop
+      - uses: actions/checkout@master
         with:
           # Fetches entire history, so we can analyze commits since last tag
           fetch-depth: 0

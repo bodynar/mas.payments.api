@@ -28,7 +28,8 @@ doctype html
                 type='button',
                 href='#',
                 *ngIf='!(isMeasurementsSentFlagActive$ | async)',
-                (click)='onSelectMeasurementsClick(true)'
+                (click)='onSelectMeasurementsClick(true)',
+                [disabled]='!canSend'
             ) Send
             button.dropdown-item(
                 type='button',
@@ -36,7 +37,13 @@ doctype html
                 *ngIf='isMeasurementsSentFlagActive$ | async',
                 (click)='onSendMeasurementsClick()',
                 [disabled]='!(isAnyMeasurementSelectedToSend$ | async)'
-            ) Send {{ selectedMeasurementsCount$ | async }}
+            )
+                span.spinner-grow.spinner-grow-sm.mr-1(
+                    *ngIf='(isMeasurementsSentFlagActive$ | async) && (isLoading$ | async)'
+                    role='status',
+                    aria-hidden='true'
+                )
+                | Send {{ selectedMeasurementsCount$ | async }}
             .dropdown-divider(
                 *ngIf='isMeasurementsSentFlagActive$ | async'
             )

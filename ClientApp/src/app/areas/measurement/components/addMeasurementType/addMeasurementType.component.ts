@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
@@ -22,6 +22,9 @@ export class AddMeasurementTypeComponent extends BaseRoutingComponent {
         {
             color: '#f04747'
         };
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -59,7 +62,14 @@ export class AddMeasurementTypeComponent extends BaseRoutingComponent {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 switchMap(_ => this.measurementService.addMeasurementType(this.addMeasurementTypeRequest)),
+
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.addMeasurementType(this.addMeasurementTypeRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

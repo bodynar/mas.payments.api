@@ -69,5 +69,17 @@ form.needs-validation(
             [(ngModel)]='addMeasurementRequest.comment',
             #name='ngModel'
         )
-    
-    button.btn.btn-sm.btn-success(type='submit') Add
+    button.btn.btn-sm.btn-success(
+        *ngIf='!(isLoading$ | async)',
+        type='submit'
+    ) Add
+    button.btn.btn-sm.btn-success(
+        *ngIf='isLoading$ | async',
+        type='button'
+    )
+        span.spinner-grow.spinner-grow-sm.mr-1(
+            role='status',
+            aria-hidden='true'
+        )
+        span.sr-only Loading
+        | Adding..

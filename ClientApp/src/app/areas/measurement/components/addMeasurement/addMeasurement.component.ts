@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, switchMapTo } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
@@ -23,6 +23,9 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
 
     public addMeasurementRequest: AddMeasurementRequest =
         {};
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new ReplaySubject(1);
@@ -75,8 +78,13 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
-                switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.addMeasurement(this.addMeasurementRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

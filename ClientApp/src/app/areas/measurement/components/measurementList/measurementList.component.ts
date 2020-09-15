@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 

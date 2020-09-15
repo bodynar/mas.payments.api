@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import BaseComponent from 'common/components/BaseComponent';
 
@@ -17,6 +17,9 @@ import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
     templateUrl: 'testMailMessage.template.pug'
 })
 export class TestMailMessageComponent extends BaseComponent {
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public mailMessageRequest: TestMailMessageRequest =
         {
@@ -37,8 +40,13 @@ export class TestMailMessageComponent extends BaseComponent {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 filter(_ => !isNullOrUndefined(this.mailMessageRequest.recipient) && this.mailMessageRequest.recipient !== ''),
-                switchMap(_ => this.userService.sendTestMailMessage(this.mailMessageRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.sendTestMailMessage(this.mailMessageRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }

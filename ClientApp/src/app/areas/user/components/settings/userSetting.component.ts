@@ -53,11 +53,14 @@ export class UserSettingComponent extends BaseComponent {
         this.whenRequestUserSettings$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => this.isLoading$.next(true)),
-                switchMap(_ => this.userService.getUserSettings()),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.getUserSettings();
+                }),
                 delay(1.5 * 1000),
-                tap(() => this.isLoading$.next(false)),
                 filter(response => {
+                    this.isLoading$.next(false);
+
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }

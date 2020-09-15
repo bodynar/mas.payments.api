@@ -66,5 +66,16 @@
             )
                 .col-sm-10
                     button.btn.btn-primary(
+                        *ngIf='!(isLoading$ | async)',
                         type='submit'
                     ) Save
+                    button.btn.btn-primary(
+                        *ngIf='isLoading$ | async',
+                        type='button'
+                    )
+                        span.spinner-grow.spinner-grow-sm(
+                            role='status',
+                            aria-hidden='true'
+                        )
+                        span.sr-only Loading
+                        | Saving..

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { delay, filter, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -61,11 +61,13 @@ export class UserNotificationsComponent extends BaseComponent {
         this.whenUpdateNotifications$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => this.isLoading$.next(true)),
-                switchMapTo(this.userService.getNotifications({ onlyActive: false })),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.getNotifications({ onlyActive: false });
+                }),
                 delay(1.5 * 1000),
-                tap(() => this.isLoading$.next(false)),
                 filter(result => {
+                    this.isLoading$.next(false);
                     if (!result.success) {
                         this.notificationService.error(result.error);
                     }

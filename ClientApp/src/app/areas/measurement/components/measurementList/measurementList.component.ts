@@ -149,6 +149,8 @@ export class MeasurementListComponent extends BaseRoutingComponent {
                 this.measurements = [].concat(...result.map(x => x.measurements));
                 this.measurementGroups = result;
 
+                this.canSend = this.measurements.length !== 0;
+
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.measurementGroups, this.pageSize);
 

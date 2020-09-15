@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
@@ -25,6 +25,9 @@ export class UpdatePaymentComponent extends BaseRoutingComponent {
 
     public paymentRequest: AddPaymentRequest =
         {};
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -102,8 +105,13 @@ export class UpdatePaymentComponent extends BaseRoutingComponent {
                 tap(_ => {
                     this.paymentRequest.month = (parseInt(this.paymentRequest.month) + 1).toString();
                 }),
-                switchMap(_ => this.paymentService.updatePayment(this.paymentId, this.paymentRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.paymentService.updatePayment(this.paymentId, this.paymentRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

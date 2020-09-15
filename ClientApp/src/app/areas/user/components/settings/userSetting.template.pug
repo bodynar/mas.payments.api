@@ -1,59 +1,70 @@
 ﻿doctype html
 
-form(
-    [formGroup]='settingsForm',
-    (ngSubmit)='onFormSubmit()'
-)
-    div(
-        formArrayName='items',
-        *ngFor='let setting of (userSettings$ | async); let i = index'
+.loading-cover
+    .loading-cover_image-container(
+        *ngIf='isLoading$ | async'
     )
-        div(
-            [formGroupName]='i',
-            [ngSwitch]='setting.typeName'
+        img.loading-cover_image-container_img(
+            alt='loading..',
+            src='assets/images/loading-02.svg'
         )
-            .custom-control.custom-checkbox(
-                *ngSwitchCase='"Boolean"'
-            )
-                input.custom-control-input(
-                    [id]='setting.id'
-                    type='checkbox',
-                    [formControlName]='setting.name',
-                    [checked]='setting.value',
-                )
-                label.custom-control-label(
-                    [for]='setting.id'
-                ) {{ setting.displayName }}
-            .form-group.row.m-row(
-                *ngSwitchCase='"String"'
-            )
-                label.col-form-label.col-sm-3(
-                    [for]='setting.name'
-                ) {{ setting.displayName }}
-                .col-sm-9
-                    input.form-control.form-control-sm(
-                        type='text',
-                        [placeholder]='setting.displayName',
-                        [formControlName]='setting.name',
-                        [id]='setting.name',
-                    )
-            .form-group.row.m-row(
-                *ngSwitchCase='"Number"'
-            )
-                label.col-form-label.col-sm-6(
-                    [for]='setting.name'
-                ) {{ setting.displayName }}
-                .col-sm-6
-                    input.form-control.form-control-sm(
-                        type='number',
-                        [placeholder]='setting.displayName',
-                        [formControlName]='setting.name',
-                        [id]='setting.name',
-                    )
-    .form-group.row.mt-3(
-        *ngIf='(userSettings$ | async)?.length > 0'
+    .loading-cover_content(
+        [attr.data-disabled]='isLoading$ | async'
     )
-        .col-sm-10
-            button.btn.btn-primary(
-                type='submit'
-            ) Save
+        form(
+            [formGroup]='settingsForm',
+            (ngSubmit)='onFormSubmit()'
+        )
+            div(
+                formArrayName='items',
+                *ngFor='let setting of (userSettings$ | async); let i = index'
+            )
+                div(
+                    [formGroupName]='i',
+                    [ngSwitch]='setting.typeName'
+                )
+                    .custom-control.custom-checkbox(
+                        *ngSwitchCase='"Boolean"'
+                    )
+                        input.custom-control-input(
+                            [id]='setting.id'
+                            type='checkbox',
+                            [formControlName]='setting.name',
+                            [checked]='setting.value',
+                        )
+                        label.custom-control-label(
+                            [for]='setting.id'
+                        ) {{ setting.displayName }}
+                    .form-group.row.m-row(
+                        *ngSwitchCase='"String"'
+                    )
+                        label.col-form-label.col-sm-3(
+                            [for]='setting.name'
+                        ) {{ setting.displayName }}
+                        .col-sm-9
+                            input.form-control.form-control-sm(
+                                type='text',
+                                [placeholder]='setting.displayName',
+                                [formControlName]='setting.name',
+                                [id]='setting.name',
+                            )
+                    .form-group.row.m-row(
+                        *ngSwitchCase='"Number"'
+                    )
+                        label.col-form-label.col-sm-6(
+                            [for]='setting.name'
+                        ) {{ setting.displayName }}
+                        .col-sm-6
+                            input.form-control.form-control-sm(
+                                type='number',
+                                [placeholder]='setting.displayName',
+                                [formControlName]='setting.name',
+                                [id]='setting.name',
+                            )
+            .form-group.row.mt-3(
+                *ngIf='(userSettings$ | async)?.length > 0'
+            )
+                .col-sm-10
+                    button.btn.btn-primary(
+                        type='submit'
+                    ) Save

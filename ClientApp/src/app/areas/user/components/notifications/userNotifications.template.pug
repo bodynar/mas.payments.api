@@ -1,22 +1,33 @@
 doctype html
 
-ul.notifications
-    li.card.m-card(
-        *ngFor='let notification of (notifications$ | async)',
-        [ngClass]='notification.type.toLowerCase()',
+.loading-cover
+    .loading-cover_image-container(
+        *ngIf='isLoading$ | async'
     )
-        .card-body
-            h6.card-title {{ notification.title }}
-            p.card-text {{ notification.text }}
-            .card-text
-                small.text-muted Created at {{ formatDate(notification.createdAt) }}
-                small.text-muted.float-right(
-                    *ngIf='notification.isHidden'
-                ) Hidden at {{ formatDate(notification.hiddenAt) }}
+        img.loading-cover_image-container_img(
+            alt='loading..',
+            src='assets/images/loading-02.svg'
+        )
+    .loading-cover_content(
+        [attr.data-disabled]='isLoading$ | async'
+    )
+        ul.notifications
+            li.card.m-card(
+                *ngFor='let notification of (notifications$ | async)',
+                [ngClass]='notification.type.toLowerCase()',
+            )
+                .card-body
+                    h6.card-title {{ notification.title }}
+                    p.card-text {{ notification.text }}
+                    .card-text
+                        small.text-muted Created at {{ formatDate(notification.createdAt) }}
+                        small.text-muted.float-right(
+                            *ngIf='notification.isHidden'
+                        ) Hidden at {{ formatDate(notification.hiddenAt) }}
 
-br
-app-paginator(
-    *ngIf='(paginatorConfig$ | async)?.enabled',
-    [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
-    (pageChange)='onPageChange($event)'
-)
+        br
+        app-paginator(
+            *ngIf='(paginatorConfig$ | async)?.enabled',
+            [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+            (pageChange)='onPageChange($event)'
+        )

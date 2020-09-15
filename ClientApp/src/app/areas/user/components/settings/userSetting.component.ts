@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import BaseComponent from 'common/components/BaseComponent';
 
@@ -16,6 +16,9 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
     templateUrl: 'userSetting.template.pug'
 })
 export class UserSettingComponent extends BaseComponent {
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(true);
 
     public userSettings$: Subject<Array<GetUserSettingsResponse>> =
         new ReplaySubject();
@@ -50,7 +53,10 @@ export class UserSettingComponent extends BaseComponent {
         this.whenRequestUserSettings$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(() => this.isLoading$.next(true)),
                 switchMap(_ => this.userService.getUserSettings()),
+                delay(1.5 * 1000),
+                tap(() => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);

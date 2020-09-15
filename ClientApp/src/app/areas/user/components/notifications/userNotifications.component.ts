@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -20,6 +20,9 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
     styleUrls: ['userNotifications.style.styl'],
 })
 export class UserNotificationsComponent extends BaseComponent {
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(true);
 
     public notifications$: Subject<Array<GetNotificationsResponse>> =
         new ReplaySubject(1);
@@ -58,8 +61,13 @@ export class UserNotificationsComponent extends BaseComponent {
         this.whenUpdateNotifications$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                switchMapTo(this.userService.getNotifications({ onlyActive: false })),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.getNotifications({ onlyActive: false });
+                }),
+                delay(1.5 * 1000),
                 filter(result => {
+                    this.isLoading$.next(false);
                     if (!result.success) {
                         this.notificationService.error(result.error);
                     }

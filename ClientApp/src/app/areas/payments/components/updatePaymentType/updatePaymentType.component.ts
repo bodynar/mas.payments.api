@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { delay, filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
@@ -22,6 +22,9 @@ export class UpdatePaymentTypeComponent extends BaseRoutingComponent {
 
     public paymentTypeRequest: AddPaymentTypeRequest =
         {};
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
@@ -55,8 +58,13 @@ export class UpdatePaymentTypeComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
-                switchMap(_ => this.paymentService.updatePaymentType(this.paymentTypeId, this.paymentTypeRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.paymentService.updatePaymentType(this.paymentTypeId, this.paymentTypeRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

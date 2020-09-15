@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -58,6 +58,9 @@ export class MeasurementListComponent extends BaseRoutingComponent {
 
     public years: Array<{ name: string, id?: number }>;
 
+    public canSend: boolean =
+        false;
+
     public isMeasurementsSentFlagVisible: boolean =
         false;
 
@@ -95,9 +98,14 @@ export class MeasurementListComponent extends BaseRoutingComponent {
 
         this.whenComponentInit$
             .pipe(
-                switchMapTo(this.measurementService.getMeasurementTypes()),
+                switchMap(() => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.getMeasurementTypes();
+                }),
                 takeUntil(this.whenComponentDestroy$),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -121,15 +129,15 @@ export class MeasurementListComponent extends BaseRoutingComponent {
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(_ => this.isLoading$.next(true)),
                 tap(_ => {
+                    this.isLoading$.next(true);
                     this.filters.setIsEmpty();
                     this.isFilterApplied$.next(this.filters.isEmpty);
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
                 delay(1.5 * 1000),
-                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -209,23 +217,23 @@ export class MeasurementListComponent extends BaseRoutingComponent {
                     }
                 }),
                 filter(({ filterValue }) => filterValue),
-                tap(_ => {
+                map(({ array }) => array.map(x => x.id)),
+                switchMap(array => {
                     this.isLoading$.next(true);
+                    return this.measurementService.sendMeasurements(array);
+                }),
+                delay(1.5 * 1000),
+                filter(response => {
+                    this.isLoading$.next(false);
                     this.isMeasurementsSentFlagActive$.next(false);
                     this.isAnyMeasurementSelectedToSend$.next(false);
-                }),
-                map(({ array }) => array.map(x => x.id)),
-                switchMap(array => this.measurementService.sendMeasurements(array)),
-                filter(response => {
+
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurements sent');
                     }
                     return true;
-                }),
-                tap(_ => {
-                    this.isLoading$.next(false);
                 }),
             )
             .subscribe(_ => this.whenSubmitFilters$.next(null));

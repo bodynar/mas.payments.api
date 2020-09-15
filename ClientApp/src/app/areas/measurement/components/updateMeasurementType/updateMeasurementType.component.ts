@@ -2,8 +2,8 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -24,6 +24,9 @@ export class UpdateMeasurementTypeComponent extends BaseRoutingComponent {
 
     public measurementTypeRequest: AddMeasurementTypeRequest =
         {};
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -79,8 +82,13 @@ export class UpdateMeasurementTypeComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
-                switchMap(_ => this.measurementService.updateMeasurementType(this.measurementTypeId, this.measurementTypeRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.updateMeasurementType(this.measurementTypeId, this.measurementTypeRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

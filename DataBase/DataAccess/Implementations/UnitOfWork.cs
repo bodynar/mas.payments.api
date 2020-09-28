@@ -1,8 +1,9 @@
-using System;
-using Microsoft.EntityFrameworkCore.Storage;
-
 namespace MAS.Payments.DataBase.Access
 {
+    using System;
+
+    using Microsoft.EntityFrameworkCore.Storage;
+
     internal class UnitOfWork : IUnitOfWork
     {
         private readonly DataBaseContext _dbContext;

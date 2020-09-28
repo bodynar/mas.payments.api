@@ -1,8 +1,8 @@
-
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+
+    using MAS.Payments.Infrastructure.Command;
+
     public class DeletePaymentCommand : ICommand
     {
         public long PaymentId { get; set; }

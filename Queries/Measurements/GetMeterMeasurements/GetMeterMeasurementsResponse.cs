@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace MAS.Payments.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class GetMeterMeasurementsResponse
     {
         public int DateYear { get; set; }

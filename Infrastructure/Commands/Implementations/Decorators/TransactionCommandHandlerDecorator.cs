@@ -1,7 +1,7 @@
-using MAS.Payments.DataBase;
-
 namespace MAS.Payments.Infrastructure.Command
 {
+    using MAS.Payments.DataBase;
+
     internal class TransactionCommandHandlerDecorator<TCommand> : BaseCommandHandler<TCommand>
         where TCommand : ICommand
     {

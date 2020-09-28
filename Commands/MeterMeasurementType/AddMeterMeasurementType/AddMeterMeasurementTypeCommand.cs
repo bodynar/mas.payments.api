@@ -1,10 +1,10 @@
-
-using System;
-
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+
+    using System;
+
+    using MAS.Payments.Infrastructure.Command;
+
     public class AddMeterMeasurementTypeCommand : ICommand
     {
         public string Name { get; }

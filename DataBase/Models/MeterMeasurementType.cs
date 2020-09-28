@@ -1,7 +1,7 @@
-using System.Collections.Generic;
-
 namespace MAS.Payments.DataBase
 {
+    using System.Collections.Generic;
+
     public class MeterMeasurementType : Entity
     {
         public string SystemName { get; set; }

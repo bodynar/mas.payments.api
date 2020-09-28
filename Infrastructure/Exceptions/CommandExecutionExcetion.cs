@@ -1,7 +1,7 @@
-using System;
-
 namespace MAS.Payments.Infrastructure.Exceptions
 {
+    using System;
+
     [Serializable]
     public class CommandExecutionException : Exception
     {

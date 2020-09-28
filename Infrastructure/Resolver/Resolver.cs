@@ -1,9 +1,9 @@
-using System;
-
-using SimpleInjector;
-
 namespace MAS.Payments.Infrastructure
 {
+    using System;
+
+    using SimpleInjector;
+
     internal class Resolver : IResolver
     {
         private Container Container { get; }

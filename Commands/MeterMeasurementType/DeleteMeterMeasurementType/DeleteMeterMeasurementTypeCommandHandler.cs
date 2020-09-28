@@ -1,10 +1,10 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+
     internal class DeleteMeterMeasurementTypeCommandHandler : BaseCommandHandler<DeleteMeterMeasurementTypeCommand>
     {
         private IRepository<MeterMeasurementType> Repository { get; }

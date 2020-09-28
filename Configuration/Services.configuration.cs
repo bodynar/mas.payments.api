@@ -1,15 +1,15 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure.MailMessaging;
-
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-
-using SimpleInjector;
-
 namespace MAS.Payments.Configuration
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure.MailMessaging;
+
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+
+    using SimpleInjector;
+
     public static class ServicesConfiguration
     {
         public static void Configure(IServiceCollection services, IConfiguration configuration, Container container)

@@ -1,12 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MAS.Payments.Infrastructure.Extensions;
-using MAS.Payments.Infrastructure.Projector;
-using MAS.Payments.Infrastructure.Specification;
-
 namespace MAS.Payments.DataBase.Access
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.Infrastructure.Extensions;
+    using MAS.Payments.Infrastructure.Projector;
+    using MAS.Payments.Infrastructure.Specification;
+
     internal class Repository<TEntity> : IRepository<TEntity>
         where TEntity : Entity
     {

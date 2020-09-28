@@ -1,7 +1,7 @@
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+    using MAS.Payments.Infrastructure.Command;
+
     public class UpdateMeterMeasurementTypeCommand : ICommand
     {
         public long Id { get; }

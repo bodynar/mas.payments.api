@@ -1,11 +1,11 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Query;
-using MAS.Payments.Projectors;
-
 namespace MAS.Payments.Queries
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Query;
+    using MAS.Payments.Projectors;
+
     internal class GetMeterMeasurementTypeQueryHandler : BaseQueryHandler<GetMeterMeasurementTypeQuery, GetMeterMeasurementTypeResponse>
     {
         private IRepository<MeterMeasurementType> Repository { get; }

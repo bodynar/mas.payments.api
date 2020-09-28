@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MAS.Payments.Models
+﻿namespace MAS.Payments.Models
 {
+    using System;
+
     public class GetAppInfoResponse
     {
         public string DataBaseName { get; }

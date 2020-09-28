@@ -1,7 +1,7 @@
-using System;
-
 namespace MAS.Payments.Infrastructure.Command
 {
+    using System;
+
     public class CommandProcessor : ICommandProcessor
     {
         private IResolver Resolver { get; }

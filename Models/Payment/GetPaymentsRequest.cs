@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Models
 {
+    using Microsoft.AspNetCore.Mvc;
+
     public class FieldValueFilter
     {
         public double? Exact { get; set; }

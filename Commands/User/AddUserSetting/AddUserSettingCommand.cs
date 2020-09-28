@@ -1,8 +1,8 @@
-﻿using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure.Command;
-
-namespace MAS.Payments.Commands
+﻿namespace MAS.Payments.Commands
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure.Command;
+
     public class AddUserSettingCommand: ICommand
     {
         public string Name { get; set; }

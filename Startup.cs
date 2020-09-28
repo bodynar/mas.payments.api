@@ -1,19 +1,19 @@
-using System.Text;
-
-using MAS.Payments.Configuration;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-
-using Serilog;
-
-using SimpleInjector;
-
 namespace MAS.Payments
 {
+    using System.Text;
+
+    using MAS.Payments.Configuration;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+
+    using Serilog;
+
+    using SimpleInjector;
+
     public class Startup
     {
         private Container Container { get; }

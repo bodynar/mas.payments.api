@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using MAS.Payments.Commands;
-using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Models;
-using MAS.Payments.Queries;
-using MAS.Payments.Utilities;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.Commands;
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Models;
+    using MAS.Payments.Queries;
+    using MAS.Payments.Utilities;
+
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("api/measurement")]
     public class MeterMeasurementApiController : BaseApiController
     {
@@ -52,7 +52,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody]long measurementTypeId)
+        public void DeleteMeasurementType([FromBody] long measurementTypeId)
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementTypeCommand(measurementTypeId));
@@ -69,7 +69,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery]GetMeterMeasurementRequest filter)
+        public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
         {
             return QueryProcessor.Execute(
                 new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
@@ -95,14 +95,14 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody]long measurementId)
+        public void DeleteMeasurement([FromBody] long measurementId)
         {
             CommandProcessor.Execute(
                 new DeleteMeterMeasurementCommand(measurementId));
         }
 
         [HttpPost("[action]")]
-        public void SendMeasurements([FromBody]IEnumerable<long> measurementIdentifiers)
+        public void SendMeasurements([FromBody] IEnumerable<long> measurementIdentifiers)
         {
             if (!measurementIdentifiers.Any())
             {
@@ -119,6 +119,12 @@ namespace MAS.Payments.Controllers
             }
 
             CommandProcessor.Execute(new SendMeasurementsCommand(recipientEmail.RawValue, measurementIdentifiers));
+        }
+
+        [HttpGet("[action]")]
+        public GetMeasurementAverageValueResponse GetAverageValues()
+        {
+            return QueryProcessor.Execute(new GetMeasurementAverageValueQuery());
         }
 
         #endregion

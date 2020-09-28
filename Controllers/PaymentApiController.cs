@@ -1,15 +1,15 @@
-using System;
-using System.Collections.Generic;
-
-using MAS.Payments.Commands;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Models;
-using MAS.Payments.Queries;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+
+    using MAS.Payments.Commands;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Models;
+    using MAS.Payments.Queries;
+
+    using Microsoft.AspNetCore.Mvc;
+
     [Route("api/payment")]
     public class PaymentApiController : BaseApiController
     {
@@ -34,7 +34,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddPaymentType([FromBody]AddPaymentTypeRequest request)
+        public void AddPaymentType([FromBody] AddPaymentTypeRequest request)
         {
             CommandProcessor.Execute(
                 new AddPaymentTypeCommand(request.Name, request.Description, request.Company, request.Color));
@@ -49,7 +49,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeletePaymentType([FromBody]long paymentTypeId)
+        public void DeletePaymentType([FromBody] long paymentTypeId)
         {
             CommandProcessor.Execute(
                 new DeletePaymentTypeCommand(paymentTypeId));
@@ -66,7 +66,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery]GetPaymentsRequest request)
+        public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery] GetPaymentsRequest request)
         {
             return QueryProcessor.Execute(
                 new GetPaymentsQuery(request.Month, request.Year, request.PaymentTypeId,
@@ -74,7 +74,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddPayment([FromBody]AddPaymentRequest request)
+        public void AddPayment([FromBody] AddPaymentRequest request)
         {
             var paymentDate = new DateTime(request.Year, request.Month, 20);
 
@@ -93,10 +93,16 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeletePayment([FromBody]long paymentId)
+        public void DeletePayment([FromBody] long paymentId)
         {
             CommandProcessor.Execute(
                 new DeletePaymentCommand(paymentId));
+        }
+
+        [HttpGet("[action]")]
+        public GetPaymentAverageValueResponse GetAverageValues()
+        {
+            return QueryProcessor.Execute(new GetPaymentAverageValueQuery());
         }
 
         #endregion

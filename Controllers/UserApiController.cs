@@ -68,12 +68,22 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void HideNotifications([FromBody] IEnumerable<string> userNotificationKeys)
         {
+            if (userNotificationKeys == null || userNotificationKeys.Any(x => string.IsNullOrEmpty(x)))
+            {
+                throw new ArgumentNullException(nameof(userNotificationKeys));
+            }
+
             CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationKeys));
         }
 
         [HttpPost("[action]")]
         public void TestMailMessage([FromBody] TestMailMessageRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var isValidEmail = Validate.Email(request.Recipient);
 
             if (!isValidEmail)
@@ -93,6 +103,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateUserSettings([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
         {
+            if (settings == null || settings.Contains(null))
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
         }
 

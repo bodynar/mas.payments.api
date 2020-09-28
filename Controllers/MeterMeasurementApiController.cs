@@ -25,9 +25,14 @@ namespace MAS.Payments.Controllers
         #region Measurement Type
 
         [HttpGet("[action]")]
-        public GetMeterMeasurementTypeResponse GetMeasurementType(long id)
+        public GetMeterMeasurementTypeResponse GetMeasurementType(long? id)
         {
-            return QueryProcessor.Execute(new GetMeterMeasurementTypeQuery(id));
+            if (!id.HasValue || id.Value == default)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return QueryProcessor.Execute(new GetMeterMeasurementTypeQuery(id.Value));
         }
 
         [HttpGet("[action]")]
@@ -39,6 +44,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             CommandProcessor.Execute(
                 new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description, request.Color));
         }
@@ -46,16 +56,26 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             CommandProcessor.Execute(
                 new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description, request.Color)
             );
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody] long measurementTypeId)
+        public void DeleteMeasurementType([FromBody]long? measurementTypeId)
         {
+            if (!measurementTypeId.HasValue || measurementTypeId.Value == default)
+            {
+                throw new ArgumentNullException(nameof(measurementTypeId));
+            }
+
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementTypeCommand(measurementTypeId));
+                new DeleteMeterMeasurementTypeCommand(measurementTypeId.Value));
         }
 
         #endregion
@@ -63,14 +83,24 @@ namespace MAS.Payments.Controllers
         #region Measurement
 
         [HttpGet("[action]")]
-        public GetMeterMeasurementResponse GetMeasurement(long id)
+        public GetMeterMeasurementResponse GetMeasurement(long? id)
         {
-            return QueryProcessor.Execute(new GetMeterMeasurementQuery(id));
+            if (!id.HasValue || id.Value == default)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return QueryProcessor.Execute(new GetMeterMeasurementQuery(id.Value));
         }
 
         [HttpGet("[action]")]
         public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
         {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
             return QueryProcessor.Execute(
                 new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
         }
@@ -78,6 +108,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddMeasurement(AddMeterMeasurementRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
 
             CommandProcessor.Execute(
@@ -87,6 +122,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
 
             CommandProcessor.Execute(
@@ -95,10 +135,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody] long measurementId)
+        public void DeleteMeasurement([FromBody]long? measurementId)
         {
+            if (!measurementId.HasValue || measurementId.Value == default)
+            {
+                throw new ArgumentNullException(nameof(measurementId));
+            }
+
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementCommand(measurementId));
+                new DeleteMeterMeasurementCommand(measurementId.Value));
         }
 
         [HttpPost("[action]")]

@@ -7,7 +7,7 @@ export function boxServerResponse(response: any): CommandExecutionResult {
     return (response
         ? ({
             success: false,
-            error: response['Message'] || response.error,
+            error: response.error['Message'] || response.error,
         })
         : ({ success: true })) as CommandExecutionResult;
 }

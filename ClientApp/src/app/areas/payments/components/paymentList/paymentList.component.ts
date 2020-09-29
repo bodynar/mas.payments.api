@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap, delay } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap, delay, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
 
-import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -16,6 +16,8 @@ import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
+
+import { IModalService } from 'src/app/components/modal/IModalService';
 
 import PaymentsFilter from 'models/paymentsFilter';
 import PaymentResponse from 'models/response/payments/paymentResponse';
@@ -25,7 +27,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-export class PaymentListComponent extends BaseRoutingComponent {
+export class PaymentListComponent extends BaseRoutingComponentWithModalComponent {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -90,9 +92,10 @@ export class PaymentListComponent extends BaseRoutingComponent {
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
+        modalService: IModalService,
         routerService: IRouterService,
     ) {
-        super(routerService);
+        super(routerService, modalService);
 
         this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
         this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
@@ -156,14 +159,14 @@ export class PaymentListComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                switchMap(id =>
+                    this.confirmDelete()
+                        .pipe(
+                            filter(isConfirm => isConfirm),
+                            map(_ => id)
+                        )
+                ),
                 switchMap(id => this.paymentService.deletePayment(id)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-                switchMapTo(this.paymentService.getPayments(this.filters)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -172,7 +175,7 @@ export class PaymentListComponent extends BaseRoutingComponent {
                 }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(({ result }) => this.payments$.next(result));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.whenPaymentEdit$
             .pipe(

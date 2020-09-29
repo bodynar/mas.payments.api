@@ -1,26 +1,25 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject, of } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
+import { ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
-import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({
     templateUrl: 'measurementTypes.template.pug',
     styleUrls: ['measurementTypes.style.styl']
 })
-export class MeasurementTypesComponent extends BaseRoutingComponent {
+export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComponent {
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
@@ -45,10 +44,10 @@ export class MeasurementTypesComponent extends BaseRoutingComponent {
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private modalService: IModalService,
+        modalService: IModalService,
         routerService: IRouterService,
     ) {
-        super(routerService);
+        super(routerService, modalService);
 
         this.whenComponentInit$
             .subscribe(() => this.whenGetMeasurementTypes$.next(null));
@@ -86,23 +85,13 @@ export class MeasurementTypesComponent extends BaseRoutingComponent {
                 filter(id => id !== 0),
                 switchMap(id => {
                     if (this.measurementTypes.find(x => x.id === id).hasRelatedMeasurements) {
-                        return this.modalService.show(ConfirmInModalComponent, {
-                            size: 'medium',
-                            title: 'Warning! Measurement type related with measurements.',
-                            body: {
-                                isHtml: false,
-                                content: 'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'
-                            },
-                            additionalParameters: {
-                                confirmBtnText: 'Yes',
-                                cancelBtnText: 'No',
-                            }
-                        }).pipe(
-                            map(response => response as boolean),
-                            map(response => ({ id, canDelete: response }))
-                        );
+                        return this.confirmInModal(
+                            'Warning! Measurement type related with measurements.',
+                            'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'
+                        ).pipe(map(response => ({ id, canDelete: response })));
                     } else {
-                        return of(({ id, canDelete: true }));
+                        return this.confirmDelete()
+                                .pipe(map(canDelete => ({ id, canDelete })));
                     }
                 }),
                 filter(({ canDelete }) => canDelete),

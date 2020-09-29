@@ -8,7 +8,7 @@ import { BaseValidatorDirective } from '../baseValidatorDirective';
 @Directive({
     selector: '[appIsPositiveNumber]',
     providers: [
-        { provide: NG_VALIDATORS, useExisting: PositiveNumberValidatorDirective, multi: false,  }
+        { provide: NG_VALIDATORS, useExisting: PositiveNumberValidatorDirective, multi: true,  }
     ]
 })
 export class PositiveNumberValidatorDirective extends BaseValidatorDirective {

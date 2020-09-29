@@ -22,9 +22,14 @@ namespace MAS.Payments.Controllers
         #region Payment type
 
         [HttpGet("[action]")]
-        public GetPaymentTypeResponse GetPaymentType(long id)
+        public GetPaymentTypeResponse GetPaymentType(long? id)
         {
-            return QueryProcessor.Execute(new GetPaymentTypeQuery(id));
+            if (!id.HasValue || id.Value == default)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return QueryProcessor.Execute(new GetPaymentTypeQuery(id.Value));
         }
 
         [HttpGet("[action]")]
@@ -36,6 +41,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPaymentType([FromBody] AddPaymentTypeRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             CommandProcessor.Execute(
                 new AddPaymentTypeCommand(request.Name, request.Description, request.Company, request.Color));
         }
@@ -43,16 +53,26 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             CommandProcessor.Execute(
                 new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company, request.Color)
             );
         }
 
         [HttpPost("[action]")]
-        public void DeletePaymentType([FromBody] long paymentTypeId)
+        public void DeletePaymentType([FromBody] long? paymentTypeId)
         {
+            if (!paymentTypeId.HasValue || paymentTypeId.Value == default)
+            {
+                throw new ArgumentNullException(nameof(paymentTypeId));
+            }
+
             CommandProcessor.Execute(
-                new DeletePaymentTypeCommand(paymentTypeId));
+                new DeletePaymentTypeCommand(paymentTypeId.Value));
         }
 
         #endregion
@@ -60,14 +80,24 @@ namespace MAS.Payments.Controllers
         #region Payment
 
         [HttpGet("[action]")]
-        public GetPaymentResponse GetPayment(long id)
+        public GetPaymentResponse GetPayment(long? id)
         {
-            return QueryProcessor.Execute(new GetPaymentQuery(id));
+            if (!id.HasValue || id.Value == default)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return QueryProcessor.Execute(new GetPaymentQuery(id.Value));
         }
 
         [HttpGet("[action]")]
         public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery] GetPaymentsRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             return QueryProcessor.Execute(
                 new GetPaymentsQuery(request.Month, request.Year, request.PaymentTypeId,
                     request.Amount?.Exact, request.Amount?.Min, request.Amount?.Max));
@@ -76,6 +106,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPayment([FromBody] AddPaymentRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var paymentDate = new DateTime(request.Year, request.Month, 20);
 
             CommandProcessor.Execute(
@@ -85,6 +120,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePayment(UpdatePaymentRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var paymentDate = new DateTime(request.Year, request.Month, 20);
 
             CommandProcessor.Execute(
@@ -93,10 +133,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeletePayment([FromBody] long paymentId)
+        public void DeletePayment([FromBody] long? paymentId)
         {
+            if (!paymentId.HasValue || paymentId.Value == default)
+            {
+                throw new ArgumentNullException(nameof(paymentId));
+            }
+
             CommandProcessor.Execute(
-                new DeletePaymentCommand(paymentId));
+                new DeletePaymentCommand(paymentId.Value));
         }
 
         [HttpGet("[action]")]

@@ -18,7 +18,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery]GetPaymentsStatisticsRequest request)
+        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery] GetPaymentsStatisticsRequest request)
         {
             if (request == null || !request.Year.HasValue)
             {
@@ -29,7 +29,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery]GetMeasurementStatisticsRequest request)
+        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery] GetMeasurementStatisticsRequest request)
         {
             if (request == null || !request.Year.HasValue)
             {

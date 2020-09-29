@@ -7,7 +7,7 @@ export function boxServerResponse(response: any): CommandExecutionResult {
     return (response
         ? ({
             success: false,
-            error: response['Message'] || response.error,
+            error: response.error['Message'] || response.message,
         })
         : ({ success: true })) as CommandExecutionResult;
 }
@@ -21,6 +21,6 @@ export function boxServerQueryResponse<TResult>(response: any): QueryExecutionRe
         })
         : ({
             success: false,
-            error: response['Message'] || response.error,
+            error: response['Message'] || response.error['Message'] || response.message,
         })) as QueryExecutionResult<TResult>;
 }

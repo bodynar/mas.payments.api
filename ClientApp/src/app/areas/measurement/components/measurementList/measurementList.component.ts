@@ -13,7 +13,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -21,12 +21,11 @@ import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({
     templateUrl: 'measurementList.template.pug'
 })
-export class MeasurementListComponent extends BaseRoutingComponent {
+export class MeasurementListComponent extends BaseRoutingComponentWithModalComponent {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
 
@@ -64,6 +63,8 @@ export class MeasurementListComponent extends BaseRoutingComponent {
     public isMeasurementsSentFlagVisible: boolean =
         false;
 
+    // #region private members
+
     private whenMeasurementDelete$: Subject<number> =
         new Subject();
 
@@ -88,13 +89,15 @@ export class MeasurementListComponent extends BaseRoutingComponent {
     private pageSize: number =
         3;
 
+    // #endregion
+
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private modalService: IModalService,
+        modalService: IModalService,
         routerService: IRouterService,
     ) {
-        super(routerService);
+        super(routerService, modalService);
 
         this.whenComponentInit$
             .pipe(
@@ -167,6 +170,13 @@ export class MeasurementListComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                switchMap(id =>
+                    this.confirmDelete()
+                        .pipe(
+                            filter(isConfirm => isConfirm),
+                            map(_ => id)
+                        )
+                ),
                 switchMap(id => this.measurementService.deleteMeasurement(id)),
                 filter(response => {
                     if (!response.success) {
@@ -199,26 +209,13 @@ export class MeasurementListComponent extends BaseRoutingComponent {
                         array.some(x => x.isSent);
 
                     if (hasAlreadySentItems) {
-                        return this.modalService.show(ConfirmInModalComponent, {
-                            size: 'medium',
-                            title: 'Measurements already sent',
-                            body: {
-                                content: 'Some of measurements is already sent.\nDo you want to send them again?',
-                                isHtml: false,
-                            },
-                            additionalParameters: {
-                                confirmBtnText: 'Yes',
-                                cancelBtnText: 'No',
-                            }
-                        }).pipe(
-                            map(response => response as boolean),
-                            map(filterValue => ({ array, filterValue }))
-                        );
+                        return this.confirmInModal('Measurements already sent', 'Some of measurements is already sent.\nDo you want to send them again?')
+                            .pipe(map(isConfirm => ({ array, isConfirm })));
                     } else {
-                        return of({ array, filterValue: true });
+                        return of({ array, isConfirm: true });
                     }
                 }),
-                filter(({ filterValue }) => filterValue),
+                filter(({ isConfirm }) => isConfirm),
                 map(({ array }) => array.map(x => x.id)),
                 switchMap(array => {
                     this.isLoading$.next(true);

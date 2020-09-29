@@ -61,8 +61,6 @@ export class AddMeasurementTypeComponent extends BaseRoutingComponent {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
-                switchMap(_ => this.measurementService.addMeasurementType(this.addMeasurementTypeRequest)),
-
                 switchMap(_ => {
                     this.isLoading$.next(true);
                     return this.measurementService.addMeasurementType(this.addMeasurementTypeRequest);

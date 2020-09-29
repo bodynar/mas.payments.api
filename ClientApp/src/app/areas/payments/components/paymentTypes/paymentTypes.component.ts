@@ -1,14 +1,12 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject, of, Observable } from 'rxjs';
+import { ReplaySubject, Subject, Observable } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
-import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
-
-import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -22,7 +20,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentTypes.template.pug',
     styleUrls: ['paymentTypes.style.styl']
 })
-export class PaymentTypesComponent extends BaseRoutingComponent {
+export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponent {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
@@ -47,10 +45,10 @@ export class PaymentTypesComponent extends BaseRoutingComponent {
     constructor(
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private modalService: IModalService,
+        modalService: IModalService,
         routerService: IRouterService,
     ) {
-        super(routerService);
+        super(routerService, modalService);
 
         this.whenComponentInit$
             .subscribe(() => this.whenGetPaymentTypes$.next(null));
@@ -142,23 +140,12 @@ export class PaymentTypesComponent extends BaseRoutingComponent {
                             ? 'measurement types'
                             : '';
 
-            return this.modalService.show(ConfirmInModalComponent, {
-                size: 'medium',
-                title: 'Warning! Payment type related with objects.',
-                body: {
-                    isHtml: false,
-                    content: `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?\nDependant ${relatedObjectsName} will be deleted.`
-                },
-                additionalParameters: {
-                    confirmBtnText: 'Yes',
-                    cancelBtnText: 'No',
-                }
-            }).pipe(
-                map(response => response as boolean),
-                map(response => ({ id, canDelete: response }))
-            );
+            return this.confirmInModal(
+                'Warning! Payment type related with objects.',
+                `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?\nDependant ${relatedObjectsName} will be deleted.`)
+            .pipe(map(response => ({ id, canDelete: response })));
         } else {
-            return of({ id, canDelete: true });
+            return this.confirmDelete().pipe(map(canDelete => ({ id, canDelete })));
         }
     }
 }

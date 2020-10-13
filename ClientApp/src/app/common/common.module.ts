@@ -7,6 +7,7 @@ import { PositiveNumberValidatorDirective } from './directives/positiveNumberVal
 
 import { PaginatorComponent } from './components/paginator/component/paginator.component';
 import { BadgeComponent } from './components/badge/badge.component';
+import { NoItemsComponent } from './components/noItems/noItems.component';
 
 @NgModule({
     imports: [
@@ -15,6 +16,8 @@ import { BadgeComponent } from './components/badge/badge.component';
     exports: [
         PaginatorComponent,
         BadgeComponent,
+        NoItemsComponent,
+
         ColorValidatorDirective,
         HexColorValidatorDirective,
         PositiveNumberValidatorDirective,
@@ -22,6 +25,8 @@ import { BadgeComponent } from './components/badge/badge.component';
     declarations: [
         PaginatorComponent,
         BadgeComponent,
+        NoItemsComponent,
+
         ColorValidatorDirective,
         HexColorValidatorDirective,
         PositiveNumberValidatorDirective,

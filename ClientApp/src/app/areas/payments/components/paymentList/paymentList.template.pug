@@ -219,3 +219,4 @@ hr
             [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
             (pageChange)='onPageChange($event)'
         )
+        app-no-items(*ngIf="!(hasData$ | async) && !(isLoading$ | async)")

@@ -29,7 +29,7 @@ doctype html
                 href='#',
                 *ngIf='!(isMeasurementsSentFlagActive$ | async)',
                 (click)='onSelectMeasurementsClick(true)',
-                [disabled]='!canSend'
+                [disabled]='!(hasData$ | async)'
             ) Send
             button.dropdown-item(
                 type='button',
@@ -142,19 +142,21 @@ hr
     .loading-cover_content(
         [attr.data-disabled]='isLoading$ | async'
     )
-        app-measurement-group(
-            *ngFor='let measurementGroup of (measurements$ | async)',
-            [measurementGroup]='measurementGroup',
-            [showAsGroups]='isFilterApplied$',
-            [isSentFlagActive$]='isMeasurementsSentFlagActive$',
-            (deleteClick)='onDeleteRecordClick($event)',
-            (editClick)='onEditRecordClick($event)',
-            (typeClick)='onTypeClick($event)',
-            (sendFlagClick)='onSendFlagClick($event)',
-        )
-        br
-        app-paginator(
-            *ngIf='(paginatorConfig$ | async)?.enabled',
-            [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
-            (pageChange)='onPageChange($event)'
-        )
+        div(*ngIf="hasData$ | async")
+            app-measurement-group(
+                *ngFor='let measurementGroup of (measurements$ | async)',
+                [measurementGroup]='measurementGroup',
+                [showAsGroups]='isFilterApplied$',
+                [isSentFlagActive$]='isMeasurementsSentFlagActive$',
+                (deleteClick)='onDeleteRecordClick($event)',
+                (editClick)='onEditRecordClick($event)',
+                (typeClick)='onTypeClick($event)',
+                (sendFlagClick)='onSendFlagClick($event)',
+            )
+            br
+            app-paginator(
+                *ngIf='(paginatorConfig$ | async)?.enabled',
+                [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+                (pageChange)='onPageChange($event)'
+            )
+        app-no-items(*ngIf="!(hasData$ | async) && !(isLoading$ | async)")

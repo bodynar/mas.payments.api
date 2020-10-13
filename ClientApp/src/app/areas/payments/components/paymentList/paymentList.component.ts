@@ -40,6 +40,9 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
 
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public amountFilterType$: BehaviorSubject<string> =
         new BehaviorSubject('');
 
@@ -48,9 +51,6 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
 
     public currentSortColumn$: Subject<string> =
         new ReplaySubject(1);
-
-    public hasData$: Subject<boolean> =
-        new BehaviorSubject(false);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
@@ -102,8 +102,13 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
 
         this.whenComponentInit$
             .pipe(
+                tap(_ => {
+                    this.payments$.next([]);
+                    this.isLoading$.next(true);
+                }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);

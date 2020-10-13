@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, map, tap } from 'rxjs/operators';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -20,6 +20,12 @@ import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
     styleUrls: ['measurementTypes.style.styl']
 })
 export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
@@ -50,12 +56,15 @@ export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComp
         super(routerService, modalService);
 
         this.whenComponentInit$
+            .pipe(tap(_ => { this.measurementTypes$.next([]); }))
             .subscribe(() => this.whenGetMeasurementTypes$.next(null));
 
         this.whenGetMeasurementTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(true)),
                 switchMapTo(this.measurementService.getMeasurementTypes()),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -76,6 +85,7 @@ export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComp
                     this.measurementTypes$.next(this.measurementTypes);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
 
@@ -91,11 +101,13 @@ export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComp
                         ).pipe(map(response => ({ id, canDelete: response })));
                     } else {
                         return this.confirmDelete()
-                                .pipe(map(canDelete => ({ id, canDelete })));
+                            .pipe(map(canDelete => ({ id, canDelete })));
                     }
                 }),
                 filter(({ canDelete }) => canDelete),
+                tap(_ => this.isLoading$.next(true)),
                 switchMap(({ id }) => this.measurementService.deleteMeasurementType(id)),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);

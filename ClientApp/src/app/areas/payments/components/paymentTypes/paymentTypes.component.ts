@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject, Observable } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, map } from 'rxjs/operators';
+import { ReplaySubject, Subject, Observable, BehaviorSubject } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, map, tap } from 'rxjs/operators';
 
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
@@ -26,6 +26,12 @@ export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponen
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
+
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     private whenTypeDelete$: Subject<number> =
         new Subject();
@@ -56,7 +62,9 @@ export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponen
         this.whenGetPaymentTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(true)),
                 switchMapTo(this.paymentService.getPaymentTypes()),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -76,6 +84,7 @@ export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponen
                     this.paymentTypes$.next(this.paymentTypes);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
 
@@ -143,7 +152,7 @@ export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponen
             return this.confirmInModal(
                 'Warning! Payment type related with objects.',
                 `Type related with ${relatedObjectsName}.\nAre you sure want to delete it?\nDependant ${relatedObjectsName} will be deleted.`)
-            .pipe(map(response => ({ id, canDelete: response })));
+                .pipe(map(response => ({ id, canDelete: response })));
         } else {
             return this.confirmDelete().pipe(map(canDelete => ({ id, canDelete })));
         }

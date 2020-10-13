@@ -38,8 +38,11 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public isLoading$: Subject<boolean> =
-        new BehaviorSubject(true);
+        new BehaviorSubject(false);
 
     public isMeasurementsSentFlagActive$: Subject<boolean> =
         new BehaviorSubject(false);
@@ -56,9 +59,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     public months: Array<{ name: string, id?: number }>;
 
     public years: Array<{ name: string, id?: number }>;
-
-    public canSend: boolean =
-        false;
 
     public isMeasurementsSentFlagVisible: boolean =
         false;
@@ -152,7 +152,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 this.measurements = [].concat(...result.map(x => x.measurements));
                 this.measurementGroups = result;
 
-                this.canSend = this.measurements.length !== 0;
+                this.hasData$.next(this.measurements.length !== 0);
 
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.measurementGroups, this.pageSize);

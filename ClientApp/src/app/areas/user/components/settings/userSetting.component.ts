@@ -16,8 +16,11 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
     templateUrl: 'userSetting.template.pug'
 })
 export class UserSettingComponent extends BaseComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public isLoading$: Subject<boolean> =
-        new BehaviorSubject(true);
+        new BehaviorSubject(false);
 
     public userSettings$: Subject<Array<GetUserSettingsResponse>> =
         new ReplaySubject();
@@ -79,6 +82,8 @@ export class UserSettingComponent extends BaseComponent {
                             [x.name]: [x.value]
                         }));
                     });
+
+                    this.hasData$.next(result.length > 0);
                 }),
             )
             .subscribe(({ result }) => this.userSettings$.next(result));

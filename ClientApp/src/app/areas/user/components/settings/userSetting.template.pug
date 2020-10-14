@@ -11,71 +11,73 @@
     .loading-cover_content(
         [attr.data-disabled]='isLoading$ | async'
     )
-        form(
-            [formGroup]='settingsForm',
-            (ngSubmit)='onFormSubmit()'
-        )
-            div(
-                formArrayName='items',
-                *ngFor='let setting of (userSettings$ | async); let i = index'
+        div(*ngIf='hasData$ | async')
+            form(
+                [formGroup]='settingsForm',
+                (ngSubmit)='onFormSubmit()'
             )
                 div(
-                    [formGroupName]='i',
-                    [ngSwitch]='setting.typeName'
+                    formArrayName='items',
+                    *ngFor='let setting of (userSettings$ | async); let i = index'
                 )
-                    .custom-control.custom-checkbox(
-                        *ngSwitchCase='"Boolean"'
+                    div(
+                        [formGroupName]='i',
+                        [ngSwitch]='setting.typeName'
                     )
-                        input.custom-control-input(
-                            [id]='setting.id'
-                            type='checkbox',
-                            [formControlName]='setting.name',
-                            [checked]='setting.value',
+                        .custom-control.custom-checkbox(
+                            *ngSwitchCase='"Boolean"'
                         )
-                        label.custom-control-label(
-                            [for]='setting.id'
-                        ) {{ setting.displayName }}
-                    .form-group.row.m-row(
-                        *ngSwitchCase='"String"'
-                    )
-                        label.col-form-label.col-sm-3(
-                            [for]='setting.name'
-                        ) {{ setting.displayName }}
-                        .col-sm-9
-                            input.form-control.form-control-sm(
-                                type='text',
-                                [placeholder]='setting.displayName',
+                            input.custom-control-input(
+                                [id]='setting.id'
+                                type='checkbox',
                                 [formControlName]='setting.name',
-                                [id]='setting.name',
+                                [checked]='setting.value',
                             )
-                    .form-group.row.m-row(
-                        *ngSwitchCase='"Number"'
-                    )
-                        label.col-form-label.col-sm-6(
-                            [for]='setting.name'
-                        ) {{ setting.displayName }}
-                        .col-sm-6
-                            input.form-control.form-control-sm(
-                                type='number',
-                                [placeholder]='setting.displayName',
-                                [formControlName]='setting.name',
-                                [id]='setting.name',
-                            )
-            .form-group.row.mt-3(
-                *ngIf='(userSettings$ | async)?.length > 0'
-            )
-                .col-sm-10
-                    button.btn.btn-primary(
-                        *ngIf='!(isLoading$ | async)',
-                        type='submit'
-                    ) Save
-                    button.btn.btn-primary(
-                        *ngIf='isLoading$ | async',
-                        type='button'
-                    )
-                        span.spinner-grow.spinner-grow-sm.mr-1(
-                            role='status',
-                            aria-hidden='true'
+                            label.custom-control-label(
+                                [for]='setting.id'
+                            ) {{ setting.displayName }}
+                        .form-group.row.m-row(
+                            *ngSwitchCase='"String"'
                         )
-                        span.sr-only Loading
-                        | Saving..
+                            label.col-form-label.col-sm-3(
+                                [for]='setting.name'
+                            ) {{ setting.displayName }}
+                            .col-sm-9
+                                input.form-control.form-control-sm(
+                                    type='text',
+                                    [placeholder]='setting.displayName',
+                                    [formControlName]='setting.name',
+                                    [id]='setting.name',
+                                )
+                        .form-group.row.m-row(
+                            *ngSwitchCase='"Number"'
+                        )
+                            label.col-form-label.col-sm-6(
+                                [for]='setting.name'
+                            ) {{ setting.displayName }}
+                            .col-sm-6
+                                input.form-control.form-control-sm(
+                                    type='number',
+                                    [placeholder]='setting.displayName',
+                                    [formControlName]='setting.name',
+                                    [id]='setting.name',
+                                )
+                .form-group.row.mt-3(
+                    *ngIf='(userSettings$ | async)?.length > 0'
+                )
+                    .col-sm-10
+                        button.btn.btn-primary(
+                            *ngIf='!(isLoading$ | async)',
+                            type='submit'
+                        ) Save
+                        button.btn.btn-primary(
+                            *ngIf='isLoading$ | async',
+                            type='button'
+                        )
+                            span.spinner-grow.spinner-grow-sm.mr-1(
+                                role='status',
+                                aria-hidden='true'
+                            )
+                            span.sr-only Loading
+                            | Saving..
+        app-no-items(*ngIf='!(hasData$ | async) && !(isLoading$ | async)')

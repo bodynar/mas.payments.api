@@ -1,13 +1,11 @@
 import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
 import { isNullOrUndefined } from 'common/utils/common';
-
-import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
@@ -18,12 +16,18 @@ import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
+import { BaseComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
 })
-export class MailMessageLogsComponent extends BaseComponent {
+export class MailMessageLogsComponent extends BaseComponentWithModalComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public logItems$: Subject<Array<GetMailLogsResponse>> =
         new ReplaySubject(1);
 
@@ -42,9 +46,9 @@ export class MailMessageLogsComponent extends BaseComponent {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
-        private modalService: IModalService
+        modalService: IModalService
     ) {
-        super();
+        super(modalService);
 
         this.whenComponentInit$
             .subscribe(() => this.whenUpdateMailMessageLogs$.next(null));
@@ -52,7 +56,9 @@ export class MailMessageLogsComponent extends BaseComponent {
         this.whenUpdateMailMessageLogs$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(true)),
                 switchMapTo(this.userService.getMailLogs()),
+                tap(_ => this.isLoading$.next(false)),
                 filter(result => {
                     if (!result.success) {
                         this.notificationService.error(result.error);
@@ -73,6 +79,7 @@ export class MailMessageLogsComponent extends BaseComponent {
                     this.logItems$.next(this.logItems);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
     }
@@ -97,13 +104,11 @@ export class MailMessageLogsComponent extends BaseComponent {
             this.logItems.filter(x => x.id === logItemId).pop();
 
         if (!isNullOrUndefined(logItem)) {
-            this.modalService.show(TextInModalComponent, {
-                size: 'large',
+            this.showInModal({
                 title: logItem.subject,
-                body: {
-                    content: logItem.body,
-                    isHtml: true
-                },
+                size: 'large',
+                isHtml: true,
+                body: logItem.body
             });
         }
     }

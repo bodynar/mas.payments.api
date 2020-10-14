@@ -33,7 +33,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
         new ReplaySubject(1);
 
     public measurements$: Subject<Array<MeasurementsResponse>> =
-        new Subject();
+        new ReplaySubject(1);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
@@ -152,8 +152,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 this.measurements = [].concat(...result.map(x => x.measurements));
                 this.measurementGroups = result;
 
-                this.hasData$.next(this.measurements.length !== 0);
-
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.measurementGroups, this.pageSize);
 
@@ -163,6 +161,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                     this.measurements$.next(this.measurementGroups);
                 }
 
+                this.hasData$.next(this.measurements.length !== 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
 

@@ -20,6 +20,8 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
     styleUrls: ['userNotifications.style.styl'],
 })
 export class UserNotificationsComponent extends BaseComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(true);
@@ -87,6 +89,7 @@ export class UserNotificationsComponent extends BaseComponent {
                     this.notifications$.next(this.notifications);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
     }

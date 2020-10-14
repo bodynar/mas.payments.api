@@ -38,7 +38,7 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
         new Subject();
 
     public isLoading$: Subject<boolean> =
-        new BehaviorSubject(true);
+        new BehaviorSubject(false);
 
     public hasData$: Subject<boolean> =
         new BehaviorSubject(false);

@@ -23,13 +23,16 @@ export class ModalService implements IModalService {
     ) { }
 
     public show(modalComponent: Type<IModalComponent>, modalOptions: IModalComponentOptions): Observable<any> {
-        this.modalRef = this.modalService.open(modalComponent, {
-            size: modalOptions.size === 'large'
-                ? 'lg'
-                : modalOptions.size === 'small'
-                    ? 'sm'
-                    : undefined,
-        });
+        const modalSize: 'sm' | 'lg' | 'xl' =
+            modalOptions.size === 'small'
+                ? 'sm'
+                : modalOptions.size === 'large'
+                    ? 'lg'
+                    : modalOptions.size === 'extra-large'
+                        ? 'xl'
+                        : undefined;
+
+        this.modalRef = this.modalService.open(modalComponent, { size: modalSize });
 
         this.modalComponent = this.modalRef.componentInstance;
 

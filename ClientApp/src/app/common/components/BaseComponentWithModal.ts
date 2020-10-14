@@ -9,11 +9,14 @@ import BaseRoutingComponent from './BaseRoutingComponent';
 import { IRouterService } from 'services/IRouterService';
 
 import { IModalService } from 'src/app/components/modal/IModalService';
+import { ModalSize } from 'src/app/components/modal/types/IModalComponentOptions';
+
 import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
+import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
 
 const confirmInModal = (modalService: IModalService, confirmTitle: string, confirmText: string): Observable<boolean> => {
     return modalService.show(ConfirmInModalComponent, {
-        size: 'medium',
+        size: 'small',
         title: confirmTitle,
         body: {
             content: confirmText,
@@ -24,6 +27,23 @@ const confirmInModal = (modalService: IModalService, confirmTitle: string, confi
             cancelBtnText: 'No',
         }
     }).pipe(map(response => response as boolean));
+};
+
+const displayInModal = (modalService: IModalService, size: ModalSize, title: string, body: string, isHtml: boolean): void => {
+    modalService.show(TextInModalComponent, {
+        size, title,
+        body: {
+            content: body,
+            isHtml,
+        },
+    });
+};
+
+export type ModalOptions = {
+    size: ModalSize;
+    title: string;
+    body: string;
+    isHtml: boolean;
 };
 
 @Component({ template: '' })
@@ -40,6 +60,10 @@ export abstract class BaseComponentWithModalComponent extends BaseComponent {
 
     protected confirmDelete(): Observable<boolean> {
         return confirmInModal(this.modalService, 'Confirm delete', 'Are you sure want to delete?');
+    }
+
+    protected showInModal(modalOptions: ModalOptions): void {
+        displayInModal(this.modalService, modalOptions.size, modalOptions.title, modalOptions.body, modalOptions.isHtml);
     }
 }
 

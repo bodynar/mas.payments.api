@@ -22,9 +22,7 @@ hr
     .loading-cover_content(
         [attr.data-disabled]='isLoading$ | async'
     )
-        div(
-            *ngIf="hasData$ | async"
-        )
+        div(*ngIf='hasData$ | async')
             .type-list-item(*ngFor='let type of (paymentTypes$ | async)')
                 .name
                     span.color(
@@ -48,4 +46,4 @@ hr
                 [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
                 (pageChange)='onPageChange($event)'
             )
-        app-no-items(*ngIf="!(hasData$ | async) && !(isLoading$ | async)")
+        app-no-items(*ngIf='!(hasData$ | async) && !(isLoading$ | async)')

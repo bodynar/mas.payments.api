@@ -142,7 +142,7 @@ hr
     .loading-cover_content(
         [attr.data-disabled]='isLoading$ | async'
     )
-        div(*ngIf="hasData$ | async")
+        div(*ngIf='hasData$ | async')
             app-measurement-group(
                 *ngFor='let measurementGroup of (measurements$ | async)',
                 [measurementGroup]='measurementGroup',
@@ -159,4 +159,4 @@ hr
                 [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
                 (pageChange)='onPageChange($event)'
             )
-        app-no-items(*ngIf="!(hasData$ | async) && !(isLoading$ | async)")
+        app-no-items(*ngIf='!(hasData$ | async) && !(isLoading$ | async)')

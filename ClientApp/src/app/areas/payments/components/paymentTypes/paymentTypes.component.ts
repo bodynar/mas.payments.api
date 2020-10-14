@@ -22,7 +22,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 })
 export class PaymentTypesComponent extends BaseRoutingComponentWithModalComponent {
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
-        new Subject();
+        new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);

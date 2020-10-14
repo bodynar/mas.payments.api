@@ -27,7 +27,7 @@ export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComp
         new BehaviorSubject(false);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new Subject();
+        new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);

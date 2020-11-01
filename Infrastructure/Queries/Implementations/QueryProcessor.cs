@@ -1,7 +1,7 @@
-using System;
-
 namespace MAS.Payments.Infrastructure.Query
 {
+    using System;
+
     public class QueryProcessor : IQueryProcessor
     {
         private IResolver Resolver { get; }

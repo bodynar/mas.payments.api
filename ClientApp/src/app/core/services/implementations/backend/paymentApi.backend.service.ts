@@ -6,6 +6,8 @@ import { catchError, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
+import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
+
 import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.backend';
 
 import PaymentsFilter from 'models/paymentsFilter';
@@ -34,14 +36,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/addPayment`, paymentData)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -89,20 +85,11 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         year: payment['dateYear'],
                         description: payment['description'],
                         paymentTypeName: payment['paymentTypeName'],
-                        paymentTypeId: payment['paymentTypeId']
+                        paymentTypeId: payment['paymentTypeId'],
+                        paymentTypeColor: payment['paymentTypeColor'],
                     }) as PaymentResponse)),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                        result: [],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<PaymentResponse>>(x)),
             );
     }
 
@@ -124,17 +111,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         paymentTypeName: response['paymentTypeName'],
                         paymentTypeId: response['paymentTypeId'],
                     }) as PaymentResponse),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<PaymentResponse>(x)),
             );
     }
 
@@ -142,14 +120,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/updatePayment`, { id, ...paymentData })
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -157,14 +129,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/deletePayment`, paymentId)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -176,14 +142,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/addPaymentType`, paymentTypeData)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -198,20 +158,12 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         systemName: response['systemName'],
                         description: paymentType['description'],
                         company: paymentType['company'],
+                        color: paymentType['color'],
                         hasRelatedPayments: paymentType['hasRelatedPayments'] || false,
                         hasRelatedMeasurementTypes: paymentType['hasRelatedMeasurementTypes'] || false,
                     }) as PaymentTypeResponse)),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<PaymentTypeResponse>>(x)),
             );
     }
 
@@ -230,18 +182,10 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
                         company: response['company'],
                         systemName: response['systemName'],
                         description: response['description'],
+                        color: response['color'],
                     }) as PaymentTypeResponse),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<PaymentTypeResponse>(x)),
             );
     }
 
@@ -249,14 +193,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/updatePaymentType`, { id, ...paymentTypeData })
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -264,14 +202,8 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/deletePaymentType`, paymentTypeId)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 

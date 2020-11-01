@@ -1,8 +1,10 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -14,7 +16,10 @@ import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
 @Component({
     templateUrl: 'testMailMessage.template.pug'
 })
-class TestMailMessageComponent implements OnDestroy {
+export class TestMailMessageComponent extends BaseComponent {
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public mailMessageRequest: TestMailMessageRequest =
         {
@@ -24,20 +29,24 @@ class TestMailMessageComponent implements OnDestroy {
     public whenSendRequest$: Subject<NgForm> =
         new Subject();
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
+        super();
+
         this.whenSendRequest$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 filter(_ => !isNullOrUndefined(this.mailMessageRequest.recipient) && this.mailMessageRequest.recipient !== ''),
-                switchMap(_ => this.userService.sendTestMailMessage(this.mailMessageRequest)),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.sendTestMailMessage(this.mailMessageRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -50,14 +59,7 @@ class TestMailMessageComponent implements OnDestroy {
             });
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSend(form: NgForm): void {
         this.whenSendRequest$.next(form);
     }
 }
-
-export { TestMailMessageComponent };

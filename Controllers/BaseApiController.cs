@@ -1,15 +1,15 @@
-using System;
-
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.MailMessaging;
-using MAS.Payments.Infrastructure.Query;
-using MAS.Payments.Notifications;
-
-using Microsoft.AspNetCore.Mvc;
-
 namespace MAS.Payments.Controllers
 {
+    using System;
+
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.MailMessaging;
+    using MAS.Payments.Infrastructure.Query;
+    using MAS.Payments.Notifications;
+
+    using Microsoft.AspNetCore.Mvc;
+
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]

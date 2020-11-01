@@ -13,6 +13,8 @@ abstract class IRouterService {
 
     abstract navigateUp(): void;
 
+    abstract navigateBack(): void;
+
     abstract navigateDeep(routeDefinition: Array<string>, extras?: any): void;
 
     abstract navigateArea(path: Array<string>, extras?: any): void;

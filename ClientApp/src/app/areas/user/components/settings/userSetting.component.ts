@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
@@ -13,14 +15,19 @@ import GetUserSettingsResponse from 'models/response/user/getUserSettingsRespons
 @Component({
     templateUrl: 'userSetting.template.pug'
 })
-export class UserSettingComponent implements OnDestroy, OnInit {
+export class UserSettingComponent extends BaseComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public userSettings$: Subject<Array<GetUserSettingsResponse>> =
         new ReplaySubject();
 
     public settingsForm: FormGroup;
 
-    private whenComponentDestroy$: Subject<null> =
+    private whenSaveSettings$: Subject<Array<UpdateUserSettingRequest>> =
         new Subject();
 
     private whenRequestUserSettings$: Subject<null> =
@@ -34,14 +41,31 @@ export class UserSettingComponent implements OnDestroy, OnInit {
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
+        super();
+
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.settingsForm = this.formBuilder.group({
+                    items: this.formBuilder.array([])
+                });
+
+                this.whenRequestUserSettings$.next(null);
+            });
+
         this.userSettings$
             .subscribe(settings => this.userSettings = settings);
 
         this.whenRequestUserSettings$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                switchMap(_ => this.userService.getUserSettings()),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.getUserSettings();
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
+
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -58,22 +82,34 @@ export class UserSettingComponent implements OnDestroy, OnInit {
                             [x.name]: [x.value]
                         }));
                     });
+
+                    this.hasData$.next(result.length > 0);
                 }),
             )
             .subscribe(({ result }) => this.userSettings$.next(result));
-    }
 
-    public ngOnInit(): void {
-        this.settingsForm = this.formBuilder.group({
-            items: this.formBuilder.array([])
-        });
+        this.whenSaveSettings$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                switchMap(changedSettings => {
+                    this.isLoading$.next(true);
+                    return this.userService.updateUserSettings(changedSettings);
+                }),
+                delay(1.5 * 1000),
+                tap(response => {
+                    this.isLoading$.next(false);
 
-        this.whenRequestUserSettings$.next(null);
-    }
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    else {
+                        this.notificationService.success('Settings successfully saved.');
+                    }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+                    return response.success;
+                }),
+            )
+            .subscribe(_ => this.whenRequestUserSettings$.next(null));
     }
 
     public onFormSubmit(): void {
@@ -97,21 +133,7 @@ export class UserSettingComponent implements OnDestroy, OnInit {
         if (changedSettings.length === 0) {
             this.notificationService.warning('You haven\'t changed any settings');
         } else {
-            this.userService
-                .updateUserSettings(changedSettings)
-                .pipe(
-                    tap(response => {
-                        if (!response.success) {
-                            this.notificationService.error(response.error);
-                        }
-                        else {
-                            this.notificationService.success('Settings successfully saved.');
-                        }
-
-                        return response.success;
-                    }),
-                )
-                .subscribe(_ => this.whenRequestUserSettings$.next(null));
+            this.whenSaveSettings$.next(changedSettings);
         }
     }
 

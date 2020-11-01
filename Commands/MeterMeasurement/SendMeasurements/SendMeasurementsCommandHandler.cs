@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Exceptions;
-using MAS.Payments.Infrastructure.Specification;
-using MAS.Payments.MailMessages;
-
 namespace MAS.Payments.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Globalization;
+    using System.Linq;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
+    using MAS.Payments.Infrastructure.Specification;
+    using MAS.Payments.MailMessages;
+
     internal class SendMeasurementsCommandHandler : BaseCommandHandler<SendMeasurementsCommand>
     {
         private IRepository<MeterMeasurement> Repository { get; }

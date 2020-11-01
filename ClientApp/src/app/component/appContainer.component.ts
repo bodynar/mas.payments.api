@@ -4,11 +4,8 @@ import { Component } from '@angular/core';
   selector: 'app-root',
   templateUrl: 'appContainer.template.pug'
 })
-class AppContainerComponent {
-
+export class AppContainerComponent {
   constructor(
   ) {
   }
 }
-
-export { AppContainerComponent };

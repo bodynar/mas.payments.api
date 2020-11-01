@@ -1,9 +1,10 @@
-using System;
-using System.Linq.Expressions;
-using MAS.Payments.Infrastructure.Extensions;
-
 namespace MAS.Payments.Infrastructure.Specification
 {
+    using System;
+    using System.Linq.Expressions;
+
+    using MAS.Payments.Infrastructure.Extensions;
+
     public class AndSpecification<TEntity> : Specification<TEntity>
     {
         private Specification<TEntity> LeftSpecification { get; }

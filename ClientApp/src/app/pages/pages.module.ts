@@ -10,6 +10,4 @@ import { NotFoundComponent } from './notFound/notFound.component';
     ],
     providers: [],
 })
-class PagesModule { }
-
-export { PagesModule };
+export class PagesModule { }

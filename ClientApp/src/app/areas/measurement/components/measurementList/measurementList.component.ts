@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { filter, map, switchMap, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -13,18 +13,19 @@ import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
+
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
 
 @Component({
     templateUrl: 'measurementList.template.pug'
 })
-class MeasurementListComponent implements OnInit, OnDestroy {
+export class MeasurementListComponent extends BaseRoutingComponentWithModalComponent {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
 
@@ -32,13 +33,16 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         new ReplaySubject(1);
 
     public measurements$: Subject<Array<MeasurementsResponse>> =
-        new Subject();
+        new ReplaySubject(1);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new Subject();
 
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public isLoading$: Subject<boolean> =
-        new BehaviorSubject(true);
+        new BehaviorSubject(false);
 
     public isMeasurementsSentFlagActive$: Subject<boolean> =
         new BehaviorSubject(false);
@@ -56,11 +60,10 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
     public years: Array<{ name: string, id?: number }>;
 
-    public actions: Array<string> =
-        ['add', 'types'];
-
     public isMeasurementsSentFlagVisible: boolean =
         false;
+
+    // #region private members
 
     private whenMeasurementDelete$: Subject<number> =
         new Subject();
@@ -69,9 +72,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenSubmitFilters$: Subject<null> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>>
@@ -89,26 +89,58 @@ class MeasurementListComponent implements OnInit, OnDestroy {
     private pageSize: number =
         3;
 
+    // #endregion
+
     constructor(
         private measurementService: IMeasurementService,
-        private routerService: IRouterService,
         private notificationService: INotificationService,
-        private modalService: IModalService,
+        modalService: IModalService,
+        routerService: IRouterService,
     ) {
+        super(routerService, modalService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMap(() => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.getMeasurementTypes();
+                }),
+                takeUntil(this.whenComponentDestroy$),
+                delay(1.5 * 1000),
+                filter(response => {
+                    this.isLoading$.next(false);
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => {
+                this.measurementTypes$.next([
+                    {
+                        name: '',
+                        systemName: '',
+                    }, ...result
+                ]);
+                this.whenSubmitFilters$.next();
+            });
+
         this.months = [{ name: '' }, ...months];
         this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(_ => this.isLoading$.next(true)),
                 tap(_ => {
+                    this.isLoading$.next(true);
                     this.filters.setIsEmpty();
                     this.isFilterApplied$.next(this.filters.isEmpty);
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
-                tap(_ => this.isLoading$.next(false)),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -129,6 +161,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                     this.measurements$.next(this.measurementGroups);
                 }
 
+                this.hasData$.next(this.measurements.length !== 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
 
@@ -136,6 +169,13 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                switchMap(id =>
+                    this.confirmDelete()
+                        .pipe(
+                            filter(isConfirm => isConfirm),
+                            map(_ => id)
+                        )
+                ),
                 switchMap(id => this.measurementService.deleteMeasurement(id)),
                 filter(response => {
                     if (!response.success) {
@@ -155,7 +195,7 @@ class MeasurementListComponent implements OnInit, OnDestroy {
             .subscribe(id =>
                 this.routerService.navigateDeep(
                     ['update'],
-                    { queryParams: { 'id': id } }
+                    { queryParams: { id } }
                 )
             );
 
@@ -168,43 +208,30 @@ class MeasurementListComponent implements OnInit, OnDestroy {
                         array.some(x => x.isSent);
 
                     if (hasAlreadySentItems) {
-                        return this.modalService.show(ConfirmInModalComponent, {
-                            size: 'medium',
-                            title: 'Measurements already sent',
-                            body: {
-                                content: 'Some of measurements is already sent.\nDo you want to send them again?',
-                                isHtml: false,
-                            },
-                            additionalParameters: {
-                                confirmBtnText: 'Yes',
-                                cancelBtnText: 'No',
-                            }
-                        }).pipe(
-                            map(response => response as boolean),
-                            map(filterValue => ({ array, filterValue }))
-                        );
+                        return this.confirmInModal('Measurements already sent', 'Some of measurements is already sent.\nDo you want to send them again?')
+                            .pipe(map(isConfirm => ({ array, isConfirm })));
                     } else {
-                        return of({ array, filterValue: true });
+                        return of({ array, isConfirm: true });
                     }
                 }),
-                filter(({ filterValue }) => filterValue),
-                tap(_ => {
+                filter(({ isConfirm }) => isConfirm),
+                map(({ array }) => array.map(x => x.id)),
+                switchMap(array => {
                     this.isLoading$.next(true);
+                    return this.measurementService.sendMeasurements(array);
+                }),
+                delay(1.5 * 1000),
+                filter(response => {
+                    this.isLoading$.next(false);
                     this.isMeasurementsSentFlagActive$.next(false);
                     this.isAnyMeasurementSelectedToSend$.next(false);
-                }),
-                map(({ array }) => array.map(x => x.id)),
-                switchMap(array => this.measurementService.sendMeasurements(array)),
-                filter(response => {
+
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {
                         this.notificationService.success('Measurements sent');
                     }
                     return true;
-                }),
-                tap(_ => {
-                    this.isLoading$.next(false);
                 }),
             )
             .subscribe(_ => this.whenSubmitFilters$.next(null));
@@ -213,35 +240,6 @@ class MeasurementListComponent implements OnInit, OnDestroy {
 
         this.isMeasurementsSentFlagActive$
             .subscribe(isFlagVisible => this.isMeasurementsSentFlagVisible = isFlagVisible);
-    }
-
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-
-                    return response.success;
-                })
-            )
-            .subscribe(({ result }) => {
-                this.measurementTypes$.next([
-                    {
-                        name: '',
-                        systemName: '',
-                    }, ...result
-                ]);
-                this.whenSubmitFilters$.next();
-            });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onActionClick(actionName: string): void {
@@ -330,5 +328,3 @@ class MeasurementListComponent implements OnInit, OnDestroy {
         this.measurements$.next(slicedItems);
     }
 }
-
-export { MeasurementListComponent };

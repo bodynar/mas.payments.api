@@ -1,11 +1,11 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Exceptions;
-
 namespace MAS.Payments.Commands
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
+
     internal class UpdateMeterMeasurementTypeCommandHandler : BaseCommandHandler<UpdateMeterMeasurementTypeCommand>
     {
         private IRepository<MeterMeasurementType> Repository { get; }
@@ -33,9 +33,10 @@ namespace MAS.Payments.Commands
 
             Repository.Update(command.Id, new
             {
-                Name = command.Name,
-                PaymentTypeId = command.PaymentTypeId,
-                Description = command.Description,
+                command.Name,
+                command.PaymentTypeId,
+                command.Description,
+                command.Color,
             });
         }
     }

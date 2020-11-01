@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace MAS.Payments.DataBase
 {
+    using Microsoft.EntityFrameworkCore;
+
     public class DataBaseContext : DbContext
     {
         public DataBaseContext(DbContextOptions<DataBaseContext> options)

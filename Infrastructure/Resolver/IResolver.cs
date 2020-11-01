@@ -1,7 +1,7 @@
-using System;
-
 namespace MAS.Payments.Infrastructure
 {
+    using System;
+
     public interface IResolver
     {
         TService Resolve<TService>()

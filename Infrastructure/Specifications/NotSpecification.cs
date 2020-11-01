@@ -1,8 +1,8 @@
-using System;
-using System.Linq.Expressions;
-
 namespace MAS.Payments.Infrastructure.Specification
 {
+    using System;
+    using System.Linq.Expressions;
+
     public class NotSpecification<TEntity> : Specification<TEntity>
     {
         private Specification<TEntity> Specification { get; }

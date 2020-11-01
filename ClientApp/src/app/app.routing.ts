@@ -5,11 +5,6 @@ import { AppComponent } from './components/app/app.component';
 import { HomeComponent } from './components/home/home.component';
 import { NotFoundComponent } from './pages/notFound/notFound.component';
 
-import { routes as MeasurementRoutes } from './areas/measurement/measurement.routing';
-import { routes as PaymentRoutes } from './areas/payments/payments.routing';
-import { routes as StatisticsRoutes } from './areas/statistics/statistics.routing';
-import { routes as UserRoutes } from './areas/user/user.routing';
-
 import { MeasurementsComponent } from './areas/measurement/component/measurement.component';
 import { PaymentsComponent } from './areas/payments/component/payments.component';
 import { StatisticsComponent } from './areas/statistics/component/statistics.component';
@@ -32,22 +27,22 @@ const routes: Routes = [
             {
                 path: 'payments',
                 component: PaymentsComponent,
-                children: [...PaymentRoutes]
+                loadChildren: () => import('./areas/payments/payments.routing').then(x => x.PaymentsRoutingModule)
             },
             {
                 path: 'measurements',
                 component: MeasurementsComponent,
-                children: [...MeasurementRoutes]
+                loadChildren: () => import('./areas/measurement/measurement.routing').then(x => x.MeasurementRoutingModule)
             },
             {
                 path: 'stats',
                 component: StatisticsComponent,
-                children: [...StatisticsRoutes]
+                loadChildren: () => import('./areas/statistics/statistics.routing').then(x => x.StatisticsRoutingModule)
             },
             {
                 path: 'user',
                 component: UserComponent,
-                children: [...UserRoutes]
+                loadChildren: () => import('./areas/user/user.routing').then(x => x.UserRoutingModule)
             }
         ]
     },
@@ -66,6 +61,4 @@ const routes: Routes = [
     exports: [RouterModule],
     declarations: [],
 })
-class AppRoutingModule { }
-
-export { AppRoutingModule }
+export class AppRoutingModule { }

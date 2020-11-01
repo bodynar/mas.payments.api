@@ -1,11 +1,12 @@
-using System;
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.MailMessaging;
-
 namespace MAS.Payments.Infrastructure.Query
 {
+    using System;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.MailMessaging;
+
     internal abstract class BaseQueryHandler<TQuery, TResult> : IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult>
     {

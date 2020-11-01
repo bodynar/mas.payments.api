@@ -1,13 +1,13 @@
-﻿using System.Linq;
-
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Query;
-using MAS.Payments.Infrastructure.Specification;
-
-namespace MAS.Payments.Queries
+﻿namespace MAS.Payments.Queries
 {
+    using System.Linq;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Query;
+    using MAS.Payments.Infrastructure.Specification;
+
     internal class GetNamedUserSettingQueryHandler : BaseQueryHandler<GetNamedUserSettingQuery, UserSettings>
     {
         private IRepository<UserSettings> Repository { get; }

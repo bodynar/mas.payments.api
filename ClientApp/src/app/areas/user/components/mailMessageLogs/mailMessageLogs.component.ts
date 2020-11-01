@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMapTo, takeUntil, tap } from 'rxjs/operators';
 
 import * as moment from 'moment';
 
@@ -11,25 +11,28 @@ import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 
-import { TextInModalComponent } from 'src/app/components/modal/components/text/text.component';
+import { BaseComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
 @Component({
     templateUrl: 'mailMessageLogs.template.pug'
 })
-export class MailMessageLogsComponent implements OnInit, OnDestroy {
+export class MailMessageLogsComponent extends BaseComponentWithModalComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public logItems$: Subject<Array<GetMailLogsResponse>> =
         new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
-
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
 
     private whenUpdateMailMessageLogs$: Subject<null> =
         new Subject();
@@ -43,12 +46,19 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
     constructor(
         private userService: IUserService,
         private notificationService: INotificationService,
-        private modalService: IModalService
+        modalService: IModalService
     ) {
+        super(modalService);
+
+        this.whenComponentInit$
+            .subscribe(() => this.whenUpdateMailMessageLogs$.next(null));
+
         this.whenUpdateMailMessageLogs$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(true)),
                 switchMapTo(this.userService.getMailLogs()),
+                tap(_ => this.isLoading$.next(false)),
                 filter(result => {
                     if (!result.success) {
                         this.notificationService.error(result.error);
@@ -69,17 +79,9 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
                     this.logItems$.next(this.logItems);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
-    }
-
-    public ngOnInit(): void {
-        this.whenUpdateMailMessageLogs$.next(null);
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public formatDate(date: Date): string {
@@ -102,13 +104,11 @@ export class MailMessageLogsComponent implements OnInit, OnDestroy {
             this.logItems.filter(x => x.id === logItemId).pop();
 
         if (!isNullOrUndefined(logItem)) {
-            this.modalService.show(TextInModalComponent, {
-                size: 'large',
+            this.showInModal({
                 title: logItem.subject,
-                body: {
-                    content: logItem.body,
-                    isHtml: true
-                },
+                size: 'large',
+                isHtml: true,
+                body: logItem.body
             });
         }
     }

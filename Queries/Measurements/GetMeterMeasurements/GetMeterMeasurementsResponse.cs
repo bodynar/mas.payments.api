@@ -1,8 +1,8 @@
-using System.Collections.Generic;
-using System.Linq;
-
 namespace MAS.Payments.Queries
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
     public class GetMeterMeasurementsResponse
     {
         public int DateYear { get; set; }
@@ -37,6 +37,8 @@ namespace MAS.Payments.Queries
         public bool IsSent { get; set; }
 
         public long MeterMeasurementTypeId { get; set; }
+
+        public string MeasurementTypeColor { get; set; }
 
         public string MeasurementTypeName { get; set; }
     }

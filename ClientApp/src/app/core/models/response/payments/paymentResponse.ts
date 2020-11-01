@@ -6,4 +6,5 @@ export default interface PaymentResponse {
     description?: string;
     paymentTypeName: string;
     paymentTypeId: number;
+    paymentTypeColor?: string;
 }

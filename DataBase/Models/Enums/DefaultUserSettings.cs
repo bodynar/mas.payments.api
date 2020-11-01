@@ -1,7 +1,7 @@
-﻿using System.ComponentModel;
-
-namespace MAS.Payments.DataBase
+﻿namespace MAS.Payments.DataBase
 {
+    using System.ComponentModel;
+
     [System.Diagnostics.CodeAnalysis.SuppressMessage("Naming", "CA1717:Only FlagsAttribute enums should have plural names", Justification = "<Pending>")]
     public enum DefaultUserSettings
     {

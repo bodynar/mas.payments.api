@@ -1,7 +1,7 @@
-using MAS.Payments.Infrastructure.MailMessaging;
-
 namespace MAS.Payments.MailMessages
 {
+    using MAS.Payments.Infrastructure.MailMessaging;
+
     public class MeasurementMailModel: BaseMailMessageModel
     {
         public string Date { get; }

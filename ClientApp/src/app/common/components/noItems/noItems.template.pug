@@ -1,0 +1,7 @@
+doctype html
+
+.no-items-container
+    span No items
+    span.no-items-container__additional-text(
+        *ngIf="hasAdditionalText"
+    ) {{ additionalText }}

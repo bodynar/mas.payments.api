@@ -3,6 +3,7 @@ namespace MAS.Payments.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Text.RegularExpressions;
     using System.Threading.Tasks;
 
     using MAS.Payments.Commands;
@@ -14,14 +15,19 @@ namespace MAS.Payments.Controllers
     using MAS.Payments.Utilities;
 
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
 
     [Route("api/user")]
     public class UserApiController : BaseApiController
     {
+        private IConfiguration Configuration { get; }
+
         public UserApiController(
-            IResolver resolver
+            IResolver resolver,
+            IConfiguration configuration
         ) : base(resolver)
         {
+            Configuration = configuration;
         }
 
         [HttpGet("[action]")]
@@ -62,12 +68,22 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void HideNotifications([FromBody] IEnumerable<string> userNotificationKeys)
         {
+            if (userNotificationKeys == null || userNotificationKeys.Any(x => string.IsNullOrEmpty(x)))
+            {
+                throw new ArgumentNullException(nameof(userNotificationKeys));
+            }
+
             CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationKeys));
         }
 
         [HttpPost("[action]")]
         public void TestMailMessage([FromBody] TestMailMessageRequest request)
         {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
             var isValidEmail = Validate.Email(request.Recipient);
 
             if (!isValidEmail)
@@ -87,6 +103,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdateUserSettings([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
         {
+            if (settings == null || settings.Contains(null))
+            {
+                throw new ArgumentNullException(nameof(settings));
+            }
+
             CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
         }
 
@@ -94,6 +115,17 @@ namespace MAS.Payments.Controllers
         public IEnumerable<GetMailMessageLogsQueryResult> GetMailMessageLogs()
         {
             return QueryProcessor.Execute(new GetMailMessageLogsQuery());
+        }
+
+        [HttpGet("[action]")]
+        public GetAppInfoResponse GetAppInfo()
+        {
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var databaseName = Regex.Match(connectionString, @"\;Database=([^\;]*)\;");
+
+            var response = new GetAppInfoResponse(databaseName.Groups[1]?.Value, GetType().Assembly.GetName().Version.ToString());
+
+            return response;
         }
     }
 }

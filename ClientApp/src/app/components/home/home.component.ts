@@ -3,7 +3,5 @@ import { Component } from '@angular/core';
 @Component({
     templateUrl: 'home.template.pug'
 })
-class HomeComponent {
+export class HomeComponent {
 }
-
-export { HomeComponent };

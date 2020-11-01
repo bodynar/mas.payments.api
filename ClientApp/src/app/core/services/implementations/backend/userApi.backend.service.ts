@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
-import { isNullOrUndefined } from 'common/utils/common';
+import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 
@@ -14,9 +14,11 @@ import UpdateUserSettingRequest from 'models/request/user/updateUserSettingReque
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
+import GetAppInfoResponse from 'models/response/user/getAppInfoResponse';
 
 @Injectable()
 class UserApiBackendService implements IUserApiBackendService {
@@ -50,17 +52,8 @@ class UserApiBackendService implements IUserApiBackendService {
                         hiddenAt: request.onlyActive ? undefined : x['hiddenAt'],
                         isHidden: request.onlyActive ? undefined : x['isHidden'],
                     }) as GetNotificationsResponse)),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<GetNotificationsResponse>>(x)),
             );
     }
 
@@ -68,17 +61,8 @@ class UserApiBackendService implements IUserApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/hideNotifications`, keys)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({
-                        success: true,
-                        args: keys
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -86,14 +70,8 @@ class UserApiBackendService implements IUserApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/testMailMessage`, testMailMessage)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -124,17 +102,8 @@ class UserApiBackendService implements IUserApiBackendService {
                         displayName: setting['displayName'],
                         value: getMappedValue(setting['typeName'], setting['rawValue'])
                     }) as GetUserSettingsResponse)),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<GetUserSettingsResponse>>(x)),
             );
     }
 
@@ -142,14 +111,8 @@ class UserApiBackendService implements IUserApiBackendService {
         return this.http
             .post(`${this.apiPrefix}/updateUserSettings`, updatedSettings)
             .pipe(
-                catchError(error => of(error.error)),
-                map(x => x
-                    ? (({
-                        success: false,
-                        error: x['Message'],
-                    }) as CommandExecutionResult)
-                    : ({ success: true })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
             );
     }
 
@@ -165,17 +128,21 @@ class UserApiBackendService implements IUserApiBackendService {
                         body: logItem['body'],
                         sentDate: logItem['sentDate'],
                     }) as GetMailLogsResponse)),
-                catchError(error => of(error.error)),
-                map(x => isNullOrUndefined(x.Success)
-                    ? ({
-                        success: true,
-                        result: x
-                    })
-                    : ({
-                        success: false,
-                        error: x['Message'],
-                    })
-                ),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<Array<GetMailLogsResponse>>(x)),
+            );
+    }
+
+    public getAppInfo(): Observable<QueryExecutionResult<GetAppInfoResponse>> {
+        return this.http
+            .get(`${this.apiPrefix}/getAppInfo`)
+            .pipe(
+                map(response => ({
+                    dataBaseName: response['dataBaseName'],
+                    serverAppVersion: response['serverAppVersion']
+                }) as GetAppInfoResponse),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<GetAppInfoResponse>(x)),
             );
     }
 }

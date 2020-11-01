@@ -1,7 +1,7 @@
-using MAS.Payments.Infrastructure.Query;
-
 namespace MAS.Payments.Queries
 {
+    using MAS.Payments.Infrastructure.Query;
+
     public class GetPaymentTypeQuery : IQuery<GetPaymentTypeResponse>
     {
         public long Id { get; }

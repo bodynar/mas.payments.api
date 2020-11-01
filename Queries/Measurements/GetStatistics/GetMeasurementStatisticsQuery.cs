@@ -6,9 +6,9 @@
     {
         public short Year { get; }
 
-        public long MeasurementTypeId { get; }
+        public long? MeasurementTypeId { get; }
 
-        public GetMeasurementStatisticsQuery(short year, long measurementTypeId)
+        public GetMeasurementStatisticsQuery(short year, long? measurementTypeId)
         {
             Year = year;
             MeasurementTypeId = measurementTypeId;

@@ -3,6 +3,8 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { PaymentsRoutingModule } from './payments.routing';
+
 import { AppCommonModule } from 'common/common.module';
 
 import { PaymentsComponent } from './component/payments.component';
@@ -22,6 +24,7 @@ import { UpdatePaymentTypeComponent } from './components/updatePaymentType/updat
         FormsModule,
         CommonModule,
         AppCommonModule,
+        PaymentsRoutingModule,
     ],
     exports: [],
     declarations: [
@@ -30,6 +33,4 @@ import { UpdatePaymentTypeComponent } from './components/updatePaymentType/updat
     ],
     providers: [],
 })
-class PaymentsModule { }
-
-export { PaymentsModule };
+export class PaymentsModule { }

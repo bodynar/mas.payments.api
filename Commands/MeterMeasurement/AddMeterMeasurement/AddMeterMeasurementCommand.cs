@@ -1,9 +1,10 @@
-
-using System;
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+
+    using System;
+
+    using MAS.Payments.Infrastructure.Command;
+
     public class AddMeterMeasurementCommand : ICommand
     {
         public double Measurement { get; }

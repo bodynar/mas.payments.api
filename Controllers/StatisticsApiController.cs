@@ -18,25 +18,25 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery]GetPaymentsStatisticsRequest request)
+        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery] GetPaymentsStatisticsRequest request)
         {
-            if (request == null || !request.Year.HasValue || !request.PaymentTypeId.HasValue)
+            if (request == null || !request.Year.HasValue)
             {
                 throw new Exception("Year and Payment type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId.Value));
+            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.Year.Value, request.PaymentTypeId));
         }
 
         [HttpGet("[action]")]
-        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery]GetMeasurementStatisticsRequest request)
+        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery] GetMeasurementStatisticsRequest request)
         {
-            if (request == null || !request.Year.HasValue || !request.MeasurementTypeId.HasValue)
+            if (request == null || !request.Year.HasValue)
             {
                 throw new Exception("Year and Measurement type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.Year.Value, request.MeasurementTypeId.Value));
+            return QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.Year.Value, request.MeasurementTypeId));
         }
     }
 }

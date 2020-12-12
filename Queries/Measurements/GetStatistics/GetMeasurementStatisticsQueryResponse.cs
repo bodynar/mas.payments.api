@@ -6,17 +6,24 @@
     {
         public short Year { get; set; }
 
-        public long MeasurementTypeId { get; set; }
+        public IEnumerable<TypeStatisticsItem> TypeStatistics { get; set; }
 
-        public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
-
-        public class StatisticsDataItem
+        public class TypeStatisticsItem
         {
-            public int Month { get; set; }
+            public long MeasurementTypeId { get; set; }
 
-            public int Year { get; set; }
+            public string MeasurementTypeName { get; set; }
 
-            public double? MeasurementDiff { get; set; }
+            public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
+
+            public class StatisticsDataItem
+            {
+                public int Month { get; set; }
+
+                public int Year { get; set; }
+
+                public double? MeasurementDiff { get; set; }
+            }
         }
     }
 }

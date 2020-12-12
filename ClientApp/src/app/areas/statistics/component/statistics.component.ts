@@ -5,7 +5,7 @@ import { IRouterService } from 'services/IRouterService';
 @Component({
     templateUrl: 'statistics.template.pug'
 })
-class StatisticsComponent {
+export class StatisticsComponent {
     constructor(
         private routerService: IRouterService
     ) {
@@ -15,5 +15,3 @@ class StatisticsComponent {
         this.routerService.navigate(['app', 'stats']);
     }
 }
-
-export { StatisticsComponent };

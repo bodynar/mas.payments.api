@@ -1,7 +1,7 @@
-using MAS.Payments.Infrastructure.Projector;
-
 namespace MAS.Payments.Infrastructure.Extensions
 {
+    using MAS.Payments.Infrastructure.Projector;
+
     public static class ObjectExtenstions
     {
         public static TDestination Project<TSource, TDestination>(

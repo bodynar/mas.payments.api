@@ -1,12 +1,13 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
-import { isNullOrUndefined } from 'common/utils/common';
+
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -18,10 +19,13 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 @Component({
     templateUrl: 'addMeasurement.template.pug'
 })
-class AddMeasurementComponent implements OnInit, OnDestroy {
+export class AddMeasurementComponent extends BaseRoutingComponent {
 
     public addMeasurementRequest: AddMeasurementRequest =
         {};
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
         new ReplaySubject(1);
@@ -35,20 +39,52 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
+        super(routerService);
+
+        this.whenComponentInit$
+            .pipe(
+                switchMapTo(this.measurementService.getMeasurementTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(({ result }) => {
+                this.measurementTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                const currentDate: Date =
+                    new Date();
+
+                this.months$.next(months);
+                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
+
+                this.addMeasurementRequest.month = currentDate.getMonth().toString();
+                this.addMeasurementRequest.year = currentDate.getFullYear();
+            });
+
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid && this.isFormValid()),
-                switchMap(_ => this.measurementService.addMeasurement(this.addMeasurementRequest)),
+                filter(({ valid }) => valid),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.addMeasurement(this.addMeasurementRequest);
+                }),
+                delay(1.5 * 1000),
                 filter(response => {
+                    this.isLoading$.next(false);
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {
@@ -61,58 +97,7 @@ class AddMeasurementComponent implements OnInit, OnDestroy {
             .subscribe(_ => this.routerService.navigateUp());
     }
 
-    public ngOnInit(): void {
-        this.measurementService
-            .getMeasurementTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-
-                    return response.success;
-                })
-            )
-            .subscribe(({ result }) => this.measurementTypes$.next([{
-                name: '',
-                systemName: '',
-            }, ...result]));
-
-        const currentDate: Date =
-            new Date();
-
-        this.months$.next(months);
-        this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
-
-        this.addMeasurementRequest.month = currentDate.getMonth().toString();
-        this.addMeasurementRequest.year = currentDate.getFullYear();
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
-
-    private isFormValid(): boolean {
-        // todo: fix => make normal validator on field
-        let isFormValid: boolean =
-            true;
-
-        if (!isNullOrUndefined(this.addMeasurementRequest.measurement)) {
-            const measurementValue: number =
-                parseFloat(`${this.addMeasurementRequest.measurement}`);
-
-            if (Number.isNaN(measurementValue)) {
-                isFormValid = false;
-            }
-        }
-        return isFormValid;
-    }
 }
-
-export { AddMeasurementComponent };

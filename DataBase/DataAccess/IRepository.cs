@@ -1,11 +1,11 @@
-using System.Collections.Generic;
-using System.Linq;
-using MAS.Payments.Infrastructure.Projector;
-using MAS.Payments.Infrastructure.Specification;
-
-
 namespace MAS.Payments.DataBase.Access
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.Infrastructure.Projector;
+    using MAS.Payments.Infrastructure.Specification;
+
     public interface IRepository<TEntity>
         where TEntity : Entity
     {

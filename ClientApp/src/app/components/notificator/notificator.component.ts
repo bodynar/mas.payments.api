@@ -1,7 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { Subject } from 'rxjs';
-import { delay, map, takeUntil, tap } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 
@@ -13,89 +14,41 @@ import { NotificationType } from 'models/notificationType';
     templateUrl: 'notificator.template.pug',
     styleUrls: ['notificator.style.styl']
 })
-class NotificatorComponent implements OnInit, OnDestroy {
-
-    public notifications$: Subject<Array<Notification>> =
-        new Subject();
-
-    private whenUpdateNotifications$: Subject<Array<Notification>> =
-        new Subject();
-
-    private whenNotificationRecieved$: Subject<Notification> =
-        new Subject();
-
-    private whenNotificationDismissDelayed$: Subject<number> =
-        new Subject();
-
-    private notifications: Array<Notification> =
+export class NotificatorComponent extends BaseComponent {
+    public notifications: Array<Notification> =
         [];
-
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
 
     constructor(
         private notificationService: INotificationService
     ) {
-        this.whenNotificationDismissDelayed$
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                delay(5 * 1000),
-            )
-            .subscribe(notificationIndex => {
-                this.removeNotification(notificationIndex);
-            });
-
-        this.whenNotificationRecieved$
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                map(notification => ({
-                    ...notification,
-                    id: this.notifications.length
-                })),
-                tap(notification => this.notifications.push(notification))
-            )
-            .subscribe(notification => {
-                this.whenUpdateNotifications$.next(this.notifications);
-                this.whenNotificationDismissDelayed$.next(notification.id);
-            });
-
-        this.whenUpdateNotifications$
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                map(notifications =>
-                    notifications.map(notification =>
-                        ({
-                            ...notification,
-                            type: NotificationType[notification.type]
-                        }))
-                )
-            )
-            .subscribe(notifications => this.notifications$.next(notifications));
+        super();
 
         this.notificationService
             .whenMessageRecieved()
-            .subscribe(notification => this.whenNotificationRecieved$.next(notification));
+            .pipe(
+                takeUntil(this.whenComponentDestroy$)
+            )
+            .subscribe(notification => this.notifications.push(notification));
     }
 
-    public ngOnInit(): void {
+    public getClassName(notificationType: NotificationType): string {
+        switch (notificationType) {
+            case NotificationType.Error:
+                return 'm-bg-danger';
+            case NotificationType.Success:
+                return 'm-bg-success';
+            case NotificationType.Warning:
+                return 'bg-warning';
+            default:
+                return '';
+        }
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+    public getTypeName(notificationType: number): string {
+        return NotificationType[notificationType].toString();
     }
 
-    public removeNotification(notificationId: number): void {
-        const notification: Notification =
-            this.notifications.find(x => x.id === notificationId);
-
-        const notificationIndex: number =
-            this.notifications.indexOf(notification);
-
-        this.notifications.splice(notificationIndex, 1);
-
-        this.whenUpdateNotifications$.next(this.notifications);
+    public removeNotification(notification: Notification): void {
+        this.notifications = this.notifications.filter(t => t !== notification);
     }
 }
-
-export { NotificatorComponent };

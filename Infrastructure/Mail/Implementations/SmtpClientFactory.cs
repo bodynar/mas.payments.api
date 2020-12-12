@@ -1,9 +1,10 @@
-using System.Net;
-using System.Net.Mail;
-using Microsoft.Extensions.Options;
-
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
+    using System.Net;
+    using System.Net.Mail;
+
+    using Microsoft.Extensions.Options;
+
     internal class SmtpClientFactory : ISmtpClientFactory
     {
         private SmtpSettings SmtpSettings { get; }

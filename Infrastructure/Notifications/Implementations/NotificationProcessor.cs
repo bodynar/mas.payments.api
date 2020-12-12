@@ -1,11 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure;
-
 namespace MAS.Payments.Notifications
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure;
+
     public class NotificationProcessor : INotificationProcessor
     {
         private IResolver Resolver { get; }

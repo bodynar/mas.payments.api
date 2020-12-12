@@ -12,9 +12,11 @@ import UpdateUserSettingRequest from 'models/request/user/updateUserSettingReque
 
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
+import GetAppInfoResponse from 'models/response/user/getAppInfoResponse';
 
 @Injectable()
 class UserService implements IUserService {
@@ -81,6 +83,18 @@ class UserService implements IUserService {
     public getMailLogs(): Observable<QueryExecutionResult<Array<GetMailLogsResponse>>> {
         return this.userApiBackend
             .getMailLogs()
+            .pipe(
+                tap(response => {
+                    if (!response.success) {
+                        // this.loggingService.error(response);
+                    }
+                }),
+            );
+    }
+
+    public getAppInfo(): Observable<QueryExecutionResult<GetAppInfoResponse>> {
+        return this.userApiBackend
+            .getAppInfo()
             .pipe(
                 tap(response => {
                     if (!response.success) {

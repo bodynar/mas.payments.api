@@ -6,17 +6,24 @@ namespace MAS.Payments.Queries
     {
         public short Year { get; set; }
 
-        public long PaymentTypeId { get; set; }
+        public IEnumerable<TypeStatisticsItem> TypeStatistics { get; set; }
 
-        public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
-
-        public class StatisticsDataItem
+        public class TypeStatisticsItem
         {
-            public int Month { get; set; }
+            public long PaymentTypeId { get; set; }
 
-            public int Year { get; set; }
+            public string PaymentTypeName { get; set; }
 
-            public double? Amount { get; set; }
+            public IEnumerable<StatisticsDataItem> StatisticsData { get; set; }
+
+            public class StatisticsDataItem
+            {
+                public int Month { get; set; }
+
+                public int Year { get; set; }
+
+                public double? Amount { get; set; }
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-import { Routes } from '@angular/router';
+import { NgModule } from '@angular/core';
+import { RouterModule, Routes } from '@angular/router';
 
 import { AddPaymentComponent } from './components/addPayment/addPayment.component';
 import { AddPaymentTypeComponent } from './components/addPaymentType/addPaymentType.component';
@@ -7,7 +8,7 @@ import { PaymentTypesComponent } from './components/paymentTypes/paymentTypes.co
 import { UpdatePaymentComponent } from './components/updatePayment/updatePayment.component';
 import { UpdatePaymentTypeComponent } from './components/updatePaymentType/updatePaymentType.component';
 
-export const routes: Routes = [
+const routes: Routes = [
     {
         path: '',
         component: PaymentListComponent
@@ -33,3 +34,10 @@ export const routes: Routes = [
         component: UpdatePaymentTypeComponent
     },
 ];
+
+@NgModule({
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule],
+    declarations: [],
+})
+export class PaymentsRoutingModule { }

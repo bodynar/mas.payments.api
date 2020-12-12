@@ -1,8 +1,8 @@
-﻿using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure.Query;
-
-namespace MAS.Payments.Queries
+﻿namespace MAS.Payments.Queries
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure.Query;
+
     public class GetNamedUserSettingQuery : IQuery<UserSettings>
     {
         public string SettingName { get; }

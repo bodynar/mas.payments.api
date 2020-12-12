@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoData } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoData, ApexLegend } from 'ng-apexcharts';
 
 @Component({
     selector: 'app-stats-chart',
@@ -16,10 +16,18 @@ export class StatsChartComponent {
     @Input()
     public title: Array<ApexTitleSubtitle> = [];
 
+    public legend: ApexLegend =
+        {
+            itemMargin: {
+                horizontal: 50,
+                vertical: 0
+            },
+        };
+
     public chart: ApexChart =
         {
             type: 'line',
-            height: 350,
+            height: 400,
             animations: {
                 enabled: true,
                 easing: 'easeinout',
@@ -38,7 +46,7 @@ export class StatsChartComponent {
             },
             zoom: {
                 enabled: false,
-            }
+            },
         };
 
     public noDataOptions: ApexNoData =

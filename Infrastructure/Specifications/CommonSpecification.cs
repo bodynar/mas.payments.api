@@ -1,8 +1,8 @@
-using System;
-using System.Linq.Expressions;
-
 namespace MAS.Payments.Infrastructure.Specification
 {
+    using System;
+    using System.Linq.Expressions;
+
     public class CommonSpecification<TEntity> : Specification<TEntity>
     {
         private Expression<Func<TEntity, bool>> Filter { get; }

@@ -1,6 +1,5 @@
 namespace MAS.Payments.Queries
 {
-    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -22,31 +21,43 @@ namespace MAS.Payments.Queries
 
         public override GetPaymentStatisticsResponse Handle(GetPaymentStatisticsQuery query)
         {
+            Specification<Payment> paymentSpecification = new CommonSpecification<Payment>(x => x.Date.Value.Year == query.Year);
+
+            if (query.PaymentTypeId.HasValue)
+            {
+                paymentSpecification &= new CommonSpecification<Payment>(x => x.PaymentTypeId == query.PaymentTypeId.Value);
+            }
+
             var payments =
-                PaymentRepository.Where(
-                    new CommonSpecification<Payment>(x =>
-                        x.Date.Value.Year == query.Year
-                        && x.PaymentTypeId == query.PaymentTypeId)
-                )
+                PaymentRepository.Where(paymentSpecification)
                 .OrderBy(x => x.Date)
                 .ToList();
 
             var mappedPayments =
                payments
-                   .Select(x => new { Month = x.Date.Value.Month, Amount = x.Amount })
-                   .ToDictionary(x => x.Month, x => x.Amount as double?);
+                   .Select(x => new
+                   {
+                       x.Date.Value.Month,
+                       x.Amount,
+                       x.PaymentTypeId,
+                       PaymentTypeName = x.PaymentType.Name
+                   })
+                   .GroupBy(x => x.PaymentTypeId);
 
             var response = new GetPaymentStatisticsResponse
             {
-                PaymentTypeId = query.PaymentTypeId,
                 Year = query.Year,
-                StatisticsData =
-                    Enumerable.Range(1, 12).Select(x => new GetPaymentStatisticsResponse.StatisticsDataItem
+                TypeStatistics = mappedPayments.Select(x => new GetPaymentStatisticsResponse.TypeStatisticsItem
+                {
+                    PaymentTypeId = x.Key,
+                    PaymentTypeName = x.First().PaymentTypeName,
+                    StatisticsData = Enumerable.Range(1, 12).Select(y => new GetPaymentStatisticsResponse.TypeStatisticsItem.StatisticsDataItem
                     {
-                        Month = x,
+                        Month = y,
                         Year = query.Year,
-                        Amount = mappedPayments.GetValueOrDefault(x, null)
+                        Amount = x.FirstOrDefault(z => z.Month == y)?.Amount
                     })
+                })
             };
 
             return response;

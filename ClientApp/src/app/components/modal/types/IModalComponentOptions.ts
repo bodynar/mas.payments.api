@@ -1,6 +1,8 @@
+export type ModalSize = 'small' | 'large' | 'extra-large';
+
 export default interface IModalComponentOptions {
     title: string;
-    size: 'small' | 'medium' | 'large';
+    size: ModalSize;
     body?: {
         content: string;
         isHtml: boolean;

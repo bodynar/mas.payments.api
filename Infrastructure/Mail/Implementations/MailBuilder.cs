@@ -1,12 +1,13 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Mail;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Options;
-
 namespace MAS.Payments.Infrastructure.MailMessaging
 {
+    using System;
+    using System.IO;
+    using System.Linq;
+    using System.Net.Mail;
+
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.Extensions.Options;
+
     public class MailBuilder<TMailMessage> : IMailMessageBuilder<TMailMessage>
         where TMailMessage : IMailMessage
     {

@@ -1,7 +1,7 @@
-using System;
-
 namespace MAS.Payments.DataBase
 {
+    using System;
+
     public class Payment : Entity
     {
         public double Amount { get; set; }

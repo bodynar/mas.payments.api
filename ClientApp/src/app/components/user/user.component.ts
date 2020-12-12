@@ -1,33 +1,29 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { BehaviorSubject, Subject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
+import { map, tap, switchMapTo } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { IRouterService } from 'services/IRouterService';
-import { IUserService } from 'services/IUserService';
 
 @Component({
     selector: 'app-user',
     templateUrl: 'user.template.pug',
     styleUrls: ['user.style.styl']
 })
-class AppUserComponent implements OnInit, OnDestroy {
+export class AppUserComponent extends BaseComponent {
     public isUserPage$: BehaviorSubject<boolean> =
         new BehaviorSubject(false);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
-        private userService: IUserService,
         private routerService: IRouterService
     ) {
-    }
+        super();
 
-    public ngOnInit(): void {
-        this.routerService
-            .whenRouteChange()
+        this.whenComponentInit$
             .pipe(
+                switchMapTo(this.routerService.whenRouteChange()),
                 map(routeParams => {
                     const isUserPage: boolean =
                         routeParams.join('/').startsWith('app/user');
@@ -39,14 +35,7 @@ class AppUserComponent implements OnInit, OnDestroy {
             .subscribe();
     }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
     public onIconClick(): void {
         this.routerService.navigate(['app', 'user']);
     }
 }
-
-export { AppUserComponent };

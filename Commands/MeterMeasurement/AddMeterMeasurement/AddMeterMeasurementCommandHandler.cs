@@ -1,11 +1,11 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Exceptions;
-
 namespace MAS.Payments.Commands
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
+
     internal class AddMeterMeasurementCommandHandler : BaseCommandHandler<AddMeterMeasurementCommand>
     {
         private IRepository<MeterMeasurement> Repository { get; }

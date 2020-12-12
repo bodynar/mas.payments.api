@@ -1,8 +1,9 @@
-using System;
-using MAS.Payments.Infrastructure.MailMessaging;
-
 namespace MAS.Payments.MailMessages
 {
+    using System;
+
+    using MAS.Payments.Infrastructure.MailMessaging;
+
     public class TestMailMessage : IMailMessage
     {
         public string TemplateName

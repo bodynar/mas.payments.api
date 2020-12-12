@@ -1,7 +1,7 @@
-﻿using System;
-
-namespace MAS.Payments.Infrastructure.MailMessaging
+﻿namespace MAS.Payments.Infrastructure.MailMessaging
 {
+    using System;
+
     public abstract class BaseMailMessageModel
     {
     }

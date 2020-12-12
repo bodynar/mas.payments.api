@@ -17,10 +17,11 @@ class NotificationService implements INotificationService {
     ) {
     }
 
-    public notify(message: string, notificationType: NotificationType): void {
+    public notify(message: string, notificationType: NotificationType, delay: number = 5000): void {
         this.whenMessageRecieved$.next({
-            message: message,
-            type: notificationType
+            message,
+            type: notificationType,
+            delay
         });
     }
 

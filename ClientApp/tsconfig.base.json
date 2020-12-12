@@ -5,6 +5,7 @@
     "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
+    "resolveJsonModule": true,
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
@@ -28,6 +29,9 @@
       ],
       "common/*": [
         "src/app/common/*"
+      ],
+      "sharedComponents/*": [
+        "src/app/common/components/*"
       ]
     },
   }

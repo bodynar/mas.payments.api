@@ -25,3 +25,7 @@ export function generateGuid(): string {
 export function isNullOrUndefined(arg: any): boolean {
     return arg === undefined || arg === null;
 }
+
+export function isNullOrEmpty(arg: string): boolean {
+    return isNullOrUndefined(arg) || arg === '';
+}

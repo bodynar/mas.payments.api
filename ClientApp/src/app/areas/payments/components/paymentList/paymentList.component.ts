@@ -1,19 +1,23 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap } from 'rxjs/operators';
+import { filter, switchMap, switchMapTo, takeUntil, tap, delay, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
 import { yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
+
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IRouterService } from 'services/IRouterService';
+
+import { IModalService } from 'src/app/components/modal/IModalService';
 
 import PaymentsFilter from 'models/paymentsFilter';
 import PaymentResponse from 'models/response/payments/paymentResponse';
@@ -23,7 +27,7 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     templateUrl: 'paymentList.template.pug',
     styleUrls: ['paymentList.style.styl'],
 })
-export class PaymentListComponent implements OnInit, OnDestroy {
+export class PaymentListComponent extends BaseRoutingComponentWithModalComponent {
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -34,7 +38,10 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         new Subject();
 
     public isLoading$: Subject<boolean> =
-        new BehaviorSubject(true);
+        new BehaviorSubject(false);
+
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public amountFilterType$: BehaviorSubject<string> =
         new BehaviorSubject('');
@@ -44,9 +51,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     public currentSortColumn$: Subject<string> =
         new ReplaySubject(1);
-
-    public hasData$: Subject<boolean> =
-        new BehaviorSubject(false);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
@@ -58,9 +62,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     public years: Array<{ name: string, id?: number }>;
 
-    public actions: Array<string> =
-        ['add', 'types'];
-
 
     private whenSubmitFilters$: Subject<null> =
         new Subject();
@@ -69,9 +70,6 @@ export class PaymentListComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenPaymentEdit$: Subject<number> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private currentSortOrder: 'asc' | 'desc' =
@@ -93,20 +91,49 @@ export class PaymentListComponent implements OnInit, OnDestroy {
 
     constructor(
         private paymentService: IPaymentService,
-        private routerService: IRouterService,
         private notificationService: INotificationService,
+        modalService: IModalService,
+        routerService: IRouterService,
     ) {
-        this.months = [{ name: '' }, ...months];
-        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+        super(routerService, modalService);
 
         this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
         this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
+
+        this.whenComponentInit$
+            .pipe(
+                tap(_ => {
+                    this.payments$.next([]);
+                    this.isLoading$.next(true);
+                }),
+                switchMapTo(this.paymentService.getPaymentTypes()),
+                takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(false)),
+                filter(response => {
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+            )
+            .subscribe(({ result }) => {
+                this.paymentTypes$.next([{
+                    name: '',
+                    systemName: '',
+                }, ...result]);
+
+                this.months = [{ name: '' }, ...months];
+                this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
+
+                this.whenSubmitFilters$.next();
+            });
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => this.isLoading$.next(true)),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
+                delay(1.5 * 1000),
                 tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
@@ -129,7 +156,7 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 } else {
                     this.payments$.next(this.payments);
                 }
-                
+
                 this.onSortColumn(this.currentSortColumn, this.currentSortOrder === 'desc' ? 'asc' : 'desc');
             });
 
@@ -137,14 +164,14 @@ export class PaymentListComponent implements OnInit, OnDestroy {
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(id => id !== 0),
+                switchMap(id =>
+                    this.confirmDelete()
+                        .pipe(
+                            filter(isConfirm => isConfirm),
+                            map(_ => id)
+                        )
+                ),
                 switchMap(id => this.paymentService.deletePayment(id)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-                switchMapTo(this.paymentService.getPayments(this.filters)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -153,7 +180,7 @@ export class PaymentListComponent implements OnInit, OnDestroy {
                 }),
                 tap(_ => this.notificationService.success('Delete performed sucessfully'))
             )
-            .subscribe(({ result }) => this.payments$.next(result));
+            .subscribe(_ => this.whenSubmitFilters$.next(null));
 
         this.whenPaymentEdit$
             .pipe(
@@ -163,35 +190,9 @@ export class PaymentListComponent implements OnInit, OnDestroy {
             .subscribe(id =>
                 this.routerService.navigateDeep(
                     ['update'],
-                    { queryParams: { 'id': id } }
+                    { queryParams: { id } }
                 )
             );
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => {
-                this.paymentTypes$.next([{
-                    name: '',
-                    systemName: '',
-                }, ...result]);
-                this.whenSubmitFilters$.next();
-            });
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onActionClick(actionName: string): void {

@@ -14,6 +14,10 @@ namespace MAS.Payments.Queries
 
         public string PaymentTypeName { get; set; }
 
+        public string PaymentTypeColor { get; set; }
+
+        public string Color { get; set; }
+
         public bool HasRelatedMeasurements { get; set; }
     }
 }

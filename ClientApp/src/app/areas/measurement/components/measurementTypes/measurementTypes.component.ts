@@ -1,26 +1,33 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject, of } from 'rxjs';
-import { filter, switchMap, switchMapTo, takeUntil, tap, map } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, switchMapTo, takeUntil, map, tap } from 'rxjs/operators';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
+
+import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import { ConfirmInModalComponent } from 'src/app/components/modal/components/confirm/confirm.component';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 
 @Component({
     templateUrl: 'measurementTypes.template.pug',
     styleUrls: ['measurementTypes.style.styl']
 })
-class MeasurementTypesComponent implements OnInit, OnDestroy {
+export class MeasurementTypesComponent extends BaseRoutingComponentWithModalComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
+
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new Subject();
+        new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
@@ -29,9 +36,6 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
         new Subject();
 
     private whenTypeEdit$: Subject<number> =
-        new Subject();
-
-    private whenComponentDestroy$: Subject<null> =
         new Subject();
 
     private whenGetMeasurementTypes$: Subject<null> =
@@ -46,13 +50,21 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
     constructor(
         private measurementService: IMeasurementService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
-        private modalService: IModalService,
+        modalService: IModalService,
+        routerService: IRouterService,
     ) {
+        super(routerService, modalService);
+
+        this.whenComponentInit$
+            .pipe(tap(_ => { this.measurementTypes$.next([]); }))
+            .subscribe(() => this.whenGetMeasurementTypes$.next(null));
+
         this.whenGetMeasurementTypes$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
+                tap(_ => this.isLoading$.next(true)),
                 switchMapTo(this.measurementService.getMeasurementTypes()),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -73,6 +85,7 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                     this.measurementTypes$.next(this.measurementTypes);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
 
@@ -82,27 +95,19 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
                 filter(id => id !== 0),
                 switchMap(id => {
                     if (this.measurementTypes.find(x => x.id === id).hasRelatedMeasurements) {
-                        return this.modalService.show(ConfirmInModalComponent, {
-                            size: 'medium',
-                            title: 'Warning! Measurement type related with measurement.',
-                            body: {
-                                isHtml: false,
-                                content: 'Measurement type related with measurement.\nAre you sure want to delete it?'
-                            },
-                            additionalParameters: {
-                                confirmBtnText: 'Yes',
-                                cancelBtnText: 'No',
-                            }
-                        }).pipe(
-                            map(response => response as boolean),
-                            map(response => ({ id: id, canDelete: response }))
-                        );
+                        return this.confirmInModal(
+                            'Warning! Measurement type related with measurements.',
+                            'Measurement type related with measurements.\nAre you sure want to delete it?\nDependant measurements will be deleted.'
+                        ).pipe(map(response => ({ id, canDelete: response })));
                     } else {
-                        return of(({ id: id, canDelete: true }));
+                        return this.confirmDelete()
+                            .pipe(map(canDelete => ({ id, canDelete })));
                     }
                 }),
                 filter(({ canDelete }) => canDelete),
+                tap(_ => this.isLoading$.next(true)),
                 switchMap(({ id }) => this.measurementService.deleteMeasurementType(id)),
+                tap(_ => this.isLoading$.next(false)),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -122,17 +127,8 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
             )
             .subscribe(id => this.routerService.navigateArea(
                 ['updateType'],
-                { queryParams: { 'id': id } }
+                { queryParams: { id } }
             ));
-    }
-
-    public ngOnInit(): void {
-        this.whenGetMeasurementTypes$.next(null);
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public onDeleteClick(typeId: number): void {
@@ -147,21 +143,6 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
         this.routerService.navigateArea(['addType']);
     }
 
-    public getPaymentTypeClass(paymentTypeName: string): string {
-        // todo: remove method and update model
-
-        switch (paymentTypeName.toLowerCase()) {
-            case 'жкх':
-                return 'house';
-            case 'электричество':
-                return 'electricity';
-            case 'интернет':
-                return 'internet';
-            default:
-                return '';
-        }
-    }
-
     public onPageChange(pageNumber: number): void {
         const slicedItems: Array<MeasurementTypeResponse> =
             this.measurementTypes.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
@@ -169,5 +150,3 @@ class MeasurementTypesComponent implements OnInit, OnDestroy {
         this.measurementTypes$.next(slicedItems);
     }
 }
-
-export { MeasurementTypesComponent };

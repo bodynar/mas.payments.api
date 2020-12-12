@@ -1,8 +1,8 @@
-using System;
-using System.Linq.Expressions;
-
 namespace MAS.Payments.Infrastructure.Specification
 {
+    using System;
+    using System.Linq.Expressions;
+
     public abstract class Specification<TEntity>
     {
         public static Specification<TEntity> operator &(Specification<TEntity> left, Specification<TEntity> right)

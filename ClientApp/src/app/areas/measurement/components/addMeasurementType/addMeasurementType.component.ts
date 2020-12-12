@@ -1,8 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMap, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
+
+import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -15,10 +17,14 @@ import { IPaymentService } from 'services/IPaymentService';
 @Component({
     templateUrl: 'addMeasurementType.template.pug'
 })
-class AddMeasurementTypeComponent implements OnInit, OnDestroy {
-
+export class AddMeasurementTypeComponent extends BaseRoutingComponent {
     public addMeasurementTypeRequest: AddMeasurementTypeRequest =
-        {};
+        {
+            color: '#f04747'
+        };
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(false);
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -26,37 +32,17 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     constructor(
         private measurementService: IMeasurementService,
         private paymentService: IPaymentService,
         private notificationService: INotificationService,
-        private routerService: IRouterService,
+        routerService: IRouterService,
     ) {
-        this.whenSubmittedForm$
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid),
-                switchMap(_ => this.measurementService.addMeasurementType(this.addMeasurementTypeRequest)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    } else {
-                        this.notificationService.success('Measurement type was successfully added.');
-                    }
+        super(routerService);
 
-                    return response.success;
-                })
-            )
-            .subscribe(_ => this.routerService.navigateArea(['types']));
-    }
-
-    public ngOnInit(): void {
-        this.paymentService
-            .getPaymentTypes()
+        this.whenComponentInit$
             .pipe(
+                switchMapTo(this.paymentService.getPaymentTypes()),
                 takeUntil(this.whenComponentDestroy$),
                 filter(response => {
                     if (!response.success) {
@@ -70,16 +56,31 @@ class AddMeasurementTypeComponent implements OnInit, OnDestroy {
                 name: '',
                 systemName: '',
             }, ...result]));
-    }
 
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
+        this.whenSubmittedForm$
+            .pipe(
+                takeUntil(this.whenComponentDestroy$),
+                filter(({ valid }) => valid),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.measurementService.addMeasurementType(this.addMeasurementTypeRequest);
+                }),
+                delay(1.5 * 1000),
+                filter(response => {
+                    this.isLoading$.next(false);
+                    if (!response.success) {
+                        this.notificationService.error(response.error);
+                    } else {
+                        this.notificationService.success('Measurement type was successfully added.');
+                    }
+
+                    return response.success;
+                })
+            )
+            .subscribe(_ => this.routerService.navigateArea(['types']));
     }
 
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
     }
 }
-
-export { AddMeasurementTypeComponent };

@@ -1,15 +1,15 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.Infrastructure.Middleware;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.SpaServices.AngularCli;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
-using SimpleInjector;
-
 namespace MAS.Payments.Configuration
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.Infrastructure.Middleware;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.SpaServices.AngularCli;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.DependencyInjection;
+
+    using SimpleInjector;
+
     public static class AppConfiguration
     {
         public static void Configure(this IApplicationBuilder app, Container container, bool isDevelopment)

@@ -1,10 +1,10 @@
-using System;
-using System.Collections.Generic;
-
-using MAS.Payments.Infrastructure.Command;
-
 namespace MAS.Payments.Commands
 {
+    using System;
+    using System.Collections.Generic;
+
+    using MAS.Payments.Infrastructure.Command;
+
     public class SendMeasurementsCommand : ICommand
     {
         public string Recipient { get; }

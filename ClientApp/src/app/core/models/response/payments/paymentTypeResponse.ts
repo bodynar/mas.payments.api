@@ -6,4 +6,6 @@ export default interface PaymentTypeResponse {
     company?: string;
     hasRelatedPayments?: boolean;
     hasRelatedMeasurementTypes?: boolean;
+    color?: string;
+    hasColor?: boolean;
 }

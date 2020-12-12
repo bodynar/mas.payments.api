@@ -1,12 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MAS.Payments.Infrastructure.Projector;
-using MAS.Payments.Infrastructure.Specification;
-
-
 namespace MAS.Payments.Infrastructure.Extensions
 {
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.Infrastructure.Projector;
+    using MAS.Payments.Infrastructure.Specification;
+
     public static class EnumerableExtensions
     {
         public static IEnumerable<TSource> Where<TSource>(

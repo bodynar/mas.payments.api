@@ -1,15 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { ReplaySubject, Subject } from 'rxjs';
-import { filter, switchMapTo, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import * as moment from 'moment';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 
-import { getPaginatorConfig } from 'common/paginator/paginator';
-import PaginatorConfig from 'common/paginator/paginatorConfig';
+import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
+import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
 
@@ -17,16 +19,18 @@ import GetNotificationsResponse from 'models/response/user/getNotificationsRespo
     templateUrl: 'userNotifications.template.pug',
     styleUrls: ['userNotifications.style.styl'],
 })
-export class UserNotificationsComponent implements OnInit, OnDestroy {
+export class UserNotificationsComponent extends BaseComponent {
+    public hasData$: Subject<boolean> =
+        new BehaviorSubject(false);
+
+    public isLoading$: Subject<boolean> =
+        new BehaviorSubject(true);
 
     public notifications$: Subject<Array<GetNotificationsResponse>> =
         new ReplaySubject(1);
 
     public paginatorConfig$: Subject<PaginatorConfig> =
         new ReplaySubject(1);
-
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
 
     private whenUpdateNotifications$: Subject<null> =
         new Subject();
@@ -41,11 +45,31 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
         private userService: IUserService,
         private notificationService: INotificationService,
     ) {
+        super();
+
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.whenUpdateNotifications$.next(null);
+
+                this.userService
+                    .onNotificationsHidden()
+                    .pipe(
+                        takeUntil(this.whenComponentDestroy$),
+                        filter(keys => this.notifications.some(x => keys.includes(x.key)))
+                    )
+                    .subscribe(_ => this.whenUpdateNotifications$.next(null));
+            });
+
         this.whenUpdateNotifications$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                switchMapTo(this.userService.getNotifications({ onlyActive: false })),
+                switchMap(_ => {
+                    this.isLoading$.next(true);
+                    return this.userService.getNotifications({ onlyActive: false });
+                }),
+                delay(1.5 * 1000),
                 filter(result => {
+                    this.isLoading$.next(false);
                     if (!result.success) {
                         this.notificationService.error(result.error);
                     }
@@ -65,25 +89,9 @@ export class UserNotificationsComponent implements OnInit, OnDestroy {
                     this.notifications$.next(this.notifications);
                 }
 
+                this.hasData$.next(result.length > 0);
                 this.paginatorConfig$.next(paginatorConfig);
             });
-    }
-
-    public ngOnInit(): void {
-        this.whenUpdateNotifications$.next(null);
-
-        this.userService
-            .onNotificationsHidden()
-            .pipe(
-                takeUntil(this.whenComponentDestroy$),
-                filter(keys => this.notifications.some(x => keys.includes(x.key)))
-            )
-            .subscribe(_ => this.whenUpdateNotifications$.next(null));
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
     }
 
     public formatDate(date: Date): string {

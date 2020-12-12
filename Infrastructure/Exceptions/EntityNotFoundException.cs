@@ -1,8 +1,8 @@
-using System;
-using System.Runtime.Serialization;
-
 namespace MAS.Payments.Infrastructure.Exceptions
 {
+    using System;
+    using System.Runtime.Serialization;
+
     [Serializable]
     public class EntityNotFoundException : Exception
     {

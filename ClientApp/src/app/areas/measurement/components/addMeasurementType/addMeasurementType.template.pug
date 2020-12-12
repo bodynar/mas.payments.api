@@ -1,5 +1,12 @@
 doctype html
 
+.mb-2
+    button.btn.btn-sm.btn-outline-primary(
+        type='button',
+        (click)='onBackClick()'
+    ) Back
+hr
+
 form.needs-validation(
     #addTypeForm='ngForm',
     [class.was-validated]='!!(whenSubmittedForm$ | async)',
@@ -15,7 +22,7 @@ form.needs-validation(
             #name='ngModel',
             required='required',
             minlength='3',
-            maxlength='15'
+            maxlength='25'
         )
         
     .form-group
@@ -28,6 +35,25 @@ form.needs-validation(
         )
 
     .form-group
+        .row
+            .col-2
+                label(for='color') Badge color
+                input.form-control.form-control-sm#color(
+                    type='color',
+                    name='color',
+                    [(ngModel)]='addMeasurementTypeRequest.color',
+                    #name='ngModel'
+                )
+            .col
+                label(
+                    title='Hover text below to see difference'
+                ) Preview
+                app-badge(
+                    style='display: table',
+                    [mainColor]='addMeasurementTypeRequest.color',
+                    [text]='addMeasurementTypeRequest.name || "Name will be displayed here"'
+                )
+    .form-group
         label(for='paymentType') Payment type
         select.custom-select.m-form-control.custom-select-sm(
             required='required',
@@ -38,5 +64,17 @@ form.needs-validation(
                 *ngFor='let paymentType of (paymentTypes$ | async)',
                 [value]='paymentType.id'
             ) {{ paymentType.name }}
-    
-    button.btn.btn-outline-primary(type='submit') Add
+    button.btn.btn-sm.btn-success(
+        *ngIf='!(isLoading$ | async)',
+        type='submit'
+    ) Add
+    button.btn.btn-sm.btn-success(
+        *ngIf='isLoading$ | async',
+        type='button'
+    )
+        span.spinner-grow.spinner-grow-sm.mr-1(
+            role='status',
+            aria-hidden='true'
+        )
+        span.sr-only Loading
+        | Adding..

@@ -1,11 +1,12 @@
-using System;
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure.MailMessaging;
-using MAS.Payments.Infrastructure.Query;
-
 namespace MAS.Payments.Infrastructure.Command
 {
+    using System;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure.MailMessaging;
+    using MAS.Payments.Infrastructure.Query;
+
     public abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
         where TCommand : ICommand
     {

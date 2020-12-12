@@ -1,13 +1,13 @@
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Exceptions;
-using MAS.Payments.Infrastructure.Extensions;
-using MAS.Payments.Infrastructure.Specification;
-
 namespace MAS.Payments.Commands
 {
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
+    using MAS.Payments.Infrastructure.Extensions;
+    using MAS.Payments.Infrastructure.Specification;
+
     internal class UpdatePaymentTypeCommandHandler : BaseCommandHandler<UpdatePaymentTypeCommand>
     {
         private IRepository<PaymentType> Repository { get; }
@@ -39,6 +39,7 @@ namespace MAS.Payments.Commands
                 Company = command.Company,
                 Description = command.Description,
                 Name = command.Name,
+                Color = command.Color,
             });
         }
     }

@@ -1,21 +1,23 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { generatePageNumbers } from '../paginator';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 @Component({
     selector: 'app-paginator',
     templateUrl: 'paginator.template.pug'
 })
-export class PaginatorComponent implements OnInit {
+export class PaginatorComponent extends BaseComponent {
 
-    @Input('pagesCount')
+    @Input()
     public pagesCount: number;
 
-    @Input('startPage')
+    @Input()
     public startPage?: number;
 
-    @Output('pageChange')
+    @Output()
     public pageChange: EventEmitter<number> =
         new EventEmitter();
 
@@ -36,20 +38,22 @@ export class PaginatorComponent implements OnInit {
 
     constructor(
     ) {
-    }
+        super();
 
-    public ngOnInit(): void {
-        const currentPage: number =
-            this.startPage || 0;
+        this.whenComponentInit$
+            .subscribe(() => {
+                const currentPage: number =
+                    this.startPage || 0;
 
-        if (this.pagesCount === 0) {
-            throw new Error('[Paginator]: Pages count must be greater than 0.');
-        }
-        if (currentPage > this.pagesCount) {
-            throw new Error('[Paginator]: Current page cannot be greated than pages count.');
-        }
+                if (this.pagesCount === 0) {
+                    throw new Error('[Paginator]: Pages count must be greater than 0.');
+                }
+                if (currentPage > this.pagesCount) {
+                    throw new Error('[Paginator]: Current page cannot be greated than pages count.');
+                }
 
-        this.updateValues(currentPage);
+                this.updateValues(currentPage);
+            });
     }
 
     public onArrowClick(isForward: boolean): void {

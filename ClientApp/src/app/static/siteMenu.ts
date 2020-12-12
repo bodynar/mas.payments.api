@@ -21,17 +21,17 @@ const mainSiteMenu: Array<MenuItem> = [
 
 const userSideMenu: Array<MenuItem> = [
     {
-        name: 'My card',
+        name: 'Application info',
         link: '',
         isEnabled: true,
     },
     {
-        name: 'My notifications',
+        name: 'Notifications',
         link: 'notifications',
         isEnabled: true,
     },
     {
-        name: 'My settings',
+        name: 'Settings',
         link: 'settings',
         isEnabled: true,
     },

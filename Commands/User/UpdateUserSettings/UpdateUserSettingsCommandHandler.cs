@@ -1,15 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
-using MAS.Payments.DataBase;
-using MAS.Payments.DataBase.Access;
-using MAS.Payments.Infrastructure;
-using MAS.Payments.Infrastructure.Command;
-using MAS.Payments.Infrastructure.Exceptions;
-
-namespace MAS.Payments.Commands
+﻿namespace MAS.Payments.Commands
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
+
     internal class UpdateUserSettingsCommandHandler : BaseCommandHandler<UpdateUserSettingsCommand>
     {
         private IRepository<UserSettings> Repository { get; }

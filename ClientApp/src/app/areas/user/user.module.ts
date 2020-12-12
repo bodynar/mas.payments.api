@@ -3,7 +3,10 @@ import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 
+import { UserRoutingModule } from './user.routing';
+
 import { AppCommonModule } from 'common/common.module';
+
 import { UserComponent } from './component/user.component';
 import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';
 import { UserNotificationsComponent } from './components/notifications/userNotifications.component';
@@ -17,7 +20,8 @@ import { UserCardComponent } from './components/userCard/userCard.component';
         FormsModule,
         ReactiveFormsModule,
         CommonModule,
-        AppCommonModule
+        AppCommonModule,
+        UserRoutingModule
     ],
     exports: [],
     declarations: [
@@ -30,6 +34,4 @@ import { UserCardComponent } from './components/userCard/userCard.component';
     ],
     providers: [],
 })
-class UserModule { }
-
-export { UserModule };
+export class UserModule { }

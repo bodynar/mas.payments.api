@@ -1,7 +1,9 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 import { ReplaySubject, Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+
+import BaseComponent from 'common/components/BaseComponent';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -16,47 +18,42 @@ import { IRouterService } from 'services/IRouterService';
     templateUrl: 'menu.template.pug',
     styleUrls: ['menu.style.styl']
 })
-class MenuComponent implements OnInit, OnDestroy {
+export class MenuComponent extends BaseComponent {
     public menuItems$: Subject<Array<MenuItem>> =
         new ReplaySubject(1);
 
     public searchPattern: string =
         '';
 
-    private whenComponentDestroy$: Subject<null> =
-        new Subject();
-
     private menuItems: Array<MenuItem>;
 
     constructor(
         private routerService: IRouterService,
     ) {
-        this.menuItems = siteMenu;
-        this.menuItems$.next(this.menuItems);
+        super();
+
+        this.whenComponentInit$
+            .subscribe(() => {
+                this.menuItems = siteMenu;
+                this.menuItems$.next(this.menuItems);
+
+                this.routerService
+                    .whenRouteChange()
+                    .pipe(takeUntil(this.whenComponentDestroy$))
+                    .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
+
+                const currentRoute: string =
+                    this.routerService
+                        .getCurrentRoute()
+                        .split('/')
+                        .slice(1)
+                        .join('/');
+
+                this.highlightMenuItem(currentRoute);
+            });
     }
 
-    public ngOnInit(): void {
-        this.routerService
-            .whenRouteChange()
-            .pipe(takeUntil(this.whenComponentDestroy$))
-            .subscribe(([, rootPath]) => this.highlightMenuItem(rootPath));
-
-        const currentRoute: string =
-            this.routerService
-                .getCurrentRoute()
-                .split('/')
-                .slice(1)
-                .join('/');
-
-        this.highlightMenuItem(currentRoute);
-    }
-
-    public ngOnDestroy(): void {
-        this.whenComponentDestroy$.next(null);
-        this.whenComponentDestroy$.complete();
-    }
-
-    public onStartSearch() {
+    public onStartSearch(): void {
         if (this.searchPattern.trim() === '404') {
             this.routerService.navigate(['somePathWhichDoesntExist']);
         }
@@ -67,7 +64,7 @@ class MenuComponent implements OnInit, OnDestroy {
         }
     }
 
-    public onMenuItemClick(menuItemLink: string) {
+    public onMenuItemClick(menuItemLink: string): void {
         if (menuItemLink !== '') {
             this.routerService.navigate(['app', menuItemLink]);
         } else {
@@ -92,5 +89,3 @@ class MenuComponent implements OnInit, OnDestroy {
         }
     }
 }
-
-export { MenuComponent };

@@ -1,5 +1,5 @@
-import { Directive, SimpleChanges, OnChanges } from '@angular/core';
-import { Validator, NG_VALIDATORS, AbstractControl } from '@angular/forms';
+import { Directive } from '@angular/core';
+import { NG_VALIDATORS, AbstractControl } from '@angular/forms';
 
 import { isNullOrUndefined } from 'common/utils/common';
 import { isRgbColor, isHexColor } from 'common/utils/colors';

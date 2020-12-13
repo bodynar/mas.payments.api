@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';
+// import { MailMessageLogsComponent } from './components/mailMessageLogs/mailMessageLogs.component';
 import { UserNotificationsComponent } from './components/notifications/userNotifications.component';
 import { UserSettingComponent } from './components/settings/userSetting.component';
 import { TestMailMessageComponent } from './components/testMailMessage/testMailMessage.component';

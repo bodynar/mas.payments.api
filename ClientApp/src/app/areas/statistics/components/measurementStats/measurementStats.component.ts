@@ -116,25 +116,29 @@ export class MeasurementStatsComponent extends BaseComponent {
     }
 
     public onStatsRecieved(stats: GetMeasurementStatisticsResponse): void {
-        const typeName: string =
-            this.statisticsFilter.measurementTypeId
-                ? this.measurementTypes.filter(x => x.id === this.statisticsFilter.measurementTypeId).pop().name
-                : 'All';
-
         const hasAnyData: boolean =
             stats.typeStatistics.some(x => !isNullOrUndefined(x));
 
+        const namePostfix: string =
+            (!isNullOrUndefined(stats.from)
+                ? ` from ${stats.from.toDateString()}` : '')
+            + (
+                !isNullOrUndefined(stats.to)
+                    ? ` to ${stats.to.toDateString()}` : ''
+            );
+
         if (hasAnyData) {
             this.chart.series = stats.typeStatistics.map(x => ({
-                name: `${x.measurementTypeName} for ${stats.year}`,
+                name: `${x.measurementTypeName}${namePostfix}`,
                 data: [...x.statisticsData.map(y => ({
                     x: getMonthName(y.month),
                     y: y.diff
                 }))]
-            }));
+            })
+            );
         } else {
             this.chart.series = [{
-                name: `${typeName} for ${stats.year}`,
+                name: 'Empty',
                 data: []
             }];
         }

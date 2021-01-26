@@ -1,4 +1,5 @@
 export default class MeasurementStatisticsFilter {
-    year: number;
+    from?: Date;
+    to?: Date;
     measurementTypeId: number;
 }

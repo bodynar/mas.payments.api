@@ -69,8 +69,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         let params: HttpParams =
             new HttpParams();
 
-        if (!isNullOrUndefined(filter.year)) {
-            params = params.set('year', `${filter.year}`);
+        if (!isNullOrUndefined(filter.from)) {
+            params = params.set('from', `${filter.from}`);
+        }
+        if (!isNullOrUndefined(filter.to)) {
+            params = params.set('to', `${filter.to}`);
         }
         if (!isNullOrUndefined(filter.measurementTypeId) && filter.measurementTypeId !== 0) {
             params = params.set('measurementTypeId', `${filter.measurementTypeId}`);
@@ -81,7 +84,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: any) =>
                     ({
-                        year: response['year'],
+                        from: new Date(response['from']),
+                        to: new Date(response['to']),
                         typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
                             measurementTypeId: typeItem['measurementTypeId'],
                             measurementTypeName: typeItem['measurementTypeName'],

@@ -5,8 +5,8 @@ import { filter, map, switchMap, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
-import { yearsRange } from 'common/utils/years';
-import { months } from 'static/months';
+import { emptyYear, Year, yearsRange } from 'common/utils/years';
+import { emptyMonth, Month, months } from 'static/months';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
@@ -56,9 +56,11 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     public isFilterApplied$: Subject<boolean> =
         new BehaviorSubject(false);
 
-    public months: Array<{ name: string, id?: number }>;
+    public months: Array<Month> =
+        [emptyMonth, ...months];
 
-    public years: Array<{ name: string, id?: number }>;
+    public years: Array<Year> =
+        [emptyYear, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
     public isMeasurementsSentFlagVisible: boolean =
         false;
@@ -125,9 +127,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 ]);
                 this.whenSubmitFilters$.next();
             });
-
-        this.months = [{ name: '' }, ...months];
-        this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
 
         this.whenSubmitFilters$
             .pipe(

@@ -5,6 +5,8 @@ interface Year {
     name: number;
 }
 
+const emptyYear: Year = { id: 0, name: undefined };
+
 const yearsRange = (start?: number, end?: number): Array<Year> => {
     start = start || currentYear - 20;
     end = end || currentYear + 20;
@@ -31,5 +33,6 @@ const yearsRange = (start?: number, end?: number): Array<Year> => {
 
 export {
     yearsRange,
+    emptyYear,
     Year
 };

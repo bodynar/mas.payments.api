@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
-import { yearsRange } from 'common/utils/years';
-import { months } from 'static/months';
+import { Year, yearsRange } from 'common/utils/years';
+import { Month, months } from 'static/months';
 
 import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
@@ -21,11 +21,17 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 })
 export class AddPaymentComponent extends BaseRoutingComponent {
 
-    public addPaymentRequest: AddPaymentRequest =
-        {};
+    private currentDate: Date =
+        new Date();
 
-    public isLoading$: Subject<boolean> =
-        new BehaviorSubject(false);
+    public addPaymentRequest: AddPaymentRequest =
+        {
+            month: this.currentDate.getMonth().toString(),
+            year: this.currentDate.getFullYear(),
+        };
+
+    public isLoading: boolean =
+        false;
 
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new ReplaySubject(1);
@@ -33,11 +39,11 @@ export class AddPaymentComponent extends BaseRoutingComponent {
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
 
-    public months$: Subject<Array<{ id?: number, name: string }>> =
-        new ReplaySubject(1);
+    public months: Array<Month> =
+        months;
 
-    public years$: Subject<Array<{ id?: number, name: string }>> =
-        new ReplaySubject(1);
+    public years: Array<Year> =
+        yearsRange(2019);
 
     constructor(
         private paymentService: IPaymentService,
@@ -62,14 +68,6 @@ export class AddPaymentComponent extends BaseRoutingComponent {
                     name: '',
                     systemName: '',
                 }, ...result]);
-
-                const currentDate = new Date();
-
-                this.months$.next(months);
-                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
-
-                this.addPaymentRequest.month = currentDate.getMonth().toString();
-                this.addPaymentRequest.year = currentDate.getFullYear();
             });
 
         this.whenSubmittedForm$
@@ -77,12 +75,12 @@ export class AddPaymentComponent extends BaseRoutingComponent {
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
                 switchMap(_ => {
-                    this.isLoading$.next(true);
+                    this.isLoading = true;
                     return this.paymentService.addPayment(this.addPaymentRequest);
                 }),
                 delay(1.5 * 1000),
                 filter(response => {
-                    this.isLoading$.next(false);
+                    this.isLoading = false;
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     } else {

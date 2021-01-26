@@ -45,7 +45,7 @@ form.needs-validation(
             [(ngModel)]='addMeasurementRequest.month'
         )
             option(
-                *ngFor='let month of (months$ | async)',
+                *ngFor='let month of months',
                 [value]='month.id'
             ) {{ month.name }}
       .col-1
@@ -56,7 +56,7 @@ form.needs-validation(
               [(ngModel)]='addMeasurementRequest.year'
           )
               option(
-                  *ngFor='let year of (years$ | async)',
+                  *ngFor='let year of years',
                   [value]='year.id'
               ) {{ year.name }}
 

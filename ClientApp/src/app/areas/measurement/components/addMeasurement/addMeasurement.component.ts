@@ -4,7 +4,7 @@ import { NgForm } from '@angular/forms';
 import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
-import { yearsRange } from 'common/utils/years';
+import { Year, yearsRange } from 'common/utils/years';
 import { months } from 'static/months';
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
@@ -21,19 +21,25 @@ import MeasurementTypeResponse from 'models/response/measurements/measurementTyp
 })
 export class AddMeasurementComponent extends BaseRoutingComponent {
 
+    private currentDate: Date =
+        new Date();
+
     public addMeasurementRequest: AddMeasurementRequest =
-        {};
+        {
+            month: this.currentDate.getMonth().toString(),
+            year: this.currentDate.getFullYear()
+        };
+
+    public months: Array<{ id: number, name: string }> =
+        months;
+
+    public years: Array<Year> =
+        yearsRange(2019);
 
     public isLoading$: Subject<boolean> =
         new BehaviorSubject(false);
 
     public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new ReplaySubject(1);
-
-    public months$: Subject<Array<{ id?: number, name: string }>> =
-        new ReplaySubject(1);
-
-    public years$: Subject<Array<{ id?: number, name: string }>> =
         new ReplaySubject(1);
 
     public whenSubmittedForm$: Subject<NgForm> =
@@ -63,15 +69,6 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
                     name: '',
                     systemName: '',
                 }, ...result]);
-
-                const currentDate: Date =
-                    new Date();
-
-                this.months$.next(months);
-                this.years$.next(yearsRange(2019, currentDate.getFullYear() + 5));
-
-                this.addMeasurementRequest.month = currentDate.getMonth().toString();
-                this.addMeasurementRequest.year = currentDate.getFullYear();
             });
 
         this.whenSubmittedForm$

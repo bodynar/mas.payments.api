@@ -1,4 +1,4 @@
-const months: Array<{ id?: number, name: string }> = [
+const months: Array<{ id: number, name: string }> = [
     {
         id: 0,
         name: 'January'
@@ -50,11 +50,13 @@ const months: Array<{ id?: number, name: string }> = [
 ];
 
 const getMonthName = (monthNumber: number): string => {
-    if (monthNumber <= 0 || monthNumber > 12) {
+    if (monthNumber < 0 || monthNumber > 12) {
         throw new Error('Month number must be in (0, 12] range.');
     }
 
-    return months[monthNumber - 1].name;
+    const month = months.find(x => x.id === monthNumber);
+
+    return month.name;
 };
 
 export { months, getMonthName };

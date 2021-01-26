@@ -70,11 +70,11 @@ form.needs-validation(
             #name='ngModel'
         )
     button.btn.btn-sm.btn-success(
-        *ngIf='!(isLoading$ | async)',
+        *ngIf='!isLoading',
         type='submit'
     ) Add
     button.btn.btn-sm.btn-success(
-        *ngIf='isLoading$ | async',
+        *ngIf='isLoading',
         type='button'
     )
         span.spinner-grow.spinner-grow-sm.mr-1(

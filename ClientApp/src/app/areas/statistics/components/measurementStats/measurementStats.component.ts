@@ -135,10 +135,15 @@ export class MeasurementStatsComponent extends BaseComponent {
         }
 
         if (hasAnyData) {
+            const isInOneYear: boolean =
+                new Set(stats.typeStatistics.map(x => x.statisticsData.map(y => y.year))
+                    .flat())
+                    .size === 1;
+
             this.chart.series = stats.typeStatistics.map(x => ({
                 name: `${x.measurementTypeName}`,
                 data: [...x.statisticsData.map(y => ({
-                    x: getMonthName(y.month - 1),
+                    x: `${getMonthName(y.month - 1)}${isInOneYear ? '' : ' ' + y.year}`,
                     y: y.diff
                 }))]
             }));

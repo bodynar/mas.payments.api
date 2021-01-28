@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 
-import { Subject, BehaviorSubject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, switchMapTo, delay, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
@@ -13,12 +13,12 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { yearsRange } from 'common/utils/years';
 import { getMonthName, months } from 'static/months';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
+import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
 @Component({
     selector: 'app-stats-measurement',
@@ -41,22 +41,17 @@ export class MeasurementStatsComponent extends BaseComponent {
             title: { text: 'Measurement statistics' }
         };
 
-    public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new Subject();
+    public measurementTypes: Array<MeasurementTypeResponse>
+        = [];
 
-    public chartDataIsLoading$: BehaviorSubject<boolean> =
-        new BehaviorSubject<boolean>(false);
+    public chartDataIsLoading: boolean =
+        false;
 
     public statisticsFilter: MeasurementStatisticsFilter =
         new MeasurementStatisticsFilter();
 
-    public years: Array<{ name: string, id?: number }>;
-
     private whenSubmitForm$: Subject<null> =
         new Subject();
-
-    private measurementTypes: Array<MeasurementTypeResponse>
-        = [];
 
     constructor(
         private measurementService: IMeasurementService,
@@ -85,22 +80,17 @@ export class MeasurementStatsComponent extends BaseComponent {
                     },
                     ...result
                 ];
-
-                this.years = yearsRange(2019, new Date().getFullYear() + 5);
-                this.statisticsFilter.year = this.years[0].id;
                 this.statisticsFilter.measurementTypeId = 0;
-
-                this.measurementTypes$.next(this.measurementTypes);
                 this.whenSubmitForm$.next(null);
             });
 
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => this.chartDataIsLoading$.next(true)),
+                tap(() => this.chartDataIsLoading = true),
                 switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
                 delay(1.5 * 1000),
-                tap(() => this.chartDataIsLoading$.next(false)),
+                tap(() => this.chartDataIsLoading = false),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -113,6 +103,10 @@ export class MeasurementStatsComponent extends BaseComponent {
 
     public onFormSubmit(): void {
         this.whenSubmitForm$.next(null);
+    }
+
+    public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {
+        this.statisticsFilter[dateType] = new Date(value.year, value.month);
     }
 
     public onStatsRecieved(stats: GetMeasurementStatisticsResponse): void {

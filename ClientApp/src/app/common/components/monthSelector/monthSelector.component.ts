@@ -2,9 +2,14 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 
 import BaseComponent from '../BaseComponent';
 
-import { getMonthName, months as monthArray } from 'static/months';
-import { yearsRange } from 'common/utils/years';
-import { isNullOrUndefined } from 'common/utils/common';
+import { getMonthName, Month, months as monthArray } from 'static/months';
+import { Year, yearsRange } from 'common/utils/years';
+import { generateGuid, isNullOrUndefined } from 'common/utils/common';
+
+export interface MonthSelectorValue {
+    month: number;
+    year: number;
+}
 
 @Component({
     selector: 'app-month-selector',
@@ -12,6 +17,7 @@ import { isNullOrUndefined } from 'common/utils/common';
     styleUrls: ['./monthSelector.style.styl']
 })
 export class MonthSelectorComponent extends BaseComponent {
+    private today: Date = new Date();
 
     @Input()
     public todayBtnCaption: string = 'Today';
@@ -22,26 +28,33 @@ export class MonthSelectorComponent extends BaseComponent {
     @Input()
     public endYear: number = 2999;
 
-    private today: Date = new Date();
+    @Input()
+    public preSelectedValue: MonthSelectorValue = {
+        month: this.today.getMonth(),
+        year: this.today.getFullYear()
+    };
 
-    public months: Array<{ id: number, name: string }> =
+    public months: Array<Month> =
         monthArray;
 
-    public years: Array<{ id: number, name: number }> =
+    public years: Array<Year> =
         yearsRange(this.startYear, this.endYear);
 
     @Output()
-    public selectionChange: EventEmitter<{ month: number, year: number }> =
+    public selectionChange: EventEmitter<MonthSelectorValue> =
         new EventEmitter();
 
     public isDropPanelVisible: boolean =
         false;
 
     public selectedMonth: number =
-        this.today.getMonth();
+        this.preSelectedValue.month;
 
     public selectedYear: number =
-        this.today.getFullYear();
+        this.preSelectedValue.year;
+
+    public componentUid: string =
+        generateGuid();
 
     constructor(
     ) {
@@ -68,11 +81,13 @@ export class MonthSelectorComponent extends BaseComponent {
 
     public onMonthChange(monthId: string): void {
         const month: number = parseInt(monthId, 10);
-        const selectedMonth: { id: number, name: string } =
+        const selectedMonth: Month | undefined =
             this.months.find(x => x.id === month);
 
         if (!isNullOrUndefined(selectedMonth)) {
             this.selectedMonth = selectedMonth.id;
+
+            this.selectionChange.emit({ month: this.selectedMonth, year: this.selectedYear });
         }
     }
 
@@ -121,22 +136,31 @@ export class MonthSelectorComponent extends BaseComponent {
         this.selectedYear = year;
         this.selectedMonth = month;
 
-        this.selectionChange.emit({ month, year });
+        this.selectionChange.emit({ month: this.selectedMonth, year: this.selectedYear });
     }
 
     public onYearChange(yearId: string): void {
         const year: number = parseInt(yearId, 10);
-        const selectedYear: { id: number, name: number } =
+        const selectedYear: Year | undefined =
             this.years.find(x => x.id === year);
 
         if (!isNullOrUndefined(selectedYear)) {
             this.selectedYear = selectedYear.id;
+
+            this.selectionChange.emit({ month: this.selectedMonth, year: this.selectedYear });
         }
     }
 
     public onTodayBtnClick(): void {
         this.selectedYear = this.today.getFullYear();
         this.selectedMonth = this.today.getMonth();
+
+        this.selectionChange.emit({ month: this.selectedMonth, year: this.selectedYear });
+        this.isDropPanelVisible = false;
+    }
+
+    public getControlId(controlName: string): string {
+        return `${controlName}-${this.componentUid}`;
     }
 
     private isMonthSelectDropPanelItem(element: HTMLElement): boolean {

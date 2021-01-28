@@ -5,6 +5,8 @@ import { RouterModule } from '@angular/router';
 
 import { NgApexchartsModule } from 'ng-apexcharts';
 
+import { AppCommonModule } from 'common/common.module';
+
 import { StatisticsRoutingModule } from './statistics.routing';
 
 import { StatisticsComponent } from './component/statistics.component';
@@ -19,7 +21,8 @@ import { StatsChartComponent } from './components/statsChart/statsChart.componen
         RouterModule,
         FormsModule,
         NgApexchartsModule,
-        StatisticsRoutingModule
+        StatisticsRoutingModule,
+        AppCommonModule
     ],
     exports: [],
     declarations: [

@@ -10,8 +10,6 @@ doctype html
     label.month-selector__selection
         input(
             type="checkbox",
-            name="monthSelectorCheckbox",
-            id="monthSelectorCheckbox",
             [checked]="isDropPanelVisible",
             (change)="onCheckBoxChecked($event.target)"
         )
@@ -19,8 +17,7 @@ doctype html
         .month-selector__drop-panel
             .line
                 select(
-                    name="monthSelectorMonth",
-                    id="monthSelectorMonth",
+                    [name]="getControlId('month')",
                     (change)="onMonthChange($event.target.value)",
                     [(ngModel)]="selectedMonth"
                 )
@@ -29,8 +26,7 @@ doctype html
                         [value]='month.id'
                     ) {{ month.name }}
                 select(
-                    name="monthSelectorYear",
-                    id="monthSelectorYear",
+                    [name]="getControlId('year')",
                     [(ngModel)]="selectedYear",
                     (change)="onYearChange($event.target.value)"
                 )

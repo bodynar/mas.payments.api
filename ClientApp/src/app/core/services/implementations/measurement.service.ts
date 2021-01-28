@@ -30,7 +30,7 @@ export class MeasurementService implements IMeasurementService {
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
         // data validation
         const parsedMonth: number =
-            parseInt(measurementData.month) + 1;
+            parseInt(measurementData.month, 10) + 1;
         const month: number =
             parsedMonth > 12
                 ? parsedMonth % 12

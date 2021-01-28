@@ -26,9 +26,9 @@
 
         public override GetMeasurementStatisticsQueryResponse Handle(GetMeasurementStatisticsQuery query)
         {
-            if (query.From.HasValue && query.To.HasValue && query.From.Value <= query.To.Value)
+            if (query.From.HasValue && query.To.HasValue && query.From.Value >= query.To.Value)
             {
-                throw new ArgumentException($"${nameof(query.From)} value cannot be less or equal than {nameof(query.To)}.");
+                throw new ArgumentException($"{nameof(query.From)} value must be less than {nameof(query.To)}.");
             }
 
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);

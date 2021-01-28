@@ -1,6 +1,6 @@
 doctype html
 
-.month-selector
+.month-selector([id]="getControlId()")
     span(
         class="month-selector__arrow arrow-left",
         [class.disabled]="!canClickArrow('left')",

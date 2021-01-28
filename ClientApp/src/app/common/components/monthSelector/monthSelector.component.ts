@@ -23,13 +23,16 @@ export class MonthSelectorComponent extends BaseComponent {
     public todayBtnCaption: string = 'Today';
 
     @Input()
-    public startYear: number = 1900;
+    public canClear: boolean = false;
 
     @Input()
-    public endYear: number = 2999;
+    public startYear?: number = 1900;
 
     @Input()
-    public preSelectedValue: MonthSelectorValue = {
+    public endYear?: number = 2999;
+
+    @Input()
+    public preSelectedValue?: MonthSelectorValue = {
         month: this.today.getMonth(),
         year: this.today.getFullYear()
     };
@@ -47,10 +50,10 @@ export class MonthSelectorComponent extends BaseComponent {
     public isDropPanelVisible: boolean =
         false;
 
-    public selectedMonth: number =
+    public selectedMonth?: number =
         this.preSelectedValue.month;
 
-    public selectedYear: number =
+    public selectedYear?: number =
         this.preSelectedValue.year;
 
     public componentUid: string =
@@ -159,14 +162,26 @@ export class MonthSelectorComponent extends BaseComponent {
         this.isDropPanelVisible = false;
     }
 
-    public getControlId(controlName: string): string {
+    public getControlId(controlName?: string): string {
+        controlName = controlName || 'root';
         return `${controlName}-${this.componentUid}`;
+    }
+
+    public onClearBtnClick(): void {
+        if (this.canClear) {
+            this.selectedYear = this.today.getFullYear();
+            this.selectedMonth = this.today.getMonth();
+
+            this.selectionChange.emit();
+            this.isDropPanelVisible = false;
+        }
     }
 
     private isMonthSelectDropPanelItem(element: HTMLElement): boolean {
         let result: boolean =
             !isNullOrUndefined(element)
-            && element.classList.contains('month-selector');
+            && element.classList.contains('month-selector')
+            && element.id === this.getControlId();
 
         if (!result
             && !isNullOrUndefined(element.parentElement)

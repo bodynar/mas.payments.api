@@ -1,4 +1,5 @@
 export default class PaymentStatisticsFilter {
-    year: number;
+    from?: Date;
+    to?: Date;
     paymentTypeId: number;
 }

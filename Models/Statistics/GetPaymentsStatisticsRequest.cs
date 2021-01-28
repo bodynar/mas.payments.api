@@ -1,8 +1,12 @@
 namespace MAS.Payments.Models
 {
+    using System;
+
     public class GetPaymentsStatisticsRequest
     {
-        public short? Year { get; set;  }
+        public DateTime? From { get; set; }
+
+        public DateTime? To { get; set; }
 
         public long? PaymentTypeId { get; set; }
     }

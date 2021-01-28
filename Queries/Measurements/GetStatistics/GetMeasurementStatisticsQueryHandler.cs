@@ -66,7 +66,7 @@
                     continue;
                 }
 
-                var typeStatisticsItem = new TypeStatisticsItem()
+                var typeStatisticsItem = new MeasurementTypeStatisticsItem()
                 {
                     MeasurementTypeId = typeGroup.Key,
                     MeasurementTypeName = firstItem.MeasurementType.Name
@@ -82,7 +82,7 @@
                     {
                         var item = yearGroup.FirstOrDefault(x => x.Date.Month == monthNumber);
 
-                        typeStatisticsItem.StatisticsData.Add(new StatisticsDataItem
+                        typeStatisticsItem.StatisticsData.Add(new MeasurementStatisticsDataItem
                         {
                             Year = yearGroup.Key,
                             Month = monthNumber,

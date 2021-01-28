@@ -52,7 +52,11 @@ export class PaymentStatsComponent extends BaseComponent {
         [];
 
     public statisticsFilter: PaymentStatisticsFilter =
-        new PaymentStatisticsFilter();
+        {
+            paymentTypeId: 0,
+            from: new Date(),
+            to: new Date()
+        };
 
     public chartDataIsLoading: boolean =
         false;
@@ -90,9 +94,6 @@ export class PaymentStatsComponent extends BaseComponent {
                     },
                     ...result
                 ];
-                this.statisticsFilter.paymentTypeId = 0;
-
-                this.whenSubmitForm$.next(null);
             });
 
         this.whenSubmitForm$

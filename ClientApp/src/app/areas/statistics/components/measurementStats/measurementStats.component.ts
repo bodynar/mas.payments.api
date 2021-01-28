@@ -54,7 +54,11 @@ export class MeasurementStatsComponent extends BaseComponent {
         false;
 
     public statisticsFilter: MeasurementStatisticsFilter =
-        new MeasurementStatisticsFilter();
+        {
+            measurementTypeId: 0,
+            from: new Date(),
+            to: new Date()
+        };
 
     private whenSubmitForm$: Subject<null> =
         new Subject();
@@ -86,8 +90,6 @@ export class MeasurementStatsComponent extends BaseComponent {
                     },
                     ...result
                 ];
-                this.statisticsFilter.measurementTypeId = 0;
-                this.whenSubmitForm$.next(null);
             });
 
         this.whenSubmitForm$

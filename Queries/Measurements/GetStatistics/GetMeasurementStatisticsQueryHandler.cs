@@ -78,7 +78,52 @@
 
                 foreach (var yearGroup in groupedByYear)
                 {
-                    foreach (var monthNumber in MonthNumbers)
+                    var months = MonthNumbers;
+
+                    if (query.From.HasValue && query.From.Value.Year == yearGroup.Key)
+                    {
+                        if (query.From.Value.Month > 1)
+                        {
+                            months = months.Where(x => x >= query.From.Value.Month);
+                        }
+                    }
+                    else
+                    {
+                        var isFirstYear = groupedByYear.First().Key == yearGroup.Key;
+
+                        if (isFirstYear)
+                        {
+                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Min();
+
+                            if (month > 0 && month < 12)
+                            {
+                                months = months.Where(x => x >= month);
+                            }
+                        }
+                    }
+
+                    if (query.To.HasValue && query.To.Value.Year == yearGroup.Key)
+                    {
+                        if (query.To.Value.Month < 12)
+                        {
+                            months = months.Where(x => x <= query.To.Value.Month);
+                        }
+                    }
+                    else
+                    {
+                        var isLastYear = groupedByYear.Last().Key == yearGroup.Key;
+
+                        if (isLastYear)
+                        {
+                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Max();
+
+                            if (month > 0 && month < 12)
+                            {
+                                months = months.Where(x => x <= month);
+                            }
+                        }
+                    }
+                    foreach (var monthNumber in months)
                     {
                         var item = yearGroup.FirstOrDefault(x => x.Date.Month == monthNumber);
 

@@ -54,7 +54,7 @@ const months: Array<Month> = [
     },
 ];
 
-const emptyMonth: Month = { name: '', id: 0 };
+const emptyMonth: Month = { name: '', id: -1 };
 
 const getMonthName = (monthNumber: number): string => {
     if (monthNumber < 0 || monthNumber > 12) {

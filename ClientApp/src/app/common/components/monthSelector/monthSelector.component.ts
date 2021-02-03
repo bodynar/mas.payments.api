@@ -2,8 +2,8 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
 
 import BaseComponent from '../BaseComponent';
 
-import { getMonthName, Month, months as monthArray } from 'static/months';
-import { Year, yearsRange } from 'common/utils/years';
+import { emptyMonth, getMonthName, Month, months as monthArray } from 'static/months';
+import { emptyYear, Year, yearsRange } from 'common/utils/years';
 import { generateGuid, isNullOrUndefined } from 'common/utils/common';
 
 export interface MonthSelectorValue {
@@ -23,7 +23,10 @@ export class MonthSelectorComponent extends BaseComponent {
     public todayBtnCaption: string = 'Today';
 
     @Input()
-    public canClear: boolean = false;
+    public clearBtnCaption: string = 'Clear';
+
+    @Input()
+    public canClear: boolean = true;
 
     @Input()
     public startYear?: number = 1900;
@@ -32,16 +35,17 @@ export class MonthSelectorComponent extends BaseComponent {
     public endYear?: number = 2999;
 
     @Input()
-    public preSelectedValue?: MonthSelectorValue = {
-        month: this.today.getMonth(),
-        year: this.today.getFullYear()
-    };
+    public preSelectedValue?: MonthSelectorValue
+        = this.canClear ? undefined : {
+            year: this.today.getFullYear(),
+            month: this.today.getMonth()
+        };
 
     public months: Array<Month> =
-        monthArray;
+        [emptyMonth, ...monthArray];
 
     public years: Array<Year> =
-        yearsRange(this.startYear, this.endYear);
+        [emptyYear, ...yearsRange(this.startYear, this.endYear)];
 
     @Output()
     public selectionChange: EventEmitter<MonthSelectorValue> =
@@ -50,11 +54,11 @@ export class MonthSelectorComponent extends BaseComponent {
     public isDropPanelVisible: boolean =
         false;
 
-    public selectedMonth?: number =
-        this.preSelectedValue.month;
+    public selectedMonth: number =
+        this.preSelectedValue?.month || -1;
 
-    public selectedYear?: number =
-        this.preSelectedValue.year;
+    public selectedYear: number =
+        this.preSelectedValue?.year || -1;
 
     public componentUid: string =
         generateGuid();
@@ -95,10 +99,14 @@ export class MonthSelectorComponent extends BaseComponent {
     }
 
     public getCurrentSelection(): string {
-        return `${getMonthName(this.selectedMonth)} ${this.selectedYear}`;
+        return this.isEmpty() ? 'Not selected' : `${getMonthName(this.selectedMonth)} ${this.selectedYear}`;
     }
 
     public canClickArrow(direction: 'left' | 'right'): boolean {
+        if (this.isEmpty()) {
+            return false;
+        }
+
         if (direction === 'left') {
             return this.selectedYear !== this.startYear || this.selectedMonth !== 0;
         } else {
@@ -169,12 +177,16 @@ export class MonthSelectorComponent extends BaseComponent {
 
     public onClearBtnClick(): void {
         if (this.canClear) {
-            this.selectedYear = this.today.getFullYear();
-            this.selectedMonth = this.today.getMonth();
+            this.selectedYear = -1;
+            this.selectedMonth = -1;
 
             this.selectionChange.emit();
             this.isDropPanelVisible = false;
         }
+    }
+
+    public isEmpty(): boolean {
+        return this.selectedYear === -1 && this.selectedMonth === -1;
     }
 
     private isMonthSelectDropPanelItem(element: HTMLElement): boolean {

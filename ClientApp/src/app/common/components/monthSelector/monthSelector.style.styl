@@ -58,6 +58,7 @@ active-element()
     &__drop-panel
         position absolute
         z-index 999
+        left 0
         opacity 0
         transition 0.25s ease opacity
         visibility collapse
@@ -82,15 +83,3 @@ active-element()
             margin 0.25em 0
             display flex
             justify-content space-between
-
-        .btn-today
-            width 100%
-            active-element()
-            background rgba(0, 255, 255, 0.05)
-
-            &:hover
-                background rgba(0, 255, 255, 0.15)
-
-            &:active
-                outline none
-                background rgba(0, 255, 255, 0.25)

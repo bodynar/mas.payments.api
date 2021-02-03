@@ -35,7 +35,17 @@ doctype html
                         [value]='year.id'
                     ) {{ year.name }}
             .line
-                button.btn-today((click)="onTodayBtnClick()") {{ todayBtnCaption }}
+                button.btn.m-btn-xs.btn-primary.btn-block(
+                    type="button",
+                    (click)="onTodayBtnClick()"
+                ) {{ todayBtnCaption }}
+            .line(*ngIf="canClear")
+                button.btn.m-btn-xs.btn-secondary.btn-block(
+                    type="button",
+                    (click)="onClearBtnClick()",
+                    [disabled]="isEmpty()",
+                    [class.disabled]="isEmpty()"
+                ) {{ clearBtnCaption }}
     span(
         class="month-selector__arrow arrow-right",
         [class.disabled]="!canClickArrow('right')",

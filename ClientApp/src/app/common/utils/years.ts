@@ -5,7 +5,7 @@ interface Year {
     name: number;
 }
 
-const emptyYear: Year = { id: 0, name: undefined };
+const emptyYear: Year = { id: -1, name: undefined };
 
 const yearsRange = (start?: number, end?: number): Array<Year> => {
     start = start || currentYear - 20;

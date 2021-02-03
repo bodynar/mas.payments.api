@@ -114,7 +114,11 @@ export class MeasurementStatsComponent extends BaseComponent {
     }
 
     public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {
-        this.statisticsFilter[dateType] = new Date(value.year, value.month);
+        if (!isNullOrUndefined(value)) {
+            this.statisticsFilter[dateType] = new Date(value.year, value.month);
+        } else {
+            this.statisticsFilter[dateType] = undefined;
+        }
     }
 
     public onStatsRecieved(stats: GetMeasurementStatisticsResponse): void {

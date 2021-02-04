@@ -1,3 +1,5 @@
+@import '../../styles/colors.styl'
+
 active-element()
     border 1px solid rgba(0, 0, 0, 0.15)
     cursor pointer
@@ -83,3 +85,19 @@ active-element()
             margin 0.25em 0
             display flex
             justify-content space-between
+
+        .clear-link
+            margin 0 auto
+            color rgb(0, 0, 0)
+
+            &[disabled], &.disabled
+                font-style italic
+                color rgba(0, 0, 0, 0.25)
+
+            &:not([disabled]):not(.disabled)
+                cursor pointer
+                border-bottom 1px solid rgba(0, 0, 0, 0.15)
+
+                &:hover
+                    border-bottom-color rgb(0, 0, 0, 0.25)
+                    font-weight bold

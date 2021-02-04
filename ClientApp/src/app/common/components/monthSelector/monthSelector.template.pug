@@ -40,11 +40,11 @@ doctype html
                     (click)="onTodayBtnClick()"
                 ) {{ todayBtnCaption }}
             .line(*ngIf="canClear")
-                button.btn.m-btn-xs.btn-secondary.btn-block(
-                    type="button",
+                a.clear-link.mt-1(
                     (click)="onClearBtnClick()",
                     [disabled]="isEmpty()",
-                    [class.disabled]="isEmpty()"
+                    [class.disabled]="isEmpty()",
+                    [attr.title]="isEmpty() ? 'Nothing to clear' : null"
                 ) {{ clearBtnCaption }}
     span(
         class="month-selector__arrow arrow-right",

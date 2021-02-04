@@ -1,5 +1,7 @@
 namespace MAS.Payments.Queries
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -10,6 +12,9 @@ namespace MAS.Payments.Queries
 
     internal class GetPaymentStatisticsQueryHandler : BaseQueryHandler<GetPaymentStatisticsQuery, GetPaymentStatisticsResponse>
     {
+        private static readonly IEnumerable<int> MonthNumbers =
+            Enumerable.Range(1, 12);
+
         private IRepository<Payment> PaymentRepository { get; }
 
         public GetPaymentStatisticsQueryHandler(
@@ -21,44 +26,126 @@ namespace MAS.Payments.Queries
 
         public override GetPaymentStatisticsResponse Handle(GetPaymentStatisticsQuery query)
         {
-            Specification<Payment> paymentSpecification = new CommonSpecification<Payment>(x => x.Date.Value.Year == query.Year);
+            if (query.From.HasValue && query.To.HasValue && query.From.Value >= query.To.Value)
+            {
+                throw new ArgumentException($"{nameof(query.From)} value must be less than {nameof(query.To)}.");
+            }
+
+            Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
 
             if (query.PaymentTypeId.HasValue)
             {
-                paymentSpecification &= new CommonSpecification<Payment>(x => x.PaymentTypeId == query.PaymentTypeId.Value);
+                filter &= new CommonSpecification<Payment>(x => x.PaymentTypeId == query.PaymentTypeId);
+            }
+            if (query.From.HasValue)
+            {
+                filter &= new CommonSpecification<Payment>(x => x.Date.Value.Date >= query.From.Value.Date);
+            }
+            if (query.To.HasValue)
+            {
+                filter &= new CommonSpecification<Payment>(x => x.Date.Value.Date <= query.To.Value.Date);
             }
 
             var payments =
-                PaymentRepository.Where(paymentSpecification)
+                PaymentRepository.Where(filter)
                 .OrderBy(x => x.Date)
+                .Select(x => new
+                {
+                    Date = x.Date.Value,
+                    x.Amount,
+                    x.PaymentTypeId,
+                    PaymentTypeName = x.PaymentType.Name
+                })
+                .ToList()
+                .GroupBy(x => x.PaymentTypeId)
                 .ToList();
-
-            var mappedPayments =
-               payments
-                   .Select(x => new
-                   {
-                       x.Date.Value.Month,
-                       x.Amount,
-                       x.PaymentTypeId,
-                       PaymentTypeName = x.PaymentType.Name
-                   })
-                   .GroupBy(x => x.PaymentTypeId);
 
             var response = new GetPaymentStatisticsResponse
             {
-                Year = query.Year,
-                TypeStatistics = mappedPayments.Select(x => new GetPaymentStatisticsResponse.TypeStatisticsItem
-                {
-                    PaymentTypeId = x.Key,
-                    PaymentTypeName = x.First().PaymentTypeName,
-                    StatisticsData = Enumerable.Range(1, 12).Select(y => new GetPaymentStatisticsResponse.TypeStatisticsItem.StatisticsDataItem
-                    {
-                        Month = y,
-                        Year = query.Year,
-                        Amount = x.FirstOrDefault(z => z.Month == y)?.Amount
-                    })
-                })
+                From = query.From,
+                To = query.To
             };
+
+            foreach (var paymentTypeGroup in payments)
+            {
+                var firstItem = paymentTypeGroup.FirstOrDefault();
+
+                if (firstItem == null)
+                {
+                    continue;
+                }
+
+                var typeStatisticsItem = new PaymentTypeStatisticsItem()
+                {
+                    PaymentTypeId = paymentTypeGroup.Key,
+                    PaymentTypeName = firstItem.PaymentTypeName
+                };
+
+                var groupedByYear = paymentTypeGroup.GroupBy(x => x.Date.Year).OrderBy(x => x.Key).ToList();
+
+                foreach (var yearGroup in groupedByYear)
+                {
+                    var months = MonthNumbers;
+
+                    if (query.From.HasValue && query.From.Value.Year == yearGroup.Key)
+                    {
+                        if (query.From.Value.Month > 1)
+                        {
+                            months = months.Where(x => x >= query.From.Value.Month);
+                        }
+                    }
+                    else
+                    {
+                        var isFirstYear = groupedByYear.First().Key == yearGroup.Key;
+
+                        if (isFirstYear)
+                        {
+                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Min();
+
+                            if (month > 0 && month < 12)
+                            {
+                                months = months.Where(x => x >= month);
+                            }
+                        }
+                    }
+
+                    if (query.To.HasValue && query.To.Value.Year == yearGroup.Key)
+                    {
+                        if (query.To.Value.Month < 12)
+                        {
+                            months = months.Where(x => x <= query.To.Value.Month);
+                        }
+                    }
+                    else
+                    {
+                        var isLastYear = groupedByYear.Last().Key == yearGroup.Key;
+
+                        if (isLastYear)
+                        {
+                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Max();
+
+                            if (month > 0 && month < 12)
+                            {
+                                months = months.Where(x => x <= month);
+                            }
+                        }
+                    }
+                    foreach (var monthNumber in months)
+                    {
+                        var item = yearGroup.FirstOrDefault(x => x.Date.Month == monthNumber);
+
+                        typeStatisticsItem.StatisticsData.Add(new PaymentStatisticsDataItem
+                        {
+                            Year = yearGroup.Key,
+                            Month = monthNumber,
+                            Amount = item?.Amount
+                        });
+                    }
+                }
+
+                response.TypeStatistics.Add(typeStatisticsItem);
+            }
+
 
             return response;
         }

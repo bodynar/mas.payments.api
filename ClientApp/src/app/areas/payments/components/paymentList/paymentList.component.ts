@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, switchMap, switchMapTo, takeUntil, tap, delay, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
-import { yearsRange } from 'common/utils/years';
-import { months } from 'static/months';
+import { emptyYear, Year, yearsRange } from 'common/utils/years';
+import { emptyMonth, Month, months } from 'static/months';
 
 import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
@@ -28,6 +28,8 @@ import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
     styleUrls: ['paymentList.style.styl'],
 })
 export class PaymentListComponent extends BaseRoutingComponentWithModalComponent {
+    public paginatorConfig: PaginatorConfig;
+
     public filters: PaymentsFilter =
         new PaymentsFilter();
 
@@ -37,30 +39,26 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
     public paymentTypes$: Subject<Array<PaymentTypeResponse>> =
         new Subject();
 
-    public isLoading$: Subject<boolean> =
-        new BehaviorSubject(false);
+    public isLoading: boolean =
+        false;
 
-    public hasData$: Subject<boolean> =
-        new BehaviorSubject(false);
+    public hasData: boolean =
+        false;
 
-    public amountFilterType$: BehaviorSubject<string> =
-        new BehaviorSubject('');
-
-    public isDescSortOrder$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public currentSortColumn$: Subject<string> =
-        new ReplaySubject(1);
-
-    public paginatorConfig$: Subject<PaginatorConfig> =
-        new ReplaySubject(1);
+    public isDescSortOrder: boolean =
+        false;
 
     public amountFilterType: string =
         '';
 
-    public months: Array<{ name: string, id?: number }>;
+    public currentSortColumn: string
+        = 'month';
 
-    public years: Array<{ name: string, id?: number }>;
+    public months: Array<Month> =
+        [emptyMonth, ...months];
+
+    public years: Array<Year> =
+        [emptyYear, ...yearsRange(2019)];
 
 
     private whenSubmitFilters$: Subject<null> =
@@ -75,13 +73,8 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
     private currentSortOrder: 'asc' | 'desc' =
         'asc';
 
-    private currentSortColumn: string
-        = 'month';
-
     private payments: Array<PaymentResponse> =
         [];
-
-    private paginatorConfig: PaginatorConfig;
 
     private pageSize: number =
         10;
@@ -97,18 +90,15 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
     ) {
         super(routerService, modalService);
 
-        this.amountFilterType$.subscribe(filterType => this.amountFilterType = filterType);
-        this.paginatorConfig$.subscribe(paginatorConfig => this.paginatorConfig = paginatorConfig);
-
         this.whenComponentInit$
             .pipe(
                 tap(_ => {
                     this.payments$.next([]);
-                    this.isLoading$.next(true);
+                    this.isLoading = true;
                 }),
                 switchMapTo(this.paymentService.getPaymentTypes()),
                 takeUntil(this.whenComponentDestroy$),
-                tap(_ => this.isLoading$.next(false)),
+                tap(_ => this.isLoading = false),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -122,26 +112,23 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
                     systemName: '',
                 }, ...result]);
 
-                this.months = [{ name: '' }, ...months];
-                this.years = [{ name: '' }, ...yearsRange(2019, new Date().getFullYear() + 5)];
-
                 this.whenSubmitFilters$.next();
             });
 
         this.whenSubmitFilters$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(_ => this.isLoading$.next(true)),
+                tap(_ => this.isLoading = true),
                 switchMap(_ => this.paymentService.getPayments(this.filters)),
                 delay(1.5 * 1000),
-                tap(_ => this.isLoading$.next(false)),
+                tap(_ => this.isLoading = false),
                 filter(response => {
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
                     return response.success;
                 }),
-                tap(({ result }) => this.hasData$.next(result.length > 0)),
+                tap(({ result }) => this.hasData = result.length > 0),
             )
             .subscribe(({ result }) => {
                 this.payments = result;
@@ -149,7 +136,7 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
                 const paginatorConfig: PaginatorConfig =
                     getPaginatorConfig(this.payments, this.pageSize);
 
-                this.paginatorConfig$.next(paginatorConfig);
+                this.paginatorConfig = paginatorConfig;
 
                 if (paginatorConfig.enabled) {
                     this.onPageChange(0);
@@ -212,7 +199,8 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
         } else {
             this.filters.amount = undefined;
         }
-        this.amountFilterType$.next(filterType);
+
+        this.amountFilterType = filterType;
     }
 
     public onDeleteRecordClick(paymentId: number): void {
@@ -233,12 +221,12 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
 
     public clearFilters(): void {
         this.filters = {};
-        this.amountFilterType$.next('');
+        this.amountFilterType = '';
         this.currentSortOrder = 'asc';
         this.currentSortColumn = '';
 
-        this.currentSortColumn$.next('');
-        this.isDescSortOrder$.next(false);
+        this.currentSortColumn = '';
+        this.isDescSortOrder = false;
 
         this.onSubmitClick();
     }
@@ -258,10 +246,10 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
                     ? 'desc'
                     : 'asc';
 
-            this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
+            this.isDescSortOrder = this.currentSortOrder === 'desc';
         }
 
-        this.currentSortColumn$.next(columnName);
+        this.currentSortColumn = columnName;
         this.onPageChange(this.currentPage);
     }
 

@@ -1,4 +1,5 @@
-export default class MeasurementStatisticsFilter {
-    year: number;
+export default interface MeasurementStatisticsFilter {
+    from?: Date;
+    to?: Date;
     measurementTypeId: number;
 }

@@ -1,12 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
+import { isNullOrEmpty, isNullOrUndefined } from 'common/utils/common';
 
-import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoData, ApexLegend } from 'ng-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexTitleSubtitle, ApexXAxis, ApexNoData, ApexLegend, ChartComponent } from 'ng-apexcharts';
 
 @Component({
     selector: 'app-stats-chart',
     templateUrl: 'statsChart.template.pug',
 })
 export class StatsChartComponent {
+    @ViewChild(ChartComponent)
+    private chartElement: ChartComponent;
+
     @Input()
     public series: Array<ApexAxisChartSeries> = [];
 
@@ -63,5 +67,11 @@ export class StatsChartComponent {
 
     constructor(
     ) {
+    }
+
+    public setTitle(newTitle: string): void {
+        if (!isNullOrUndefined(this.chartElement) && !isNullOrEmpty(newTitle)) {
+            this.chartElement.updateOptions({ title: { text: newTitle }});
+        }
     }
 }

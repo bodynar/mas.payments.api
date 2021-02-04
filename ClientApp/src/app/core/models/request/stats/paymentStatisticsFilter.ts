@@ -1,4 +1,5 @@
-export default class PaymentStatisticsFilter {
-    year: number;
+export default interface PaymentStatisticsFilter {
+    from?: Date;
+    to?: Date;
     paymentTypeId: number;
 }

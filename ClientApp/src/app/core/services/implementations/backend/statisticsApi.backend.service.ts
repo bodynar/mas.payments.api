@@ -36,8 +36,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         let params: HttpParams =
             new HttpParams();
 
-        if (!isNullOrUndefined(filter.year)) {
-            params = params.set('year', `${filter.year}`);
+        if (!isNullOrUndefined(filter.from)) {
+            params = params.set('from', `${filter.from.toDateString()}`);
+        }
+        if (!isNullOrUndefined(filter.to)) {
+            params = params.set('to', `${filter.to.toDateString()}`);
         }
         if (!isNullOrUndefined(filter.paymentTypeId) && filter.paymentTypeId !== 0) {
             params = params.set('paymentTypeId', `${filter.paymentTypeId}`);
@@ -48,7 +51,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: any) =>
                     ({
-                        year: response['year'],
+                        from: isNullOrUndefined(response['from']) ? undefined : new Date(response['from']),
+                        to: isNullOrUndefined(response['to']) ? undefined : new Date(response['to']),
                         typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
                             paymentTypeId: typeItem['paymentTypeId'],
                             paymentTypeName: typeItem['paymentTypeName'],
@@ -69,8 +73,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         let params: HttpParams =
             new HttpParams();
 
-        if (!isNullOrUndefined(filter.year)) {
-            params = params.set('year', `${filter.year}`);
+        if (!isNullOrUndefined(filter.from)) {
+            params = params.set('from', `${filter.from.toDateString()}`);
+        }
+        if (!isNullOrUndefined(filter.to)) {
+            params = params.set('to', `${filter.to.toDateString()}`);
         }
         if (!isNullOrUndefined(filter.measurementTypeId) && filter.measurementTypeId !== 0) {
             params = params.set('measurementTypeId', `${filter.measurementTypeId}`);
@@ -81,7 +88,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: any) =>
                     ({
-                        year: response['year'],
+                        from: isNullOrUndefined(response['from']) ? undefined : new Date(response['from']),
+                        to: isNullOrUndefined(response['to']) ? undefined : new Date(response['to']),
                         typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
                             measurementTypeId: typeItem['measurementTypeId'],
                             measurementTypeName: typeItem['measurementTypeName'],

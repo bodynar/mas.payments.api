@@ -1,47 +1,45 @@
 doctype html
 
-form.mt-2.container.form-inline(
-    (ngSubmit)='onFormSubmit()'
-)
-    label.mb-2(
-        for='year'
-    ) Year
-    select.mx-sm-3.mb-2.form-control-sm.form-control#year(
-        name='year',
-        [(ngModel)]='statisticsFilter.year',
-        required='required'
-    )
-        option(
-            *ngFor='let year of years',
-            [ngValue]='year.id'
-        ) {{ year.name }}
-    label.mb-2(
-        for='year'
-    ) Payment type
-    select.mx-sm-3.mb-2.form-control-sm.form-control#year(
-        name='paymentType',
-        [(ngModel)]='statisticsFilter.paymentTypeId',
-        required='required'
-    )
-        option(
-            *ngFor='let paymentType of (paymentTypes$ | async)',
-            [ngValue]='paymentType.id'
-        ) {{ paymentType.name }}
-    button.btn.btn-primary.mb-2(
-        type='submit',
-        style='margin-left: auto'
-    ) Display data
+form.mt-2.container.row((ngSubmit)='onFormSubmit()')
+    .form-group.col-2.p-0.mr-3
+        label From
+        app-month-selector(
+            startYear='2009',
+            (selectionChange)="onDateChange('from', $event)"
+        )
+    .form-group.col-2.p-0.mr-3
+        label To
+        app-month-selector(
+            startYear='2009',
+            (selectionChange)="onDateChange('to', $event)"
+        )
+    .form-group.col-3
+        label(for='type') Payment type
+        select.form-control-sm.form-control#type(
+            name='paymentType',
+            [(ngModel)]='statisticsFilter.paymentTypeId',
+            required='required'
+        )
+            option(
+                *ngFor='let paymentType of paymentTypes',
+                [ngValue]='paymentType.id'
+            ) {{ paymentType.name }}
+    .form-group.ml-auto.justify-content-around.d-flex.flex-column
+        button.btn.btn-primary(
+            type='submit',
+            style='margin-left: auto'
+        ) Display data
 
 div.mt-3.loading-cover
     .loading-cover_image-container.loading-cover_image-container--center(
-        *ngIf='chartDataIsLoading$ | async'
+        *ngIf='chartDataIsLoading'
     )
         img.loading-cover_image-container_img(
             alt='loading..',
             src='assets/images/loading-01.svg',
         )
     .loading-cover_content(
-        [attr.data-disabled]='chartDataIsLoading$ | async'
+        [attr.data-disabled]='chartDataIsLoading'
     )
         app-stats-chart(
             [series]='chart.series',

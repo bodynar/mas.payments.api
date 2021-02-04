@@ -22,7 +22,7 @@ import { NotificationService } from './services/implementations/notification.ser
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 import { IStatisticsService } from 'services/IStatisticsService';
 import { StatisticsApiBackendService } from './services/implementations/backend/statisticsApi.backend.service';
-import { StatisticsService } from './services/implementations/statisticsService.service';
+import { StatisticsService } from './services/implementations/statistics.service';
 
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';

@@ -1,4 +1,16 @@
-const yearsRange = function (start: number, end: number): Array<{ id?: number, name: string }> {
+const currentYear: number = new Date().getFullYear();
+
+interface Year {
+    id: number;
+    name: number;
+}
+
+const emptyYear: Year = { id: -1, name: undefined };
+
+const yearsRange = (start?: number, end?: number): Array<Year> => {
+    start = start || currentYear - 20;
+    end = end || currentYear + 20;
+
     if (start < 0 || end < 0) {
         throw new Error('Year range must be positive.');
     }
@@ -19,4 +31,8 @@ const yearsRange = function (start: number, end: number): Array<{ id?: number, n
     }));
 };
 
-export { yearsRange };
+export {
+    yearsRange,
+    emptyYear,
+    Year
+};

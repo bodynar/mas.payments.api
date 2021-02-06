@@ -100,7 +100,7 @@ namespace MAS.Payments.Queries
 
                         if (isFirstYear)
                         {
-                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Min();
+                            var month = yearGroup.Select(x => x.Date.Month).Min();
 
                             if (month > 0 && month < 12)
                             {
@@ -122,7 +122,7 @@ namespace MAS.Payments.Queries
 
                         if (isLastYear)
                         {
-                            var month = groupedByYear.SelectMany(x => x).Select(x => x.Date.Month).Max();
+                            var month = yearGroup.Select(x => x.Date.Month).Max();
 
                             if (month > 0 && month < 12)
                             {

@@ -120,6 +120,17 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
+        public void AddGroup(AddMeasurementGroupRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            CommandProcessor.Execute(new AddMeasurementGroupCommand(request.Date, request.Measurements.Select(x => new MeasurementGroup(x.MeasurementTypeId, x.Measurement, x.Comment))));
+        }
+
+        [HttpPost("[action]")]
         public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
             if (request == null)

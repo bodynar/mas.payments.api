@@ -54,11 +54,7 @@ export class MeasurementStatsComponent extends BaseComponent {
         false;
 
     public statisticsFilter: MeasurementStatisticsFilter =
-        {
-            measurementTypeId: 0,
-            from: new Date(),
-            to: new Date()
-        };
+        { measurementTypeId: 0 };
 
     private whenSubmitForm$: Subject<null> =
         new Subject();
@@ -110,7 +106,9 @@ export class MeasurementStatsComponent extends BaseComponent {
     }
 
     public onFormSubmit(): void {
-        this.whenSubmitForm$.next(null);
+        if (!this.chartDataIsLoading) {
+            this.whenSubmitForm$.next(null);
+        }
     }
 
     public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {

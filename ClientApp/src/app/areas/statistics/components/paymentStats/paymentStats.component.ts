@@ -52,11 +52,7 @@ export class PaymentStatsComponent extends BaseComponent {
         [];
 
     public statisticsFilter: PaymentStatisticsFilter =
-        {
-            paymentTypeId: 0,
-            from: new Date(),
-            to: new Date()
-        };
+        { paymentTypeId: 0 };
 
     public chartDataIsLoading: boolean =
         false;
@@ -114,7 +110,9 @@ export class PaymentStatsComponent extends BaseComponent {
     }
 
     public onFormSubmit(): void {
-        this.whenSubmitForm$.next(null);
+        if (!this.chartDataIsLoading) {
+            this.whenSubmitForm$.next(null);
+        }
     }
 
     public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {

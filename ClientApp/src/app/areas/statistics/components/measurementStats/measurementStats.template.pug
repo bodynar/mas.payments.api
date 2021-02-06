@@ -1,6 +1,6 @@
 doctype html
 
-form.mt-2.container.row((ngSubmit)='onFormSubmit()')
+.mt-2.container.row
     .form-group.col-2.p-0.mr-3
         label From
         app-month-selector(
@@ -26,8 +26,11 @@ form.mt-2.container.row((ngSubmit)='onFormSubmit()')
             ) {{ measurementType.name }}
     .form-group.ml-auto.justify-content-around.d-flex.flex-column
         button.btn.btn-primary(
-            type='submit',
-            style='margin-left: auto'
+            type='button',
+            style='margin-left: auto',
+            [attr.disalbed]='chartDataIsLoading',
+            [class.disabled]='chartDataIsLoading',
+            (click)='onFormSubmit()'
         ) Display data
 
 div.mt-3.loading-cover

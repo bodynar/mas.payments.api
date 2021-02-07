@@ -1,5 +1,11 @@
 import { isNullOrUndefined } from './common';
 
+export interface Color {
+    red: number;
+    green: number;
+    blue: number;
+}
+
 export function isRgbColor(colorString: string): boolean {
     return colorString.trim().startsWith('rgb');
 }
@@ -9,11 +15,7 @@ export function isHexColor(colorString: string): boolean {
         && /^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/i.test(colorString);
 }
 
-export function getRgbColor(colorString: string): {
-    red: number,
-    green: number,
-    blue: number,
-} {
+export function getRgbColor(colorString: string): Color {
     if (!isRgbColor(colorString)) {
         return undefined;
     }
@@ -27,11 +29,7 @@ export function getRgbColor(colorString: string): {
     };
 }
 
-export function hexToRgb(hexColor: string): {
-    red: number,
-    green: number,
-    blue: number,
-} {
+export function hexToRgb(hexColor: string): Color {
     if (hexColor.startsWith('#')) {
         hexColor = hexColor.substring(1);
     }
@@ -51,23 +49,24 @@ export function hexToRgb(hexColor: string): {
     };
 }
 
-const blackHex: string = '#000';
-const whiteHex: string = '#fff';
+export const blackHex: string = '#000';
+export const whiteHex: string = '#fff';
 
-export function getFontColor(colorString: string): string {
-    const rgbColor: {
-        red: number,
-        green: number,
-        blue: number,
-    } = isRgbColor(colorString)
+export function getFontColorFromString(colorString: string): string {
+    const rgbColor: Color =
+        isRgbColor(colorString)
             ? getRgbColor(colorString)
             : hexToRgb(colorString);
 
-    if (!isNullOrUndefined(rgbColor)) {
+    return getFontColor(rgbColor);
+}
+
+export function getFontColor(color: Color): string {
+    if (!isNullOrUndefined(color)) {
         const intensity: number
-            = rgbColor.red * 0.299
-            + rgbColor.green * 0.587
-            + rgbColor.blue * 0.114;
+            = color.red * 0.299
+            + color.green * 0.587
+            + color.blue * 0.114;
 
         return intensity > 125 ? blackHex : whiteHex;
     }

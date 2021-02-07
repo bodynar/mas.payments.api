@@ -2,10 +2,10 @@ doctype html
 
 .action-icon(
     [style.backgroundColor]='backgroundColor',
-    [style.color]='color',
+    [style.color]='fontColor',
     (mouseenter)='onMouseEvent(true)',
     (mouseleave)='onMouseEvent(false)',
     (mousedown)='onMouseClick(true)',
     (mouseup)='onMouseClick(false)'
 )
-    i.oi([class]='icon')
+    i.oi([class]='fontIcon')

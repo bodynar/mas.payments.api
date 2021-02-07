@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import BaseComponent from 'common/baseComponent';
+import BaseComponent from 'common/components/BaseComponent';
 
 import { Color, whiteHex, getFontColor } from 'common/utils/colors';
 
@@ -18,11 +18,16 @@ export class ActionIconComponent extends BaseComponent {
 
     public backgroundColor?: string;
 
-    public color: string =
+    public fontColor: string =
         whiteHex;
+
+    public fontIcon: string;
 
     constructor() {
         super();
+        // todo: validate
+
+        this.fontIcon = `oi-${this.icon}`;
     }
 
     public onMouseEvent(isOnElement: boolean): void {
@@ -35,10 +40,10 @@ export class ActionIconComponent extends BaseComponent {
     public onMouseClick(isClicking: boolean): void {
         if (isClicking) {
             this.backgroundColor = `rgba(${this.color.red}, ${this.color.green}, ${this.color.blue}, 0.5)`;
-            this.color = getFontColor(this.color);
+            this.fontColor = getFontColor(this.color);
         } else {
             this.backgroundColor = undefined;
-            this.color = whiteHex;
+            this.fontColor = whiteHex;
         }
     }
 }

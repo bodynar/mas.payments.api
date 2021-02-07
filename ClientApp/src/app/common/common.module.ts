@@ -10,6 +10,7 @@ import { PaginatorComponent } from './components/paginator/component/paginator.c
 import { BadgeComponent } from './components/badge/badge.component';
 import { NoItemsComponent } from './components/noItems/noItems.component';
 import { MonthSelectorComponent } from './components/monthSelector/monthSelector.component';
+import { ActionIconComponent } from './components/actionIcon/actionIcon.component';
 
 @NgModule({
     imports: [
@@ -21,6 +22,7 @@ import { MonthSelectorComponent } from './components/monthSelector/monthSelector
         BadgeComponent,
         NoItemsComponent,
         MonthSelectorComponent,
+        ActionIconComponent,
 
         ColorValidatorDirective,
         HexColorValidatorDirective,
@@ -31,6 +33,7 @@ import { MonthSelectorComponent } from './components/monthSelector/monthSelector
         BadgeComponent,
         NoItemsComponent,
         MonthSelectorComponent,
+        ActionIconComponent,
 
         ColorValidatorDirective,
         HexColorValidatorDirective,

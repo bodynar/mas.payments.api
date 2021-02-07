@@ -2,8 +2,7 @@ export default interface MeasurementResponse {
     id: number;
     measurement: number;
     comment?: string;
-    month: string;
-    year: number;
+    date: Date;
     meterMeasurementTypeId: number;
     measurementTypeName: string;
     isSent: boolean;

@@ -1,13 +1,11 @@
 import { Observable } from 'rxjs';
 
-import MeasurementsFilter from 'models/measurementsFilter';
-import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
-import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+
+import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
 abstract class IMeasurementService {
     // #region measurements
@@ -17,7 +15,7 @@ abstract class IMeasurementService {
 
     abstract getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>>;
 
-    abstract updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult>;
+    abstract updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult>;
 
     abstract deleteMeasurement(measurementId: number): Observable<CommandExecutionResult>;
 

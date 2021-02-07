@@ -15,7 +15,7 @@ import { IRouterService } from 'services/IRouterService';
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
-import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
+import { UpdateMeasurementRequest } from 'models/request/measurement';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 
 @Component({

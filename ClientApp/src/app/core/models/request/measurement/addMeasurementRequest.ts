@@ -1,9 +1,11 @@
-interface AddMeasurementRequest {
-    year?: number;
-    month?: string;
-    measurement?: number;
-    comment?: string;
-    meterMeasurementTypeId?: number;
+export interface AddMeasurementRequest {
+    date: Date;
+    measurements: Array<AddMeasurementGroupRequestModel>;
 }
 
-export { AddMeasurementRequest };
+export interface AddMeasurementGroupRequestModel {
+    id: string;
+    measurementTypeId: number;
+    measurement: number;
+    comment?: string;
+}

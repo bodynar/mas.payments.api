@@ -5,8 +5,6 @@ import { ActivatedRoute } from '@angular/router';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
 
-import { Year, yearsRange } from 'common/utils/years';
-import { Month, months } from 'static/months';
 import { isNullOrUndefined } from 'common/utils/common';
 
 import { IMeasurementService } from 'services/IMeasurementService';
@@ -17,29 +15,24 @@ import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { UpdateMeasurementRequest } from 'models/request/measurement';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
 @Component({
     templateUrl: 'updateMeasurement.template.pug'
 })
 export class UpdateMeasurementComponent extends BaseRoutingComponent {
 
-    public measurementRequest: AddMeasurementRequest =
-        {};
+    public measurementRequest: UpdateMeasurementRequest;
+    public dateInitialValue: MonthSelectorValue;
 
     public isLoading: boolean =
         false;
 
-    public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new ReplaySubject(1);
+    public measurementTypes: Array<MeasurementTypeResponse> =
+        [{ name: '', systemName: '' }];
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
-
-    public months: Array<Month> =
-        months;
-
-    public years: Array<Year> =
-        yearsRange(2019);
 
     private measurementId: number;
 
@@ -62,12 +55,7 @@ export class UpdateMeasurementComponent extends BaseRoutingComponent {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) => {
-                this.measurementTypes$.next([{
-                    name: '',
-                    systemName: '',
-                }, ...result]);
-            });
+            .subscribe(({ result }) => this.measurementTypes.push(...result));
 
         this.activatedRoute
             .queryParams
@@ -83,23 +71,18 @@ export class UpdateMeasurementComponent extends BaseRoutingComponent {
                     return response.success;
                 }),
             )
-            .subscribe(({ result }) =>
-                this.measurementRequest = {
-                    year: result.year,
-                    comment: result.comment,
-                    measurement: result.measurement,
-                    meterMeasurementTypeId: result.meterMeasurementTypeId,
-                    month: (parseInt(result.month, 10) - 1).toString()
-                }
-            );
+            .subscribe(({ result }) => {
+                this.measurementRequest = { ...result };
+                this.dateInitialValue = {
+                    month: result.date.getMonth(),
+                    year: result.date.getFullYear()
+                };
+            });
 
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 filter(({ valid }) => valid),
-                tap(_ => {
-                    this.measurementRequest.month = (parseInt(this.measurementRequest.month, 10) + 1).toString();
-                }),
                 switchMap(_ => {
                     this.isLoading = true;
                     return this.measurementService.updateMeasurement(this.measurementId, this.measurementRequest);
@@ -117,6 +100,10 @@ export class UpdateMeasurementComponent extends BaseRoutingComponent {
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
+    }
+
+    public onDateChange(value: MonthSelectorValue): void {
+        this.measurementRequest.date = new Date(value.year, value.month);
     }
 
     public onFormSubmit(form: NgForm): void {

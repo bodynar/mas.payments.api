@@ -1,0 +1,11 @@
+doctype html 
+
+.action-icon(
+    [style.backgroundColor]='backgroundColor',
+    [style.color]='color',
+    (mouseenter)='onMouseEvent(true)',
+    (mouseleave)='onMouseEvent(false)',
+    (mousedown)='onMouseClick(true)',
+    (mouseup)='onMouseClick(false)'
+)
+    i.oi([class]='icon')

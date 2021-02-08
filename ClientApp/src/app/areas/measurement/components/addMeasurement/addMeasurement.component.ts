@@ -4,43 +4,45 @@ import { NgForm } from '@angular/forms';
 import { ReplaySubject, Subject } from 'rxjs';
 import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators';
 
-import { Year, yearsRange } from 'common/utils/years';
-import { months } from 'static/months';
-
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
+
+import { generateGuid } from 'common/utils/common';
+import { Color } from 'common/utils/colors';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import { AddMeasurementRequest } from 'models/request/measurement';
+import { MeasurementTypeResponse } from 'models/response/measurements';
+import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
+
+// TODO: Fix binding when add\delete array of items
+// items being nulling values
+// - Add label to date
 @Component({
-    templateUrl: 'addMeasurement.template.pug'
+    templateUrl: 'addMeasurement.template.pug',
+    styleUrls: ['addMeasurement.style.styl']
 })
 export class AddMeasurementComponent extends BaseRoutingComponent {
-
-    private currentDate: Date =
+    public currentDate: Date =
         new Date();
 
+    public actionColors: Array<Color> =
+        [{ red: 183, green: 223, blue: 105 }, { red: 255, green: 111, blue: 94 }];
+
+    public dateInitialValue: MonthSelectorValue =
+        { month: this.currentDate.getMonth(), year: this.currentDate.getFullYear() };
+
     public addMeasurementRequest: AddMeasurementRequest =
-        {
-            month: this.currentDate.getMonth().toString(),
-            year: this.currentDate.getFullYear()
-        };
-
-    public months: Array<{ id: number, name: string }> =
-        months;
-
-    public years: Array<Year> =
-        yearsRange(2019);
+        { date: new Date(), measurements: [] };
 
     public isLoading: boolean =
         false;
 
-    public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new ReplaySubject(1);
+    public measurementTypes: Array<MeasurementTypeResponse> =
+        [{ id: -1, name: '', systemName: '' }];
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
@@ -64,12 +66,7 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
                     return response.success;
                 })
             )
-            .subscribe(({ result }) => {
-                this.measurementTypes$.next([{
-                    name: '',
-                    systemName: '',
-                }, ...result]);
-            });
+            .subscribe(({ result }) => this.measurementTypes.push(...result));
 
         this.whenSubmittedForm$
             .pipe(
@@ -96,5 +93,27 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
 
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
+    }
+
+    public onDateChange(dateValue: MonthSelectorValue): void {
+        this.addMeasurementRequest.date = new Date(dateValue.year, dateValue.month, 20);
+    }
+
+    public onMeasurementAdd(): void {
+        this.addMeasurementRequest.measurements.push({
+            id: generateGuid(),
+            measurement: 0,
+            measurementTypeId: -1
+        });
+    }
+
+    public onMeasurementRemove(id: string): void {
+        const index: number =
+            this.addMeasurementRequest.measurements.findIndex(x => x.id === id);
+
+        if (index >= 0) {
+            this.addMeasurementRequest.measurements.splice(index, 1);
+        }
+
     }
 }

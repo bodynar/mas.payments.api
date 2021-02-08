@@ -5,7 +5,7 @@ doctype html
     [style.color]='fontColor',
     (mouseenter)='onMouseEvent(true)',
     (mouseleave)='onMouseEvent(false)',
-    (mousedown)='onMouseClick(true)',
-    (mouseup)='onMouseClick(false)'
+    (mousedown)='onMouseClick($event, true)',
+    (mouseup)='onMouseClick($event, false)'
 )
-    i.oi([class]='fontIcon')
+    i.oi.oi--md([class]='fontIcon')

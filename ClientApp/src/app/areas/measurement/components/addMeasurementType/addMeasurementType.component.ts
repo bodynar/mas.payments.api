@@ -10,7 +10,7 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
+import { AddMeasurementTypeRequest } from 'models/request/measurement';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import { IPaymentService } from 'services/IPaymentService';
 

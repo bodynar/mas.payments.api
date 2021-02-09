@@ -28,15 +28,14 @@ form.needs-validation(
         .col-2.form-group.mb-0
             label Comment
     .form-group.form-row.measurement__row(
-        *ngFor='let measurement of addMeasurementRequest.measurements'
+        *ngFor='let measurement of addMeasurementRequest.measurements; let index = index'
     )
         .col-2.form-group.mb-0
             input.form-control.form-control-sm#measurement(
                 type='number',
                 placeholder='Enter measurement',
-                name='measurement',
+                name='{{ index }}',
                 [(ngModel)]='measurement.measurement',
-                #measurement='ngModel',
                 required='required',
                 min='0',
                 appIsPositiveNumber,
@@ -44,20 +43,20 @@ form.needs-validation(
         .col-2.form-group.mb-0
             select.custom-select.custom-select-sm#meterMeasurementTypeId(
                 required='required',
-                name='meterMeasurementTypeId',
+                name='{{ index }}',
                 [(ngModel)]='measurement.meterMeasurementTypeId'
             )
                 option(
-                    *ngFor='let measurementType of (measurementTypes$ | async)',
+                    *ngFor='let measurementType of measurementTypes',
                     [value]='measurementType.id'
                 ) {{ measurementType.name }}
         .col-2.form-group.mb-0
             textarea.form-control.form-control-sm#comment(
                 type='text',
                 placeholder='Enter comment',
-                name='comment',
+                name='{{ index }}',
                 [(ngModel)]='measurement.comment',
-                #name='ngModel'
+                
             ) 
         .col-1
             app-action-icon(

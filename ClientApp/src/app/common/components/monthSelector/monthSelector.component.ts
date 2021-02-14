@@ -66,6 +66,9 @@ export class MonthSelectorComponent extends BaseComponent {
     constructor(
     ) {
         super();
+
+        // log preselected value
+        // possibly issue caused by assigment
     }
 
     public onCheckBoxChecked(target: HTMLInputElement): void {

@@ -17,10 +17,8 @@ import { AddMeasurementRequest } from 'models/request/measurement';
 import { MeasurementTypeResponse } from 'models/response/measurements';
 import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
-
-// TODO: Fix binding when add\delete array of items
-// items being nulling values
-// - Add label to date
+// TODO: Add label to date
+// - Fix date selector preselected value
 @Component({
     templateUrl: 'addMeasurement.template.pug',
     styleUrls: ['addMeasurement.style.styl']

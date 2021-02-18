@@ -11,13 +11,15 @@ form.needs-validation(
     [class.was-validated]='!!(whenSubmittedForm$ | async)',
     (submit)='onFormSubmit(addMeasurementForm)'
 )
-    .form-group
+    .form-group.ml-1
+        label Date
         app-month-selector(
             startYear='2009',
             canClear='false',
             [preSelectedValue]='dateInitialValue',
             (selectionChange)="onDateChange($event)"
         )
+    hr
     .form-group.form-row.measurement__heading(
         *ngIf='addMeasurementRequest.measurements.length > 0'
     )
@@ -41,10 +43,10 @@ form.needs-validation(
                 appIsPositiveNumber,
             )
         .col-2.form-group.mb-0
-            select.custom-select.custom-select-sm#meterMeasurementTypeId(
+            select.custom-select.custom-select-sm#measurementTypeId(
                 required='required',
                 name='{{ index }}',
-                [(ngModel)]='measurement.meterMeasurementTypeId'
+                [(ngModel)]='measurement.measurementTypeId'
             )
                 option(
                     *ngFor='let measurementType of measurementTypes',
@@ -56,7 +58,6 @@ form.needs-validation(
                 placeholder='Enter comment',
                 name='{{ index }}',
                 [(ngModel)]='measurement.comment',
-                
             ) 
         .col-1
             app-action-icon(
@@ -71,7 +72,8 @@ form.needs-validation(
             (click)='onMeasurementAdd()'
         )
     button.btn.btn-sm.btn-success(
-        *ngIf='!isLoading && addMeasurementRequest.measurements.length > 0',
+        *ngIf='!isLoading',
+        [disabled]='addMeasurementRequest.measurements.length === 0',
         type='submit'
     ) Add
     button.btn.btn-sm.btn-success(

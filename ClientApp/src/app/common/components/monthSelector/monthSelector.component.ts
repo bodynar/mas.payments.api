@@ -67,8 +67,12 @@ export class MonthSelectorComponent extends BaseComponent {
     ) {
         super();
 
-        // log preselected value
-        // possibly issue caused by assigment
+        this.whenComponentInit$.subscribe(() => {
+            if (!isNullOrUndefined(this.preSelectedValue)) {
+                this.selectedMonth = this.preSelectedValue.month;
+                this.selectedYear = this.preSelectedValue.year;
+            }
+        });
     }
 
     public onCheckBoxChecked(target: HTMLInputElement): void {

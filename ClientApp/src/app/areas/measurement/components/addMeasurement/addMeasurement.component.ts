@@ -17,8 +17,6 @@ import { AddMeasurementRequest } from 'models/request/measurement';
 import { MeasurementTypeResponse } from 'models/response/measurements';
 import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
-// TODO: Add label to date
-// - Fix date selector preselected value
 @Component({
     templateUrl: 'addMeasurement.template.pug',
     styleUrls: ['addMeasurement.style.styl']
@@ -34,7 +32,14 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
         { month: this.currentDate.getMonth(), year: this.currentDate.getFullYear() };
 
     public addMeasurementRequest: AddMeasurementRequest =
-        { date: new Date(), measurements: [] };
+        {
+            date: new Date(),
+            measurements: [{
+                id: generateGuid(),
+                measurement: 0,
+                measurementTypeId: -1
+            }]
+        };
 
     public isLoading: boolean =
         false;
@@ -69,7 +74,12 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => valid),
+                filter(({ valid }) => {
+                    const hasInvalidItems: boolean =
+                        this.addMeasurementRequest.measurements.some(x => x.measurementTypeId === -1 || x.measurement === 0);
+
+                    return valid && !hasInvalidItems;
+                }),
                 switchMap(_ => {
                     this.isLoading = true;
                     return this.measurementService.addMeasurement(this.addMeasurementRequest);

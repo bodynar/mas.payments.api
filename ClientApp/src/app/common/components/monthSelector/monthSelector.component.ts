@@ -34,14 +34,14 @@ export class MonthSelectorComponent extends BaseComponent {
 
     @Output()
     public yearChange: EventEmitter<number> =
-        new EventEmitter();
+        new EventEmitter(true);
 
     @Input()
     public month?: number;
 
     @Output()
     public monthChange: EventEmitter<number> =
-        new EventEmitter();
+        new EventEmitter(true);
 
     public months: Array<Month>;
     public years: Array<Year>;
@@ -62,9 +62,17 @@ export class MonthSelectorComponent extends BaseComponent {
 
             if (isNullOrUndefined(this.month)) {
                 this.month = this.canClear ? emptyMonth.id : today.getMonth();
+                this.monthChange.emit(this.month);
+            } else if (this.month === emptyMonth.id && !this.canClear) {
+                this.month = today.getMonth();
+                this.monthChange.emit(this.month);
             }
             if (isNullOrUndefined(this.year)) {
                 this.year = this.canClear ? emptyYear.id : today.getFullYear();
+                this.yearChange.emit(this.year);
+            } else if (this.year === emptyYear.id && !this.canClear) {
+                this.year = today.getFullYear();
+                this.yearChange.emit(this.year);
             }
         });
     }

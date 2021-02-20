@@ -1,5 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
+    using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -7,6 +9,7 @@
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
+    using MAS.Payments.Infrastructure.Specification;
 
     public class AddMeasurementGroupCommandHandler : BaseCommandHandler<AddMeasurementGroupCommand>
     {
@@ -23,7 +26,7 @@
 
         public override void Handle(AddMeasurementGroupCommand command)
         {
-            var notValidTypes = 
+            var notValidTypes =
                 command.Measurements
                     .Where(x => MeterMeasurementTypeRepository.Get(x.MeasurementTypeId) == null)
                     .Select(x => x.MeasurementTypeId);
@@ -33,15 +36,32 @@
                 throw new CommandExecutionException(CommandType, $"Measurement types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
-            var measurements =
-                command.Measurements
-                    .Select(x => new MeterMeasurement
+            var requestDate = command.Date.Date.AddMonths(-1);
+            var measurements = new List<MeterMeasurement>();
+
+            foreach (var measurementData in command.Measurements)
+            {
+                var previousValue =
+                    Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date.Date == requestDate))
+                        .FirstOrDefault();
+
+                double? diff = null;
+
+                if (previousValue != null)
+                {
+                    diff = Math.Abs(previousValue.Measurement - measurementData.Measurement);
+                }
+
+                measurements.Add(
+                    new MeterMeasurement
                     {
-                        Date = command.Date,
-                        Measurement = x.Measurement,
-                        MeterMeasurementTypeId = x.MeasurementTypeId,
-                        Comment = x.Comment,
+                        Date = command.Date.Date,
+                        Measurement = measurementData.Measurement,
+                        MeterMeasurementTypeId = measurementData.MeasurementTypeId,
+                        Comment = measurementData.Comment,
+                        Diff = diff
                     });
+            }
 
             Repository.AddRange(measurements);
         }

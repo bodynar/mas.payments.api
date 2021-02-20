@@ -1,5 +1,7 @@
+import MonthYear from 'models/monthYearDate';
+
 export default interface PaymentStatisticsFilter {
-    from?: Date;
-    to?: Date;
+    from?: MonthYear;
+    to?: MonthYear;
     paymentTypeId: number;
 }

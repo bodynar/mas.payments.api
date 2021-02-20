@@ -13,12 +13,14 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { getMonthName, months } from 'static/months';
+import MonthYear from 'models/monthYearDate';
+import { emptyYear } from 'common/utils/years';
+import { emptyMonth, getMonthName, months } from 'static/months';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
-import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
+
 import { StatsChartComponent } from '../statsChart/statsChart.component';
 
 @Component({
@@ -39,9 +41,7 @@ export class MeasurementStatsComponent extends BaseComponent {
             series: [],
             xaxis: {
                 type: 'category',
-                categories: [
-                    ...months.map(x => x.name)
-                ],
+                categories: [ ...months.map(x => x.name) ],
                 title: { text: 'Month' }
             },
             title: { text: MeasurementStatsComponent.chartName }
@@ -54,7 +54,7 @@ export class MeasurementStatsComponent extends BaseComponent {
         false;
 
     public statisticsFilter: MeasurementStatisticsFilter =
-        { measurementTypeId: 0 };
+        { measurementTypeId: 0, from: new MonthYear(), to: new MonthYear() };
 
     private whenSubmitForm$: Subject<null> =
         new Subject();
@@ -91,7 +91,16 @@ export class MeasurementStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => this.chartDataIsLoading = true),
+                tap(() => {
+                    this.chartDataIsLoading = true;
+
+                    if (this.statisticsFilter.from.month === emptyMonth.id || this.statisticsFilter.from.year === emptyYear.id) {
+                        this.statisticsFilter.from = undefined;
+                    }
+                    if (this.statisticsFilter.to.month === emptyMonth.id || this.statisticsFilter.to.year === emptyYear.id) {
+                        this.statisticsFilter.to = undefined;
+                    }
+                }),
                 switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
                 delay(1.5 * 1000),
                 tap(() => this.chartDataIsLoading = false),
@@ -108,14 +117,6 @@ export class MeasurementStatsComponent extends BaseComponent {
     public onFormSubmit(): void {
         if (!this.chartDataIsLoading) {
             this.whenSubmitForm$.next(null);
-        }
-    }
-
-    public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {
-        if (!isNullOrUndefined(value)) {
-            this.statisticsFilter[dateType] = new Date(value.year, value.month);
-        } else {
-            this.statisticsFilter[dateType] = undefined;
         }
     }
 

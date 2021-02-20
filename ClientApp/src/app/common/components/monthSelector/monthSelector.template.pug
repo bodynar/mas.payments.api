@@ -13,13 +13,13 @@ doctype html
             [checked]="isDropPanelVisible",
             (change)="onCheckBoxChecked($event.target)"
         )
-        span {{ getCurrentSelection() }}
+        span {{ getTitle() }}
         .month-selector__drop-panel
             .line
                 select(
                     [name]="getControlId('month')",
-                    (change)="onMonthChange($event.target.value)",
-                    [(ngModel)]="selectedMonth"
+                    (change)="monthChange.emit(month)",
+                    [(ngModel)]="month"
                 )
                     option(
                         *ngFor='let month of months',
@@ -27,8 +27,8 @@ doctype html
                     ) {{ month.name }}
                 select(
                     [name]="getControlId('year')",
-                    [(ngModel)]="selectedYear",
-                    (change)="onYearChange($event.target.value)"
+                    (change)="yearChange.emit(year)",
+                    [(ngModel)]="year",
                 )
                     option(
                         *ngFor='let year of years',

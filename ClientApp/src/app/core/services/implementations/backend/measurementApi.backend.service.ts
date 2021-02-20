@@ -15,6 +15,7 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
+import MonthYear from 'models/monthYearDate';
 
 @Injectable()
 export class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -96,7 +97,7 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
                         id: response['id'],
                         measurement: response['measurement'],
                         comment: response['comment'],
-                        date: response['date'],
+                        date: new MonthYear(+response['dateMonth'], +response['dateYear']),
                         meterMeasurementTypeId: response['meterMeasurementTypeId'],
                         measurementTypeName: response['measurementTypeName'],
                     }) as MeasurementResponse),
@@ -106,8 +107,13 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
     }
 
     public updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult> {
+        const requestData = {
+            ...measurementData,
+            ...measurementData.date,
+        };
+
         return this.http
-            .post(`${this.apiPrefix}/updateMeasurement`, { id, ...measurementData })
+            .post(`${this.apiPrefix}/updateMeasurement`, { id, ...requestData })
             .pipe(
                 catchError(error => of(error)),
                 map(x => boxServerResponse(x)),

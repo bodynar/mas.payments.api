@@ -1,5 +1,7 @@
+import MonthYear from 'models/monthYearDate';
+
 export default interface UpdateMeasurementRequest {
-    date: Date;
+    date: MonthYear;
     measurement: number;
     meterMeasurementTypeId: number;
     comment?: string;

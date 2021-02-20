@@ -6,11 +6,6 @@ import { emptyMonth, getMonthName, Month, months as monthArray } from 'static/mo
 import { emptyYear, Year, yearsRange } from 'common/utils/years';
 import { generateGuid, isNullOrUndefined } from 'common/utils/common';
 
-export interface MonthSelectorValue {
-    month?: number;
-    year?: number;
-}
-
 const today: Date = new Date();
 
 @Component({

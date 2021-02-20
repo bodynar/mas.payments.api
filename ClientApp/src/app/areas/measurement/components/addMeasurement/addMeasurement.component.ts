@@ -15,25 +15,19 @@ import { IRouterService } from 'services/IRouterService';
 
 import { AddMeasurementRequest } from 'models/request/measurement';
 import { MeasurementTypeResponse } from 'models/response/measurements';
-import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
+import MonthYear from 'models/monthYearDate';
 
 @Component({
     templateUrl: 'addMeasurement.template.pug',
     styleUrls: ['addMeasurement.style.styl']
 })
 export class AddMeasurementComponent extends BaseRoutingComponent {
-    public currentDate: Date =
-        new Date();
-
     public actionColors: Array<Color> =
         [{ red: 183, green: 223, blue: 105 }, { red: 255, green: 111, blue: 94 }];
 
-    public dateInitialValue: MonthSelectorValue =
-        { month: this.currentDate.getMonth(), year: this.currentDate.getFullYear() };
-
     public addMeasurementRequest: AddMeasurementRequest =
         {
-            date: new Date(),
+            date: new MonthYear(),
             measurements: [{
                 id: generateGuid(),
                 measurement: 0,
@@ -101,10 +95,6 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
 
     public onFormSubmit(form: NgForm): void {
         this.whenSubmittedForm$.next(form);
-    }
-
-    public onDateChange(dateValue: MonthSelectorValue): void {
-        this.addMeasurementRequest.date = new Date(dateValue.year, dateValue.month, 20);
     }
 
     public onMeasurementAdd(): void {

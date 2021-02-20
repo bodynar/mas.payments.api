@@ -1,5 +1,7 @@
+import MonthYear from 'models/monthYearDate';
+
 export interface AddMeasurementRequest {
-    date: Date;
+    date: MonthYear;
     measurements: Array<AddMeasurementGroupRequestModel>;
 }
 

@@ -15,9 +15,9 @@ form.needs-validation(
         label Date
         app-month-selector(
             startYear='2009',
-            canClear='false',
-            [preSelectedValue]='dateInitialValue',
-            (selectionChange)="onDateChange($event)"
+            [canClear]='false',
+            [(year)]='addMeasurementRequest.date.year',
+            [(month)]='addMeasurementRequest.date.month'
         )
     hr
     .form-group.form-row.measurement__heading(

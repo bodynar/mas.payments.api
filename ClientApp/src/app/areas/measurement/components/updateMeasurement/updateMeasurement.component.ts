@@ -3,7 +3,7 @@ import { NgForm } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 import { ReplaySubject, Subject } from 'rxjs';
-import { filter, map, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
+import { filter, switchMap, takeUntil, tap, switchMapTo, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
@@ -15,15 +15,15 @@ import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
 import { UpdateMeasurementRequest } from 'models/request/measurement';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
-import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
+import MonthYear from 'models/monthYearDate';
 
 @Component({
     templateUrl: 'updateMeasurement.template.pug'
 })
 export class UpdateMeasurementComponent extends BaseRoutingComponent {
 
-    public measurementRequest: UpdateMeasurementRequest;
-    public dateInitialValue: MonthSelectorValue;
+    public measurementRequest: UpdateMeasurementRequest =
+        { date: MonthYear.fromToday(), measurement: 0, meterMeasurementTypeId: -1 };
 
     public isLoading: boolean =
         false;
@@ -37,47 +37,42 @@ export class UpdateMeasurementComponent extends BaseRoutingComponent {
     private measurementId: number;
 
     constructor(
-        private activatedRoute: ActivatedRoute,
-        private measurementService: IMeasurementService,
-        private notificationService: INotificationService,
+        activatedRoute: ActivatedRoute,
+        measurementService: IMeasurementService,
+        notificationService: INotificationService,
         routerService: IRouterService,
     ) {
         super(routerService);
 
         this.whenComponentInit$
             .pipe(
-                switchMapTo(this.measurementService.getMeasurementTypes()),
                 takeUntil(this.whenComponentDestroy$),
+                switchMapTo(activatedRoute.queryParams),
+                filter(params => !isNullOrUndefined(params['id']) && params['id'] > 0),
+                tap(params => this.measurementId = params['id']),
+                switchMap(_ => measurementService.getMeasurement(this.measurementId)),
                 filter(response => {
                     if (!response.success) {
-                        this.notificationService.error(response.error);
+                        notificationService.error(response.error);
+                    }
+                    return response.success;
+                }),
+                tap(({ result }) => {
+                    this.measurementRequest.comment = result.comment;
+                    this.measurementRequest.measurement = result.measurement;
+                    this.measurementRequest.meterMeasurementTypeId = result.meterMeasurementTypeId;
+
+                    this.measurementRequest.date.set(result.date);
+                }),
+                switchMapTo(measurementService.getMeasurementTypes()),
+                filter(response => {
+                    if (!response.success) {
+                        notificationService.error(response.error);
                     }
                     return response.success;
                 }),
             )
             .subscribe(({ result }) => this.measurementTypes.push(...result));
-
-        this.activatedRoute
-            .queryParams
-            .pipe(
-                filter(params => !isNullOrUndefined(params['id']) && params['id'] !== 0),
-                map(params => params['id']),
-                tap(id => this.measurementId = id),
-                switchMap(id => this.measurementService.getMeasurement(id)),
-                filter(response => {
-                    if (!response.success) {
-                        this.notificationService.error(response.error);
-                    }
-                    return response.success;
-                }),
-            )
-            .subscribe(({ result }) => {
-                this.measurementRequest = { ...result };
-                this.dateInitialValue = {
-                    month: result.date.getMonth(),
-                    year: result.date.getFullYear()
-                };
-            });
 
         this.whenSubmittedForm$
             .pipe(
@@ -85,25 +80,21 @@ export class UpdateMeasurementComponent extends BaseRoutingComponent {
                 filter(({ valid }) => valid),
                 switchMap(_ => {
                     this.isLoading = true;
-                    return this.measurementService.updateMeasurement(this.measurementId, this.measurementRequest);
+                    return measurementService.updateMeasurement(this.measurementId, this.measurementRequest);
                 }),
                 delay(1.5 * 1000),
                 filter(response => {
                     this.isLoading = false;
                     if (!response.success) {
-                        this.notificationService.error(response.error);
+                        notificationService.error(response.error);
                     } else {
-                        this.notificationService.success('Measurement was successfully updated.');
+                        notificationService.success('Measurement was successfully updated.');
                     }
 
                     return response.success;
                 })
             )
             .subscribe(_ => this.routerService.navigateUp());
-    }
-
-    public onDateChange(value: MonthSelectorValue): void {
-        this.measurementRequest.date = new Date(value.year, value.month);
     }
 
     public onFormSubmit(form: NgForm): void {

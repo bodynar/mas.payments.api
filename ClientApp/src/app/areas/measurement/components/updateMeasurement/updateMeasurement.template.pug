@@ -41,10 +41,10 @@ form.needs-validation(
       .col
         label(for='month') Date
         app-month-selector(
-            startYear='2019',
-            canClear='false',
-            [preSelectedValue]='dateInitialValue',
-            (selectionChange)="onDateChange($event)"
+            startYear='2009',
+            [canClear]='false',
+            [(year)]='measurementRequest.date.year',
+            [(month)]='measurementRequest.date.month'
         )
 
     .form-group

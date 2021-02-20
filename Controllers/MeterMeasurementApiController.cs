@@ -106,17 +106,14 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurement(AddMeterMeasurementRequest request)
+        public void AddMeasurement([FromBody]AddMeasurementGroupRequest request)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
-
-            CommandProcessor.Execute(
-                new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, meterMeasurementDate, request.Measurement, request.Comment));
+            CommandProcessor.Execute(new AddMeasurementGroupCommand(request.Date, request.Measurements.Select(x => new MeasurementGroup(x.MeasurementTypeId, x.Measurement, x.Comment))));
         }
 
         [HttpPost("[action]")]

@@ -33,33 +33,19 @@ form.needs-validation(
             [(ngModel)]='measurementRequest.meterMeasurementTypeId'
         )
             option(
-                *ngFor='let measurementType of (measurementTypes$ | async)',
+                *ngFor='let measurementType of measurementTypes',
                 [value]='measurementType.id'
             ) {{ measurementType.name }}
 
     .form-group.form-row
-      .col-2
-        label(for='month') Month
-        select.custom-select.custom-select-sm#month(
-            required='required',
-            name='month',
-            [(ngModel)]='measurementRequest.month'
+      .col
+        label(for='month') Date
+        app-month-selector(
+            startYear='2009',
+            [canClear]='false',
+            [(year)]='measurementRequest.date.year',
+            [(month)]='measurementRequest.date.month'
         )
-            option(
-                *ngFor='let month of months',
-                [value]='month.id'
-            ) {{ month.name }}
-      .col-1
-        label(for='year') Year
-        select.custom-select.custom-select-sm#year(
-              required='required',
-              name='year',
-              [(ngModel)]='measurementRequest.year'
-          )
-              option(
-                  *ngFor='let year of years',
-                  [value]='year.id'
-              ) {{ year.name }}
 
     .form-group
         label(for='comment') Comment

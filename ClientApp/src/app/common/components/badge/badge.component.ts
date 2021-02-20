@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
 
-import { getFontColor } from 'common/utils/colors';
+import { getFontColorFromString } from 'common/utils/colors';
 
 @Component({
     selector: 'app-badge',
@@ -34,6 +34,6 @@ export class BadgeComponent {
     }
 
     public getFontColor(): string {
-        return getFontColor(this.mainColor);
+        return getFontColorFromString(this.mainColor);
     }
 }

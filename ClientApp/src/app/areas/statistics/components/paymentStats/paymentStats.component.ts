@@ -13,14 +13,15 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { Year, yearsRange } from 'common/utils/years';
-import { getMonthName, months } from 'static/months';
+import { emptyYear, Year, yearsRange } from 'common/utils/years';
+import { emptyMonth, getMonthName, months } from 'static/months';
 
+import MonthYear from 'models/monthYearDate';
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
+
 import { StatsChartComponent } from '../statsChart/statsChart.component';
-import { MonthSelectorValue } from 'common/components/monthSelector/monthSelector.component';
 
 @Component({
     selector: 'app-stats-payments',
@@ -40,9 +41,7 @@ export class PaymentStatsComponent extends BaseComponent {
             series: [],
             xaxis: {
                 type: 'category',
-                categories: [
-                    ...months.map(x => x.name)
-                ],
+                categories: [...months.map(x => x.name)],
                 title: { text: 'Month' }
             },
             title: { text: PaymentStatsComponent.chartName }
@@ -52,7 +51,7 @@ export class PaymentStatsComponent extends BaseComponent {
         [];
 
     public statisticsFilter: PaymentStatisticsFilter =
-        { paymentTypeId: 0 };
+        { paymentTypeId: 0, from: new MonthYear(), to: new MonthYear() };
 
     public chartDataIsLoading: boolean =
         false;
@@ -95,7 +94,16 @@ export class PaymentStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => this.chartDataIsLoading = true),
+                tap(() => {
+                    this.chartDataIsLoading = true;
+
+                    if (this.statisticsFilter.from.month === emptyMonth.id || this.statisticsFilter.from.year === emptyYear.id) {
+                        this.statisticsFilter.from = undefined;
+                    }
+                    if (this.statisticsFilter.to.month === emptyMonth.id || this.statisticsFilter.to.year === emptyYear.id) {
+                        this.statisticsFilter.to = undefined;
+                    }
+                }),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
                 delay(1.5 * 1000),
                 tap(() => this.chartDataIsLoading = false),
@@ -112,14 +120,6 @@ export class PaymentStatsComponent extends BaseComponent {
     public onFormSubmit(): void {
         if (!this.chartDataIsLoading) {
             this.whenSubmitForm$.next(null);
-        }
-    }
-
-    public onDateChange(dateType: 'from' | 'to', value: MonthSelectorValue): void {
-        if (!isNullOrUndefined(value)) {
-            this.statisticsFilter[dateType] = new Date(value.year, value.month);
-        } else {
-            this.statisticsFilter[dateType] = undefined;
         }
     }
 

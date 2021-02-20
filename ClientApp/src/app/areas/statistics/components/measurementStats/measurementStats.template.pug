@@ -5,13 +5,17 @@ doctype html
         label From
         app-month-selector(
             startYear='2009',
-            (selectionChange)="onDateChange('from', $event)"
+            [(year)]='statisticsFilter.from.year',
+            [(month)]='statisticsFilter.from.month',
+            canClear='true'
         )
     .form-group.col-2.p-0.mr-3
         label To
         app-month-selector(
             startYear='2009',
-            (selectionChange)="onDateChange('to', $event)"
+            [(year)]='statisticsFilter.to.year',
+            [(month)]='statisticsFilter.to.month',
+            canClear='true'
         )
     .form-group.col-3
         label(for='type') Measurement type

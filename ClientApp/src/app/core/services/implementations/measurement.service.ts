@@ -8,14 +8,12 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';
 
-import MeasurementsFilter from 'models/measurementsFilter';
-import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
-import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+
+import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
 @Injectable()
 export class MeasurementService implements IMeasurementService {
@@ -28,18 +26,8 @@ export class MeasurementService implements IMeasurementService {
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
-        // data validation
-        const parsedMonth: number =
-            parseInt(measurementData.month, 10) + 1;
-        const month: number =
-            parsedMonth > 12
-                ? parsedMonth % 12
-                : parsedMonth;
         return this.measurementApiBackend
-            .addMeasurement({
-                ...measurementData,
-                month: month.toString()
-            })
+            .addMeasurement(measurementData)
             .pipe(
                 tap(withoutError => {
                     if (!withoutError) {
@@ -65,7 +53,7 @@ export class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend.getMeasurement(id);
     }
 
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
+    public updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
             .updateMeasurement(id, measurementData)
             .pipe(

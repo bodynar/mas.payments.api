@@ -18,7 +18,7 @@ import { BaseRoutingComponentWithModalComponent } from 'common/components/BaseCo
 import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
-import MeasurementsFilter from 'models/measurementsFilter';
+import MeasurementsFilter from 'models/request/measurement/measurementsFilter';
 import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 

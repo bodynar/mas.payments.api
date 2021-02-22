@@ -31,8 +31,13 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.toDate()
+        }
+
         return this.http
-            .post(`${this.apiPrefix}/addMeasurement`, measurementData)
+            .post(`${this.apiPrefix}/addMeasurement`, requestData)
             .pipe(
                 catchError(error => of(error)),
                 map(x => boxServerResponse(x)),

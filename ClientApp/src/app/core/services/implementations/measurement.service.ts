@@ -26,6 +26,8 @@ export class MeasurementService implements IMeasurementService {
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
+        measurementData.date.month = +measurementData.date.month  + 1;
+
         return this.measurementApiBackend
             .addMeasurement(measurementData)
             .pipe(
@@ -46,14 +48,41 @@ export class MeasurementService implements IMeasurementService {
                         // this.loggingService.error(response);
                     }
                 }),
+                map(x => {
+                    if (x.success) {
+                        x.result = x.result.map(item => ({
+                            ...item,
+                            month: item.month - 1,
+                            measurements: item.measurements.map(m => ({ ...m, month: +m.month - 1 }))
+                        }));
+                    }
+
+                    return x;
+                }),
             );
     }
 
     public getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>> {
-        return this.measurementApiBackend.getMeasurement(id);
+        return this.measurementApiBackend.getMeasurement(id)
+            .pipe(
+                tap(response => {
+                    if (!response.success) {
+                        // this.loggingService.error(response);
+                    }
+                }),
+                map(response => {
+                    if (response.success) {
+                        response.result.date.month = response.result.date.month - 1;
+                    }
+
+                    return response;
+                })
+            );
     }
 
     public updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult> {
+        measurementData.date.month = measurementData.date.month + 1;
+
         return this.measurementApiBackend
             .updateMeasurement(id, measurementData)
             .pipe(

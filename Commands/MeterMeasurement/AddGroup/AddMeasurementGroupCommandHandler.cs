@@ -26,6 +26,13 @@
 
         public override void Handle(AddMeasurementGroupCommand command)
         {
+            if (!command.Measurements.Any())
+            {
+                return;
+            }
+
+            // TODO: validate measurement
+
             var notValidTypes =
                 command.Measurements
                     .Where(x => MeterMeasurementTypeRepository.Get(x.MeasurementTypeId) == null)
@@ -36,14 +43,29 @@
                 throw new CommandExecutionException(CommandType, $"Measurement types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
-            var requestDate = command.Date.Date.AddMonths(-1);
             var measurements = new List<MeterMeasurement>();
+            var calculatedNewMeasurementDate = new DateTime(command.Date.Year, command.Date.Month, 20);
+            var previousMonthDate = calculatedNewMeasurementDate.AddMonths(-1);
+
+            var measurementsOnSpecifiedMonth =
+                Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date.Date == calculatedNewMeasurementDate));
 
             foreach (var measurementData in command.Measurements)
             {
+                var measurementWithSameType =
+                    measurementsOnSpecifiedMonth.FirstOrDefault(x => x.MeterMeasurementTypeId == measurementData.MeasurementTypeId);
+
+                if (measurementWithSameType != null)
+                {
+                    throw new ArgumentException($"Measurement for date {calculatedNewMeasurementDate:MMMM yyyy} with type \"{measurementWithSameType.MeasurementType.Name}\" is already added.");
+                }
+
                 var previousValue =
-                    Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date.Date == requestDate))
-                        .FirstOrDefault();
+                    Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
+                        x.Date.Date.Month == previousMonthDate.Month
+                        && x.Date.Date.Year == previousMonthDate.Year
+                        && x.MeterMeasurementTypeId == measurementData.MeasurementTypeId
+                    )).FirstOrDefault();
 
                 double? diff = null;
 
@@ -55,7 +77,7 @@
                 measurements.Add(
                     new MeterMeasurement
                     {
-                        Date = command.Date.Date,
+                        Date = calculatedNewMeasurementDate,
                         Measurement = measurementData.Measurement,
                         MeterMeasurementTypeId = measurementData.MeasurementTypeId,
                         Comment = measurementData.Comment,

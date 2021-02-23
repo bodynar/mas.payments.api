@@ -169,6 +169,12 @@ namespace MAS.Payments.Controllers
             return QueryProcessor.Execute(new GetMeasurementAverageValueQuery());
         }
 
+        [HttpGet("withoutDiff")]
+        public int GetMeasurementsWithoutDiff()
+        {
+            return QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
+        }
+
         #endregion
     }
 }

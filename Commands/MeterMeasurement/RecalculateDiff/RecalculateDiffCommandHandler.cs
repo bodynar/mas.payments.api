@@ -1,0 +1,63 @@
+﻿namespace MAS.Payments.Commands
+{
+    using System;
+    using System.Linq;
+
+    using MAS.Payments.DataBase;
+    using MAS.Payments.DataBase.Access;
+    using MAS.Payments.Infrastructure;
+    using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Specification;
+
+    internal class RecalculateDiffCommandHandler : BaseCommandHandler<RecalculateDiffCommand>
+    {
+        private IRepository<MeterMeasurement> Repository { get; }
+
+        public RecalculateDiffCommandHandler(IResolver resolver)
+            : base(resolver)
+        {
+
+        }
+
+        public override void Handle(RecalculateDiffCommand command)
+        {
+            var specification = command.ForAll
+                ? new CommonSpecification<MeterMeasurement>(x => true)
+                : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
+
+            var measurementItems = Repository.Where(specification).ToList();
+
+            foreach (var measurementItem in measurementItems)
+            {
+                var previousItem = GetPreviousMeasurement(measurementItem);
+
+                if (previousItem != null)
+                {
+                    if (previousItem.Measurement >= measurementItem.Measurement)
+                    {
+                        // TODO: Add warning logs
+                        // $"Measurement \"{measurementItem.Id}\" have value less or equal to previous one \"{previousItem.Id}\".";
+                    }
+                    else
+                    {
+                        measurementItem.Diff = Math.Abs(previousItem.Measurement - measurementItem.Measurement);
+                    }
+                }
+            }
+        }
+
+        private MeterMeasurement GetPreviousMeasurement(MeterMeasurement measurement)
+        {
+            var targetDate = new DateTime(measurement.Date.Year, measurement.Date.Month - 1, 20);
+
+            return Repository.Where(
+                    new CommonSpecification<MeterMeasurement>(x =>
+                        x.MeterMeasurementTypeId == measurement.MeterMeasurementTypeId
+                        && x.Date.Year == targetDate.Year
+                        && x.Date.Month == targetDate.Month
+                    )
+                ).OrderByDescending(x => x.Date)
+                .FirstOrDefault();
+        }
+    }
+}

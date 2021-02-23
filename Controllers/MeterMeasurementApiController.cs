@@ -67,7 +67,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody]long? measurementTypeId)
+        public void DeleteMeasurementType([FromBody] long? measurementTypeId)
         {
             if (!measurementTypeId.HasValue || measurementTypeId.Value == default)
             {
@@ -106,7 +106,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurement([FromBody]AddMeasurementGroupRequest request)
+        public void AddMeasurement([FromBody] AddMeasurementGroupRequest request)
         {
             if (request == null)
             {
@@ -132,7 +132,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody]long? measurementId)
+        public void DeleteMeasurement([FromBody] long? measurementId)
         {
             if (!measurementId.HasValue || measurementId.Value == default)
             {
@@ -173,6 +173,12 @@ namespace MAS.Payments.Controllers
         public int GetMeasurementsWithoutDiff()
         {
             return QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
+        }
+
+        [HttpPost("[action]")]
+        public void UpdateDiff()
+        {
+            CommandProcessor.Execute(new RecalculateDiffCommand(false));
         }
 
         #endregion

@@ -16,7 +16,7 @@
         public RecalculateDiffCommandHandler(IResolver resolver)
             : base(resolver)
         {
-
+            Repository = GetRepository<MeterMeasurement>();
         }
 
         public override void Handle(RecalculateDiffCommand command)
@@ -48,7 +48,7 @@
 
         private MeterMeasurement GetPreviousMeasurement(MeterMeasurement measurement)
         {
-            var targetDate = new DateTime(measurement.Date.Year, measurement.Date.Month - 1, 20);
+            var targetDate = measurement.Date.AddMonths(-1);
 
             return Repository.Where(
                     new CommonSpecification<MeterMeasurement>(x =>

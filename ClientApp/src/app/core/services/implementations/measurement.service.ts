@@ -104,6 +104,14 @@ export class MeasurementService implements IMeasurementService {
             .sendMeasurements(measurementIds);
     }
 
+    public getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>> {
+        return this.measurementApiBackend.getMeasurementsWithoutDiffCount();
+    }
+
+    public updateDiff(): Observable<CommandExecutionResult> {
+        return this.measurementApiBackend.updateDiff();
+    }
+
     // #endregion measurements
 
     // #region measurement types

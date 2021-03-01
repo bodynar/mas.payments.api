@@ -34,7 +34,7 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
         const requestData = {
             ...measurementData,
             date: measurementData.date.toDate()
-        }
+        };
 
         return this.http
             .post(`${this.apiPrefix}/addMeasurement`, requestData)
@@ -137,6 +137,25 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
     public sendMeasurements(measurementIds: Array<number>): Observable<CommandExecutionResult> {
         return this.http
             .post(`${this.apiPrefix}/sendMeasurements`, measurementIds)
+            .pipe(
+                catchError(error => of(error)),
+                map(x => boxServerResponse(x)),
+            );
+    }
+
+    public getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>> {
+        return this.http
+            .get(`${this.apiPrefix}/withoutDiff`)
+            .pipe(
+                map(response => response as number),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<number>(x)),
+            );
+    }
+
+    public updateDiff(): Observable<CommandExecutionResult> {
+        return this.http
+            .post(`${this.apiPrefix}/updateDiff`, {})
             .pipe(
                 catchError(error => of(error)),
                 map(x => boxServerResponse(x)),

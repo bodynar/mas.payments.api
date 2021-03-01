@@ -21,6 +21,10 @@ abstract class IMeasurementApiBackendService {
 
     abstract sendMeasurements(measurementIds: Array<number>): Observable<CommandExecutionResult>;
 
+    abstract getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>>;
+
+    abstract updateDiff(): Observable<CommandExecutionResult>;
+
     // #endregion measurements
 
     // #region measurement types

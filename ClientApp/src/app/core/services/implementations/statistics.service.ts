@@ -11,6 +11,8 @@ import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilte
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
 import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
+import { emptyMonth } from 'static/months';
+import { emptyYear } from 'common/utils/years';
 
 @Injectable()
 class StatisticsService implements IStatisticsService {
@@ -21,8 +23,10 @@ class StatisticsService implements IStatisticsService {
     ) { }
 
     public getPaymentStatistics(filter: PaymentStatisticsFilter): Observable<QueryExecutionResult<GetPaymentsStatisticsResponse>> {
+        const requestData = this.getRequestData(filter);
+
         return this.statsApiBackend
-            .getPaymentStatistics(filter)
+            .getPaymentStatistics(requestData)
             .pipe(
                 tap(response => {
                     if (!response.success) {
@@ -34,9 +38,10 @@ class StatisticsService implements IStatisticsService {
 
     public getMeasurementStatistics(filter: MeasurementStatisticsFilter)
         : Observable<QueryExecutionResult<GetMeasurementStatisticsResponse>> {
+        const requestData = this.getRequestData(filter);
 
         return this.statsApiBackend
-            .getMeasurementStatistics(filter)
+            .getMeasurementStatistics(requestData)
             .pipe(
                 tap(response => {
                     if (!response.success) {
@@ -44,6 +49,19 @@ class StatisticsService implements IStatisticsService {
                     }
                 }),
             );
+    }
+
+    private getRequestData(filter: MeasurementStatisticsFilter | PaymentStatisticsFilter): any {
+        const requestData = { ...filter };
+
+        if (requestData.from.month === emptyMonth.id || requestData.from.year === emptyYear.id) {
+            requestData.from = undefined;
+        }
+        if (requestData.to.month === emptyMonth.id || requestData.to.year === emptyYear.id) {
+            requestData.to = undefined;
+        }
+
+        return requestData;
     }
 }
 

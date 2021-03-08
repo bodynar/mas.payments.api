@@ -7,15 +7,14 @@ import { catchError, map } from 'rxjs/operators';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
-import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
-
-import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
-
 import { isNullOrUndefined } from 'common/utils/common';
 import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
+import MonthYear from 'models/monthYearDate';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
-import MonthYear from 'models/monthYearDate';
 
 @Injectable()
 export class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -153,12 +152,13 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
             );
     }
 
-    public updateDiff(): Observable<CommandExecutionResult> {
+    public updateDiff(): Observable<QueryExecutionResult<string>> {
         return this.http
             .post(`${this.apiPrefix}/updateDiff`, {})
             .pipe(
+                map((response: any) => (response instanceof Array ? response : []).join('\n')),
                 catchError(error => of(error)),
-                map(x => boxServerResponse(x)),
+                map(x => boxServerQueryResponse<string>(x)),
             );
     }
 

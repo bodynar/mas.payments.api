@@ -12,7 +12,6 @@ import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
-
 import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
 @Injectable()
@@ -108,7 +107,7 @@ export class MeasurementService implements IMeasurementService {
         return this.measurementApiBackend.getMeasurementsWithoutDiffCount();
     }
 
-    public updateDiff(): Observable<CommandExecutionResult> {
+    public updateDiff(): Observable<QueryExecutionResult<string>> {
         return this.measurementApiBackend.updateDiff();
     }
 

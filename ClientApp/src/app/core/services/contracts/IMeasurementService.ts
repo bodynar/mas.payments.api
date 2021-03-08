@@ -23,7 +23,7 @@ abstract class IMeasurementService {
 
     abstract getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>>;
 
-    abstract updateDiff(): Observable<CommandExecutionResult>;
+    abstract updateDiff(): Observable<QueryExecutionResult<string>>;
 
     // #endregion measurements
 

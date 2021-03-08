@@ -176,9 +176,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void UpdateDiff()
+        public IEnumerable<string> UpdateDiff()
         {
-            CommandProcessor.Execute(new RecalculateDiffCommand(false));
+            var command = new RecalculateDiffCommand(false);
+
+            CommandProcessor.Execute(command);
+
+            return command.Warnings;
         }
 
         #endregion

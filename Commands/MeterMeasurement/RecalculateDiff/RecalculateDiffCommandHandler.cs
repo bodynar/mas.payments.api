@@ -1,6 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
 
     using MAS.Payments.DataBase;
@@ -26,6 +27,7 @@
                 : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
 
             var measurementItems = Repository.Where(specification).ToList();
+            var warnings = new List<string>();
 
             foreach (var measurementItem in measurementItems)
             {
@@ -35,14 +37,22 @@
                 {
                     if (previousItem.Measurement >= measurementItem.Measurement)
                     {
-                        // TODO: Add warning logs
-                        // $"Measurement \"{measurementItem.Id}\" have value less or equal to previous one \"{previousItem.Id}\".";
+                        warnings.Add($"[{measurementItem.Date:MMMM.yyyy}]: Value is less than previous one");
                     }
                     else
                     {
                         measurementItem.Diff = Math.Abs(previousItem.Measurement - measurementItem.Measurement);
                     }
                 }
+                else
+                {
+                    warnings.Add($"[{measurementItem.Date:MMMM.yyyy}]: Previous measurement not found");
+                }
+            }
+
+            if (warnings.Any())
+            {
+                command.Warnings = warnings;
             }
         }
 

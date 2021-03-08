@@ -4,8 +4,9 @@ import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 import { Subject, Subscription } from 'rxjs';
 import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import BaseComponent from 'common/components/BaseComponent';
+import { BaseComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
+import { IModalService } from 'src/app/components/modal/IModalService';
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 import { IMeasurementService } from 'services/IMeasurementService';
@@ -13,12 +14,10 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import { UpdateUserSettingRequest } from 'models/request/user';
 import { GetUserSettingsResponse } from 'models/response/user';
 
-type UserSettingPageMode = 'loading_settings' | 'loading_businessProccesses' | 'loaded';
-
 @Component({
     templateUrl: 'userSetting.template.pug'
 })
-export class UserSettingComponent extends BaseComponent {
+export class UserSettingComponent extends BaseComponentWithModalComponent {
     public userSettings: Array<GetUserSettingsResponse> = [];
 
     public isSettingsLoading: boolean = false;
@@ -38,8 +37,9 @@ export class UserSettingComponent extends BaseComponent {
         private userService: IUserService,
         private notificationService: INotificationService,
         private measurementService: IMeasurementService,
+        modalService: IModalService
     ) {
-        super();
+        super(modalService);
 
         this.whenComponentInit$
             .subscribe(() => {
@@ -137,6 +137,7 @@ export class UserSettingComponent extends BaseComponent {
                 .pipe(
                     takeUntil(this.whenComponentDestroy$),
                     tap(_ => this.isDiffLoading = true),
+                    delay(1.5 * 1000),
                     filter(result => {
                         if (!result.success) {
                             this.notificationService.error(result.error);
@@ -146,7 +147,16 @@ export class UserSettingComponent extends BaseComponent {
                         return result.success;
                     })
                 )
-                .subscribe(_ => {
+                .subscribe(({ result }) => {
+                    if (result.length > 0) {
+                        this.showInModal({
+                            body: result,
+                            isHtml: true,
+                            size: 'small',
+                            title: 'Warnings due execution'
+                        });
+                    }
+
                     this.loadMeasurementsWithoutDiff();
                     subscription.unsubscribe();
                 });

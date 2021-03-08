@@ -68,7 +68,7 @@ export class PaymentStatsComponent extends BaseComponent {
         private notificationService: INotificationService,
     ) {
         super();
-        console.warn(this.statisticsFilter.from, this.statisticsFilter.to);
+
         this.whenComponentInit$
             .pipe(
                 switchMapTo(this.paymentService.getPaymentTypes()),

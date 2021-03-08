@@ -60,7 +60,7 @@ export class MenuComponent extends BaseComponent {
         if (this.searchPattern.endsWith('.py')) {
             alert('oh you little hacker');
         } else {
-            console.log('Search will be available soon..');
+            // console.log('Search will be available soon..');
         }
     }
 

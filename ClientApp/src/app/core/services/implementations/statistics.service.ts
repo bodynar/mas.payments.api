@@ -6,16 +6,17 @@ import { tap } from 'rxjs/operators';
 import { IStatisticsApiBackendService } from 'services/backend/IStatisticsApi.backend';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
-import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
-import QueryExecutionResult from 'models/response/queryExecutionResult';
-import { GetMeasurementStatisticsResponse } from 'models/response/stats/measurementStatsResponse';
-import { GetPaymentsStatisticsResponse } from 'models/response/stats/paymentStatsResponse';
 import { emptyMonth } from 'static/months';
 import { emptyYear } from 'common/utils/years';
 
+import QueryExecutionResult from 'models/response/queryExecutionResult';
+
+import { BaseStatsFilter, MeasurementStatisticsFilter, PaymentStatisticsFilter } from 'models/request/stats';
+
+import { GetMeasurementStatisticsResponse, GetPaymentsStatisticsResponse } from 'models/response/stats';
+
 @Injectable()
-class StatisticsService implements IStatisticsService {
+export default class StatisticsService implements IStatisticsService {
 
     constructor(
         private statsApiBackend: IStatisticsApiBackendService,
@@ -51,7 +52,7 @@ class StatisticsService implements IStatisticsService {
             );
     }
 
-    private getRequestData(filter: MeasurementStatisticsFilter | PaymentStatisticsFilter): any {
+    private getRequestData<TFilterType extends BaseStatsFilter>(filter: TFilterType): TFilterType {
         const requestData = { ...filter };
 
         if (requestData.from.month === emptyMonth.id || requestData.from.year === emptyYear.id) {
@@ -64,5 +65,3 @@ class StatisticsService implements IStatisticsService {
         return requestData;
     }
 }
-
-export { StatisticsService };

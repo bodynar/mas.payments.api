@@ -37,7 +37,7 @@
                 {
                     if (previousItem.Measurement >= measurementItem.Measurement)
                     {
-                        warnings.Add($"[{measurementItem.Date:MMMM.yyyy}]: Value is less than previous one");
+                        warnings.Add($"[{measurementItem.MeasurementType.Name} - {measurementItem.Date:MMMM yyyy}]: Value is less than previous one");
                     }
                     else
                     {
@@ -46,7 +46,7 @@
                 }
                 else
                 {
-                    warnings.Add($"[{measurementItem.Date:MMMM.yyyy}]: Previous measurement not found");
+                    warnings.Add($"[{measurementItem.MeasurementType.Name} - {measurementItem.Date:MMMM yyyy}]: Previous measurement not found");
                 }
             }
 

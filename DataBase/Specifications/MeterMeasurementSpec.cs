@@ -10,7 +10,7 @@
         public class WithoutDiff : Specification<MeterMeasurement>
         {
             public override Expression<Func<MeterMeasurement, bool>> IsSatisfied()
-                => measurement => measurement.Diff == null;
+                => measurement => measurement.Diff == null || measurement.Diff == 0;
         }
     }
 }

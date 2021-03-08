@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { BehaviorSubject, of, ReplaySubject, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 import { filter, map, switchMap, takeUntil, tap, delay } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
@@ -19,8 +19,7 @@ import { getPaginatorConfig } from 'sharedComponents/paginator/paginator';
 import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 
 import MeasurementsFilter from 'models/request/measurement/measurementsFilter';
-import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
+import { MeasurementsResponse, MeasurementsResponseMeasurement, MeasurementTypeResponse } from 'models/response/measurements';
 
 @Component({
     templateUrl: 'measurementList.template.pug'
@@ -29,41 +28,23 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
 
-    public paginatorConfig$: Subject<PaginatorConfig> =
-        new ReplaySubject(1);
+    public paginatorConfig: PaginatorConfig;
 
-    public measurements$: Subject<Array<MeasurementsResponse>> =
-        new ReplaySubject(1);
+    public pageItems: Array<MeasurementsResponse> = [];
+    public measurementTypes: Array<MeasurementTypeResponse> = [];
 
-    public measurementTypes$: Subject<Array<MeasurementTypeResponse>> =
-        new Subject();
-
-    public hasData$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public isLoading$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public isMeasurementsSentFlagActive$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public isAnyMeasurementSelectedToSend$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public selectedMeasurementsCount$: Subject<string> =
-        new Subject();
-
-    public isFilterApplied$: Subject<boolean> =
-        new BehaviorSubject(false);
+    public hasData: boolean = false;
+    public isLoading: boolean = false;
+    public isMeasurementsSentFlagActive: boolean = false;
+    public isAnyMeasurementSelectedToSend: boolean = false;
+    public isFilterApplied: boolean = false;
+    public selectedMeasurementsCount: string = ''; // TODO: switch to number and figure out about template format
 
     public months: Array<Month> =
         [emptyMonth, ...months];
 
     public years: Array<Year> =
         [emptyYear, ...yearsRange(2019, new Date().getFullYear() + 5)];
-
-    public isMeasurementsSentFlagVisible: boolean =
-        false;
 
     // #region private members
 
@@ -79,17 +60,11 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>>
         = new Subject();
 
-    private selectedMeasurementsToSend: Array<{ id: number, isSent: boolean }> =
-        [];
+    private selectedMeasurementsToSend: Array<{ id: number, isSent: boolean }> = [];
+    private measurementGroups: Array<MeasurementsResponse> = [];
+    private measurements: Array<MeasurementsResponseMeasurement> = [];
 
-    private measurements: Array<MeasurementsResponseMeasurement> =
-        [];
-
-    private measurementGroups: Array<MeasurementsResponse> =
-        [];
-
-    private pageSize: number =
-        3;
+    private pageSize: number = 3;
 
     // #endregion
 
@@ -103,14 +78,14 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
 
         this.whenComponentInit$
             .pipe(
+                takeUntil(this.whenComponentDestroy$),
                 switchMap(() => {
-                    this.isLoading$.next(true);
+                    this.isLoading = true;
                     return this.measurementService.getMeasurementTypes();
                 }),
-                takeUntil(this.whenComponentDestroy$),
                 delay(1.5 * 1000),
                 filter(response => {
-                    this.isLoading$.next(false);
+                    this.isLoading = false;
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -119,12 +94,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 })
             )
             .subscribe(({ result }) => {
-                this.measurementTypes$.next([
-                    {
-                        name: '',
-                        systemName: '',
-                    }, ...result
-                ]);
+                this.measurementTypes = [{ name: '', systemName: '', }, ...result];
                 this.whenSubmitFilters$.next();
             });
 
@@ -132,14 +102,14 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 tap(_ => {
-                    this.isLoading$.next(true);
+                    this.isLoading = true;
                     this.filters.setIsEmpty();
-                    this.isFilterApplied$.next(this.filters.isEmpty);
+                    this.isFilterApplied = this.filters.isEmpty;
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
                 delay(1.5 * 1000),
                 filter(response => {
-                    this.isLoading$.next(false);
+                    this.isLoading = false;
                     if (!response.success) {
                         this.notificationService.error(response.error);
                     }
@@ -157,11 +127,11 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 if (paginatorConfig.enabled) {
                     this.onPageChange(0);
                 } else {
-                    this.measurements$.next(this.measurementGroups);
+                    this.measurementGroups = this.measurementGroups;
                 }
 
-                this.hasData$.next(this.measurements.length !== 0);
-                this.paginatorConfig$.next(paginatorConfig);
+                this.hasData = this.measurements.length !== 0;
+                this.paginatorConfig = paginatorConfig;
             });
 
         this.whenMeasurementDelete$
@@ -206,24 +176,25 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                     const hasAlreadySentItems: boolean =
                         array.some(x => x.isSent);
 
-                    if (hasAlreadySentItems) {
-                        return this.confirmInModal('Measurements already sent', 'Some of measurements is already sent.\nDo you want to send them again?')
-                            .pipe(map(isConfirm => ({ array, isConfirm })));
-                    } else {
-                        return of({ array, isConfirm: true });
-                    }
+                    const confirmMessage: string =
+                        hasAlreadySentItems
+                            ? 'Some of measurements is already sent.\nDo you want to send them again?'
+                            : 'Are you sure want to selected measurements?';
+
+                    return this.confirmInModal('Confirm sending', confirmMessage)
+                        .pipe(map(isConfirm => ({ array, isConfirm })));
                 }),
                 filter(({ isConfirm }) => isConfirm),
                 map(({ array }) => array.map(x => x.id)),
                 switchMap(array => {
-                    this.isLoading$.next(true);
+                    this.isLoading = true;
                     return this.measurementService.sendMeasurements(array);
                 }),
                 delay(1.5 * 1000),
                 filter(response => {
-                    this.isLoading$.next(false);
-                    this.isMeasurementsSentFlagActive$.next(false);
-                    this.isAnyMeasurementSelectedToSend$.next(false);
+                    this.isLoading = false;
+                    this.isMeasurementsSentFlagActive = false;
+                    this.isAnyMeasurementSelectedToSend = false;
 
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -234,11 +205,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 }),
             )
             .subscribe(_ => this.whenSubmitFilters$.next(null));
-
-        this.selectedMeasurementsCount$.next('');
-
-        this.isMeasurementsSentFlagActive$
-            .subscribe(isFlagVisible => this.isMeasurementsSentFlagVisible = isFlagVisible);
     }
 
     public onActionClick(actionName: string): void {
@@ -295,13 +261,8 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
             }
         }
 
-        this.isAnyMeasurementSelectedToSend$.next(this.selectedMeasurementsToSend.length > 0);
-
-        const count: string =
-            this.selectedMeasurementsToSend.length > 0
-                ? `(${this.selectedMeasurementsToSend.length})`
-                : '';
-        this.selectedMeasurementsCount$.next(count);
+        this.isAnyMeasurementSelectedToSend = this.selectedMeasurementsToSend.length > 0;
+        this.selectedMeasurementsCount = this.isAnyMeasurementSelectedToSend ? `(${this.selectedMeasurementsToSend.length})` : '';
     }
 
     public clearFilters(): void {
@@ -311,12 +272,12 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     }
 
     public onSelectMeasurementsClick(isMeasurementsSentFlagVisible: boolean): void {
-        this.isMeasurementsSentFlagActive$.next(isMeasurementsSentFlagVisible);
+        this.isMeasurementsSentFlagActive = isMeasurementsSentFlagVisible;
 
         if (!isMeasurementsSentFlagVisible) {
             this.selectedMeasurementsToSend = [];
-            this.isAnyMeasurementSelectedToSend$.next(false);
-            this.selectedMeasurementsCount$.next('');
+            this.isAnyMeasurementSelectedToSend = false;
+            this.selectedMeasurementsCount = '';
         }
     }
 
@@ -324,6 +285,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
         const slicedItems: Array<MeasurementsResponse> =
             this.measurementGroups.slice(this.pageSize * pageNumber, (pageNumber + 1) * this.pageSize);
 
-        this.measurements$.next(slicedItems);
+        this.pageItems = slicedItems;
     }
 }

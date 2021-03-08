@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { ReplaySubject, Subject } from 'rxjs';
 
 import { getMonthName } from 'static/months';
 
 import BaseComponent from 'common/components/BaseComponent';
 
-import MeasurementsResponse, { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
+import { MeasurementsResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
 
 @Component({
     selector: 'app-measurement-group',
@@ -18,10 +18,10 @@ export class MeasurementGroupComponent extends BaseComponent {
     public measurementGroup: MeasurementsResponse;
 
     @Input()
-    public isSentFlagActive$: Subject<boolean>;
+    public isSentFlagActive: boolean;
 
     @Input()
-    public showAsGroups: Subject<boolean>;
+    public showAsGroups: boolean;
 
     @Output()
     public deleteClick: EventEmitter<number> =
@@ -42,8 +42,6 @@ export class MeasurementGroupComponent extends BaseComponent {
     }> =
         new EventEmitter();
 
-    public measurements$: Subject<Array<MeasurementsResponseMeasurement>> =
-        new ReplaySubject();
 
     public onDeleteClick$: Subject<number> =
         new ReplaySubject();
@@ -60,24 +58,15 @@ export class MeasurementGroupComponent extends BaseComponent {
     }> =
         new ReplaySubject();
 
-    public isGroupCollapsed$: Subject<boolean> =
-        new BehaviorSubject(false);
+    public measurements: Array<MeasurementsResponseMeasurement> = [];
+    public isGroupCollapsed: boolean = false;
+    public isDescSortOrder: boolean = false;
 
-    public isDescSortOrder$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public currentSortColumn$: Subject<string> =
-        new ReplaySubject();
-
+    public currentSortColumn: string;
     public formattedGroupName: string;
-
-    private collapsed: boolean =
-        false;
 
     private currentSortOrder: 'asc' | 'desc' =
         'asc';
-
-    private currentSortColumn: string;
 
     constructor(
     ) {
@@ -90,8 +79,6 @@ export class MeasurementGroupComponent extends BaseComponent {
 
         this.whenComponentInit$
             .subscribe(() => {
-                this.showAsGroups.subscribe();
-
                 const monthName: string =
                     getMonthName(+this.measurementGroup.month);
 
@@ -101,8 +88,7 @@ export class MeasurementGroupComponent extends BaseComponent {
     }
 
     public toggleState(): void {
-        this.collapsed = !this.collapsed;
-        this.isGroupCollapsed$.next(this.collapsed);
+        this.isGroupCollapsed = !this.isGroupCollapsed;
     }
 
     public onSortColumn(columnName: string): void {
@@ -142,12 +128,12 @@ export class MeasurementGroupComponent extends BaseComponent {
                 ? 'desc'
                 : 'asc';
 
-        this.currentSortColumn$.next(columnName);
-        this.isDescSortOrder$.next(this.currentSortOrder === 'desc');
+        this.currentSortColumn = columnName;
+        this.isDescSortOrder = this.currentSortOrder === 'desc';
 
         const sortedMeasurements: Array<MeasurementsResponseMeasurement> =
             this.measurementGroup.measurements.sort(sortingFunc);
 
-        this.measurements$.next(sortedMeasurements);
+        this.measurements = sortedMeasurements;
     }
 }

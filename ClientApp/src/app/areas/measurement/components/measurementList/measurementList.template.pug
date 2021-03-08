@@ -27,38 +27,34 @@ doctype html
             button.dropdown-item(
                 type='button',
                 href='#',
-                *ngIf='!(isMeasurementsSentFlagActive$ | async)',
+                *ngIf='!isMeasurementsSentFlagActive',
                 (click)='onSelectMeasurementsClick(true)',
-                [disabled]='!(hasData$ | async)'
+                [disabled]='!hasData'
             ) Send
             button.dropdown-item(
                 type='button',
                 href='#',
-                *ngIf='isMeasurementsSentFlagActive$ | async',
+                *ngIf='isMeasurementsSentFlagActive',
                 (click)='onSendMeasurementsClick()',
-                [disabled]='!(isAnyMeasurementSelectedToSend$ | async)'
+                [disabled]='!isAnyMeasurementSelectedToSend'
             )
                 span.spinner-grow.spinner-grow-sm.mr-1(
-                    *ngIf='(isMeasurementsSentFlagActive$ | async) && (isLoading$ | async)'
+                    *ngIf='isMeasurementsSentFlagActive && isLoading'
                     role='status',
                     aria-hidden='true'
                 )
-                | Send {{ selectedMeasurementsCount$ | async }}
-            .dropdown-divider(
-                *ngIf='isMeasurementsSentFlagActive$ | async'
-            )
+                | Send {{ selectedMeasurementsCount }}
+            .dropdown-divider(*ngIf='isMeasurementsSentFlagActive')
             button.dropdown-item(
                 type='button',
                 href='#',
-                *ngIf='isMeasurementsSentFlagActive$ | async',
+                *ngIf='isMeasurementsSentFlagActive',
                 (click)='onSelectMeasurementsClick(false)'
             ) Cancel
 
 hr
 
-.mb-3#filterContainer(
-    data-collapsable='true'
-)
+.mb-3#filterContainer(data-collapsable='true')
     .card
         .card-header.p-0#filterHeader
             h5.mb-0
@@ -108,7 +104,7 @@ hr
                                 [(ngModel)]='filters.measurementTypeId'
                             )
                                 option(
-                                    *ngFor='let measurementType of (measurementTypes$ | async)',
+                                    *ngFor='let measurementType of measurementTypes',
                                     [ngValue]='measurementType.id'
                                 ) {{ measurementType.name }}
                     .btn-toolbar(
@@ -132,22 +128,18 @@ hr
                             ) Clear
 hr
 .loading-cover
-    .loading-cover_image-container(
-        *ngIf='isLoading$ | async'
-    )
+    .loading-cover_image-container(*ngIf='isLoading')
         img.loading-cover_image-container_img(
             alt='loading..',
             src='assets/images/loading-02.svg'
         )
-    .loading-cover_content(
-        [attr.data-disabled]='isLoading$ | async'
-    )
-        div(*ngIf='hasData$ | async')
+    .loading-cover_content([attr.data-disabled]='isLoading')
+        div(*ngIf='hasData')
             app-measurement-group(
-                *ngFor='let measurementGroup of (measurements$ | async)',
+                *ngFor='let measurementGroup of pageItems',
                 [measurementGroup]='measurementGroup',
-                [showAsGroups]='isFilterApplied$',
-                [isSentFlagActive$]='isMeasurementsSentFlagActive$',
+                [showAsGroups]='isFilterApplied',
+                [isSentFlagActive]='isMeasurementsSentFlagActive',
                 (deleteClick)='onDeleteRecordClick($event)',
                 (editClick)='onEditRecordClick($event)',
                 (typeClick)='onTypeClick($event)',
@@ -155,8 +147,8 @@ hr
             )
             br
             app-paginator(
-                *ngIf='(paginatorConfig$ | async)?.enabled',
-                [pagesCount]='(paginatorConfig$ | async)?.pagesCount',
+                *ngIf='paginatorConfig?.enabled',
+                [pagesCount]='paginatorConfig?.pagesCount',
                 (pageChange)='onPageChange($event)'
             )
-        app-no-items(*ngIf='!(hasData$ | async) && !(isLoading$ | async)')
+        app-no-items(*ngIf='!hasData && !isLoading')

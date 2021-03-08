@@ -152,7 +152,7 @@ export class UserSettingComponent extends BaseComponentWithModalComponent {
                         this.showInModal({
                             body: result,
                             isHtml: true,
-                            size: 'small',
+                            size: 'large',
                             title: 'Warnings due execution'
                         });
                     }

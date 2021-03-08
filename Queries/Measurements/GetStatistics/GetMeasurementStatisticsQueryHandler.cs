@@ -74,8 +74,6 @@
 
                 var groupedByYear = typeGroup.GroupBy(x => x.Date.Year).OrderBy(x => x.Key);
 
-                double previousMeasurement = 0.0;
-
                 foreach (var yearGroup in groupedByYear)
                 {
                     var months = MonthNumbers;
@@ -131,13 +129,8 @@
                         {
                             Year = yearGroup.Key,
                             Month = monthNumber,
-                            MeasurementDiff = item == null ? null : (double?)Math.Abs(item.Measurement - previousMeasurement)
+                            MeasurementDiff = item?.Diff
                         });
-
-                        if (item != null)
-                        {
-                            previousMeasurement = item.Measurement;
-                        }
                     }
                 }
 

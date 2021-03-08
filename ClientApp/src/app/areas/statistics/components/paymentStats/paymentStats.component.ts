@@ -13,8 +13,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IPaymentService } from 'services/IPaymentService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
-import { emptyYear, Year, yearsRange } from 'common/utils/years';
-import { emptyMonth, getMonthName, months } from 'static/months';
+import { Year, yearsRange } from 'common/utils/years';
+import { getMonthName, months } from 'static/months';
 
 import MonthYear from 'models/monthYearDate';
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
@@ -68,7 +68,7 @@ export class PaymentStatsComponent extends BaseComponent {
         private notificationService: INotificationService,
     ) {
         super();
-
+        console.warn(this.statisticsFilter.from, this.statisticsFilter.to);
         this.whenComponentInit$
             .pipe(
                 switchMapTo(this.paymentService.getPaymentTypes()),
@@ -94,16 +94,7 @@ export class PaymentStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => {
-                    this.chartDataIsLoading = true;
-
-                    if (this.statisticsFilter.from.month === emptyMonth.id || this.statisticsFilter.from.year === emptyYear.id) {
-                        this.statisticsFilter.from = undefined;
-                    }
-                    if (this.statisticsFilter.to.month === emptyMonth.id || this.statisticsFilter.to.year === emptyYear.id) {
-                        this.statisticsFilter.to = undefined;
-                    }
-                }),
+                tap(() => this.chartDataIsLoading = true),
                 switchMap(_ => this.statisticsService.getPaymentStatistics(this.statisticsFilter)),
                 delay(1.5 * 1000),
                 tap(() => this.chartDataIsLoading = false),

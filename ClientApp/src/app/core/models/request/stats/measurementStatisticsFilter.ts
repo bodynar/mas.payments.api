@@ -1,7 +1,5 @@
-import MonthYear from 'models/monthYearDate';
+import BaseStatsFilter from './baseStatsFilter';
 
-export default interface MeasurementStatisticsFilter {
-    from?: MonthYear;
-    to?: MonthYear;
+export default interface MeasurementStatisticsFilter extends BaseStatsFilter {
     measurementTypeId: number;
 }

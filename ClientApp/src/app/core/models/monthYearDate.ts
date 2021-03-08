@@ -21,4 +21,8 @@ export default class MonthYear {
             this.year = value.year;
         }
     }
+
+    public toDate(): Date {
+        return new Date(this.year, this.month, 1);
+    }
 }

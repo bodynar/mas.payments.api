@@ -105,9 +105,9 @@ export class MonthSelectorComponent extends BaseComponent {
         }
 
         if (direction === 'left') {
-            return this.year !== this.startYear || this.month !== 0;
+            return +this.year !== this.startYear || +this.month !== 0;
         } else {
-            return this.year !== this.endYear || this.month !== 11;
+            return +this.year !== this.endYear || +this.month !== 11;
         }
     }
 

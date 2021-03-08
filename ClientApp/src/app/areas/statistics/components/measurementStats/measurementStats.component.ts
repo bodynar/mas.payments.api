@@ -14,8 +14,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import MonthYear from 'models/monthYearDate';
-import { emptyYear } from 'common/utils/years';
-import { emptyMonth, getMonthName, months } from 'static/months';
+import { getMonthName, months } from 'static/months';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
@@ -41,7 +40,7 @@ export class MeasurementStatsComponent extends BaseComponent {
             series: [],
             xaxis: {
                 type: 'category',
-                categories: [ ...months.map(x => x.name) ],
+                categories: [...months.map(x => x.name)],
                 title: { text: 'Month' }
             },
             title: { text: MeasurementStatsComponent.chartName }
@@ -91,16 +90,7 @@ export class MeasurementStatsComponent extends BaseComponent {
         this.whenSubmitForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                tap(() => {
-                    this.chartDataIsLoading = true;
-
-                    if (this.statisticsFilter.from.month === emptyMonth.id || this.statisticsFilter.from.year === emptyYear.id) {
-                        this.statisticsFilter.from = undefined;
-                    }
-                    if (this.statisticsFilter.to.month === emptyMonth.id || this.statisticsFilter.to.year === emptyYear.id) {
-                        this.statisticsFilter.to = undefined;
-                    }
-                }),
+                tap(() => this.chartDataIsLoading = true),
                 switchMap(_ => this.statisticsService.getMeasurementStatistics(this.statisticsFilter)),
                 delay(1.5 * 1000),
                 tap(() => this.chartDataIsLoading = false),

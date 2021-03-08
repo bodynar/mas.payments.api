@@ -6,17 +6,11 @@ import { tap } from 'rxjs/operators';
 import { IUserApiBackendService } from 'services/backend/IUserApi.backend';
 import { IUserService } from 'services/IUserService';
 
-import GetUserNotificationRequest from 'models/request/user/getUserNotificationRequest';
-import TestMailMessageRequest from 'models/request/user/testMailMessageRequest';
-import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
-
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
-import GetMailLogsResponse from 'models/response/user/getMailLogsResponse';
-import GetNotificationsResponse from 'models/response/user/getNotificationsResponse';
-import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
-import GetAppInfoResponse from 'models/response/user/getAppInfoResponse';
+import { UpdateUserSettingRequest, TestMailMessageRequest, GetUserNotificationRequest } from 'models/request/user';
+import { GetMailLogsResponse, GetNotificationsResponse, GetUserSettingsResponse, GetAppInfoResponse } from 'models/response/user';
 
 @Injectable()
 class UserService implements IUserService {

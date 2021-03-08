@@ -7,15 +7,14 @@ import { catchError, map } from 'rxjs/operators';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
-import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
-
-import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
-
 import { isNullOrUndefined } from 'common/utils/common';
 import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
+import MonthYear from 'models/monthYearDate';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
-import MonthYear from 'models/monthYearDate';
 
 @Injectable()
 export class MeasurementApiBackendService implements IMeasurementApiBackendService {
@@ -31,8 +30,13 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.toDate()
+        };
+
         return this.http
-            .post(`${this.apiPrefix}/addMeasurement`, measurementData)
+            .post(`${this.apiPrefix}/addMeasurement`, requestData)
             .pipe(
                 catchError(error => of(error)),
                 map(x => boxServerResponse(x)),
@@ -135,6 +139,26 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
             .pipe(
                 catchError(error => of(error)),
                 map(x => boxServerResponse(x)),
+            );
+    }
+
+    public getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>> {
+        return this.http
+            .get(`${this.apiPrefix}/withoutDiff`)
+            .pipe(
+                map(response => response as number),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<number>(x)),
+            );
+    }
+
+    public updateDiff(): Observable<QueryExecutionResult<string>> {
+        return this.http
+            .post(`${this.apiPrefix}/updateDiff`, {})
+            .pipe(
+                map((response: any) => (response instanceof Array ? response : []).join('\n')),
+                catchError(error => of(error)),
+                map(x => boxServerQueryResponse<string>(x)),
             );
     }
 

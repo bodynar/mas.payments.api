@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { BehaviorSubject, Subject } from 'rxjs';
-import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
+import { delay, filter, switchMap, takeUntil } from 'rxjs/operators';
 
 import BaseComponent from 'common/components/BaseComponent';
 

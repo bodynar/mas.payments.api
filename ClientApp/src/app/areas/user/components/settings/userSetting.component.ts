@@ -10,8 +10,8 @@ import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
 import { IMeasurementService } from 'services/IMeasurementService';
 
-import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
-import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
+import { UpdateUserSettingRequest } from 'models/request/user';
+import { GetUserSettingsResponse } from 'models/response/user';
 
 type UserSettingPageMode = 'loading_settings' | 'loading_businessProccesses' | 'loaded';
 

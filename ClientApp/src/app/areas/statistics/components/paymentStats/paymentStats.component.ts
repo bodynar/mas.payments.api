@@ -1,4 +1,4 @@
-import { Component, OnChanges, ViewChild } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 
 import { ApexAxisChartSeries, ApexTitleSubtitle, ApexXAxis } from 'ng-apexcharts';
 

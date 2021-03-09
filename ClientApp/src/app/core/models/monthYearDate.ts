@@ -25,4 +25,8 @@ export default class MonthYear {
     public toDate(): Date {
         return new Date(this.year, this.month, 1);
     }
+
+    public copy(): MonthYear {
+        return new MonthYear(this.month, this.year);
+    }
 }

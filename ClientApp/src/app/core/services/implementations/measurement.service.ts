@@ -25,10 +25,15 @@ export class MeasurementService implements IMeasurementService {
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
-        measurementData.date.month = +measurementData.date.month  + 1;
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.copy()
+        };
+
+        requestData.date.month = +requestData.date.month + 1;
 
         return this.measurementApiBackend
-            .addMeasurement(measurementData)
+            .addMeasurement(requestData)
             .pipe(
                 tap(withoutError => {
                     if (!withoutError) {
@@ -80,7 +85,12 @@ export class MeasurementService implements IMeasurementService {
     }
 
     public updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult> {
-        measurementData.date.month = measurementData.date.month + 1;
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.copy()
+        };
+
+        requestData.date.month = +requestData.date.month + 1;
 
         return this.measurementApiBackend
             .updateMeasurement(id, measurementData)
@@ -142,7 +152,7 @@ export class MeasurementService implements IMeasurementService {
                     response.success
                         ? ({
                             ...response,
-                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color)}))
+                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color) }))
                         })
                         : response
                 )

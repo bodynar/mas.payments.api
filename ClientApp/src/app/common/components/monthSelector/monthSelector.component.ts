@@ -164,7 +164,7 @@ export class MonthSelectorComponent extends BaseComponent {
     }
 
     public isEmpty(): boolean {
-        return this.year === emptyYear.id || this.month === emptyMonth.id;
+        return +this.year === emptyYear.id || +this.month === emptyMonth.id;
     }
 
     private isMonthSelectDropPanelItem(element: HTMLElement): boolean {

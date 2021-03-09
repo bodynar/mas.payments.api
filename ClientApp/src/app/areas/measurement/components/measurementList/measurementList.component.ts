@@ -127,7 +127,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 if (paginatorConfig.enabled) {
                     this.onPageChange(0);
                 } else {
-                    this.measurementGroups = this.measurementGroups;
+                    this.pageItems = this.measurementGroups;
                 }
 
                 this.hasData = this.measurements.length !== 0;

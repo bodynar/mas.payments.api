@@ -18,10 +18,27 @@ namespace MAS.Payments.Commands
 
         public UpdateMeterMeasurementCommand(long id, long meterMeasurementTypeId, DateTime date, double measurement, string comment = null)
         {
+            if (id == default)
+            {
+                throw new ArgumentException(nameof(id));
+            }
+            if (meterMeasurementTypeId == default)
+            {
+                throw new ArgumentException(nameof(meterMeasurementTypeId));
+            }
+            if (date == default)
+            {
+                throw new ArgumentException(nameof(date));
+            }
+            if (measurement == default)
+            {
+                throw new ArgumentException(nameof(measurement));
+            }
+
             Id = id;
             Measurement = measurement;
             Comment = comment;
-            Date = date;
+            Date = new DateTime(date.Year, date.Month, 20);
             MeterMeasurementTypeId = meterMeasurementTypeId;
         }
     }

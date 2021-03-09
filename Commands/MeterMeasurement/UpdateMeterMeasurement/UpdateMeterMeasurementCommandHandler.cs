@@ -9,6 +9,7 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
+    using MAS.Payments.Queries.Measurements;
 
     internal class UpdateMeterMeasurementCommandHandler : BaseCommandHandler<UpdateMeterMeasurementCommand>
     {
@@ -30,10 +31,8 @@
 
             Validate(measurement, command);
 
-            var newDate = new DateTime(command.Date.Year, command.Date.Month, 20);
-
             var isMeasurementChanged = measurement.Measurement != command.Measurement;
-            var isMonthChanged = !measurement.Date.Date.Equals(newDate);
+            var isMonthChanged = !measurement.Date.Date.Equals(command.Date);
 
             var oldMonthDate = new DateTime(measurement.Date.Date.Ticks);
             var oldTypeId = measurement.MeterMeasurementTypeId + 0;
@@ -43,19 +42,19 @@
                 var itemWithSameType =
                     Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                         x.MeterMeasurementTypeId == command.MeterMeasurementTypeId
-                        && x.Date.Date == newDate))
+                        && x.Date.Date == command.Date))
                     .FirstOrDefault();
 
                 if (itemWithSameType != null)
                 {
-                    throw new CommandExecutionException(CommandType, $"Measurement with type \"{itemWithSameType.MeasurementType.Name}\" is already defined for \"{newDate:MMMMM yyyy}\"");
+                    throw new CommandExecutionException(CommandType, $"Measurement with type \"{itemWithSameType.MeasurementType.Name}\" is already defined for \"{command.Date:MMMMM yyyy}\"");
                 }
             }
 
             Repository.Update(command.Id, new
             {
                 Comment = command.Comment,
-                Date = newDate,
+                Date = command.Date,
                 Measurement = command.Measurement,
                 MeterMeasurementTypeId = command.MeterMeasurementTypeId,
             });
@@ -78,7 +77,7 @@
 
             if (isMeasurementChanged || isMonthChanged)
             {
-                var nextMeasurementDate = newDate.AddMonths(1);
+                var nextMeasurementDate = command.Date.AddMonths(1);
                 var nextMeasurementItem =
                     Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                         x.Date.Date.Year == nextMeasurementDate.Year
@@ -97,12 +96,12 @@
         {
             if (measurement == null)
             {
-                throw new ArgumentException($"Measurement with id {command.Id} doesn't existю");
+                throw new ArgumentException($"Measurement with id {command.Id} doesn't exist.");
             }
 
             if (command.Measurement <= 0)
             {
-                throw new ArgumentException($"Cannot update measurement. Value must be greater than 0.");
+                throw new ArgumentException($"Value must be greater than 0.");
             }
 
             var meterMeasurementType =
@@ -113,31 +112,32 @@
                 throw new ArgumentException($"Measurement type with id \"{command.MeterMeasurementTypeId}\" doesn't exist");
             }
 
-            var calculatedNewMeasurementDate = new DateTime(command.Date.Year, command.Date.Month, 20);
-
             var measurementOnSpecifiedMonth =
                 Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
-                    x.Date.Date == calculatedNewMeasurementDate
+                    x.Date.Date == command.Date
                     && x.MeterMeasurementTypeId == command.MeterMeasurementTypeId
                     && x.Id != command.Id))
                 .FirstOrDefault();
 
             if (measurementOnSpecifiedMonth != null)
             {
-                throw new ArgumentException($"Cannot update measurement for {calculatedNewMeasurementDate:MMMM yyyy}, measurement for this type is exist.");
+                throw new ArgumentException($"Measurement record for {measurementOnSpecifiedMonth.MeasurementType.Name} {command.Date:MMMM yyyy} is already exist.");
             }
 
             var previousTypeValue =
-                Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
-                    x.MeterMeasurementTypeId == command.MeterMeasurementTypeId
-                    && x.Date < measurement.Date
-                    && x.Id != command.Id))
-                .OrderByDescending(x => x.Date.Date)
-                .FirstOrDefault();
+                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Previous));
 
-            if (command.Measurement < previousTypeValue.Measurement)
+            if (previousTypeValue != null && command.Measurement < previousTypeValue.Measurement)
             {
-                throw new ArgumentException($"Measurement value must be greater than previous. Cannot add value \"{command.Measurement}\" that is less than previous \"{previousTypeValue.Measurement}\".");
+                throw new ArgumentException($"Measurement value \"{command.Measurement}\" must be greater than previous \"{previousTypeValue.Measurement}\".");
+            }
+
+            var closestNextMeasurement =
+                QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
+
+            if (closestNextMeasurement != null && command.Measurement >= closestNextMeasurement.Measurement)
+            {
+                throw new ArgumentException($"Measurement value \"{command.Measurement}\" must be less than next \"{closestNextMeasurement.Measurement}\".");
             }
         }
     }

@@ -9,6 +9,7 @@
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Specification;
+    using MAS.Payments.Queries.Measurements;
 
     internal class RecalculateDiffCommandHandler : BaseCommandHandler<RecalculateDiffCommand>
     {
@@ -31,7 +32,7 @@
 
             foreach (var measurementItem in measurementItems)
             {
-                var previousItem = GetPreviousMeasurement(measurementItem);
+                var previousItem = QueryProcessor.Execute(new GetSiblingMeasurementQuery(measurementItem.MeterMeasurementTypeId, measurementItem.Date, GetSiblingMeasurementDirection.Previous));
 
                 if (previousItem != null)
                 {
@@ -54,20 +55,6 @@
             {
                 command.Warnings = warnings;
             }
-        }
-
-        private MeterMeasurement GetPreviousMeasurement(MeterMeasurement measurement)
-        {
-            var targetDate = measurement.Date.AddMonths(-1);
-
-            return Repository.Where(
-                    new CommonSpecification<MeterMeasurement>(x =>
-                        x.MeterMeasurementTypeId == measurement.MeterMeasurementTypeId
-                        && x.Date.Year == targetDate.Year
-                        && x.Date.Month == targetDate.Month
-                    )
-                ).OrderByDescending(x => x.Date)
-                .FirstOrDefault();
         }
     }
 }

@@ -14,7 +14,12 @@
 
         public AddMeasurementGroupCommand(DateTime date, IEnumerable<MeasurementGroup> measurements)
         {
-            Date = date;
+            if (date == default)
+            {
+                throw new ArgumentException(nameof(date));
+            }
+
+            Date = new DateTime(date.Year, date.Month, 20);
             Measurements = measurements ?? Enumerable.Empty<MeasurementGroup>();
         }
     }

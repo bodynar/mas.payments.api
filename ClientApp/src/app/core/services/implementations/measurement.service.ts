@@ -50,11 +50,12 @@ export class MeasurementService implements IMeasurementService {
         const requestData: MeasurementFilter = { ...filter };
 
         if (!isNullOrUndefined(filter) && filter.month === emptyMonth.id) {
-            requestData.month = undefined;
-        }
-
-        if (!isNullOrUndefined(filter) && filter.year === emptyYear.id) {
-            requestData.year = undefined;
+            if (filter.month === emptyMonth.id) {
+                requestData.month = undefined;
+            }
+            if (filter.year === emptyYear.id) {
+                requestData.year = undefined;
+            }
         }
 
         return this.measurementApiBackend

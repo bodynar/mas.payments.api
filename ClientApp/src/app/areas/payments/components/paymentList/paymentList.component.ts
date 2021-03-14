@@ -19,7 +19,7 @@ import { IRouterService } from 'services/IRouterService';
 
 import { IModalService } from 'src/app/components/modal/IModalService';
 
-import PaymentsFilter from 'models/paymentsFilter';
+import { PaymentsFilter } from 'models/request/payment';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 

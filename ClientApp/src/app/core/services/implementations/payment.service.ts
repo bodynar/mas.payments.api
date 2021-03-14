@@ -5,16 +5,20 @@ import { map, tap } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
+import { emptyMonth } from 'static/months';
+import { emptyYear } from 'common/utils/years';
+
+import CommandExecutionResult from 'models/response/commandExecutionResult';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import { IPaymentApiBackendService } from 'services/backend/IPaymentApi.backend';
 import { IPaymentService } from 'services/IPaymentService';
 
-import PaymentsFilter from 'models/paymentsFilter';
-import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
-import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequest';
-import CommandExecutionResult from 'models/response/commandExecutionResult';
+import { PaymentFilter, AddPaymentRequest, AddPaymentTypeRequest } from 'models/request/payment';
+
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
-import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 
 @Injectable()
 class PaymentService implements IPaymentService {
@@ -31,14 +35,14 @@ class PaymentService implements IPaymentService {
         const parsedMonth: number =
             parseInt(paymentData.month) + 1;
         const month: number =
-          parsedMonth > 12
-            ? parsedMonth % 12
-            : parsedMonth;
+            parsedMonth > 12
+                ? parsedMonth % 12
+                : parsedMonth;
 
         return this.paymentApiBackend
             .addPayment({
-              ...paymentData,
-              month: month.toString()
+                ...paymentData,
+                month: month.toString()
             })
             .pipe(
                 tap(withoutError => {
@@ -49,9 +53,20 @@ class PaymentService implements IPaymentService {
             );
     }
 
-    public getPayments(filter?: PaymentsFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
+    public getPayments(filter?: PaymentFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
+        const requestData: PaymentFilter = { ...filter };
+
+        if (!isNullOrUndefined(filter)) {
+            if (filter.month === emptyMonth.id) {
+                requestData.month = undefined;
+            }
+            if (filter.year === emptyYear.id) {
+                requestData.year = undefined;
+            }
+        }
+
         return this.paymentApiBackend
-            .getPayments(filter)
+            .getPayments(requestData)
             .pipe(
                 tap(response => {
                     if (!response.success) {
@@ -113,7 +128,7 @@ class PaymentService implements IPaymentService {
                     response.success
                         ? ({
                             ...response,
-                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color)}))
+                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color) }))
                         })
                         : response
                 )

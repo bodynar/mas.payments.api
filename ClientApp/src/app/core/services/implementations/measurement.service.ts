@@ -11,7 +11,10 @@ import { IMeasurementService } from 'services/IMeasurementService';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
-import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { emptyMonth } from 'static/months';
+import { emptyYear } from 'common/utils/years';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
 import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
 @Injectable()
@@ -43,9 +46,19 @@ export class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
+    public getMeasurements(filter?: MeasurementFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
+        const requestData: MeasurementFilter = { ...filter };
+
+        if (!isNullOrUndefined(filter) && filter.month === emptyMonth.id) {
+            requestData.month = undefined;
+        }
+
+        if (!isNullOrUndefined(filter) && filter.year === emptyYear.id) {
+            requestData.year = undefined;
+        }
+
         return this.measurementApiBackend
-            .getMeasurements(filter)
+            .getMeasurements(requestData)
             .pipe(
                 tap(response => {
                     if (!response.success) {

@@ -3,7 +3,7 @@ import { Observable } from 'rxjs';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
-import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
 
 import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
@@ -11,7 +11,7 @@ abstract class IMeasurementApiBackendService {
     // #region measurements
     abstract addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult>;
 
-    abstract getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>>;
+    abstract getMeasurements(filter?: MeasurementFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>>;
 
     abstract getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>>;
 

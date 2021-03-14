@@ -21,9 +21,7 @@ import PaginatorConfig from 'sharedComponents/paginator/paginatorConfig';
 import MeasurementsFilter from 'models/request/measurement/measurementsFilter';
 import { MeasurementsResponse, MeasurementsResponseMeasurement, MeasurementTypeResponse } from 'models/response/measurements';
 
-@Component({
-    templateUrl: 'measurementList.template.pug'
-})
+@Component({ templateUrl: 'measurementList.template.pug' })
 export class MeasurementListComponent extends BaseRoutingComponentWithModalComponent {
     public filters: MeasurementsFilter =
         new MeasurementsFilter();
@@ -57,8 +55,8 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
     private whenSubmitFilters$: Subject<null> =
         new Subject();
 
-    private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>>
-        = new Subject();
+    private onSendMeasurementsClick$: Subject<Array<{ id: number, isSent: boolean }>> =
+        new Subject();
 
     private selectedMeasurementsToSend: Array<{ id: number, isSent: boolean }> = [];
     private measurementGroups: Array<MeasurementsResponse> = [];

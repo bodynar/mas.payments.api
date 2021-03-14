@@ -11,7 +11,7 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
 import MonthYear from 'models/monthYearDate';
 
-import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementsFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
 import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse, MeasurementsResponseMeasurement } from 'models/response/measurements';
 
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
@@ -43,7 +43,7 @@ export class MeasurementApiBackendService implements IMeasurementApiBackendServi
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
+    public getMeasurements(filter?: MeasurementFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
         let params: HttpParams =
             new HttpParams();
 

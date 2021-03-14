@@ -1,10 +1,19 @@
 import { isNullOrUndefined } from 'common/utils/common';
+import { emptyYear } from 'common/utils/years';
+import { emptyMonth } from 'static/months';
 
-export default class MeasurementsFilter {
+export interface MeasurementFilter {
     month?: number;
     year?: number;
     measurementTypeId?: number;
     isEmpty?: boolean;
+}
+
+export default class MeasurementsFilter implements MeasurementFilter {
+    public month?: number;
+    public year?: number;
+    public measurementTypeId?: number;
+    public isEmpty?: boolean;
 
     constructor() {
         this.isEmpty = true;
@@ -12,8 +21,8 @@ export default class MeasurementsFilter {
 
     public setIsEmpty(): void {
         this.isEmpty =
-            isNullOrUndefined(this.month)
-            && isNullOrUndefined(this.year)
+            this.isMonthEmpty()
+            && this.isEmptyYear()
             && isNullOrUndefined(this.measurementTypeId);
     }
 
@@ -21,5 +30,13 @@ export default class MeasurementsFilter {
         this.month = undefined;
         this.year = undefined;
         this.measurementTypeId = undefined;
+    }
+
+    private isMonthEmpty(): boolean {
+        return isNullOrUndefined(this.month) || this.month === emptyMonth.id;
+    }
+
+    private isEmptyYear(): boolean {
+        return isNullOrUndefined(this.year) || this.year === emptyYear.id;
     }
 }

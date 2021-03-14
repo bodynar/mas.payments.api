@@ -1,6 +1,6 @@
 import { AddMeasurementRequest, AddMeasurementGroupRequestModel } from './addMeasurementRequest';
 import UpdateMeasurementRequest from './updateMeasurementRequest';
-import MeasurementsFilter from './measurementsFilter';
+import MeasurementsFilter, { MeasurementFilter } from './measurementsFilter';
 import AddMeasurementTypeRequest from './addMeasurementTypeRequest';
 
 export {
@@ -8,5 +8,6 @@ export {
     AddMeasurementGroupRequestModel,
     UpdateMeasurementRequest,
     MeasurementsFilter,
+    MeasurementFilter,
     AddMeasurementTypeRequest
 };

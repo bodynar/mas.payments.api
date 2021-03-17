@@ -6,16 +6,17 @@ import { filter, switchMap, takeUntil, switchMapTo, delay } from 'rxjs/operators
 
 import BaseRoutingComponent from 'common/components/BaseRoutingComponent';
 
-import { generateGuid } from 'common/utils/common';
+import { generateGuid, isNullOrUndefined } from 'common/utils/common';
 import { Color } from 'common/utils/colors';
 
 import { IMeasurementService } from 'services/IMeasurementService';
 import { INotificationService } from 'services/INotificationService';
 import { IRouterService } from 'services/IRouterService';
 
-import { AddMeasurementRequest } from 'models/request/measurement';
+import { AddMeasurementsModel, MeasurementModel } from 'models/measurement/addMeasurement';
 import { MeasurementTypeResponse } from 'models/response/measurements';
 import MonthYear from 'models/monthYearDate';
+
 
 @Component({
     templateUrl: 'addMeasurement.template.pug',
@@ -25,7 +26,7 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
     public actionColors: Array<Color> =
         [{ red: 183, green: 223, blue: 105 }, { red: 255, green: 111, blue: 94 }];
 
-    public addMeasurementRequest: AddMeasurementRequest =
+    public addMeasurementRequest: AddMeasurementsModel =
         {
             date: new MonthYear(),
             measurements: [{
@@ -39,7 +40,7 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
         false;
 
     public measurementTypes: Array<MeasurementTypeResponse> =
-        [{ id: -1, name: '', systemName: '' }];
+        [{ id: undefined, name: '', systemName: '' }];
 
     public whenSubmittedForm$: Subject<NgForm> =
         new ReplaySubject(1);
@@ -68,12 +69,7 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
         this.whenSubmittedForm$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
-                filter(({ valid }) => {
-                    const hasInvalidItems: boolean =
-                        this.addMeasurementRequest.measurements.some(x => x.measurementTypeId === -1 || x.measurement === 0);
-
-                    return valid && !hasInvalidItems;
-                }),
+                filter(_ => this.validateMeasurements(this.addMeasurementRequest.measurements)),
                 switchMap(_ => {
                     this.isLoading = true;
                     return this.measurementService.addMeasurement(this.addMeasurementRequest);
@@ -113,5 +109,17 @@ export class AddMeasurementComponent extends BaseRoutingComponent {
             this.addMeasurementRequest.measurements.splice(index, 1);
         }
 
+    }
+
+    private validateMeasurements(measurements: Array<MeasurementModel>): boolean {
+        measurements.forEach(item => {
+            item.isValid =
+                !isNullOrUndefined(item.measurementTypeId)
+                && +item.measurementTypeId !== -1
+                && !isNullOrUndefined(item.measurement)
+                && item.measurement > 0;
+        });
+
+        return measurements.every(x => x.isValid);
     }
 }

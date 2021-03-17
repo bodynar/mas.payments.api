@@ -102,7 +102,6 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 tap(_ => {
                     this.isLoading = true;
                     this.filters.setIsEmpty();
-                    this.isFilterApplied = this.filters.isEmpty;
                 }),
                 switchMap(_ => this.measurementService.getMeasurements(this.filters)),
                 delay(1.5 * 1000),
@@ -116,6 +115,7 @@ export class MeasurementListComponent extends BaseRoutingComponentWithModalCompo
                 })
             )
             .subscribe(({ result }) => {
+                this.isFilterApplied = this.filters.isEmpty;
                 this.measurements = [].concat(...result.map(x => x.measurements));
                 this.measurementGroups = result;
 

@@ -6,13 +6,12 @@ doctype html
     ) Back
 hr
 
-form.needs-validation(
+form(
     #addMeasurementForm='ngForm',
-    [class.was-validated]='!!(whenSubmittedForm$ | async)',
     (submit)='onFormSubmit(addMeasurementForm)'
 )
     .form-group.ml-1
-        label Date
+        label.mr-3 Date
         app-month-selector(
             startYear='2009',
             [canClear]='false',
@@ -30,7 +29,8 @@ form.needs-validation(
         .col-2.form-group.mb-0
             label Comment
     .form-group.form-row.measurement__row(
-        *ngFor='let measurement of addMeasurementRequest.measurements; let index = index'
+        *ngFor='let measurement of addMeasurementRequest.measurements; let index = index',
+        [class.measurement__row--invalid]='measurement.isValid === false'
     )
         .col-2.form-group.mb-0
             input.form-control.form-control-sm#measurement(
@@ -65,6 +65,8 @@ form.needs-validation(
                 [color]='actionColors[1]',
                 (click)='onMeasurementRemove(measurement.id)'
             )
+        div(*ngIf='measurement.isValid === false')
+            span Measurement data isnt valid
     .form-group.form-row.measurement__heading
         app-action-icon(
             icon='plus',

@@ -96,7 +96,6 @@ export class MeasurementGroupComponent extends BaseComponent {
 
         if (this.currentSortColumn !== columnName) {
             this.currentSortOrder = 'asc';
-            this.currentSortColumn = columnName;
         }
 
         switch (columnName) {

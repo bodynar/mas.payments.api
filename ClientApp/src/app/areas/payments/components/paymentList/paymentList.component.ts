@@ -234,7 +234,6 @@ export class PaymentListComponent extends BaseRoutingComponentWithModalComponent
     public onSortColumn(columnName: string, sortOrder?: 'asc' | 'desc'): void {
         if (this.currentSortColumn !== columnName) {
             this.currentSortOrder = 'asc';
-            this.currentSortColumn = columnName;
         }
 
         const usedStoredValue: boolean =

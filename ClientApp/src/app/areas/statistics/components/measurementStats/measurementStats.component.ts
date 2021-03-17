@@ -14,7 +14,7 @@ import { INotificationService } from 'services/INotificationService';
 import { IStatisticsService } from 'services/IStatisticsService';
 
 import MonthYear from 'models/monthYearDate';
-import { getMonthName, months } from 'static/months';
+import { getShortMonthName, months } from 'static/months';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
@@ -138,7 +138,7 @@ export class MeasurementStatsComponent extends BaseComponent {
             this.chart.series = stats.typeStatistics.map(x => ({
                 name: `${x.measurementTypeName}`,
                 data: [...x.statisticsData.map(y => ({
-                    x: `${getMonthName(y.month - 1)}${isInOneYear ? '' : ' ' + y.year}`,
+                    x: `${getShortMonthName(y.month - 1)}${isInOneYear ? '' : ' ' + y.year}`,
                     y: y.diff
                 }))]
             }));

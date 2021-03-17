@@ -1,3 +1,5 @@
+import { isNullOrEmpty } from 'common/utils/common';
+
 interface Month {
     id: number;
     name: string;
@@ -66,9 +68,16 @@ const getMonthName = (monthNumber: number): string => {
     return month?.name;
 };
 
+const getShortMonthName = (monthNumber: number): string => {
+    const monthName: string = getMonthName(monthNumber);
+
+    return isNullOrEmpty(monthName) ? monthName : monthName.substr(0, 3);
+}
+
 export {
     Month,
     months,
     emptyMonth,
-    getMonthName
+    getMonthName,
+    getShortMonthName
 };

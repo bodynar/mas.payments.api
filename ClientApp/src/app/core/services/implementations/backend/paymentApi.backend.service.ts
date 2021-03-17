@@ -6,18 +6,17 @@ import { catchError, map } from 'rxjs/operators';
 
 import { isNullOrUndefined } from 'common/utils/common';
 
+import CommandExecutionResult from 'models/response/commandExecutionResult';
+import QueryExecutionResult from 'models/response/queryExecutionResult';
+
 import { boxServerResponse, boxServerQueryResponse } from 'common/utils/api';
 
 import { IPaymentApiBackendService } from '../../contracts/backend/IPaymentApi.backend';
 
-import PaymentsFilter from 'models/paymentsFilter';
-import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
-import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequest';
+import { PaymentFilter, AddPaymentRequest, AddPaymentTypeRequest } from 'models/request/payment';
 
-import CommandExecutionResult from 'models/response/commandExecutionResult';
 import PaymentResponse from 'models/response/payments/paymentResponse';
 import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
-import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 @Injectable()
 export class PaymentApiBackendService implements IPaymentApiBackendService {
@@ -41,7 +40,7 @@ export class PaymentApiBackendService implements IPaymentApiBackendService {
             );
     }
 
-    public getPayments(filter?: PaymentsFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
+    public getPayments(filter?: PaymentFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>> {
         let params: HttpParams =
             new HttpParams();
 

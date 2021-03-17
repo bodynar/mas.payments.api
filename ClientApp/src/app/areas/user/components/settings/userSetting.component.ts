@@ -1,29 +1,28 @@
 import { Component } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup } from '@angular/forms';
 
-import { BehaviorSubject, ReplaySubject, Subject } from 'rxjs';
+import { Subject, Subscription } from 'rxjs';
 import { delay, filter, switchMap, takeUntil, tap } from 'rxjs/operators';
 
-import BaseComponent from 'common/components/BaseComponent';
+import { BaseComponentWithModalComponent } from 'common/components/BaseComponentWithModal';
 
+import { IModalService } from 'src/app/components/modal/IModalService';
 import { INotificationService } from 'services/INotificationService';
 import { IUserService } from 'services/IUserService';
+import { IMeasurementService } from 'services/IMeasurementService';
 
-import UpdateUserSettingRequest from 'models/request/user/updateUserSettingRequest';
-import GetUserSettingsResponse from 'models/response/user/getUserSettingsResponse';
+import { UpdateUserSettingRequest } from 'models/request/user';
+import { GetUserSettingsResponse } from 'models/response/user';
 
 @Component({
     templateUrl: 'userSetting.template.pug'
 })
-export class UserSettingComponent extends BaseComponent {
-    public hasData$: Subject<boolean> =
-        new BehaviorSubject(false);
+export class UserSettingComponent extends BaseComponentWithModalComponent {
+    public userSettings: Array<GetUserSettingsResponse> = [];
 
-    public isLoading$: Subject<boolean> =
-        new BehaviorSubject(false);
-
-    public userSettings$: Subject<Array<GetUserSettingsResponse>> =
-        new ReplaySubject();
+    public isSettingsLoading: boolean = false;
+    public isDiffLoading: boolean = false;
+    public measurementsWithoutDiff: number = 0;
 
     public settingsForm: FormGroup;
 
@@ -33,15 +32,14 @@ export class UserSettingComponent extends BaseComponent {
     private whenRequestUserSettings$: Subject<null> =
         new Subject();
 
-    private userSettings: Array<GetUserSettingsResponse> =
-        [];
-
     constructor(
         private formBuilder: FormBuilder,
         private userService: IUserService,
         private notificationService: INotificationService,
+        private measurementService: IMeasurementService,
+        modalService: IModalService
     ) {
-        super();
+        super(modalService);
 
         this.whenComponentInit$
             .subscribe(() => {
@@ -50,21 +48,19 @@ export class UserSettingComponent extends BaseComponent {
                 });
 
                 this.whenRequestUserSettings$.next(null);
+                this.loadMeasurementsWithoutDiff();
             });
-
-        this.userSettings$
-            .subscribe(settings => this.userSettings = settings);
 
         this.whenRequestUserSettings$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 switchMap(_ => {
-                    this.isLoading$.next(true);
+                    this.isSettingsLoading = true;
                     return this.userService.getUserSettings();
                 }),
                 delay(1.5 * 1000),
                 filter(response => {
-                    this.isLoading$.next(false);
+                    this.isSettingsLoading = false;
 
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -82,22 +78,20 @@ export class UserSettingComponent extends BaseComponent {
                             [x.name]: [x.value]
                         }));
                     });
-
-                    this.hasData$.next(result.length > 0);
                 }),
             )
-            .subscribe(({ result }) => this.userSettings$.next(result));
+            .subscribe(({ result }) => this.userSettings = result);
 
         this.whenSaveSettings$
             .pipe(
                 takeUntil(this.whenComponentDestroy$),
                 switchMap(changedSettings => {
-                    this.isLoading$.next(true);
+                    this.isSettingsLoading = true;
                     return this.userService.updateUserSettings(changedSettings);
                 }),
                 delay(1.5 * 1000),
                 tap(response => {
-                    this.isLoading$.next(false);
+                    this.isSettingsLoading = false;
 
                     if (!response.success) {
                         this.notificationService.error(response.error);
@@ -135,6 +129,51 @@ export class UserSettingComponent extends BaseComponent {
         } else {
             this.whenSaveSettings$.next(changedSettings);
         }
+    }
+
+    public onBusinessProcessExecute(): void {
+        const subscription: Subscription =
+            this.measurementService.updateDiff()
+                .pipe(
+                    takeUntil(this.whenComponentDestroy$),
+                    tap(_ => this.isDiffLoading = true),
+                    delay(1.5 * 1000),
+                    filter(result => {
+                        if (!result.success) {
+                            this.notificationService.error(result.error);
+                            this.isDiffLoading = false;
+                        }
+
+                        return result.success;
+                    })
+                )
+                .subscribe(({ result }) => {
+                    if (result.length > 0) {
+                        this.showInModal({
+                            body: result,
+                            isHtml: true,
+                            size: 'large',
+                            title: 'Warnings due execution'
+                        });
+                    }
+
+                    this.loadMeasurementsWithoutDiff();
+                    subscription.unsubscribe();
+                });
+    }
+
+    private loadMeasurementsWithoutDiff(): void {
+        const subscription: Subscription =
+            this.measurementService.getMeasurementsWithoutDiffCount()
+                .pipe(
+                    takeUntil(this.whenComponentDestroy$),
+                    tap(_ => this.isDiffLoading = true)
+                )
+                .subscribe(({ result }) => {
+                    this.isDiffLoading = false;
+                    this.measurementsWithoutDiff = result;
+                    subscription.unsubscribe();
+                });
     }
 
     private getChangedSettings(

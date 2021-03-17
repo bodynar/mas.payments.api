@@ -8,14 +8,14 @@ import { isNullOrUndefined } from 'common/utils/common';
 import { IMeasurementApiBackendService } from 'services/backend/IMeasurementApi.backend';
 import { IMeasurementService } from 'services/IMeasurementService';
 
-import MeasurementsFilter from 'models/measurementsFilter';
-import { AddMeasurementRequest } from 'models/request/measurement/addMeasurementRequest';
-import { AddMeasurementTypeRequest } from 'models/request/measurement/addMeasurementTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
-import MeasurementResponse from 'models/response/measurements/measurementResponse';
-import MeasurementsResponse from 'models/response/measurements/measurementsResponse';
-import MeasurementTypeResponse from 'models/response/measurements/measurementTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
+
+import { emptyMonth } from 'static/months';
+import { emptyYear } from 'common/utils/years';
+
+import { AddMeasurementRequest, UpdateMeasurementRequest, MeasurementFilter, AddMeasurementTypeRequest } from 'models/request/measurement';
+import { MeasurementResponse, MeasurementsResponse, MeasurementTypeResponse } from 'models/response/measurements';
 
 @Injectable()
 export class MeasurementService implements IMeasurementService {
@@ -28,18 +28,15 @@ export class MeasurementService implements IMeasurementService {
     // #region measurements
 
     public addMeasurement(measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
-        // data validation
-        const parsedMonth: number =
-            parseInt(measurementData.month) + 1;
-        const month: number =
-            parsedMonth > 12
-                ? parsedMonth % 12
-                : parsedMonth;
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.copy()
+        };
+
+        requestData.date.month = +requestData.date.month + 1;
+
         return this.measurementApiBackend
-            .addMeasurement({
-                ...measurementData,
-                month: month.toString()
-            })
+            .addMeasurement(requestData)
             .pipe(
                 tap(withoutError => {
                     if (!withoutError) {
@@ -49,23 +46,66 @@ export class MeasurementService implements IMeasurementService {
             );
     }
 
-    public getMeasurements(filter?: MeasurementsFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
+    public getMeasurements(filter?: MeasurementFilter): Observable<QueryExecutionResult<Array<MeasurementsResponse>>> {
+        const requestData: MeasurementFilter = { ...filter };
+
+        if (!isNullOrUndefined(filter) && filter.month === emptyMonth.id) {
+            if (filter.month === emptyMonth.id) {
+                requestData.month = undefined;
+            }
+            if (filter.year === emptyYear.id) {
+                requestData.year = undefined;
+            }
+        }
+
         return this.measurementApiBackend
-            .getMeasurements(filter)
+            .getMeasurements(requestData)
             .pipe(
                 tap(response => {
                     if (!response.success) {
                         // this.loggingService.error(response);
                     }
                 }),
+                map(x => {
+                    if (x.success) {
+                        x.result = x.result.map(item => ({
+                            ...item,
+                            month: item.month - 1,
+                            measurements: item.measurements.map(m => ({ ...m, month: +m.month - 1 }))
+                        }));
+                    }
+
+                    return x;
+                }),
             );
     }
 
     public getMeasurement(id: number): Observable<QueryExecutionResult<MeasurementResponse>> {
-        return this.measurementApiBackend.getMeasurement(id);
+        return this.measurementApiBackend.getMeasurement(id)
+            .pipe(
+                tap(response => {
+                    if (!response.success) {
+                        // this.loggingService.error(response);
+                    }
+                }),
+                map(response => {
+                    if (response.success) {
+                        response.result.date.month = response.result.date.month - 1;
+                    }
+
+                    return response;
+                })
+            );
     }
 
-    public updateMeasurement(id: number, measurementData: AddMeasurementRequest): Observable<CommandExecutionResult> {
+    public updateMeasurement(id: number, measurementData: UpdateMeasurementRequest): Observable<CommandExecutionResult> {
+        const requestData = {
+            ...measurementData,
+            date: measurementData.date.copy()
+        };
+
+        requestData.date.month = +requestData.date.month + 1;
+
         return this.measurementApiBackend
             .updateMeasurement(id, measurementData)
             .pipe(
@@ -85,6 +125,14 @@ export class MeasurementService implements IMeasurementService {
     public sendMeasurements(measurementIds: Array<number>): Observable<CommandExecutionResult> {
         return this.measurementApiBackend
             .sendMeasurements(measurementIds);
+    }
+
+    public getMeasurementsWithoutDiffCount(): Observable<QueryExecutionResult<number>> {
+        return this.measurementApiBackend.getMeasurementsWithoutDiffCount();
+    }
+
+    public updateDiff(): Observable<QueryExecutionResult<string>> {
+        return this.measurementApiBackend.updateDiff();
     }
 
     // #endregion measurements
@@ -118,7 +166,7 @@ export class MeasurementService implements IMeasurementService {
                     response.success
                         ? ({
                             ...response,
-                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color)}))
+                            result: response.result.map(item => ({ ...item, hasColor: !isNullOrUndefined(item.color) }))
                         })
                         : response
                 )

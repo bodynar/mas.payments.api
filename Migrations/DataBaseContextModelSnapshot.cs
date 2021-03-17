@@ -56,6 +56,9 @@ namespace MAS.Payments.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
 
+                    b.Property<double?>("Diff")
+                        .HasColumnType("float");
+
                     b.Property<bool>("IsSent")
                         .HasColumnType("bit");
 

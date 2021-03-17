@@ -1,13 +1,13 @@
 doctype html
 
 .measurement(
-    [class.measurement--flagged]='(isSentFlagActive | async)',
+    [class.measurement--flagged]='isSentFlagActive',
     [class.measurement--single]='!isGroupedItem',
 )
     .measurement__date
         span {{ formattedDate }}
     .measurement__flag(
-        *ngIf='(isSentFlagActive | async)',
+        *ngIf='isSentFlagActive',
         [class.measurement__flag--clear]='!isStateChaged'
     )
         .custom-control.custom-checkbox

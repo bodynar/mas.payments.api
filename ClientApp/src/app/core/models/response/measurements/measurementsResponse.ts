@@ -11,7 +11,7 @@ export interface MeasurementsResponseMeasurement {
 }
 
 export default interface MeasurementsResponse {
-    month: string;
+    month: number;
     year: number;
 
     measurements: Array<MeasurementsResponseMeasurement>;

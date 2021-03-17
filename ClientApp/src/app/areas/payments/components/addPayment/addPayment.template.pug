@@ -46,7 +46,7 @@ form.needs-validation(
             [(ngModel)]='addPaymentRequest.month'
         )
             option(
-                *ngFor='let month of (months$ | async)',
+                *ngFor='let month of months',
                 [value]='month.id'
             ) {{ month.name }}
       .col-1
@@ -57,7 +57,7 @@ form.needs-validation(
               [(ngModel)]='addPaymentRequest.year'
           )
               option(
-                  *ngFor='let year of (years$ | async)',
+                  *ngFor='let year of years',
                   [value]='year.id'
               ) {{ year.name }}
 
@@ -71,11 +71,11 @@ form.needs-validation(
             #name='ngModel'
         )
     button.btn.btn-sm.btn-success(
-        *ngIf='!(isLoading$ | async)',
+        *ngIf='!isLoading',
         type='submit'
     ) Add
     button.btn.btn-sm.btn-success(
-        *ngIf='isLoading$ | async',
+        *ngIf='isLoading',
         type='button'
     )
         span.spinner-grow.spinner-grow-sm.mr-1(

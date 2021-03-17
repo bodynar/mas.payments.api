@@ -6,75 +6,80 @@ doctype html
     ) Back
 hr
 
-form.needs-validation(
+form(
     #addMeasurementForm='ngForm',
-    [class.was-validated]='!!(whenSubmittedForm$ | async)',
     (submit)='onFormSubmit(addMeasurementForm)'
 )
-    .form-group
-        label(for='measurement') Measurement value
-        input.form-control.m-form-control.form-control-sm#measurement(
-            type='number',
-            placeholder='Enter measurement',
-            name='measurement',
-            [(ngModel)]='addMeasurementRequest.measurement',
-            #measurement='ngModel',
-            required='required',
-            min='0',
-            appIsPositiveNumber,
+    .form-group.ml-1
+        label.mr-3 Date
+        app-month-selector(
+            startYear='2009',
+            [canClear]='false',
+            [(year)]='addMeasurementRequest.date.year',
+            [(month)]='addMeasurementRequest.date.month'
         )
-
-    .form-group
-        label(for='meterMeasurementTypeId') Measurement type
-        select.custom-select.m-form-control.custom-select-sm#meterMeasurementTypeId(
-            required='required',
-            name='meterMeasurementTypeId',
-            [(ngModel)]='addMeasurementRequest.meterMeasurementTypeId'
-        )
-            option(
-                *ngFor='let measurementType of (measurementTypes$ | async)',
-                [value]='measurementType.id'
-            ) {{ measurementType.name }}
-
-    .form-group.form-row
-      .col-2
-        label(for='month') Month
-        select.custom-select.custom-select-sm#month(
-            required='required',
-            name='month',
-            [(ngModel)]='addMeasurementRequest.month'
-        )
-            option(
-                *ngFor='let month of (months$ | async)',
-                [value]='month.id'
-            ) {{ month.name }}
-      .col-1
-        label(for='year') Year
-        select.custom-select.custom-select-sm#year(
-              required='required',
-              name='year',
-              [(ngModel)]='addMeasurementRequest.year'
-          )
-              option(
-                  *ngFor='let year of (years$ | async)',
-                  [value]='year.id'
-              ) {{ year.name }}
-
-    .form-group
-        label(for='comment') Comment
-        textarea.form-control.m-form-control.form-control-sm#comment(
-            type='text',
-            placeholder='Enter comment',
-            name='comment',
-            [(ngModel)]='addMeasurementRequest.comment',
-            #name='ngModel'
+    hr
+    .form-group.form-row.measurement__heading(
+        *ngIf='addMeasurementRequest.measurements.length > 0'
+    )
+        .col-2.form-group.mb-0
+            label Measurement value
+        .col-2.form-group.mb-0
+            label Measurement type
+        .col-2.form-group.mb-0
+            label Comment
+    .form-group.form-row.measurement__row(
+        *ngFor='let measurement of addMeasurementRequest.measurements; let index = index',
+        [class.measurement__row--invalid]='measurement.isValid === false'
+    )
+        .col-2.form-group.mb-0
+            input.form-control.form-control-sm#measurement(
+                type='number',
+                placeholder='Enter measurement',
+                name='{{ index }}',
+                [(ngModel)]='measurement.measurement',
+                required='required',
+                min='0',
+                appIsPositiveNumber,
+            )
+        .col-2.form-group.mb-0
+            select.custom-select.custom-select-sm#measurementTypeId(
+                required='required',
+                name='{{ index }}',
+                [(ngModel)]='measurement.measurementTypeId'
+            )
+                option(
+                    *ngFor='let measurementType of measurementTypes',
+                    [value]='measurementType.id'
+                ) {{ measurementType.name }}
+        .col-2.form-group.mb-0
+            textarea.form-control.form-control-sm#comment(
+                type='text',
+                placeholder='Enter comment',
+                name='{{ index }}',
+                [(ngModel)]='measurement.comment',
+            ) 
+        .col-1
+            app-action-icon(
+                icon='trash',
+                [color]='actionColors[1]',
+                (click)='onMeasurementRemove(measurement.id)'
+            )
+        div(*ngIf='measurement.isValid === false')
+            span Measurement data isnt valid
+    .form-group.form-row.measurement__heading
+        app-action-icon(
+            icon='plus',
+            [color]='actionColors[0]',
+            (click)='onMeasurementAdd()'
         )
     button.btn.btn-sm.btn-success(
-        *ngIf='!(isLoading$ | async)',
+        *ngIf='!isLoading',
+        [disabled]='addMeasurementRequest.measurements.length === 0',
         type='submit'
     ) Add
     button.btn.btn-sm.btn-success(
-        *ngIf='isLoading$ | async',
+        *ngIf='isLoading',
         type='button'
     )
         span.spinner-grow.spinner-grow-sm.mr-1(

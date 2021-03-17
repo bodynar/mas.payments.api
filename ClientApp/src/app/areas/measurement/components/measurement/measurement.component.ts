@@ -6,7 +6,7 @@ import { getMonthName } from 'static/months';
 
 import BaseComponent from 'common/components/BaseComponent';
 
-import { MeasurementsResponseMeasurement } from 'models/response/measurements/measurementsResponse';
+import { MeasurementsResponseMeasurement } from 'models/response/measurements';
 
 @Component({
     selector: 'app-measurement-item',
@@ -21,7 +21,7 @@ export class MeasurementComponent extends BaseComponent {
     public isGroupedItem: boolean;
 
     @Input()
-    public isSentFlagActive: Subject<boolean>;
+    public isSentFlagActive: boolean;
 
     @Input()
     public onDeleteClick: Subject<number>;
@@ -49,8 +49,6 @@ export class MeasurementComponent extends BaseComponent {
 
         this.whenComponentInit$
             .subscribe(() => {
-                this.isSentFlagActive.subscribe();
-
                 this.formattedDate = `${getMonthName(this.measurement.month)} ${this.measurement.year}`;
             });
     }

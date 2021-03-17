@@ -1,33 +1,33 @@
 import { Observable } from 'rxjs';
 
-import PaymentsFilter from 'models/paymentsFilter';
-import { AddPaymentRequest } from 'models/request/payment/addPaymentRequest';
-import { AddPaymentTypeRequest } from 'models/request/payment/addPaymentTypeRequest';
 import CommandExecutionResult from 'models/response/commandExecutionResult';
-import PaymentResponse from 'models/response/payments/paymentResponse';
-import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
 import QueryExecutionResult from 'models/response/queryExecutionResult';
 
+import { PaymentFilter, AddPaymentRequest, AddPaymentTypeRequest } from 'models/request/payment';
+
+import PaymentResponse from 'models/response/payments/paymentResponse';
+import PaymentTypeResponse from 'models/response/payments/paymentTypeResponse';
+
 abstract class IPaymentApiBackendService {
-    abstract getPayment(id: number): Observable<QueryExecutionResult<PaymentResponse>>;
-
-    abstract getPaymentType(id: number): Observable<QueryExecutionResult<PaymentTypeResponse>>;
-
-    abstract addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult>;
+    abstract getPayments(filter?: PaymentFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>>;
 
     abstract addPayment(paymentData: AddPaymentRequest): Observable<CommandExecutionResult>;
 
-    abstract updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult>;
+    abstract getPayment(id: number): Observable<QueryExecutionResult<PaymentResponse>>;
 
     abstract updatePayment(id: number, paymentData: AddPaymentRequest): Observable<CommandExecutionResult>;
 
+    abstract deletePayment(paymentId: number): Observable<CommandExecutionResult>;
+
     abstract getPaymentTypes(): Observable<QueryExecutionResult<Array<PaymentTypeResponse>>>;
 
-    abstract getPayments(filter?: PaymentsFilter): Observable<QueryExecutionResult<Array<PaymentResponse>>>;
+    abstract addPaymentType(paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult>;
+
+    abstract getPaymentType(id: number): Observable<QueryExecutionResult<PaymentTypeResponse>>;
+
+    abstract updatePaymentType(id: number, paymentTypeData: AddPaymentTypeRequest): Observable<CommandExecutionResult>;
 
     abstract deletePaymentType(paymentTypeId: number): Observable<CommandExecutionResult>;
-
-    abstract deletePayment(paymentId: number): Observable<CommandExecutionResult>;
 }
 
 export { IPaymentApiBackendService };

@@ -13,8 +13,10 @@ import QueryExecutionResult from 'models/response/queryExecutionResult';
 
 import MeasurementStatisticsFilter from 'models/request/stats/measurementStatisticsFilter';
 import PaymentStatisticsFilter from 'models/request/stats/paymentStatisticsFilter';
-import { GetMeasurementStatisticsDataItem, GetMeasurementStatisticsResponse, MeasurementTypeStatisticsItem } from 'models/response/stats/measurementStatsResponse';
-import { GetPaymentsStatisticsDataItem, GetPaymentsStatisticsResponse, PaymentTypeStatisticsItem } from 'models/response/stats/paymentStatsResponse';
+import {
+    GetMeasurementStatisticsDataItem, GetMeasurementStatisticsResponse, MeasurementTypeStatisticsItem,
+    GetPaymentsStatisticsDataItem, GetPaymentsStatisticsResponse, PaymentTypeStatisticsItem
+} from 'models/response/stats';
 
 @Injectable()
 class StatisticsApiBackendService implements IStatisticsApiBackendService {
@@ -36,8 +38,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         let params: HttpParams =
             new HttpParams();
 
-        if (!isNullOrUndefined(filter.year)) {
-            params = params.set('year', `${filter.year}`);
+        if (!isNullOrUndefined(filter.from)) {
+            params = params.set('from', `${new Date(filter.from.year, filter.from.month).toDateString()}`);
+        }
+        if (!isNullOrUndefined(filter.to)) {
+            params = params.set('to', `${new Date(filter.to.year, filter.to.month).toDateString()}`);
         }
         if (!isNullOrUndefined(filter.paymentTypeId) && filter.paymentTypeId !== 0) {
             params = params.set('paymentTypeId', `${filter.paymentTypeId}`);
@@ -48,7 +53,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: any) =>
                     ({
-                        year: response['year'],
+                        from: isNullOrUndefined(response['from']) ? undefined : new Date(response['from']),
+                        to: isNullOrUndefined(response['to']) ? undefined : new Date(response['to']),
                         typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
                             paymentTypeId: typeItem['paymentTypeId'],
                             paymentTypeName: typeItem['paymentTypeName'],
@@ -69,8 +75,11 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
         let params: HttpParams =
             new HttpParams();
 
-        if (!isNullOrUndefined(filter.year)) {
-            params = params.set('year', `${filter.year}`);
+        if (!isNullOrUndefined(filter.from)) {
+            params = params.set('from', `${new Date(filter.from.year, filter.from.month).toDateString()}`);
+        }
+        if (!isNullOrUndefined(filter.to)) {
+            params = params.set('to', `${new Date(filter.to.year, filter.to.month).toDateString()}`);
         }
         if (!isNullOrUndefined(filter.measurementTypeId) && filter.measurementTypeId !== 0) {
             params = params.set('measurementTypeId', `${filter.measurementTypeId}`);
@@ -81,7 +90,8 @@ class StatisticsApiBackendService implements IStatisticsApiBackendService {
             .pipe(
                 map((response: any) =>
                     ({
-                        year: response['year'],
+                        from: isNullOrUndefined(response['from']) ? undefined : new Date(response['from']),
+                        to: isNullOrUndefined(response['to']) ? undefined : new Date(response['to']),
                         typeStatistics: (response['typeStatistics'] || []).map(typeItem => ({
                             measurementTypeId: typeItem['measurementTypeId'],
                             measurementTypeName: typeItem['measurementTypeName'],

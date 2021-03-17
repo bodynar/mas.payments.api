@@ -2,6 +2,7 @@ namespace MAS.Payments.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Linq;
 
     using MAS.Payments.Commands;
     using MAS.Payments.Infrastructure;
@@ -118,7 +119,18 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void UpdatePayment(UpdatePaymentRequest request)
+        public void AddGroup([FromBody] AddPaymentGroupRequest request)
+        {
+            if (request == null)
+            {
+                throw new ArgumentNullException(nameof(request));
+            }
+
+            CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId,  x.Description))));
+        }
+
+        [HttpPost("[action]")]
+        public void UpdatePayment([FromBody] UpdatePaymentRequest request)
         {
             if (request == null)
             {

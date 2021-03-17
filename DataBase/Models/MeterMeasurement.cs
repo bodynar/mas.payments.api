@@ -12,6 +12,8 @@ namespace MAS.Payments.DataBase
 
         public bool IsSent { get; set; }
 
+        public double? Diff { get; set; }
+
         public long MeterMeasurementTypeId { get; set; }
 
         public virtual MeterMeasurementType MeasurementType { get; set; }

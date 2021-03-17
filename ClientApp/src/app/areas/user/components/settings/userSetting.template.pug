@@ -1,24 +1,45 @@
 ﻿doctype html
 
-.loading-cover
-    .loading-cover_image-container(
-        *ngIf='isLoading$ | async'
+h3 Options
+.form-inline
+    span.col-3 Measurements without diff
+    input.col-1.form-control.form-control-sm(
+        readonly,
+        [value]='measurementsWithoutDiff'
     )
+    .ml-auto
+        button.btn.btn-primary(
+            *ngIf='!isDiffLoading',
+            type='button',
+            (click)='onBusinessProcessExecute()',
+        ) Recalculate
+        button.btn.btn-primary(
+            *ngIf='isDiffLoading',
+            type='button'
+        )
+            span.spinner-grow.spinner-grow-sm.mr-1(
+                role='status',
+                aria-hidden='true'
+            )
+            span.sr-only Recalculating
+            | Recalculating..
+hr
+h3 Settings
+.loading-cover
+    .loading-cover_image-container(*ngIf='isSettingsLoading')
         img.loading-cover_image-container_img(
             alt='loading..',
             src='assets/images/loading-02.svg'
         )
-    .loading-cover_content(
-        [attr.data-disabled]='isLoading$ | async'
-    )
-        div(*ngIf='hasData$ | async')
+    .loading-cover_content([attr.data-disabled]='isSettingsLoading')
+        .pl-3(*ngIf='userSettings.length > 0')
             form(
                 [formGroup]='settingsForm',
                 (ngSubmit)='onFormSubmit()'
             )
                 div(
                     formArrayName='items',
-                    *ngFor='let setting of (userSettings$ | async); let i = index'
+                    *ngFor='let setting of userSettings; let i = index'
                 )
                     div(
                         [formGroupName]='i',
@@ -62,16 +83,14 @@
                                     [formControlName]='setting.name',
                                     [id]='setting.name',
                                 )
-                .form-group.row.mt-3(
-                    *ngIf='(userSettings$ | async)?.length > 0'
-                )
+                .form-group.row.mt-3(*ngIf='userSettings.length > 0')
                     .col-sm-10
                         button.btn.btn-primary(
-                            *ngIf='!(isLoading$ | async)',
+                            *ngIf='!isLoading',
                             type='submit'
                         ) Save
                         button.btn.btn-primary(
-                            *ngIf='isLoading$ | async',
+                            *ngIf='isLoading',
                             type='button'
                         )
                             span.spinner-grow.spinner-grow-sm.mr-1(
@@ -80,4 +99,4 @@
                             )
                             span.sr-only Loading
                             | Saving..
-        app-no-items(*ngIf='!(hasData$ | async) && !(isLoading$ | async)')
+        app-no-items(*ngIf='!(userSettings.length > 0) && !isSettingsLoading')

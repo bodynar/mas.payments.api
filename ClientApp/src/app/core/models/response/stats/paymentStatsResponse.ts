@@ -11,6 +11,7 @@ export interface PaymentTypeStatisticsItem {
 }
 
 export interface GetPaymentsStatisticsResponse {
-    year: number;
+    from?: Date;
+    to?: Date;
     typeStatistics: Array<PaymentTypeStatisticsItem>;
 }

@@ -67,7 +67,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody]long? measurementTypeId)
+        public void DeleteMeasurementType([FromBody] long? measurementTypeId)
         {
             if (!measurementTypeId.HasValue || measurementTypeId.Value == default)
             {
@@ -106,17 +106,14 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurement(AddMeterMeasurementRequest request)
+        public void AddMeasurement([FromBody] AddMeasurementGroupRequest request)
         {
             if (request == null)
             {
                 throw new ArgumentNullException(nameof(request));
             }
 
-            var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
-
-            CommandProcessor.Execute(
-                new AddMeterMeasurementCommand(request.MeterMeasurementTypeId, meterMeasurementDate, request.Measurement, request.Comment));
+            CommandProcessor.Execute(new AddMeasurementGroupCommand(request.Date, request.Measurements.Select(x => new MeasurementGroup(x.MeasurementTypeId, x.Measurement, x.Comment))));
         }
 
         [HttpPost("[action]")]
@@ -135,7 +132,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody]long? measurementId)
+        public void DeleteMeasurement([FromBody] long? measurementId)
         {
             if (!measurementId.HasValue || measurementId.Value == default)
             {
@@ -170,6 +167,22 @@ namespace MAS.Payments.Controllers
         public GetMeasurementAverageValueResponse GetAverageValues()
         {
             return QueryProcessor.Execute(new GetMeasurementAverageValueQuery());
+        }
+
+        [HttpGet("withoutDiff")]
+        public int GetMeasurementsWithoutDiff()
+        {
+            return QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
+        }
+
+        [HttpPost("[action]")]
+        public IEnumerable<string> UpdateDiff()
+        {
+            var command = new RecalculateDiffCommand(false);
+
+            CommandProcessor.Execute(command);
+
+            return command.Warnings;
         }
 
         #endregion

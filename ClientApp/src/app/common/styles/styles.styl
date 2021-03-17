@@ -20,6 +20,12 @@ br
     width 30%
     display flex
 
+.m-btn-xs
+    padding .15rem .25rem
+    font-size .875rem
+    line-height 1.375
+    border-radius .175rem
+
 .m-row
     align-items center
 
@@ -62,17 +68,18 @@ form
 .oi
     cursor pointer
 
-    &:hover
-        color color-blue-sky
+    &--hoverable
+        &:hover
+            color color-blue-sky
 
-    &:active
-        color color-blue-sky-darken
+        &:active
+            color color-blue-sky-darken
 
     &--sm
         font-size 0.5em
 
     &--md
-        font-size 0.8em
+        font-size 0.75em
 
     &--lg
         font-size 1.2em

@@ -1,0 +1,54 @@
+doctype html
+
+.month-selector([id]="getControlId()")
+    span(
+        class="month-selector__arrow arrow-left",
+        [class.disabled]="!canClickArrow('left')",
+        (click)="onArrowClick('left')"
+    )
+        span.oi.oi--md.oi-chevron-left(aria-hidden='true')
+    label.month-selector__selection
+        input(
+            type="checkbox",
+            [checked]="isDropPanelVisible",
+            (change)="onCheckBoxChecked($event.target)"
+        )
+        span {{ getTitle() }}
+        .month-selector__drop-panel
+            .line
+                select(
+                    [name]="getControlId('month')",
+                    (change)="monthChange.emit(month)",
+                    [(ngModel)]="month"
+                )
+                    option(
+                        *ngFor='let month of months',
+                        [value]='month.id'
+                    ) {{ month.name }}
+                select(
+                    [name]="getControlId('year')",
+                    (change)="yearChange.emit(year)",
+                    [(ngModel)]="year",
+                )
+                    option(
+                        *ngFor='let year of years',
+                        [value]='year.id'
+                    ) {{ year.name }}
+            .line
+                button.btn.m-btn-xs.btn-primary.btn-block(
+                    type="button",
+                    (click)="onTodayBtnClick()"
+                ) {{ todayBtnCaption }}
+            .line(*ngIf="canClear")
+                a.clear-link.mt-1(
+                    (click)="onClearBtnClick()",
+                    [disabled]="isEmpty()",
+                    [class.disabled]="isEmpty()",
+                    [attr.title]="isEmpty() ? 'Nothing to clear' : null"
+                ) {{ clearBtnCaption }}
+    span(
+        class="month-selector__arrow arrow-right",
+        [class.disabled]="!canClickArrow('right')",
+        (click)="onArrowClick('right')"
+    )
+        span.oi.oi--md.oi-chevron-right(aria-hidden='true')

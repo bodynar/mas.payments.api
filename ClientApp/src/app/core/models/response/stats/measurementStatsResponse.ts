@@ -11,6 +11,7 @@ export interface MeasurementTypeStatisticsItem {
 }
 
 export interface GetMeasurementStatisticsResponse {
-    year: number;
+    from?: Date;
+    to?: Date;
     typeStatistics: Array<MeasurementTypeStatisticsItem>;
 }

@@ -1,4 +1,11 @@
-const months: Array<{ id?: number, name: string }> = [
+import { isNullOrEmpty } from 'common/utils/common';
+
+interface Month {
+    id: number;
+    name: string;
+}
+
+const months: Array<Month> = [
     {
         id: 0,
         name: 'January'
@@ -49,12 +56,28 @@ const months: Array<{ id?: number, name: string }> = [
     },
 ];
 
+const emptyMonth: Month = { name: '', id: -1 };
+
 const getMonthName = (monthNumber: number): string => {
-    if (monthNumber <= 0 || monthNumber > 12) {
+    if (monthNumber < 0 || monthNumber > 12) {
         throw new Error('Month number must be in (0, 12] range.');
     }
 
-    return months[monthNumber - 1].name;
+    const month: Month | undefined = months.find(x => x.id === monthNumber);
+
+    return month?.name;
 };
 
-export { months, getMonthName };
+const getShortMonthName = (monthNumber: number): string => {
+    const monthName: string = getMonthName(monthNumber);
+
+    return isNullOrEmpty(monthName) ? monthName : monthName.substr(0, 3);
+}
+
+export {
+    Month,
+    months,
+    emptyMonth,
+    getMonthName,
+    getShortMonthName
+};

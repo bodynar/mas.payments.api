@@ -121,6 +121,11 @@
                     .OrderByDescending(x => x.Date.Date)
                     .FirstOrDefault();
 
+                if (previousTypeValue == default)
+                {
+                    continue;
+                }
+
                 if (measurementData.Measurement < previousTypeValue.Measurement)
                 {
                     throw new ArgumentException($"Measurement value must be greater than previous. Cannot add value \"{measurementData.Measurement}\" that is less than previous \"{previousTypeValue.Measurement}\".");

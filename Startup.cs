@@ -35,13 +35,14 @@ namespace MAS.Payments
         {
             try
             {
-                Log.Information($"Calling {nameof(ConfigureServices)}");
+                Log.Debug($"Trying to \"{nameof(ConfigureServices)}\"");
                 ServicesConfiguration.Configure(services, Configuration, Container);
+                Log.Debug($"\"{nameof(ConfigureServices)}\": SUCCESS");
             }
             catch (System.Exception e)
             {
-                Log.Error(e, $"Exception in {nameof(ConfigureServices)}");
-                throw e;
+                Log.Error(e, $"\"{nameof(ConfigureServices)}\": FAILED");
+                throw;
             }
         }
 
@@ -50,13 +51,14 @@ namespace MAS.Payments
         {
             try
             {
-                Log.Information($"Calling {nameof(Configure)}");
+                Log.Debug($"Trying to \"{nameof(Configure)}\"");
                 app.Configure(Container, env.IsDevelopment());
+                Log.Debug($"\"{nameof(Configure)}\": SUCCESS");
             }
             catch (System.Exception e)
             {
-                Log.Error(e, $"Exception in {nameof(Configure)}");
-                throw e;
+                Log.Error(e, $"\"{nameof(Configure)}\": FAILED");
+                throw;
             }
         }
     }

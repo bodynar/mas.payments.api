@@ -26,6 +26,13 @@
 
         public override void Handle(UpdateMeterMeasurementCommand command)
         {
+            /*
+             TODO: On update
+                check that previous values are less than updated one
+                and further values are greater than
+             
+             */
+
             var measurement = Repository.Get(command.Id);
 
             Validate(measurement, command);

@@ -1,10 +1,10 @@
-namespace MAS.Payments.Queries
+﻿namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetMeterMeasurementsQuery : IQuery<IEnumerable<GetMeterMeasurementsResponse>>
+    public class GetMeterMeasurementsQuery : IQuery<IEnumerable<GetMeterMeasurementsQueryResponse>>
     {
         public byte? Month { get; }
 

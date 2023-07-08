@@ -9,6 +9,8 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Specification;
 
+    using Serilog;
+
     public class HideUserNotificationCommandHandler : BaseCommandHandler<HideUserNotificationCommand>
     {
         private IRepository<UserNotification> Repository { get; }
@@ -23,8 +25,18 @@
         {
             var notificationsToHide = 
                 Repository.Where(
-                    new CommonSpecification<UserNotification>(x => command.NotificationKeys.Contains(x.Key))
+                    new CommonSpecification<UserNotification>(x => command.Ids.Contains(x.Id))
                 );
+
+            var foundIds = notificationsToHide.Select(x => x.Id).ToList();
+
+            var notFoundNotifications = command.Ids.Except(foundIds);
+
+            if (notFoundNotifications.Any())
+            {
+                command.NotProcessedIds = notFoundNotifications;
+                Log.Warning($"Trying to hide notifications with ids, but not all of them not found: [{string.Join(", ", notFoundNotifications)}]");
+            }
 
             foreach (var userNotification in notificationsToHide)
             {

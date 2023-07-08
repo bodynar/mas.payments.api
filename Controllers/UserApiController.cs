@@ -66,14 +66,18 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void HideNotifications([FromBody] IEnumerable<string> userNotificationKeys)
+        public IEnumerable<long> HideNotifications([FromBody] IEnumerable<long> userNotificationIds)
         {
-            if (userNotificationKeys == null || userNotificationKeys.Any(x => string.IsNullOrEmpty(x)))
+            if (userNotificationIds == null)
             {
-                throw new ArgumentNullException(nameof(userNotificationKeys));
+                throw new ArgumentNullException(nameof(userNotificationIds));
             }
 
-            CommandProcessor.Execute(new HideUserNotificationCommand(userNotificationKeys));
+            var command = new HideUserNotificationCommand(userNotificationIds.Where(x => x != default));
+
+            CommandProcessor.Execute(command);
+
+            return command.NotProcessedIds;
         }
 
         [HttpPost("[action]")]

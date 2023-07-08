@@ -157,12 +157,6 @@ namespace MAS.Payments.Controllers
             );
         }
 
-        [HttpGet("[action]")]
-        public GetPaymentAverageValueResponse GetAverageValues()
-        {
-            return QueryProcessor.Execute(new GetPaymentAverageValueQuery());
-        }
-
         #endregion
     }
 }

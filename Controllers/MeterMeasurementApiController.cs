@@ -182,12 +182,6 @@ namespace MAS.Payments.Controllers
             CommandProcessor.Execute(new SendMeasurementsCommand(recipientEmail.RawValue, measurementIdentifiers));
         }
 
-        [HttpGet("[action]")]
-        public GetMeasurementAverageValueResponse GetAverageValues()
-        {
-            return QueryProcessor.Execute(new GetMeasurementAverageValueQuery());
-        }
-
         [HttpGet("withoutDiff")]
         public int GetMeasurementsWithoutDiff()
         {

@@ -10,6 +10,7 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
+    using MAS.Payments.Queries.Measurements;
 
     public class AddMeasurementGroupCommandHandler : BaseCommandHandler<AddMeasurementGroupCommand>
     {
@@ -34,8 +35,7 @@
             Validate(command);
 
             var measurements = new List<MeterMeasurement>();
-            var calculatedNewMeasurementDate = new DateTime(command.Date.Year, command.Date.Month, 20);
-            var previousMonthDate = calculatedNewMeasurementDate.AddMonths(-1);
+            var previousMonthDate = command.Date.AddMonths(-1);
 
             foreach (var measurementData in command.Measurements)
             {
@@ -56,7 +56,7 @@
                 measurements.Add(
                     new MeterMeasurement
                     {
-                        Date = calculatedNewMeasurementDate,
+                        Date = command.Date,
                         Measurement = measurementData.Measurement,
                         MeterMeasurementTypeId = measurementData.MeasurementTypeId,
                         Comment = measurementData.Comment,
@@ -69,11 +69,11 @@
 
         private void Validate(AddMeasurementGroupCommand command)
         {
-            var notValidMeasurements = command.Measurements.Where(x => x.Measurement <= 0).Select(x => x.Measurement);
+            var notValidMeasurements = command.Measurements.Where(x => x.Measurement <= 0);
 
             if (notValidMeasurements.Any())
             {
-                throw new ArgumentException($"Cannot add measurements with value [{string.Join(", ", notValidMeasurements)}]. Value must be greater than 0.");
+                throw new ArgumentException($"Measurement value must be greater than 0.");
             }
 
             var hasDuplicateTypes =
@@ -94,10 +94,8 @@
                 throw new CommandExecutionException(CommandType, $"Measurement types with ids [{string.Join(",", notValidTypes)}] doesn't exist.");
             }
 
-            var calculatedNewMeasurementDate = new DateTime(command.Date.Year, command.Date.Month, 20);
-
             var measurementsOnSpecifiedMonth =
-                Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date.Date == calculatedNewMeasurementDate))
+                Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date.Date == command.Date))
                 .ToList();
 
             var duplicateTypes =
@@ -111,24 +109,25 @@
 
             if (duplicateTypes.Any())
             {
-                throw new ArgumentException($"Cannot add duplicate measurements for types which already exist for {calculatedNewMeasurementDate:MMMM yyyy}: {string.Join("; ", duplicateTypes)}.");
+                throw new ArgumentException($"Measurements for {command.Date:MMMM yyyy} is already exists for next types: {string.Join("; ", duplicateTypes)}.");
             }
 
             foreach (var measurementData in command.Measurements)
             {
                 var previousTypeValue =
-                    Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.MeterMeasurementTypeId == measurementData.MeasurementTypeId))
-                    .OrderByDescending(x => x.Date.Date)
-                    .FirstOrDefault();
+                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(measurementData.MeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Previous));
 
-                if (previousTypeValue == default)
+                if (previousTypeValue != null && measurementData.Measurement < previousTypeValue.Measurement)
                 {
-                    continue;
+                    throw new ArgumentException($"Measurement value \"{measurementData.Measurement}\" must be greater than previous \"{previousTypeValue.Measurement}\".");
                 }
 
-                if (measurementData.Measurement < previousTypeValue.Measurement)
+                var closestNextMeasurement =
+                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(measurementData.MeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
+
+                if (closestNextMeasurement != null && measurementData.Measurement >= closestNextMeasurement.Measurement)
                 {
-                    throw new ArgumentException($"Measurement value must be greater than previous. Cannot add value \"{measurementData.Measurement}\" that is less than previous \"{previousTypeValue.Measurement}\".");
+                    throw new ArgumentException($"Measurement value \"{measurementData.Measurement}\" must be less than next \"{closestNextMeasurement.Measurement}\".");
                 }
             }
         }

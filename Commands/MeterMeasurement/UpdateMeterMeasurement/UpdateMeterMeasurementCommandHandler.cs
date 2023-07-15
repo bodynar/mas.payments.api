@@ -140,11 +140,11 @@
             }
 
              var closestNextMeasurement =
-                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(measurementData.MeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
+                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
 
-            if (closestNextMeasurement != null && measurementData.Measurement >= closestNextMeasurement.Measurement)
+            if (closestNextMeasurement != null && command.Measurement >= closestNextMeasurement.Measurement)
             {
-                throw new ArgumentException($"Measurement value \"{measurementData.Measurement}\" must be less than next \"{closestNextMeasurement.Measurement}\".");
+                throw new ArgumentException($"Measurement value \"{command.Measurement}\" must be less than next \"{closestNextMeasurement.Measurement}\".");
             }
         }
     }

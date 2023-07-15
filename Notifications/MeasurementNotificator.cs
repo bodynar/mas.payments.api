@@ -32,7 +32,7 @@ namespace MAS.Payments.Notifications
                 {
                     var measurements =
                         QueryProcessor.Execute(
-                            new GetMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
+                            new GetGroupedMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
                         )
                         .SelectMany(x => x.Measurements.Select(y => y.MeterMeasurementTypeId))
                         .Distinct();

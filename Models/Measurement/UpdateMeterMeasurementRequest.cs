@@ -4,7 +4,7 @@ namespace MAS.Payments.Models
     {
         public long Id { get; set; }
 
-        public double Measurement { get; set; }
+        public double Value { get; set; }
 
         public string Comment { get; set; }
 
@@ -12,6 +12,6 @@ namespace MAS.Payments.Models
 
         public int Month { get; set; }
 
-        public long MeterMeasurementTypeId { get; set; }
+        public long TypeId { get; set; }
     }
 }

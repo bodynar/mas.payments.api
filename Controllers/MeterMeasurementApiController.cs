@@ -67,15 +67,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody] long? measurementTypeId)
+        public void DeleteMeasurementType([FromBody] DeleteRecordRequest request)
         {
-            if (!measurementTypeId.HasValue || measurementTypeId.Value == default)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(measurementTypeId));
+                throw new ArgumentNullException(nameof(request));
             }
 
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementTypeCommand(measurementTypeId.Value));
+                new DeleteMeterMeasurementTypeCommand(request.Id));
         }
 
         #endregion
@@ -94,7 +94,19 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetMeterMeasurementsResponse> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
+        public IEnumerable<GetGroupedMeterMeasurementsResponse> GetGroupedMeasurements([FromQuery] GetMeterMeasurementRequest filter)
+        {
+            if (filter == null)
+            {
+                throw new ArgumentNullException(nameof(filter));
+            }
+
+            return QueryProcessor.Execute(
+                new GetGroupedMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
+        }
+
+        [HttpGet("[action]")]
+        public IEnumerable<GetMeterMeasurementsQueryResponse> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
         {
             if (filter == null)
             {
@@ -113,7 +125,14 @@ namespace MAS.Payments.Controllers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            CommandProcessor.Execute(new AddMeasurementGroupCommand(request.Date, request.Measurements.Select(x => new MeasurementGroup(x.MeasurementTypeId, x.Measurement, x.Comment))));
+            CommandProcessor.Execute(
+                new AddMeasurementGroupCommand(
+                    new DateTime(request.Year, request.Month, 1),
+                    request.Measurements.Select(x => 
+                        new MeasurementGroup(x.TypeId, x.Value, x.Comment)
+                    )
+                )
+            );
         }
 
         [HttpPost("[action]")]
@@ -127,20 +146,20 @@ namespace MAS.Payments.Controllers
             var meterMeasurementDate = new DateTime(request.Year, request.Month, 20);
 
             CommandProcessor.Execute(
-                new UpdateMeterMeasurementCommand(request.Id, request.MeterMeasurementTypeId, meterMeasurementDate, request.Measurement, request.Comment)
+                new UpdateMeterMeasurementCommand(request.Id, request.TypeId, meterMeasurementDate, request.Value, request.Comment)
             );
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody] long? measurementId)
+        public void DeleteMeasurement([FromBody] DeleteRecordRequest request)
         {
-            if (!measurementId.HasValue || measurementId.Value == default)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(measurementId));
+                throw new ArgumentNullException(nameof(request));
             }
 
             CommandProcessor.Execute(
-                new DeleteMeterMeasurementCommand(measurementId.Value));
+                new DeleteMeterMeasurementCommand(request.Id));
         }
 
         [HttpPost("[action]")]
@@ -161,12 +180,6 @@ namespace MAS.Payments.Controllers
             }
 
             CommandProcessor.Execute(new SendMeasurementsCommand(recipientEmail.RawValue, measurementIdentifiers));
-        }
-
-        [HttpGet("[action]")]
-        public GetMeasurementAverageValueResponse GetAverageValues()
-        {
-            return QueryProcessor.Execute(new GetMeasurementAverageValueQuery());
         }
 
         [HttpGet("withoutDiff")]

@@ -27,6 +27,13 @@
 
         public override void Handle(UpdateMeterMeasurementCommand command)
         {
+            /*
+             TODO: On update
+                check that previous values are less than updated one
+                and further values are greater than
+             
+             */
+
             var measurement = Repository.Get(command.Id);
 
             Validate(measurement, command);
@@ -132,8 +139,8 @@
                 throw new ArgumentException($"Measurement value \"{command.Measurement}\" must be greater than previous \"{previousTypeValue.Measurement}\".");
             }
 
-            var closestNextMeasurement =
-                QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
+             var closestNextMeasurement =
+                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
 
             if (closestNextMeasurement != null && command.Measurement >= closestNextMeasurement.Measurement)
             {

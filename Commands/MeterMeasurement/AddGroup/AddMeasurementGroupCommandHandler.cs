@@ -101,7 +101,7 @@
             var duplicateTypes =
                 command.Measurements
                     .Where(measurementData =>
-                        measurementsOnSpecifiedMonth.FirstOrDefault(x => x.MeterMeasurementTypeId == measurementData.MeasurementTypeId) != null)
+                        measurementsOnSpecifiedMonth.Find(x => x.MeterMeasurementTypeId == measurementData.MeasurementTypeId) != null)
                     .Select(x => new {
                         TypeName = MeterMeasurementTypeRepository.Get(x.MeasurementTypeId).Name,
                         x.Measurement

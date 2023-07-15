@@ -65,15 +65,15 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeletePaymentType([FromBody] long? paymentTypeId)
+        public void DeletePaymentType([FromBody] DeleteRecordRequest request)
         {
-            if (!paymentTypeId.HasValue || paymentTypeId.Value == default)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(paymentTypeId));
+                throw new ArgumentNullException(nameof(request));
             }
 
             CommandProcessor.Execute(
-                new DeletePaymentTypeCommand(paymentTypeId.Value));
+                new DeletePaymentTypeCommand(request.Id));
         }
 
         #endregion
@@ -126,7 +126,7 @@ namespace MAS.Payments.Controllers
                 throw new ArgumentNullException(nameof(request));
             }
 
-            CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId,  x.Description))));
+            CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))));
         }
 
         [HttpPost("[action]")]
@@ -145,21 +145,16 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void DeletePayment([FromBody] long? paymentId)
+        public void DeletePayment([FromBody] DeleteRecordRequest request)
         {
-            if (!paymentId.HasValue || paymentId.Value == default)
+            if (request == null)
             {
-                throw new ArgumentNullException(nameof(paymentId));
+                throw new ArgumentNullException(nameof(request));
             }
 
             CommandProcessor.Execute(
-                new DeletePaymentCommand(paymentId.Value));
-        }
-
-        [HttpGet("[action]")]
-        public GetPaymentAverageValueResponse GetAverageValues()
-        {
-            return QueryProcessor.Execute(new GetPaymentAverageValueQuery());
+                new DeletePaymentCommand(request.Id)
+            );
         }
 
         #endregion

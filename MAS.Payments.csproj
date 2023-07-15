@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
-    <Version>1.3.3</Version>
+    <Version>1.4</Version>
     <UserSecretsId>4541a9c3-c620-45b9-8c86-a059a437a876</UserSecretsId>
     <AssemblyName>MAS.Payments</AssemblyName>
   </PropertyGroup>

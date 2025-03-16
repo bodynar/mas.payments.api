@@ -14,14 +14,8 @@ namespace MAS.Payments.DataBase
 
         public string Color { get; set; }
 
-        public virtual ICollection<MeterMeasurementType> MeasurementTypes { get; }
+        public virtual ICollection<MeterMeasurementType> MeasurementTypes { get; } = [];
 
-        public virtual ICollection<Payment> Payments { get; }
-
-        public PaymentType()
-        {
-            Payments = new List<Payment>();
-            MeasurementTypes = new List<MeterMeasurementType>();
-        }
+        public virtual ICollection<Payment> Payments { get; } = [];
     }
 }

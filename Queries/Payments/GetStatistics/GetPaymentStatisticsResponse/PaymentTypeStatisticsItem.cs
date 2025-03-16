@@ -8,6 +8,6 @@
 
         public string PaymentTypeName { get; set; }
 
-        public ICollection<PaymentStatisticsDataItem> StatisticsData { get; } = new List<PaymentStatisticsDataItem>();
+        public ICollection<PaymentStatisticsDataItem> StatisticsData { get; } = [];
     }
 }

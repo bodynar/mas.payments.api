@@ -9,20 +9,16 @@ namespace MAS.Payments.Notifications
     using MAS.Payments.Queries;
     using MAS.Payments.Utilities;
 
-    internal class MeasurementNotificator : BaseNotificator
+    internal class MeasurementNotificator(
+        IResolver resolver
+    ) : BaseNotificator(resolver)
     {
-        public MeasurementNotificator(
-            IResolver resolver
-        ) : base(resolver)
-        {
-        }
-
         public override IEnumerable<UserNotification> GetNotifications()
         {
             var today = DateTime.Today;
 
             var displayNotificationSetting = QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.DisplayMeasurementsNotification.ToString()));
-            var displayNotificationSettingValue = UserSettingUtilities.GetTypedSettingValue<Boolean>(displayNotificationSetting);
+            var displayNotificationSettingValue = UserSettingUtilities.GetTypedSettingValue<bool>(displayNotificationSetting);
 
             if (displayNotificationSettingValue && today.Day >= 20)
             {
@@ -58,7 +54,7 @@ namespace MAS.Payments.Notifications
                             Type = (short)type,
                             Title = "Measurement not added",
                             Key = $"MeasurementNotificationFor{today.Year}{today.Month}",
-                            Text = $"Measurenemt for [{today.ToString("MMMM yyyy")}] not added for next types: {string.Join(", ", measurementTypesWithoutMeasurement)}"
+                            Text = $"Measurement for [{today.ToString("MMMM yyyy")}] not added for next types: {string.Join(", ", measurementTypesWithoutMeasurement)}"
                         };
                     }
                 }

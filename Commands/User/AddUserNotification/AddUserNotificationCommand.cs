@@ -11,12 +11,12 @@
 
         public AddUserNotificationCommand(IEnumerable<UserNotification> userNotifications)
         {
-            UserNotifications = new List<UserNotification>(userNotifications);
+            UserNotifications = [.. userNotifications];
         }
 
         public AddUserNotificationCommand(UserNotification userNotification)
         {
-            UserNotifications = new List<UserNotification>() { userNotification };
+            UserNotifications = [userNotification];
         }
     }
 }

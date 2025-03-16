@@ -9,6 +9,6 @@ namespace MAS.Payments.Queries
 
         public DateTime? To { get; set; }
 
-        public ICollection<PaymentTypeStatisticsItem> TypeStatistics { get; } = new List<PaymentTypeStatisticsItem>();
+        public ICollection<PaymentTypeStatisticsItem> TypeStatistics { get; } = [];
     }
 }

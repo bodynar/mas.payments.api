@@ -4,19 +4,16 @@
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetMeterMeasurementsQuery : IQuery<IEnumerable<GetMeterMeasurementsQueryResponse>>
+    public class GetMeterMeasurementsQuery(
+        byte? month = null,
+        long? meterMeasurementTypeId = null,
+        int? year = null
+    ) : IQuery<IEnumerable<GetMeterMeasurementsQueryResponse>>
     {
-        public byte? Month { get; }
+        public byte? Month { get; } = month;
 
-        public int? Year { get; }
+        public int? Year { get; } = year;
 
-        public long? MeterMeasurementTypeId { get; }
-
-        public GetMeterMeasurementsQuery(byte? month = null, long? metermeasurementTypeId = null, int? year = null)
-        {
-            Month = month;
-            MeterMeasurementTypeId = metermeasurementTypeId;
-            Year = year;
-        }
+        public long? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
     }
 }

@@ -36,10 +36,10 @@ namespace MAS.Payments.Commands
 
             Repository.Update(command.Id, new
             {
-                Company = command.Company,
-                Description = command.Description,
-                Name = command.Name,
-                Color = command.Color,
+                command.Company,
+                command.Description,
+                command.Name,
+                command.Color,
             });
         }
     }

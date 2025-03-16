@@ -16,11 +16,6 @@ namespace MAS.Payments.DataBase
 
         public virtual PaymentType PaymentType { get; set; }
 
-        public virtual ICollection<MeterMeasurement> MeterMeasurements { get; }
-
-        public MeterMeasurementType()
-        {
-            MeterMeasurements = new List<MeterMeasurement>();
-        }
+        public virtual ICollection<MeterMeasurement> MeterMeasurements { get; } = [];
     }
 }

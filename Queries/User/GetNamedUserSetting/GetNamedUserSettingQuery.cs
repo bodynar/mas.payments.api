@@ -3,13 +3,10 @@
     using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetNamedUserSettingQuery : IQuery<UserSettings>
+    public class GetNamedUserSettingQuery(
+        string settingName
+    ) : IQuery<UserSettings>
     {
-        public string SettingName { get; }
-
-        public GetNamedUserSettingQuery(string settingName)
-        {
-            SettingName = settingName;
-        }
+        public string SettingName { get; } = settingName;
     }
 }

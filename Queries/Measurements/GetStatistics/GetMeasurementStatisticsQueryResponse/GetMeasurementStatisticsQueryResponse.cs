@@ -9,6 +9,6 @@
 
         public DateTime? To { get; set; }
 
-        public ICollection<MeasurementTypeStatisticsItem> TypeStatistics { get; } = new List<MeasurementTypeStatisticsItem>();
+        public ICollection<MeasurementTypeStatisticsItem> TypeStatistics { get; } = [];
     }
 }

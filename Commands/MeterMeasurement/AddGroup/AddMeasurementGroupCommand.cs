@@ -2,7 +2,6 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using MAS.Payments.Infrastructure.Command;
 
@@ -16,11 +15,11 @@
         {
             if (date == default)
             {
-                throw new ArgumentException(nameof(date));
+                throw new ArgumentException(null, nameof(date));
             }
 
-            Date = new DateTime(date.Year, date.Month, 20);
-            Measurements = measurements ?? Enumerable.Empty<MeasurementGroup>();
+            Date = new DateTime(date.Year, date.Month, 20, 0, 0,0, DateTimeKind.Utc);
+            Measurements = measurements ?? [];
         }
     }
 }

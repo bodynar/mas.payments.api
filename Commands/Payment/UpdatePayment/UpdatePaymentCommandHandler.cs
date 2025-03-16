@@ -11,6 +11,7 @@ namespace MAS.Payments.Commands
         private IRepository<Payment> Repository { get; }
 
         private IRepository<PaymentType> PaymentTypeRepository { get; }
+
         public UpdatePaymentCommandHandler(
             IResolver resolver
         ) : base(resolver)
@@ -22,20 +23,16 @@ namespace MAS.Payments.Commands
         public override void Handle(UpdatePaymentCommand command)
         {
             var paymentType =
-                PaymentTypeRepository.Get(command.PaymentTypeId);
-
-            if (paymentType == null)
-            {
-                throw new CommandExecutionException(CommandType,
+                PaymentTypeRepository.Get(command.PaymentTypeId)
+                ?? throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
-            }
 
             Repository.Update(command.Id, new
             {
-                Amount = command.Amount,
-                Date = command.Date,
-                Description = command.Description,
-                PaymentTypeId = command.PaymentTypeId,
+                command.Amount,
+                command.Date,
+                command.Description,
+                command.PaymentTypeId,
             });
         }
     }

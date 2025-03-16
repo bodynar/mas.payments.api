@@ -4,19 +4,16 @@ namespace MAS.Payments.Queries
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetGroupedMeterMeasurementsQuery : IQuery<IEnumerable<GetGroupedMeterMeasurementsResponse>>
+    public class GetGroupedMeterMeasurementsQuery(
+        byte? month = null,
+        long? meterMeasurementTypeId = null,
+        int? year = null
+    ) : IQuery<IEnumerable<GetGroupedMeterMeasurementsResponse>>
     {
-        public byte? Month { get; }
+        public byte? Month { get; } = month;
 
-        public int? Year { get; }
+        public int? Year { get; } = year;
 
-        public long? MeterMeasurementTypeId { get; }
-
-        public GetGroupedMeterMeasurementsQuery(byte? month = null, long? metermeasurementTypeId = null, int? year = null)
-        {
-            Month = month;
-            MeterMeasurementTypeId = metermeasurementTypeId;
-            Year = year;
-        }
+        public long? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
     }
 }

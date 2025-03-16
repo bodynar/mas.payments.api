@@ -1,19 +1,15 @@
-﻿using System.Linq;
-namespace MAS.Payments.Commands
+﻿namespace MAS.Payments.Commands
 {
     using System.Collections.Generic;
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class RecalculateDiffCommand : ICommand
+    public class RecalculateDiffCommand(
+        bool forAll = false
+    ) : ICommand
     {
-        public bool ForAll { get; }
+        public bool ForAll { get; } = forAll;
 
-        public IEnumerable<string> Warnings { get; set; } = Enumerable.Empty<string>();
-
-        public RecalculateDiffCommand(bool forAll = false)
-        {
-            ForAll = forAll;
-        }
+        public IEnumerable<string> Warnings { get; set; } = [];
     }
 }

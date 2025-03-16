@@ -7,19 +7,12 @@ namespace MAS.Payments.Notifications
     using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure;
 
-    public class NotificationProcessor : INotificationProcessor
+    public class NotificationProcessor(
+        IResolver resolver
+    ) : INotificationProcessor
     {
-        private IResolver Resolver { get; }
-
         private static Lazy<IEnumerable<Type>> NotificatorsTypesMap
-            => new Lazy<IEnumerable<Type>>(() => FillNotificatorsTypesMap());
-
-        public NotificationProcessor(
-            IResolver resolver
-        )
-        {
-            Resolver = resolver;
-        }
+            => new(FillNotificatorsTypesMap);
 
         public IEnumerable<UserNotification> GetNotifications()
         {
@@ -27,7 +20,7 @@ namespace MAS.Payments.Notifications
 
             foreach (var notificatorType in NotificatorsTypesMap.Value)
             {
-                dynamic notificator = Resolver.GetInstance(notificatorType);
+                dynamic notificator = resolver.GetInstance(notificatorType);
 
                 notifications.AddRange(notificator.GetNotifications());
             }

@@ -5,14 +5,10 @@ namespace MAS.Payments.Notifications
     using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure;
 
-    internal class TestNotificator : BaseNotificator
+    internal class TestNotificator(
+        IResolver resolver
+    ) : BaseNotificator(resolver)
     {
-        public TestNotificator(
-            IResolver resolver
-        ) : base(resolver)
-        {
-        }
-
         public override IEnumerable<UserNotification> GetNotifications()
         {
             var wasNotificationFormed = CheckWasNotificationFormed("testNotification");

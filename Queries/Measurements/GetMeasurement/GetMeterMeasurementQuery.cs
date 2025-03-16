@@ -2,13 +2,10 @@ namespace MAS.Payments.Queries
 {
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetMeterMeasurementQuery : IQuery<GetMeterMeasurementResponse>
+    public class GetMeterMeasurementQuery(
+        long id
+    ) : IQuery<GetMeterMeasurementResponse>
     {
-        public long Id { get; }
-
-        public GetMeterMeasurementQuery(long id)
-        {
-            Id = id;
-        }
+        public long Id { get; } = id;
     }
 }

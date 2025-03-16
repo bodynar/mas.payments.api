@@ -4,53 +4,37 @@ namespace MAS.Payments.Infrastructure.Command
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
-    using MAS.Payments.Infrastructure.MailMessaging;
     using MAS.Payments.Infrastructure.Query;
 
-    public abstract class BaseCommandHandler<TCommand> : ICommandHandler<TCommand>
+    public abstract class BaseCommandHandler<TCommand>(
+        IResolver resolver
+    ) : ICommandHandler<TCommand>
         where TCommand : ICommand
     {
         #region Private fields
 
-        private Lazy<IQueryProcessor> _queryProcessor
-            => new Lazy<IQueryProcessor>(Resolver.Resolve<IQueryProcessor>);
+        private Lazy<IQueryProcessor> queryProcessor
+            => new(resolver.Resolve<IQueryProcessor>);
 
-        private Lazy<ICommandProcessor> _commandProcessor
-            => new Lazy<ICommandProcessor>(Resolver.Resolve<ICommandProcessor>);
-
-        private Lazy<IMailProcessor> _mailProcessor
-            => new Lazy<IMailProcessor>(Resolver.Resolve<IMailProcessor>);
+        private Lazy<ICommandProcessor> commandProcessor
+            => new(resolver.Resolve<ICommandProcessor>);
 
         #endregion
 
-        protected IResolver Resolver { get; }
-
         protected IQueryProcessor QueryProcessor
-            => _queryProcessor.Value;
+            => queryProcessor.Value;
 
         protected ICommandProcessor CommandProcessor
-            => _commandProcessor.Value;
+            => commandProcessor.Value;
 
-        protected IMailProcessor MailProcessor
-            => _mailProcessor.Value;
-
-        protected Type CommandType { get; }
-
-        public BaseCommandHandler(
-            IResolver resolver
-        )
-        {
-            Resolver = resolver;
-
-            CommandType = typeof(TCommand);
-        }
+        protected Type CommandType { get; } = typeof(TCommand);
 
         public abstract void Handle(TCommand command);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity : Entity
         {
-            return Resolver.Resolve<IRepository<TEntity>>();
+            return resolver.Resolve<IRepository<TEntity>>();
         }
     }
 }

@@ -2,20 +2,16 @@
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddPaymentGroupCommand: ICommand
+    public class AddPaymentGroupCommand(
+        DateTime date,
+        IEnumerable<PaymentGroup> payments
+    ) : ICommand
     {
-        public DateTime Date { get; }
+        public DateTime Date { get; } = date;
 
-        public IEnumerable<PaymentGroup> Payments { get; }
-
-        public AddPaymentGroupCommand(DateTime date, IEnumerable<PaymentGroup> payments)
-        {
-            Date = date;
-            Payments = payments ?? Enumerable.Empty<PaymentGroup>();
-        }
+        public IEnumerable<PaymentGroup> Payments { get; } = payments ?? [];
     }
 }

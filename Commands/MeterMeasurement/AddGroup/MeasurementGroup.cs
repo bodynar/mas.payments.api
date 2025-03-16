@@ -1,18 +1,15 @@
 ﻿namespace MAS.Payments.Commands
 {
-    public class MeasurementGroup
+    public class MeasurementGroup(
+        long measurementTypeId,
+        double measurement,
+        string comment
+    )
     {
-        public long MeasurementTypeId { get; }
+        public long MeasurementTypeId { get; } = measurementTypeId;
 
-        public double Measurement { get; }
+        public double Measurement { get; } = measurement;
 
-        public string Comment { get; }
-
-        public MeasurementGroup(long measurementTypeId, double measurement, string comment)
-        {
-            MeasurementTypeId = measurementTypeId;
-            Measurement = measurement;
-            Comment = comment;
-        }
+        public string Comment { get; } = comment;
     }
 }

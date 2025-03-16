@@ -9,20 +9,16 @@ namespace MAS.Payments.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/stats")]
-    public class StatisticsApiController : BaseApiController
+    public class StatisticsApiController(
+        IResolver resolver
+    ) : BaseApiController(resolver)
     {
-        public StatisticsApiController(
-            IResolver resolver
-        ) : base(resolver)
-        {
-        }
-
         [HttpGet("[action]")]
         public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery] GetPaymentsStatisticsRequest request)
         {
             if (request == null)
             {
-                throw new Exception("Year and Payment type must be specified.");
+                throw new ArgumentException("Year and Payment type must be specified.");
             }
 
             return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.From, request.To, request.PaymentTypeId));
@@ -33,7 +29,7 @@ namespace MAS.Payments.Controllers
         {
             if (request == null)
             {
-                throw new Exception("Year and Measurement type must be specified.");
+                throw new ArgumentException("Year and Measurement type must be specified.");
             }
 
             return QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.From, request.To, request.MeasurementTypeId));

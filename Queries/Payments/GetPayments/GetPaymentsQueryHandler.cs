@@ -1,13 +1,13 @@
 namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
+    using System.Linq;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
-    using MAS.Payments.Projectors;
 
     internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsResponse>>
     {
@@ -56,7 +56,19 @@ namespace MAS.Payments.Queries
             }
 
             return Repository
-                   .Where(filter, new Projector.ToFlat<Payment, GetPaymentsResponse>()); ;
+                .Where(filter)
+                .Select(x =>
+                    new GetPaymentsResponse
+                    {
+                        Id = x.Id,
+                        Amount = x.Amount,
+                        DateYear = x.Date.HasValue ? x.Date.Value.Year : 0,
+                        DateMonth = x.Date.HasValue ? x.Date.Value.Month : 0,
+                        Description = x.Description,
+                        PaymentTypeName = x.PaymentType.Name,
+                        PaymentTypeColor = x.PaymentType.Color,
+                        PaymentTypeId = x.PaymentTypeId,
+                    });
         }
     }
 }

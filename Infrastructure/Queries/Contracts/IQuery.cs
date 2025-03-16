@@ -1,4 +1,4 @@
 namespace MAS.Payments.Infrastructure.Query
 {
-    public interface IQuery<TResult> { }
+    public interface IQuery<out TResult> { }
 }

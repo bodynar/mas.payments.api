@@ -3,22 +3,19 @@ namespace MAS.Payments.Commands
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddPaymentTypeCommand : ICommand
+    public class AddPaymentTypeCommand(
+        string name,
+        string description,
+        string company,
+        string color
+    ) : ICommand
     {
-        public string Name { get; }
+        public string Name { get; } = name;
 
-        public string Description { get; }
+        public string Description { get; } = description;
 
-        public string Company { get; }
-        
-        public string Color { get; set; }
+        public string Company { get; } = company;
 
-        public AddPaymentTypeCommand(string name, string description, string company, string color)
-        {
-            Name = name;
-            Description = description;
-            Company = company;
-            Color = color;
-        }
+        public string Color { get; } = color;
     }
 }

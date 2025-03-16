@@ -27,13 +27,6 @@
 
         public override void Handle(UpdateMeterMeasurementCommand command)
         {
-            /*
-             TODO: On update
-                check that previous values are less than updated one
-                and further values are greater than
-             
-             */
-
             var measurement = Repository.Get(command.Id);
 
             Validate(measurement, command);
@@ -41,7 +34,7 @@
             var isMeasurementChanged = measurement.Measurement != command.Measurement;
             var isMonthChanged = !measurement.Date.Date.Equals(command.Date);
 
-            var oldMonthDate = new DateTime(measurement.Date.Date.Ticks);
+            var oldMonthDate = new DateTime(measurement.Date.Date.Ticks, DateTimeKind.Utc);
             var oldTypeId = measurement.MeterMeasurementTypeId + 0;
 
             if (isMonthChanged)
@@ -60,10 +53,10 @@
 
             Repository.Update(command.Id, new
             {
-                Comment = command.Comment,
-                Date = command.Date,
-                Measurement = command.Measurement,
-                MeterMeasurementTypeId = command.MeterMeasurementTypeId,
+                command.Comment,
+                command.Date,
+                command.Measurement,
+                command.MeterMeasurementTypeId,
             });
 
             if (isMonthChanged)
@@ -103,7 +96,7 @@
         {
             if (measurement == null)
             {
-                throw new ArgumentException($"Measurement with id {command.Id} doesn't exist.");
+                throw new EntityNotFoundException(typeof(MeterMeasurement), command.Id);
             }
 
             if (command.Measurement <= 0)
@@ -111,13 +104,9 @@
                 throw new ArgumentException($"Value must be greater than 0.");
             }
 
-            var meterMeasurementType =
-                MeterMeasurementTypeRepository.Get(command.MeterMeasurementTypeId);
-
-            if (meterMeasurementType == null)
-            {
-                throw new ArgumentException($"Measurement type with id \"{command.MeterMeasurementTypeId}\" doesn't exist");
-            }
+            _ =
+                MeterMeasurementTypeRepository.Get(command.MeterMeasurementTypeId)
+                ?? throw new EntityNotFoundException(typeof(MeterMeasurementType), command.MeterMeasurementTypeId);
 
             var measurementOnSpecifiedMonth =
                 Repository.Where(new CommonSpecification<MeterMeasurement>(x =>

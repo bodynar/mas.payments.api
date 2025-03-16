@@ -1,8 +1,6 @@
 ﻿namespace MAS.Payments.Commands
 {
-    using System;
     using System.Collections.Generic;
-    using System.Linq;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -39,7 +37,7 @@
                 Repository.Update(settingValue.Id, settingValue);
             }
 
-            if (errors.Any())
+            if (errors.Count != 0)
             {
                 throw new CommandExecutionException(CommandType, string.Join(", ", errors));
             }
@@ -53,12 +51,12 @@
             {
                 case "Boolean":
                 {
-                    result = Boolean.TryParse(rawValue, out var _);
+                    result = bool.TryParse(rawValue, out var _);
                     break;
                 }
                 case "Number":
                 {
-                    result = Int16.TryParse(rawValue, out var _);
+                    result = short.TryParse(rawValue, out var _);
                     break;
                 }
                 case "String":

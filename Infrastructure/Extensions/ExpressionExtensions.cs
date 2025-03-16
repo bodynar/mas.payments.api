@@ -5,42 +5,28 @@ namespace MAS.Payments.Infrastructure.Extensions
     using System.Linq;
     using System.Linq.Expressions;
 
-    internal class ExpressionParameterRebinder : ExpressionVisitor
+    internal class ExpressionParameterRebinder(
+        Dictionary<ParameterExpression, Expression> parameterMap
+    ) : ExpressionVisitor
     {
-        private Dictionary<ParameterExpression, Expression> ParameterMap { get; }
-
-        public ExpressionParameterRebinder(Dictionary<ParameterExpression, Expression> parameterMap)
+        protected override Expression VisitParameter(ParameterExpression node)
         {
-            ParameterMap = parameterMap;
-        }
-
-        protected override Expression VisitParameter(ParameterExpression parameter)
-        {
-            return ParameterMap
-                .TryGetValue(parameter, out var replacement)
+            return parameterMap
+                .TryGetValue(node, out var replacement)
                 ? replacement
-                : parameter;
+                : node;
         }
     }
 
-    public static class ExpressionExtenstions
+    public static class ExpressionExtensions
     {
         public static Expression<T> Combine<T>(
             this Expression<T> leftExpression, Expression<T> rightExpression,
             Func<Expression, Expression, Expression> mergeFunction)
         {
-            if (leftExpression == null)
-            {
-                throw new ArgumentException(nameof(leftExpression));
-            }
-            if (rightExpression == null)
-            {
-                throw new ArgumentException(nameof(rightExpression));
-            }
-            if (mergeFunction == null)
-            {
-                throw new ArgumentException(nameof(mergeFunction));
-            }
+            ArgumentNullException.ThrowIfNull(leftExpression);
+            ArgumentNullException.ThrowIfNull(rightExpression);
+            ArgumentNullException.ThrowIfNull(mergeFunction);
 
             if (leftExpression.Parameters.Count != rightExpression.Parameters.Count)
             {

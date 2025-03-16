@@ -37,18 +37,22 @@
             {
                 filter &= new CommonSpecification<MeterMeasurement>(x => x.MeterMeasurementTypeId == query.MeasurementTypeId);
             }
+
             if (query.From.HasValue)
             {
-                filter &= new CommonSpecification<MeterMeasurement>(x => x.Date.Date >= query.From.Value.Date);
+                var date = new DateTime(query.From.Value.Ticks, DateTimeKind.Utc);
+                filter &= new CommonSpecification<MeterMeasurement>(x => x.Date.Date >= date.Date);
             }
+
             if (query.To.HasValue)
             {
-                filter &= new CommonSpecification<MeterMeasurement>(x => x.Date.Date <= query.To.Value.Date);
+                var date = new DateTime(query.To.Value.Ticks, DateTimeKind.Utc);
+                filter &= new CommonSpecification<MeterMeasurement>(x => x.Date.Date <= date.Date);
             }
 
             var measurements =
                 MeasurementRepository.Where(filter)
-                .ToList()
+                .AsEnumerable()
                 .GroupBy(x => x.MeterMeasurementTypeId);
 
             var response = new GetMeasurementStatisticsQueryResponse()

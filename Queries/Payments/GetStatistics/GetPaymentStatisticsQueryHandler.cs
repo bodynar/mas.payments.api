@@ -37,13 +37,17 @@ namespace MAS.Payments.Queries
             {
                 filter &= new CommonSpecification<Payment>(x => x.PaymentTypeId == query.PaymentTypeId);
             }
+
             if (query.From.HasValue)
             {
-                filter &= new CommonSpecification<Payment>(x => x.Date.Value.Date >= query.From.Value.Date);
+                var date = new DateTime(query.From.Value.Ticks, DateTimeKind.Utc);
+                filter &= new CommonSpecification<Payment>(x => x.Date >= date.Date);
             }
+
             if (query.To.HasValue)
             {
-                filter &= new CommonSpecification<Payment>(x => x.Date.Value.Date <= query.To.Value.Date);
+                var date = new DateTime(query.To.Value.Ticks, DateTimeKind.Utc);
+                filter &= new CommonSpecification<Payment>(x => x.Date <= date.Date);
             }
 
             var payments =
@@ -56,7 +60,6 @@ namespace MAS.Payments.Queries
                     x.PaymentTypeId,
                     PaymentTypeName = x.PaymentType.Name
                 })
-                .ToList()
                 .GroupBy(x => x.PaymentTypeId)
                 .ToList();
 
@@ -96,7 +99,7 @@ namespace MAS.Payments.Queries
                     }
                     else
                     {
-                        var isFirstYear = groupedByYear.First().Key == yearGroup.Key;
+                        var isFirstYear = groupedByYear[0].Key == yearGroup.Key;
 
                         if (isFirstYear)
                         {
@@ -118,7 +121,7 @@ namespace MAS.Payments.Queries
                     }
                     else
                     {
-                        var isLastYear = groupedByYear.Last().Key == yearGroup.Key;
+                        var isLastYear = groupedByYear[^1].Key == yearGroup.Key;
 
                         if (isLastYear)
                         {
@@ -145,7 +148,6 @@ namespace MAS.Payments.Queries
 
                 response.TypeStatistics.Add(typeStatisticsItem);
             }
-
 
             return response;
         }

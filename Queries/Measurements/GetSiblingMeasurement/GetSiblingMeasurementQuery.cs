@@ -11,7 +11,7 @@
         Next = 2
     }
 
-    public class GetSiblingMeasurementQuery: IQuery<MeterMeasurement>
+    public class GetSiblingMeasurementQuery : IQuery<MeterMeasurement>
     {
         public long TypeId { get; }
 
@@ -23,12 +23,14 @@
         {
             if (typeId == default || typeId <= 0)
             {
-                throw new ArgumentException(nameof(typeId));
+                throw new ArgumentException(null, nameof(typeId));
             }
+
             if (date == default)
             {
-                throw new ArgumentException(nameof(date));
+                throw new ArgumentException(null, nameof(date));
             }
+
             if (direction == default)
             {
                 throw new ArgumentNullException(nameof(direction));

@@ -10,7 +10,7 @@
         public static T GetTypedSettingValue<T>(UserSettings userSetting)
         {
             var type = typeof(T);
-            var allowedTypes = Enum.GetNames(typeof(SettingDataValueType)).Select(x => x.ToLower());
+            var allowedTypes = Enum.GetNames<SettingDataValueType>().Select(x => x.ToLower());
 
             if (!allowedTypes.Contains(type.Name.ToLower()))
             {

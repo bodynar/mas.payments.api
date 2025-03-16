@@ -3,20 +3,15 @@ namespace MAS.Payments.Infrastructure.Specification
     using System;
     using System.Linq.Expressions;
 
-    public class NotSpecification<TEntity> : Specification<TEntity>
+    public class NotSpecification<TEntity>(
+        Specification<TEntity> specification
+    ) : Specification<TEntity>
     {
-        private Specification<TEntity> Specification { get; }
-
-        public NotSpecification(Specification<TEntity> specification)
-        {
-            Specification = specification;
-        }
-
         public override Expression<Func<TEntity, bool>> IsSatisfied()
         {
             return Expression.Lambda<Func<TEntity, bool>>(
-                Expression.Not(Specification.IsSatisfiedExpression.Body),
-                Specification.IsSatisfiedExpression.Parameters[0]);
+                Expression.Not(specification.IsSatisfiedExpression.Body),
+                specification.IsSatisfiedExpression.Parameters[0]);
         }
     }
 }

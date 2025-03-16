@@ -3,13 +3,10 @@ namespace MAS.Payments.Commands
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class DeletePaymentTypeCommand : ICommand
+    public class DeletePaymentTypeCommand(
+        long paymentTypeId
+    ) : ICommand
     {
-        public long PaymentTypeId { get; set; }
-
-        public DeletePaymentTypeCommand(long paymentTypeId)
-        {
-            PaymentTypeId = paymentTypeId;
-        }
+        public long PaymentTypeId { get; set; } = paymentTypeId;
     }
 }

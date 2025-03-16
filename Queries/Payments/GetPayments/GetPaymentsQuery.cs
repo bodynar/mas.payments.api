@@ -4,33 +4,25 @@ namespace MAS.Payments.Queries
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetPaymentsQuery : IQuery<IEnumerable<GetPaymentsResponse>>
+    public class GetPaymentsQuery(
+        byte? month,
+        short? year,
+        long? paymentTypeId,
+        double? exactAmount,
+        double? minAmount,
+        double? maxAmount
+    ) : IQuery<IEnumerable<GetPaymentsResponse>>
     {
-        public byte? Month { get; }
+        public byte? Month { get; } = month;
 
-        public short? Year { get; }
+        public short? Year { get; } = year;
 
-        public long? PaymentTypeId { get; }
+        public long? PaymentTypeId { get; } = paymentTypeId;
 
-        public double? ExactAmount { get; }
+        public double? ExactAmount { get; } = exactAmount;
 
-        public double? MinAmount { get; }
+        public double? MinAmount { get; } = minAmount;
 
-        public double? MaxAmount { get; }
-
-        public GetPaymentsQuery()
-        { }
-
-        public GetPaymentsQuery(
-            byte? month, short? year, long? paymentTypeId,
-            double? exactAmount, double? minAmount, double? maxAmount)
-        { 
-            Month = month;
-            Year = year;
-            PaymentTypeId = paymentTypeId;
-            ExactAmount = exactAmount;
-            MinAmount = minAmount;
-            MaxAmount = maxAmount;
-        }
+        public double? MaxAmount { get; } = maxAmount;
     }
 }

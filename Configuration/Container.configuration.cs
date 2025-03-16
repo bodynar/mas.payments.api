@@ -5,7 +5,6 @@ namespace MAS.Payments.Configuration
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
-    using MAS.Payments.Infrastructure.MailMessaging;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Notifications;
 
@@ -13,9 +12,9 @@ namespace MAS.Payments.Configuration
 
     public static class ContainerConfiguration
     {
-        //// <para>
-        //// Custom dependency container configuration
-        //// </para>
+        /// <summary>
+        /// Custom dependency container configuration
+        /// </summary>
         public static Container Configure(this Container container)
         {
             #region CQRS
@@ -32,36 +31,26 @@ namespace MAS.Payments.Configuration
                 typeof(ICommandHandler<>),
                 typeof(TransactionCommandHandlerDecorator<>));
 
-            container.Register(typeof(IQueryProcessor), typeof(QueryProcessor), Lifestyle.Singleton);
-            container.Register(typeof(ICommandProcessor), typeof(CommandProcessor), Lifestyle.Singleton);
+            container.Register<IQueryProcessor, QueryProcessor>(Lifestyle.Singleton);
+            container.Register<ICommandProcessor, CommandProcessor>(Lifestyle.Singleton);
 
             #endregion
 
             #region Database
 
-            container.Register<IUnitOfWork, UnitOfWork>(Lifestyle.Scoped);
             container.Register(typeof(IRepository<>), typeof(Repository<>));
 
             #endregion
 
             #region Notifications
 
-            container.Register(typeof(INotificationProcessor), typeof(NotificationProcessor), Lifestyle.Singleton);
+            container.Register<INotificationProcessor, NotificationProcessor>(Lifestyle.Singleton);
 
             container.Collection.Register<INotificator>(typeof(INotificator).Assembly);
 
             #endregion
 
-            container.Register(typeof(IResolver), typeof(Resolver), Lifestyle.Singleton);
-
-            #region Mail services
-
-            container.Register(typeof(IMailMessageBuilder<>), typeof(MailBuilder<>));
-            container.Register<IMailProcessor, MailProcessor>();
-            container.Register<IMailSender, MailSender>();
-            container.Register<ISmtpClientFactory, SmtpClientFactory>();
-
-            #endregion
+            container.Register<IResolver, Resolver>(Lifestyle.Singleton);
 
             container.Options.ResolveUnregisteredConcreteTypes = true;
 

@@ -4,19 +4,16 @@ namespace MAS.Payments.Queries
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetPaymentStatisticsQuery : IQuery<GetPaymentStatisticsResponse>
+    public class GetPaymentStatisticsQuery(
+        DateTime? from,
+        DateTime? to,
+        long? paymentTypeId
+    ) : IQuery<GetPaymentStatisticsResponse>
     {
-        public DateTime? From { get; set; }
+        public DateTime? From { get; set; } = from;
 
-        public DateTime? To { get; set; }
+        public DateTime? To { get; set; } = to;
 
-        public long? PaymentTypeId { get; }
-
-        public GetPaymentStatisticsQuery(DateTime? from, DateTime? to, long? paymentTypeId)
-        {
-            PaymentTypeId = paymentTypeId;
-            From = from;
-            To = to;
-        }
+        public long? PaymentTypeId { get; } = paymentTypeId;
     }
 }

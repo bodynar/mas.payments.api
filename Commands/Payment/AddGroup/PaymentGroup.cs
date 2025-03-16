@@ -1,18 +1,15 @@
 ﻿namespace MAS.Payments.Commands
 {
-    public class PaymentGroup
+    public class PaymentGroup(
+        double amount,
+        long paymentTypeId,
+        string description
+    )
     {
-        public double Amount { get; }
+        public double Amount { get; } = amount;
 
-        public long PaymentTypeId { get; }
+        public long PaymentTypeId { get; } = paymentTypeId;
 
-        public string Description { get; }
-
-        public PaymentGroup(double amount, long paymentTypeId, string description)
-        {
-            Amount = amount;
-            PaymentTypeId = paymentTypeId;
-            Description = description;
-        }
+        public string Description { get; } = description;
     }
 }

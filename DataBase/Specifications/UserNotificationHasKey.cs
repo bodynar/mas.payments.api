@@ -15,12 +15,12 @@
 
             public IsKeyIn(IEnumerable<string> keys)
             {
-                Keys = new List<string>(keys);
+                Keys = [.. keys];
             }
 
             public IsKeyIn(string key)
             {
-                Keys = new List<string>() { key };
+                Keys = [key];
             }
 
             public override Expression<Func<UserNotification, bool>> IsSatisfied()

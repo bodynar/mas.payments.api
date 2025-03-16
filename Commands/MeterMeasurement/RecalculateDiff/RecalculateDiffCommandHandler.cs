@@ -32,7 +32,11 @@
 
             foreach (var measurementItem in measurementItems)
             {
-                var previousItem = QueryProcessor.Execute(new GetSiblingMeasurementQuery(measurementItem.MeterMeasurementTypeId, measurementItem.Date, GetSiblingMeasurementDirection.Previous));
+                var previousItem = QueryProcessor.Execute(
+                    new GetSiblingMeasurementQuery(
+                        measurementItem.MeterMeasurementTypeId, measurementItem.Date, GetSiblingMeasurementDirection.Previous
+                    )
+                );
 
                 if (previousItem != null)
                 {
@@ -51,7 +55,7 @@
                 }
             }
 
-            if (warnings.Any())
+            if (warnings.Count != 0)
             {
                 command.Warnings = warnings;
             }

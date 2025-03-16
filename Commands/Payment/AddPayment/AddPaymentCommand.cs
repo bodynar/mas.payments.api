@@ -4,24 +4,19 @@ namespace MAS.Payments.Commands
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddPaymentCommand : ICommand
+    public class AddPaymentCommand(
+        long paymentTypeId,
+        double amount,
+        DateTime? date,
+        string description
+    ) : ICommand
     {
-        public double Amount { get; }
+        public double Amount { get; } = amount;
 
-        public DateTime? Date { get; }
+        public DateTime? Date { get; } = date;
 
-        public string Description { get; }
-        
-        public long PaymentTypeId { get; }
+        public string Description { get; } = description;
 
-        public AddPaymentCommand(
-            long paymentTypeId, double amount, DateTime? date,
-            string description)
-        {
-            PaymentTypeId = paymentTypeId;
-            Amount = amount;
-            Date = date;
-            Description = description;
-        }
+        public long PaymentTypeId { get; } = paymentTypeId;
     }
 }

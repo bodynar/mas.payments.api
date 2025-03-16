@@ -4,7 +4,6 @@ namespace MAS.Payments.Controllers
 
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
-    using MAS.Payments.Infrastructure.MailMessaging;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Notifications;
 
@@ -13,21 +12,21 @@ namespace MAS.Payments.Controllers
     [ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
-    public abstract class BaseApiController : Controller
+    public abstract class BaseApiController(
+        IResolver resolver
+    ) : ControllerBase
     {
         #region Private fields
 
-        private readonly Lazy<ICommandProcessor> commandProcessor;
+        private readonly Lazy<ICommandProcessor> commandProcessor = new(resolver.Resolve<ICommandProcessor>());
 
-        private readonly Lazy<IQueryProcessor> queryProcessor;
+        private readonly Lazy<IQueryProcessor> queryProcessor = new(resolver.Resolve<IQueryProcessor>());
 
-        private readonly Lazy<INotificationProcessor> notificationProcessor;
-
-        private readonly Lazy<IMailProcessor> mailProcessor;
+        private readonly Lazy<INotificationProcessor> notificationProcessor = new(resolver.Resolve<INotificationProcessor>());
 
         #endregion
 
-        protected IResolver Resolver { get; }
+        protected IResolver Resolver { get; } = resolver ?? throw new ArgumentNullException(nameof(resolver));
 
         protected ICommandProcessor CommandProcessor
             => commandProcessor.Value;
@@ -37,20 +36,5 @@ namespace MAS.Payments.Controllers
 
         protected INotificationProcessor NotificationProcessor
             => notificationProcessor.Value;
-
-        protected IMailProcessor MailProcessor
-            => mailProcessor.Value;
-
-        public BaseApiController(
-            IResolver resolver
-        )
-        {
-            Resolver = resolver ?? throw new ArgumentNullException(nameof(Resolver));
-
-            commandProcessor = new Lazy<ICommandProcessor>(resolver.Resolve<ICommandProcessor>());
-            queryProcessor = new Lazy<IQueryProcessor>(resolver.Resolve<IQueryProcessor>());
-            notificationProcessor = new Lazy<INotificationProcessor>(resolver.Resolve<INotificationProcessor>());
-            mailProcessor = new Lazy<IMailProcessor>(resolver.Resolve<IMailProcessor>());
-        }
     }
 }

@@ -5,21 +5,14 @@ namespace MAS.Payments.Infrastructure.Specification
 
     using MAS.Payments.Infrastructure.Extensions;
 
-    public class AndSpecification<TEntity> : Specification<TEntity>
+    public class AndSpecification<TEntity>(
+        Specification<TEntity> left,
+        Specification<TEntity> right
+    ) : Specification<TEntity>
     {
-        private Specification<TEntity> LeftSpecification { get; }
-
-        private Specification<TEntity> RightSpecification { get; }
-
-        public AndSpecification(Specification<TEntity> left, Specification<TEntity> right)
-        {
-            LeftSpecification = left;
-            RightSpecification = right;
-        }
-
         public override Expression<Func<TEntity, bool>> IsSatisfied()
-            => LeftSpecification.IsSatisfiedExpression.Combine(
-                RightSpecification.IsSatisfiedExpression, 
+            => left.IsSatisfiedExpression.Combine(
+                right.IsSatisfiedExpression, 
                 Expression.AndAlso);
     }
 }

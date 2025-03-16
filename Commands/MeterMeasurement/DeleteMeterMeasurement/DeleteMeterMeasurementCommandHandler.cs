@@ -1,12 +1,12 @@
 namespace MAS.Payments.Commands
 {
-    using System;
     using System.Linq;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
 
     internal class DeleteMeterMeasurementCommandHandler : BaseCommandHandler<DeleteMeterMeasurementCommand>
@@ -22,12 +22,8 @@ namespace MAS.Payments.Commands
 
         public override void Handle(DeleteMeterMeasurementCommand command)
         {
-            var deletedItem = Repository.Get(command.MeterMeasurementId);
-
-            if (deletedItem == null)
-            {
-                throw new ArgumentException($"Measurement with id \"{command.MeterMeasurementId}\" doen't exists");
-            }
+            var deletedItem = Repository.Get(command.MeterMeasurementId)
+                ?? throw new EntityNotFoundException(typeof(MeterMeasurement), command.MeterMeasurementId);
 
             var nextMeasurementDate = deletedItem.Date.Date.AddMonths(1);
 

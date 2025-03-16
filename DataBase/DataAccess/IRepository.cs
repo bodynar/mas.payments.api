@@ -3,7 +3,6 @@ namespace MAS.Payments.DataBase.Access
     using System.Collections.Generic;
     using System.Linq;
 
-    using MAS.Payments.Infrastructure.Projector;
     using MAS.Payments.Infrastructure.Specification;
 
     public interface IRepository<TEntity>
@@ -19,18 +18,9 @@ namespace MAS.Payments.DataBase.Access
 
         void Update(long id, object updatedModel);
 
-        TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
-            where TDestination: class;
-
         IQueryable<TEntity> GetAll();
 
-        IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector)
-            where TDestination: class;
-
         IQueryable<TEntity> Where(Specification<TEntity> filter);
-
-        IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector)
-            where TDestination: class;
 
         bool Any(Specification<TEntity> predicate);
 

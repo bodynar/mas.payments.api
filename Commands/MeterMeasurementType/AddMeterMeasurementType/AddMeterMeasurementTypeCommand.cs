@@ -1,26 +1,22 @@
 namespace MAS.Payments.Commands
 {
-
     using System;
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddMeterMeasurementTypeCommand : ICommand
+    public class AddMeterMeasurementTypeCommand(
+        long paymentTypeId,
+        string name,
+        string description,
+        string color
+    ) : ICommand
     {
-        public string Name { get; }
+        public string Name { get; } = name ?? throw new ArgumentNullException(nameof(name));
 
-        public string Description { get; }
+        public string Description { get; } = description;
 
-        public long PaymentTypeId { get; }
+        public long PaymentTypeId { get; } = paymentTypeId;
 
-        public string Color { get; }
-
-        public AddMeterMeasurementTypeCommand(long paymentTypeId, string name, string description, string color)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            Description = description;
-            PaymentTypeId = paymentTypeId;
-            Color = color;
-        }
+        public string Color { get; } = color;
     }
 }

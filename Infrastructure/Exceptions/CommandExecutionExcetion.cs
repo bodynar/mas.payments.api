@@ -3,17 +3,13 @@ namespace MAS.Payments.Infrastructure.Exceptions
     using System;
 
     [Serializable]
-    public class CommandExecutionException : Exception
+    public class CommandExecutionException(
+        Type commandType,
+        string message
+    ) : Exception(message)
     {
-        public string CommandFullTypeName { get; }
+        public string CommandFullTypeName { get; } = commandType.FullName;
 
-        public string CommandName { get; }
-
-        public CommandExecutionException(Type commandType, string message)
-            : base(message)
-        {
-            CommandFullTypeName = commandType.FullName;
-            CommandName = commandType.Name;
-        }
+        public string CommandName { get; } = commandType.Name;
     }
 }

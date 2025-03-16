@@ -8,7 +8,6 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
-    using MAS.Payments.Projectors;
 
     internal class GetGroupedMeterMeasurementsQueryHandler : BaseQueryHandler<GetGroupedMeterMeasurementsQuery, IEnumerable<GetGroupedMeterMeasurementsResponse>>
     {
@@ -46,7 +45,6 @@ namespace MAS.Payments.Queries
                    .ToList();
 
             var result = new List<GetGroupedMeterMeasurementsResponse>();
-            var itemProjector = new Projector.ToFlat<MeterMeasurement, GetGroupedMeterMeasurementsResponseMeasurement>();
 
             foreach (var measurement in filteredMeasurements)
             {
@@ -54,7 +52,20 @@ namespace MAS.Payments.Queries
 
                 if (group != null)
                 {
-                    group.Measurements.Add(itemProjector.Project(measurement));
+                    group.Measurements.Add(
+                        new GetGroupedMeterMeasurementsResponseMeasurement
+                        {
+                            Id = measurement.Id,
+                            DateYear = measurement.Date.Year,
+                            DateMonth = measurement.Date.Month,
+                            Measurement = measurement.Measurement,
+                            Comment = measurement.Comment,
+                            IsSent = measurement.IsSent,
+                            MeterMeasurementTypeId = measurement.MeterMeasurementTypeId,
+                            MeasurementTypeColor = measurement.MeasurementType.Color,
+                            MeasurementTypeName = measurement.MeasurementType.Name,
+                        }    
+                    );
                 } else
                 {
                     group = new GetGroupedMeterMeasurementsResponse
@@ -62,7 +73,20 @@ namespace MAS.Payments.Queries
                         DateMonth = measurement.Date.Month,
                         DateYear = measurement.Date.Year,
                     };
-                    group.Measurements.Add(itemProjector.Project(measurement));
+                    group.Measurements.Add(
+                        new GetGroupedMeterMeasurementsResponseMeasurement
+                        {
+                            Id = measurement.Id,
+                            DateYear = measurement.Date.Year,
+                            DateMonth = measurement.Date.Month,
+                            Measurement = measurement.Measurement,
+                            Comment = measurement.Comment,
+                            IsSent = measurement.IsSent,
+                            MeterMeasurementTypeId = measurement.MeterMeasurementTypeId,
+                            MeasurementTypeColor = measurement.MeasurementType.Color,
+                            MeasurementTypeName = measurement.MeasurementType.Name,
+                        }
+                    );
 
                     result.Add(group);
                 }

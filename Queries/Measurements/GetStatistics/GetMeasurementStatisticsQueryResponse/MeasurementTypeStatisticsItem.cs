@@ -8,6 +8,6 @@
 
         public string MeasurementTypeName { get; set; }
 
-        public ICollection<MeasurementStatisticsDataItem> StatisticsData { get; } = new List<MeasurementStatisticsDataItem>();
+        public ICollection<MeasurementStatisticsDataItem> StatisticsData { get; } = [];
     }
 }

@@ -4,19 +4,16 @@
 
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetMeasurementStatisticsQuery : IQuery<GetMeasurementStatisticsQueryResponse>
+    public class GetMeasurementStatisticsQuery(
+        DateTime? from,
+        DateTime? to,
+        long? measurementTypeId
+    ) : IQuery<GetMeasurementStatisticsQueryResponse>
     {
-        public DateTime? From { get; set; }
+        public DateTime? From { get; set; } = from;
 
-        public DateTime? To { get; set; }
+        public DateTime? To { get; set; } = to;
 
-        public long? MeasurementTypeId { get; }
-
-        public GetMeasurementStatisticsQuery(DateTime? from, DateTime? to, long? measurementTypeId)
-        {
-            From = from;
-            To = to;
-            MeasurementTypeId = measurementTypeId;
-        }
+        public long? MeasurementTypeId { get; } = measurementTypeId;
     }
 }

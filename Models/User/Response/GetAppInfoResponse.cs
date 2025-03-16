@@ -2,16 +2,13 @@
 {
     using System;
 
-    public class GetAppInfoResponse
+    public class GetAppInfoResponse(
+        string dataBaseName,
+        string serverAppVersion
+    )
     {
-        public string DataBaseName { get; }
+        public string DataBaseName { get; } = dataBaseName ?? throw new ArgumentNullException(nameof(dataBaseName));
 
-        public string ServerAppVersion { get; }
-
-        public GetAppInfoResponse(string dataBaseName, string serverAppVersion)
-        {
-            DataBaseName = dataBaseName ?? throw new ArgumentNullException(nameof(dataBaseName));
-            ServerAppVersion = serverAppVersion ?? throw new ArgumentNullException(nameof(serverAppVersion));
-        }
+        public string ServerAppVersion { get; } = serverAppVersion ?? throw new ArgumentNullException(nameof(serverAppVersion));
     }
 }

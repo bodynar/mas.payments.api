@@ -9,12 +9,7 @@ namespace MAS.Payments.Queries
 
         public int DateMonth { get; set; }
 
-        public IList<GetGroupedMeterMeasurementsResponseMeasurement> Measurements { get; private set; }
-
-        public GetGroupedMeterMeasurementsResponse()
-        {
-            Measurements = new List<GetGroupedMeterMeasurementsResponseMeasurement>();
-        }
+        public IList<GetGroupedMeterMeasurementsResponseMeasurement> Measurements { get; private set; } = [];
 
         internal void SortMeasurements()
         {

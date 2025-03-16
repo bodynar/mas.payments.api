@@ -2,25 +2,22 @@ namespace MAS.Payments.Commands
 {
     using MAS.Payments.Infrastructure.Command;
 
-    public class UpdateMeterMeasurementTypeCommand : ICommand
+    public class UpdateMeterMeasurementTypeCommand(
+        long id,
+        long paymentTypeId,
+        string name,
+        string description,
+        string color
+    ) : ICommand
     {
-        public long Id { get; }
+        public long Id { get; } = id;
 
-        public string Name { get; }
+        public string Name { get; } = name;
 
-        public string Description { get; }
+        public string Description { get; } = description;
 
-        public long PaymentTypeId { get; }
+        public long PaymentTypeId { get; } = paymentTypeId;
 
-        public string Color { get; }
-
-        public UpdateMeterMeasurementTypeCommand(long id, long paymentTypeId, string name, string description, string color)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            PaymentTypeId = paymentTypeId;
-            Color = color;
-        }
+        public string Color { get; } = color;
     }
 }

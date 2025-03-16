@@ -12,14 +12,10 @@ namespace MAS.Payments.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/payment")]
-    public class PaymentApiController : BaseApiController
+    public class PaymentApiController(
+        IResolver resolver
+    ) : BaseApiController(resolver)
     {
-        public PaymentApiController(
-            IResolver resolver
-        ) : base(resolver)
-        {
-        }
-
         #region Payment type
 
         [HttpGet("[action]")]
@@ -42,10 +38,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPaymentType([FromBody] AddPaymentTypeRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             CommandProcessor.Execute(
                 new AddPaymentTypeCommand(request.Name, request.Description, request.Company, request.Color));
@@ -54,10 +47,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             CommandProcessor.Execute(
                 new UpdatePaymentTypeCommand(request.Id, request.Name, request.Description, request.Company, request.Color)
@@ -67,10 +57,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void DeletePaymentType([FromBody] DeleteRecordRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             CommandProcessor.Execute(
                 new DeletePaymentTypeCommand(request.Id));
@@ -94,10 +81,7 @@ namespace MAS.Payments.Controllers
         [HttpGet("[action]")]
         public IEnumerable<GetPaymentsResponse> GetPayments([FromQuery] GetPaymentsRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             return QueryProcessor.Execute(
                 new GetPaymentsQuery(request.Month, request.Year, request.PaymentTypeId,
@@ -107,12 +91,9 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddPayment([FromBody] AddPaymentRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
-            var paymentDate = new DateTime(request.Year, request.Month, 20);
+            var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
             CommandProcessor.Execute(
                 new AddPaymentCommand(request.PaymentTypeId, request.Amount, paymentDate, request.Description));
@@ -121,10 +102,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void AddGroup([FromBody] AddPaymentGroupRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))));
         }
@@ -132,12 +110,9 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void UpdatePayment([FromBody] UpdatePaymentRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
-            var paymentDate = new DateTime(request.Year, request.Month, 20);
+            var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
             CommandProcessor.Execute(
                 new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, paymentDate, request.Description)
@@ -147,10 +122,7 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public void DeletePayment([FromBody] DeleteRecordRequest request)
         {
-            if (request == null)
-            {
-                throw new ArgumentNullException(nameof(request));
-            }
+            ArgumentNullException.ThrowIfNull(request);
 
             CommandProcessor.Execute(
                 new DeletePaymentCommand(request.Id)

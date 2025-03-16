@@ -2,17 +2,10 @@ namespace MAS.Payments.Infrastructure.Command
 {
     using System;
 
-    public class CommandProcessor : ICommandProcessor
+    public class CommandProcessor(
+        IResolver resolver
+    ) : ICommandProcessor
     {
-        private IResolver Resolver { get; }
-
-        public CommandProcessor(
-            IResolver resolver
-        )
-        {
-            Resolver = resolver;
-        }
-
         public void Execute<TCommand>(TCommand command)
             where TCommand : ICommand
         {
@@ -23,7 +16,7 @@ namespace MAS.Payments.Infrastructure.Command
 
             var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
 
-            dynamic handler = Resolver.GetInstance(handlerType);
+            dynamic handler = resolver.GetInstance(handlerType);
 
             handler.Handle((dynamic)command);
         }

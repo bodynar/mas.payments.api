@@ -22,7 +22,7 @@
         {
             var notificationKeys = command.UserNotifications.Select(x => x.Key);
 
-            if (notificationKeys.Any(x => string.IsNullOrEmpty(x)))
+            if (notificationKeys.Any(string.IsNullOrEmpty))
             {
                 throw new CommandExecutionException(CommandType, "Cannot add user notification with empty key.");
             }

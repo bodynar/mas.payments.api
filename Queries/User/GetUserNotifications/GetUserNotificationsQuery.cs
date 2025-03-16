@@ -11,13 +11,10 @@
         Hidden = 3,
     }
 
-    public class GetUserNotificationsQuery: IQuery<IEnumerable<GetUserNotificationsQueryResult>>
+    public class GetUserNotificationsQuery(
+        GetUserNotificationsType notificationsType
+    ) : IQuery<IEnumerable<GetUserNotificationsQueryResult>>
     {
-        public GetUserNotificationsType NotificationsType { get; }
-
-        public GetUserNotificationsQuery(GetUserNotificationsType notificationsType)
-        {
-            NotificationsType = notificationsType;
-        }
+        public GetUserNotificationsType NotificationsType { get; } = notificationsType;
     }
 }

@@ -4,12 +4,11 @@ namespace MAS.Payments.Queries
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
-    using MAS.Payments.Projectors;
 
     internal class GetMeterMeasurementQueryHandler : BaseQueryHandler<GetMeterMeasurementQuery, GetMeterMeasurementResponse>
     {
         private IRepository<MeterMeasurement> Repository { get; }
-        
+
         public GetMeterMeasurementQueryHandler(
             IResolver resolver
         ) : base(resolver)
@@ -19,8 +18,19 @@ namespace MAS.Payments.Queries
 
         public override GetMeterMeasurementResponse Handle(GetMeterMeasurementQuery query)
         {
-            return Repository
-                   .Get(query.Id, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementResponse>());
+            var item = Repository.Get(query.Id);
+
+            return new GetMeterMeasurementResponse
+            {
+                Id = item.Id,
+                Measurement = item.Measurement,
+                Comment = item.Comment,
+                DateYear = item.Date.Year,
+                DateMonth = item.Date.Month,
+                IsSent = item.IsSent,
+                MeterMeasurementTypeId = item.MeterMeasurementTypeId,
+                MeasurementTypeName = item.MeasurementType.Name,
+            };
         }
     }
 }

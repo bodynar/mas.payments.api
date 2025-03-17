@@ -12,3 +12,9 @@ jobs:
         uses: actions/setup-dotnet@v4.3.1
         with:
           dotnet-version: 9.0.x
+
+      - name: Restore deps
+        run: dotnet restore
+
+      - name: Build app
+        run: dotnet build --no-restore --configuration Release

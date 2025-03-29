@@ -13,7 +13,10 @@ jobs:
         with:
           dotnet-version: 9.0.x
 
+      - name: List files
+        run: ls -R
+
       - name: Restore deps
-        run: dotnet restore MAS.Payments.csproj
+        run: dotnet restore MAS.Payments.sln
       - name: Build app
-        run: dotnet build MAS.Payments.csproj --no-restore --configuration Release
+        run: dotnet build MAS.Payments.sln --no-restore --configuration Release

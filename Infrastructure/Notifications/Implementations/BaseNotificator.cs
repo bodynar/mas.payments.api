@@ -2,6 +2,7 @@ namespace MAS.Payments.Notifications
 {
     using System;
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -32,11 +33,11 @@ namespace MAS.Payments.Notifications
         protected IRepository<UserNotification> Repository
             => userNotificationRepository.Value;
 
-        public abstract IEnumerable<UserNotification> GetNotifications();
+        public abstract IAsyncEnumerable<UserNotification> GetNotificationsAsync();
 
-        protected bool CheckWasNotificationFormed(string notificationKey)
+        protected async Task<bool> CheckWasNotificationFormedAsync(string notificationKey)
         {
-            return Repository.Any(new UserNotificationSpec.IsKeyIn(notificationKey));
+            return await Repository.Any(new UserNotificationSpec.IsKeyIn(notificationKey));
         }
     }
 }

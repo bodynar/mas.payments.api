@@ -1,6 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
     using System.Collections.Generic;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -18,13 +19,13 @@
             Repository = GetRepository<UserSettings>();
         }
 
-        public override void Handle(UpdateUserSettingsCommand command)
+        public override async Task HandleAsync(UpdateUserSettingsCommand command)
         {
             var errors = new List<string>();
 
             foreach (var settingValue in command.UpdatedSettings)
             {
-                var setting = Repository.Get(settingValue.Id);
+                var setting = await Repository.Get(settingValue.Id);
 
                 var isSettingValueCorrect = IsSettingValueCorrect(setting, settingValue.RawValue);
 
@@ -34,7 +35,7 @@
                     continue;
                 }
 
-                Repository.Update(settingValue.Id, settingValue);
+                await Repository.Update(settingValue.Id, settingValue);
             }
 
             if (errors.Count != 0)

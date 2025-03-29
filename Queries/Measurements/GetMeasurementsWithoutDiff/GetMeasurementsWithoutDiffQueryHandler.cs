@@ -1,6 +1,6 @@
 ﻿namespace MAS.Payments.Queries.Measurements.GetMeasurementsWithoutDiff
 {
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -17,9 +17,9 @@
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override int Handle(GetMeasurementsWithoutDiffQuery query)
+        public override async Task<int> HandleAsync(GetMeasurementsWithoutDiffQuery query)
         {
-            return Repository.Where(new MeterMeasurementSpec.WithoutDiff()).Count();
+            return await Repository.Count(new MeterMeasurementSpec.WithoutDiff());
         }
     }
 }

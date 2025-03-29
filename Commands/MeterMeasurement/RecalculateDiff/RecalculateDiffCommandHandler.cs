@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -21,7 +22,7 @@
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override void Handle(RecalculateDiffCommand command)
+        public override async Task HandleAsync(RecalculateDiffCommand command)
         {
             var specification = command.ForAll
                 ? new CommonSpecification<MeterMeasurement>(x => true)
@@ -32,7 +33,7 @@
 
             foreach (var measurementItem in measurementItems)
             {
-                var previousItem = QueryProcessor.Execute(
+                var previousItem = await QueryProcessor.Execute(
                     new GetSiblingMeasurementQuery(
                         measurementItem.MeterMeasurementTypeId, measurementItem.Date, GetSiblingMeasurementDirection.Previous
                     )

@@ -1,5 +1,7 @@
 namespace MAS.Payments.Infrastructure.Command
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
 
     internal class TransactionCommandHandlerDecorator<TCommand>(
@@ -9,14 +11,14 @@ namespace MAS.Payments.Infrastructure.Command
     ) : BaseCommandHandler<TCommand>(resolver)
         where TCommand : ICommand
     {
-        public override void Handle(TCommand command)
+        public override async Task HandleAsync(TCommand command)
         {
-            using (var scope = dbContext.Database.BeginTransaction())
+            using (var scope = await dbContext.Database.BeginTransactionAsync())
             {
-                decorated.Handle(command);
+                await decorated.HandleAsync(command);
 
-                scope.Commit();
-                dbContext.SaveChanges();
+                await scope.CommitAsync();
+                await dbContext.SaveChangesAsync();
             }
         }
     }

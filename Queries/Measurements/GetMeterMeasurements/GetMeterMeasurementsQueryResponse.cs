@@ -10,6 +10,8 @@
 
         public double Measurement { get; set; }
 
+        public double? Diff { get; set; }
+
         public string Comment { get; set; }
 
         public bool IsSent { get; set; }

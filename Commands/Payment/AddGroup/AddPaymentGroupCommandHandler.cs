@@ -1,6 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -21,12 +22,17 @@
             PaymentTypeRepository = GetRepository<PaymentType>();
         }
 
-        public override void Handle(AddPaymentGroupCommand command)
+        public override async Task HandleAsync(AddPaymentGroupCommand command)
         {
-            var notValidTypes = 
-                command.Payments
-                    .Where(x => PaymentTypeRepository.Get(x.PaymentTypeId) == null)
-                    .Select(x => x.PaymentTypeId);
+            var paymentTypesIds = command.Payments.Select(x => x.PaymentTypeId).ToArray();
+
+            var paymentTypes =
+                PaymentTypeRepository
+                    .Where(new CommonSpecification.IdIn<PaymentType>(paymentTypesIds))
+                    .Select(x => x.Id)
+                    .ToArray();
+
+            var notValidTypes = paymentTypesIds.Except(paymentTypes);
 
             if (notValidTypes.Any())
             {
@@ -43,7 +49,7 @@
                         Description = x.Description,
                     });
 
-            Repository.AddRange(payments);
+            await Repository.AddRange(payments);
         }
     }
 }

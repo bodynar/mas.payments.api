@@ -10,9 +10,13 @@
 
   <ItemGroup>
     <Compile Remove="publish\**" />
+    <Compile Remove="wwwroot\**" />
     <Content Remove="publish\**" />
+    <Content Remove="wwwroot\**" />
     <EmbeddedResource Remove="publish\**" />
+    <EmbeddedResource Remove="wwwroot\**" />
     <None Remove="publish\**" />
+    <None Remove="wwwroot\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -40,6 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -21,7 +22,7 @@
             Repository = GetRepository<UserNotification>();
         }
 
-        public override IEnumerable<GetUserNotificationsQueryResult> Handle(GetUserNotificationsQuery query)
+        public override Task<IEnumerable<GetUserNotificationsQueryResult>> HandleAsync(GetUserNotificationsQuery query)
         {
             Specification<UserNotification> specification = new CommonSpecification<UserNotification>(x => true);
 
@@ -37,32 +38,35 @@
                     break;
             }
 
-            return Repository
-                .Where(specification)
-                .OrderBy(x => x.CreatedAt)
-                .Select(x => new {
-                    x.Id,
-                    x.CreatedAt,
-                    x.HiddenAt,
-                    x.IsHidden,
-                    x.Text,
-                    x.Title,
-                    x.Key,
-                    x.Type,
-                })
-                .AsEnumerable()
-                .Select(x =>
-                    new GetUserNotificationsQueryResult
+            return Task.FromResult(
+                Repository
+                    .Where(specification)
+                    .OrderBy(x => x.CreatedAt)
+                    .Select(x => new
                     {
-                        Id = x.Id,
-                        CreatedAt = x.CreatedAt,
-                        HiddenAt = x.HiddenAt,
-                        IsHidden = x.IsHidden,
-                        Text = x.Text,
-                        Title = x.Title,
-                        Key = x.Key,
-                        Type = Enum.GetName(typeof(UserNotificationType), x.Type)
-                    }
+                        x.Id,
+                        x.CreatedAt,
+                        x.HiddenAt,
+                        x.IsHidden,
+                        x.Text,
+                        x.Title,
+                        x.Key,
+                        x.Type,
+                    })
+                    .AsEnumerable()
+                    .Select(x =>
+                        new GetUserNotificationsQueryResult
+                        {
+                            Id = x.Id,
+                            CreatedAt = x.CreatedAt,
+                            HiddenAt = x.HiddenAt,
+                            IsHidden = x.IsHidden,
+                            Text = x.Text,
+                            Title = x.Title,
+                            Key = x.Key,
+                            Type = Enum.GetName(typeof(UserNotificationType), x.Type)
+                        }
+                    )
                 );
         }
     }

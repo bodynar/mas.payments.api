@@ -3,12 +3,15 @@ namespace MAS.Payments.Queries
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetPaymentStatisticsQueryHandler : BaseQueryHandler<GetPaymentStatisticsQuery, GetPaymentStatisticsResponse>
     {
@@ -24,7 +27,7 @@ namespace MAS.Payments.Queries
             PaymentRepository = GetRepository<Payment>();
         }
 
-        public override GetPaymentStatisticsResponse Handle(GetPaymentStatisticsQuery query)
+        public override async Task<GetPaymentStatisticsResponse> HandleAsync(GetPaymentStatisticsQuery query)
         {
             if (query.From.HasValue && query.To.HasValue && query.From.Value >= query.To.Value)
             {
@@ -50,18 +53,19 @@ namespace MAS.Payments.Queries
                 filter &= new CommonSpecification<Payment>(x => x.Date <= date.Date);
             }
 
-            var payments =
-                PaymentRepository.Where(filter)
-                .OrderBy(x => x.Date)
-                .Select(x => new
-                {
-                    Date = x.Date.Value,
-                    x.Amount,
-                    x.PaymentTypeId,
-                    PaymentTypeName = x.PaymentType.Name
-                })
-                .GroupBy(x => x.PaymentTypeId)
-                .ToList();
+            var payments = await
+                PaymentRepository
+                    .Where(filter)
+                    .OrderBy(x => x.Date)
+                    .Select(x => new
+                    {
+                        Date = x.Date.Value,
+                        x.Amount,
+                        x.PaymentTypeId,
+                        PaymentTypeName = x.PaymentType.Name
+                    })
+                    .GroupBy(x => x.PaymentTypeId)
+                    .ToListAsync();
 
             var response = new GetPaymentStatisticsResponse
             {

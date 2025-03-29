@@ -27,7 +27,7 @@ namespace MAS.Payments.Controllers
             var userNotifications = NotificationProcessor.GetNotifications();
 
             var notHiddenNotifications =
-                QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));
+                await QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));
 
             if (userNotifications.Any())
             {
@@ -51,38 +51,38 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetUserNotificationsQueryResult> GetUserNotifications()
+        public async Task<IEnumerable<GetUserNotificationsQueryResult>> GetUserNotificationsAsync()
         {
-            return QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.All));
+            return await QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.All));
         }
 
         [HttpPost("[action]")]
-        public IEnumerable<long> HideNotifications([FromBody] IEnumerable<long> userNotificationIds)
+        public async Task<IEnumerable<long>> HideNotificationsAsync([FromBody] IEnumerable<long> userNotificationIds)
         {
             ArgumentNullException.ThrowIfNull(userNotificationIds);
 
             var command = new HideUserNotificationCommand(userNotificationIds.Where(x => x != default));
 
-            CommandProcessor.Execute(command);
+            await CommandProcessor.Execute(command);
 
             return command.NotProcessedIds;
         }
 
         [HttpGet("[action]")]
-        public IReadOnlyCollection<GetUserSettingsQueryResult> GetSettings()
+        public async Task<IReadOnlyCollection<GetUserSettingsQueryResult>> GetSettingsAsync()
         {
-            return QueryProcessor.Execute(new GetUserSettingsQuery());
+            return await QueryProcessor.Execute(new GetUserSettingsQuery());
         }
 
         [HttpPost("[action]")]
-        public void UpdateUserSettings([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
+        public async Task UpdateUserSettingsAsync([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
         {
             if (settings == null || settings.Contains(null))
             {
                 throw new ArgumentNullException(nameof(settings));
             }
 
-            CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
+            await CommandProcessor.Execute(new UpdateUserSettingsCommand(settings));
         }
 
         [HttpGet("[action]")]

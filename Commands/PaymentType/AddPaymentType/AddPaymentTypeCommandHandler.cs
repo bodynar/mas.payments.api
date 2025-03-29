@@ -1,5 +1,7 @@
 namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -19,13 +21,13 @@ namespace MAS.Payments.Commands
             Repository = GetRepository<PaymentType>();
         }
 
-        public override void Handle(AddPaymentTypeCommand command)
+        public override async Task HandleAsync(AddPaymentTypeCommand command)
         {
             var isUnique =
-                !Repository.GetAll().Any(
+                await Repository.GetAll().Any(
                     new CommonSpecification<PaymentType>(x => x.Name == command.Name && x.Company == command.Company));
 
-            if (!isUnique)
+            if (isUnique)
             {
                 throw new CommandExecutionException(CommandType,
                     $"Payment type with name {command.Name} from {command.Company} is already exist");
@@ -39,7 +41,7 @@ namespace MAS.Payments.Commands
                 Color = command.Color,
             };
 
-            Repository.Add(paymentType);
+            await Repository.Add(paymentType);
         }
     }
 }

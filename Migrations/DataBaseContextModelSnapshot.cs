@@ -88,6 +88,28 @@ namespace MAS.Payments.Migrations
                     b.ToTable("MeterMeasurementType");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.Models.PdfDocument", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<byte[]>("FileData")
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("UploadedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PdfDocuments");
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
                     b.Property<long>("Id")
@@ -99,6 +121,9 @@ namespace MAS.Payments.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
 
+                    b.Property<long?>("CheckId")
+                        .HasColumnType("bigint");
+
                     b.Property<DateTime?>("Date")
                         .HasColumnType("timestamp with time zone");
 
@@ -108,9 +133,16 @@ namespace MAS.Payments.Migrations
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
 
+                    b.Property<long?>("ReceiptId")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("CheckId");
+
                     b.HasIndex("PaymentTypeId");
+
+                    b.HasIndex("ReceiptId");
 
                     b.ToTable("Payment");
                 });
@@ -236,13 +268,25 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
+                    b.HasOne("MAS.Payments.DataBase.Models.PdfDocument", "Check")
+                        .WithMany()
+                        .HasForeignKey("CheckId");
+
                     b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
                         .WithMany("Payments")
                         .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MAS.Payments.DataBase.Models.PdfDocument", "Receipt")
+                        .WithMany()
+                        .HasForeignKey("ReceiptId");
+
+                    b.Navigation("Check");
+
                     b.Navigation("PaymentType");
+
+                    b.Navigation("Receipt");
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>

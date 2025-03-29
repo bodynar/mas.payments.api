@@ -1,5 +1,7 @@
 namespace MAS.Payments.DataBase
 {
+    using MAS.Payments.DataBase.Models;
+
     using Microsoft.EntityFrameworkCore;
 
     public class DataBaseContext(
@@ -18,6 +20,8 @@ namespace MAS.Payments.DataBase
 
         public DbSet<UserNotification> UserNotification { get; set; }
 
+        public DbSet<PdfDocument> PdfDocuments { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // todo: use DefaultUserSetting enum and its attribute
@@ -26,6 +30,10 @@ namespace MAS.Payments.DataBase
                 .HasData(
                     new UserSettings { Id = 2, DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() }
                 );
+
+            modelBuilder.Entity<PdfDocument>()
+                .Property(d => d.FileData)
+                .HasColumnType("bytea");
 
             base.OnModelCreating(modelBuilder);
         }

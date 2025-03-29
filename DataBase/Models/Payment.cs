@@ -2,6 +2,8 @@ namespace MAS.Payments.DataBase
 {
     using System;
 
+    using MAS.Payments.DataBase.Models;
+
     public class Payment : Entity
     {
         public double Amount { get; set; }
@@ -13,5 +15,13 @@ namespace MAS.Payments.DataBase
         public long PaymentTypeId { get; set; }
 
         public virtual PaymentType PaymentType { get; set; }
+
+        public long? ReceiptId { get; set; }
+
+        public virtual PdfDocument Receipt { get; set; }
+
+        public long? CheckId { get; set; }
+
+        public virtual PdfDocument Check { get; set; }
     }
 }

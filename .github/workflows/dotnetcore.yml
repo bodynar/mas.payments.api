@@ -1,22 +1,22 @@
-name: .NET Core
+name: Build .NET 9.0 App
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup .NET Core SDK
-        uses: actions/setup-dotnet@v4.3.1
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET 9.0 SDK
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 9.0.x
 
-      - name: List files
-        run: ls -R
+      - name: Restore dependencies
+        run: dotnet restore
 
-      - name: Restore deps
-        run: dotnet restore MAS.Payments.sln
-      - name: Build app
-        run: dotnet build MAS.Payments.sln --no-restore --configuration Release
+      - name: Build application
+        run: dotnet build --configuration Release --no-restore

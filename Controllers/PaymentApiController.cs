@@ -20,7 +20,7 @@ namespace MAS.Payments.Controllers
         #region Payment type
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentTypeResponse> GetPaymentTypeAsync(long? id)
+        public async Task<GetPaymentTypeResponse> GetPaymentType(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -31,13 +31,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetPaymentTypesResponse>> GetPaymentTypesAsync()
+        public async Task<IEnumerable<GetPaymentTypesResponse>> GetPaymentTypes()
         {
             return await QueryProcessor.Execute(new GetPaymentTypesQuery());
         }
 
         [HttpPost("[action]")]
-        public async Task AddPaymentTypeAsync([FromBody] AddPaymentTypeRequest request)
+        public async Task AddPaymentType([FromBody] AddPaymentTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -46,7 +46,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task UpdatePaymentTypeAsync(UpdatePaymentTypeRequest request)
+        public async Task UpdatePaymentType(UpdatePaymentTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -56,7 +56,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task DeletePaymentTypeAsync([FromBody] DeleteRecordRequest request)
+        public async Task DeletePaymentType([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -69,7 +69,7 @@ namespace MAS.Payments.Controllers
         #region Payment
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentResponse> GetPaymentAsync(long? id)
+        public async Task<GetPaymentResponse> GetPayment(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -80,7 +80,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetPaymentsResponse>> GetPaymentsAsync([FromQuery] GetPaymentsRequest request)
+        public async Task<IEnumerable<GetPaymentsResponse>> GetPayments([FromQuery] GetPaymentsRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -90,7 +90,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddPaymentAsync([FromBody] AddPaymentRequest request)
+        public async Task AddPayment([FromBody] AddPaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -101,7 +101,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddGroupAsync([FromBody] AddPaymentGroupRequest request)
+        public async Task AddGroup([FromBody] AddPaymentGroupRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -109,7 +109,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task UpdatePaymentAsync([FromBody] UpdatePaymentRequest request)
+        public async Task UpdatePayment([FromBody] UpdatePaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -121,7 +121,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task DeletePaymentAsync([FromBody] DeleteRecordRequest request)
+        public async Task DeletePayment([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 

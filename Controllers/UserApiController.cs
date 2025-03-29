@@ -51,13 +51,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetUserNotificationsQueryResult>> GetUserNotificationsAsync()
+        public async Task<IEnumerable<GetUserNotificationsQueryResult>> GetUserNotifications()
         {
             return await QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.All));
         }
 
         [HttpPost("[action]")]
-        public async Task<IEnumerable<long>> HideNotificationsAsync([FromBody] IEnumerable<long> userNotificationIds)
+        public async Task<IEnumerable<long>> HideNotifications([FromBody] IEnumerable<long> userNotificationIds)
         {
             ArgumentNullException.ThrowIfNull(userNotificationIds);
 
@@ -69,13 +69,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IReadOnlyCollection<GetUserSettingsQueryResult>> GetSettingsAsync()
+        public async Task<IReadOnlyCollection<GetUserSettingsQueryResult>> GetSettings()
         {
             return await QueryProcessor.Execute(new GetUserSettingsQuery());
         }
 
         [HttpPost("[action]")]
-        public async Task UpdateUserSettingsAsync([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
+        public async Task UpdateUserSettings([FromBody] IEnumerable<UpdateUserSettingsRequest> settings)
         {
             if (settings == null || settings.Contains(null))
             {

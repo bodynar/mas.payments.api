@@ -21,7 +21,7 @@ namespace MAS.Payments.Controllers
         #region Measurement Type
 
         [HttpGet("[action]")]
-        public async Task<GetMeterMeasurementTypeResponse> GetMeasurementTypeAsync(long? id)
+        public async Task<GetMeterMeasurementTypeResponse> GetMeasurementType(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -32,13 +32,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetMeterMeasurementTypesResponse>> GetMeasurementTypesAsync()
+        public async Task<IEnumerable<GetMeterMeasurementTypesResponse>> GetMeasurementTypes()
         {
             return await QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
         }
 
         [HttpPost("[action]")]
-        public async Task AddMeasurementTypeAsync(AddMeterMeasurementTypeRequest request)
+        public async Task AddMeasurementType(AddMeterMeasurementTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -47,7 +47,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task UpdateMeasurementTypeAsync(UpdateMeterMeasurementTypeRequest request)
+        public async Task UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -57,7 +57,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task DeleteMeasurementTypeAsync([FromBody] DeleteRecordRequest request)
+        public async Task DeleteMeasurementType([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -70,7 +70,7 @@ namespace MAS.Payments.Controllers
         #region Measurement
 
         [HttpGet("[action]")]
-        public async Task<GetMeterMeasurementResponse> GetMeasurementAsync(long? id)
+        public async Task<GetMeterMeasurementResponse> GetMeasurement(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -81,7 +81,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetGroupedMeterMeasurementsResponse>> GetGroupedMeasurementsAsync([FromQuery] GetMeterMeasurementRequest filter)
+        public async Task<IEnumerable<GetGroupedMeterMeasurementsResponse>> GetGroupedMeasurements([FromQuery] GetMeterMeasurementRequest filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
 
@@ -90,7 +90,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IEnumerable<GetMeterMeasurementsQueryResponse>> GetMeasurementsAsync([FromQuery] GetMeterMeasurementRequest filter)
+        public async Task<IEnumerable<GetMeterMeasurementsQueryResponse>> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
 
@@ -99,7 +99,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddMeasurementAsync([FromBody] AddMeasurementGroupRequest request)
+        public async Task AddMeasurement([FromBody] AddMeasurementGroupRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -114,7 +114,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task UpdateMeasurementAsync(UpdateMeterMeasurementRequest request)
+        public async Task UpdateMeasurement(UpdateMeterMeasurementRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -126,7 +126,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task DeleteMeasurementAsync([FromBody] DeleteRecordRequest request)
+        public async Task DeleteMeasurement([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -135,13 +135,13 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("withoutDiff")]
-        public async Task<int> GetMeasurementsWithoutDiffAsync()
+        public async Task<int> GetMeasurementsWithoutDiff()
         {
             return await QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
         }
 
         [HttpPost("[action]")]
-        public async Task<IEnumerable<string>> UpdateDiffAsync()
+        public async Task<IEnumerable<string>> UpdateDiff()
         {
             var command = new RecalculateDiffCommand(false);
 

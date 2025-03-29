@@ -15,7 +15,7 @@ namespace MAS.Payments.Controllers
     ) : BaseApiController(resolver)
     {
         [HttpGet("[action]")]
-        public async Task<GetPaymentStatisticsResponse> GetPaymentsStatisticsAsync([FromQuery] GetPaymentsStatisticsRequest request)
+        public async Task<GetPaymentStatisticsResponse> GetPaymentsStatistics([FromQuery] GetPaymentsStatisticsRequest request)
         {
             if (request == null)
             {
@@ -26,7 +26,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<GetMeasurementStatisticsQueryResponse> GetMeasurementStatisticsAsync([FromQuery] GetMeasurementStatisticsRequest request)
+        public async Task<GetMeasurementStatisticsQueryResponse> GetMeasurementStatistics([FromQuery] GetMeasurementStatisticsRequest request)
         {
             if (request == null)
             {

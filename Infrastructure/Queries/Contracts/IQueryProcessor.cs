@@ -1,7 +1,9 @@
 namespace MAS.Payments.Infrastructure.Query
 {
+    using System.Threading.Tasks;
+
     public interface IQueryProcessor
     {
-        TResult Execute<TResult>(IQuery<TResult> query);
+        Task<TResult> Execute<TResult>(IQuery<TResult> query);
     }
 }

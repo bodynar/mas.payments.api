@@ -3,38 +3,49 @@ namespace MAS.Payments.DataBase.Access
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Extensions;
     using MAS.Payments.Infrastructure.Specification;
 
-    internal class Repository<TEntity>(DataBaseContext dataBaseContext) : IRepository<TEntity>
+    using Microsoft.EntityFrameworkCore;
+
+    internal class Repository<TEntity>(
+        DataBaseContext dataBaseContext
+    ) : IRepository<TEntity>
         where TEntity : Entity
     {
         private DataBaseContext DataBaseContext { get; } = dataBaseContext;
 
-        public void Add(TEntity entity)
-            => DataBaseContext.Set<TEntity>().Add(entity);
+        public async Task Add(TEntity entity)
+            => await DataBaseContext.Set<TEntity>().AddAsync(entity);
 
-        public void AddRange(IEnumerable<TEntity> entities)
-            => DataBaseContext.Set<TEntity>().AddRange(entities);
+        public async Task AddRange(IEnumerable<TEntity> entities)
+            => await DataBaseContext.Set<TEntity>().AddRangeAsync(entities);
 
-        public void Delete(long id)
+        public async Task Delete(long id)
         {
-            var entity = Get(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
+            var entity = await Get(id);
+
+            if (entity == default)
+            {
+                return;
+            }
 
             DataBaseContext.Remove(entity);
         }
 
-        public void Update(long id, object updatedModel)
+        public async Task Update(long id, object updatedModel)
         {
-            var entity = Get(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
+            var entity = await Get(id)
+                ?? throw new EntityNotFoundException(typeof(TEntity), id);
 
             DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedModel); 
         }
 
-        public TEntity Get(long id)
-            => DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+        public async Task<TEntity> Get(long id)
+            => await DataBaseContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
 
         public IQueryable<TEntity> GetAll()
             => DataBaseContext.Set<TEntity>().AsQueryable();
@@ -42,10 +53,10 @@ namespace MAS.Payments.DataBase.Access
         public IQueryable<TEntity> Where(Specification<TEntity> filter)
             => DataBaseContext.Set<TEntity>().Where(filter);
 
-        public bool Any(Specification<TEntity> predicate)
+        public Task<bool> Any(Specification<TEntity> predicate)
             => DataBaseContext.Set<TEntity>().Any(predicate);
 
-        public int Count(Specification<TEntity> predicate)
+        public Task<int> Count(Specification<TEntity> predicate)
             => DataBaseContext.Set<TEntity>().Count(predicate);
     }
 }

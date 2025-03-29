@@ -1,11 +1,12 @@
 namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
-    using MAS.Payments.Infrastructure.Extensions;
     using MAS.Payments.Infrastructure.Specification;
 
     internal class AddMeterMeasurementTypeCommandHandler : BaseCommandHandler<AddMeterMeasurementTypeCommand>
@@ -22,21 +23,21 @@ namespace MAS.Payments.Commands
             PaymentTypeRepository = GetRepository<PaymentType>();
         }
 
-        public override void Handle(AddMeterMeasurementTypeCommand command)
+        public override async Task HandleAsync(AddMeterMeasurementTypeCommand command)
         {
-            var isUnique =
-                !Repository.GetAll().Any(
+            var isNotUnique =
+                await Repository.Any(
                     new CommonSpecification<MeterMeasurementType>(x =>
                         x.Name == command.Name && x.PaymentTypeId == command.PaymentTypeId));
 
-            if (!isUnique)
+            if (isNotUnique)
             {
                 throw new CommandExecutionException(CommandType,
                     $"Measurement type with name {command.Name} is already exist");
             }
 
             _ =
-                PaymentTypeRepository.Get(command.PaymentTypeId)
+                await PaymentTypeRepository.Get(command.PaymentTypeId)
                 ?? throw new CommandExecutionException(CommandType, $"Payment type with id {command.PaymentTypeId} doesn't exist");
 
             var meterMeasurementType = new MeterMeasurementType
@@ -47,7 +48,7 @@ namespace MAS.Payments.Commands
                 Color = command.Color,
             };
 
-            Repository.Add(meterMeasurementType);
+            await Repository.Add(meterMeasurementType);
         }
     }
 }

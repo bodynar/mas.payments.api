@@ -1,6 +1,6 @@
 namespace MAS.Payments.Commands
 {
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -8,6 +8,8 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class DeleteMeterMeasurementCommandHandler : BaseCommandHandler<DeleteMeterMeasurementCommand>
     {
@@ -20,16 +22,18 @@ namespace MAS.Payments.Commands
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override void Handle(DeleteMeterMeasurementCommand command)
+        public override async Task HandleAsync(DeleteMeterMeasurementCommand command)
         {
-            var deletedItem = Repository.Get(command.MeterMeasurementId)
+            var deletedItem = await Repository.Get(command.MeterMeasurementId)
                 ?? throw new EntityNotFoundException(typeof(MeterMeasurement), command.MeterMeasurementId);
 
             var nextMeasurementDate = deletedItem.Date.Date.AddMonths(1);
 
-            Repository.Delete(command.MeterMeasurementId);
+            await Repository.Delete(command.MeterMeasurementId);
 
-            var nextMeasurementItem = Repository.Where(new CommonSpecification<MeterMeasurement>(x => x.Date == nextMeasurementDate)).FirstOrDefault();
+            var nextMeasurementItem = await Repository
+                .Where(new CommonSpecification<MeterMeasurement>(x => x.Date == nextMeasurementDate))
+                .FirstOrDefaultAsync();
 
             if (nextMeasurementItem != null)
             {

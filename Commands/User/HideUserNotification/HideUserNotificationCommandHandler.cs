@@ -2,14 +2,12 @@
 {
     using System;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
-    using MAS.Payments.Infrastructure.Specification;
-
-    using Serilog;
 
     public class HideUserNotificationCommandHandler : BaseCommandHandler<HideUserNotificationCommand>
     {
@@ -21,11 +19,11 @@
             Repository = GetRepository<UserNotification>();
         }
 
-        public override void Handle(HideUserNotificationCommand command)
+        public override async Task HandleAsync(HideUserNotificationCommand command)
         {
             var notificationsToHide = 
                 Repository.Where(
-                    new CommonSpecification<UserNotification>(x => command.Ids.Contains(x.Id))
+                    new CommonSpecification.IdIn<UserNotification>(command.Ids)
                 );
 
             var foundIds = notificationsToHide.Select(x => x.Id).ToList();
@@ -42,7 +40,7 @@
                 userNotification.IsHidden = true;
                 userNotification.HiddenAt = DateTime.Now;
 
-                Repository.Update(userNotification.Id, userNotification);
+                await Repository.Update(userNotification.Id, userNotification);
             }
         }
     }

@@ -1,12 +1,13 @@
 namespace MAS.Payments.Infrastructure.Query
 {
     using System;
+    using System.Threading.Tasks;
 
     public class QueryProcessor(
         IResolver resolver
     ) : IQueryProcessor
     {
-        public TResult Execute<TResult>(IQuery<TResult> query)
+        public async Task<TResult> Execute<TResult>(IQuery<TResult> query)
         {
             ArgumentNullException.ThrowIfNull(query);
 
@@ -14,7 +15,7 @@ namespace MAS.Payments.Infrastructure.Query
 
             dynamic handler = resolver.GetInstance(handlerType);
 
-            return handler.Handle((dynamic)query);
+            return await handler.HandleAsync((dynamic)query);
         }
     }
 }

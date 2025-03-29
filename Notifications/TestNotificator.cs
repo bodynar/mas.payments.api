@@ -9,9 +9,9 @@ namespace MAS.Payments.Notifications
         IResolver resolver
     ) : BaseNotificator(resolver)
     {
-        public override IEnumerable<UserNotification> GetNotifications()
+        public override async IAsyncEnumerable<UserNotification> GetNotificationsAsync()
         {
-            var wasNotificationFormed = CheckWasNotificationFormed("testNotification");
+            var wasNotificationFormed = await CheckWasNotificationFormedAsync("testNotification");
 
             if (!wasNotificationFormed)
             {

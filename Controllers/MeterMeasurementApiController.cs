@@ -3,6 +3,7 @@ namespace MAS.Payments.Controllers
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.Commands;
     using MAS.Payments.Infrastructure;
@@ -20,47 +21,47 @@ namespace MAS.Payments.Controllers
         #region Measurement Type
 
         [HttpGet("[action]")]
-        public GetMeterMeasurementTypeResponse GetMeasurementType(long? id)
+        public async Task<GetMeterMeasurementTypeResponse> GetMeasurementTypeAsync(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            return QueryProcessor.Execute(new GetMeterMeasurementTypeQuery(id.Value));
+            return await QueryProcessor.Execute(new GetMeterMeasurementTypeQuery(id.Value));
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetMeterMeasurementTypesResponse> GetMeasurementTypes()
+        public async Task<IEnumerable<GetMeterMeasurementTypesResponse>> GetMeasurementTypesAsync()
         {
-            return QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
+            return await QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurementType(AddMeterMeasurementTypeRequest request)
+        public async Task AddMeasurementTypeAsync(AddMeterMeasurementTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new AddMeterMeasurementTypeCommand(request.PaymentTypeId, request.Name, request.Description, request.Color));
         }
 
         [HttpPost("[action]")]
-        public void UpdateMeasurementType(UpdateMeterMeasurementTypeRequest request)
+        public async Task UpdateMeasurementTypeAsync(UpdateMeterMeasurementTypeRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new UpdateMeterMeasurementTypeCommand(request.Id, request.PaymentTypeId, request.Name, request.Description, request.Color)
             );
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurementType([FromBody] DeleteRecordRequest request)
+        public async Task DeleteMeasurementTypeAsync([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new DeleteMeterMeasurementTypeCommand(request.Id));
         }
 
@@ -69,40 +70,40 @@ namespace MAS.Payments.Controllers
         #region Measurement
 
         [HttpGet("[action]")]
-        public GetMeterMeasurementResponse GetMeasurement(long? id)
+        public async Task<GetMeterMeasurementResponse> GetMeasurementAsync(long? id)
         {
             if (!id.HasValue || id.Value == default)
             {
                 throw new ArgumentNullException(nameof(id));
             }
 
-            return QueryProcessor.Execute(new GetMeterMeasurementQuery(id.Value));
+            return await QueryProcessor.Execute(new GetMeterMeasurementQuery(id.Value));
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetGroupedMeterMeasurementsResponse> GetGroupedMeasurements([FromQuery] GetMeterMeasurementRequest filter)
+        public async Task<IEnumerable<GetGroupedMeterMeasurementsResponse>> GetGroupedMeasurementsAsync([FromQuery] GetMeterMeasurementRequest filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
 
-            return QueryProcessor.Execute(
+            return await QueryProcessor.Execute(
                 new GetGroupedMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
         }
 
         [HttpGet("[action]")]
-        public IEnumerable<GetMeterMeasurementsQueryResponse> GetMeasurements([FromQuery] GetMeterMeasurementRequest filter)
+        public async Task<IEnumerable<GetMeterMeasurementsQueryResponse>> GetMeasurementsAsync([FromQuery] GetMeterMeasurementRequest filter)
         {
             ArgumentNullException.ThrowIfNull(filter);
 
-            return QueryProcessor.Execute(
+            return await QueryProcessor.Execute(
                 new GetMeterMeasurementsQuery(filter.Month, filter.MeasurementTypeId, filter.Year));
         }
 
         [HttpPost("[action]")]
-        public void AddMeasurement([FromBody] AddMeasurementGroupRequest request)
+        public async Task AddMeasurementAsync([FromBody] AddMeasurementGroupRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new AddMeasurementGroupCommand(
                     new DateTime(request.Year, request.Month, 1, 0, 0, 0, DateTimeKind.Utc),
                     request.Measurements.Select(x => 
@@ -113,38 +114,38 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public void UpdateMeasurement(UpdateMeterMeasurementRequest request)
+        public async Task UpdateMeasurementAsync(UpdateMeterMeasurementRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
             var meterMeasurementDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new UpdateMeterMeasurementCommand(request.Id, request.TypeId, meterMeasurementDate, request.Value, request.Comment)
             );
         }
 
         [HttpPost("[action]")]
-        public void DeleteMeasurement([FromBody] DeleteRecordRequest request)
+        public async Task DeleteMeasurementAsync([FromBody] DeleteRecordRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            CommandProcessor.Execute(
+            await CommandProcessor.Execute(
                 new DeleteMeterMeasurementCommand(request.Id));
         }
 
         [HttpGet("withoutDiff")]
-        public int GetMeasurementsWithoutDiff()
+        public async Task<int> GetMeasurementsWithoutDiffAsync()
         {
-            return QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
+            return await QueryProcessor.Execute(new GetMeasurementsWithoutDiffQuery());
         }
 
         [HttpPost("[action]")]
-        public IEnumerable<string> UpdateDiff()
+        public async Task<IEnumerable<string>> UpdateDiffAsync()
         {
             var command = new RecalculateDiffCommand(false);
 
-            CommandProcessor.Execute(command);
+            await CommandProcessor.Execute(command);
 
             return command.Warnings;
         }

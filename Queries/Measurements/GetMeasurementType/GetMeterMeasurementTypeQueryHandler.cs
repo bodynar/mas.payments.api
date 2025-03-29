@@ -1,5 +1,7 @@
 namespace MAS.Payments.Queries
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -16,9 +18,9 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurementType>();
         }
 
-        public override GetMeterMeasurementTypeResponse Handle(GetMeterMeasurementTypeQuery query)
+        public override async Task<GetMeterMeasurementTypeResponse> HandleAsync(GetMeterMeasurementTypeQuery query)
         {
-            var item = Repository.Get(query.Id);
+            var item = await Repository.Get(query.Id);
 
             return new GetMeterMeasurementTypeResponse
             {

@@ -1,5 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -16,9 +18,9 @@
             Repository = GetRepository<UserSettings>();
         }
 
-        public override void Handle(AddUserSettingCommand command)
+        public override async Task HandleAsync(AddUserSettingCommand command)
         {
-            Repository.Add(new UserSettings
+            await Repository.Add(new UserSettings
             {
                 Name = command.Name,
                 RawValue = command.RawValue,

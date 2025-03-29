@@ -6,6 +6,6 @@ namespace MAS.Payments.Notifications
 
     public interface INotificator
     {
-        IEnumerable<UserNotification> GetNotifications();
+        IAsyncEnumerable<UserNotification> GetNotificationsAsync();
     }
 }

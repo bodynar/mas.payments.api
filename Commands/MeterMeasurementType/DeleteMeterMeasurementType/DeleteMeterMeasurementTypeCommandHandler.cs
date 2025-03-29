@@ -1,5 +1,7 @@
 namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -16,9 +18,9 @@ namespace MAS.Payments.Commands
             Repository = GetRepository<MeterMeasurementType>();
         }
 
-        public override void Handle(DeleteMeterMeasurementTypeCommand command)
+        public override async Task HandleAsync(DeleteMeterMeasurementTypeCommand command)
         {
-            Repository.Delete(command.MeterMeasurementTypeId);
+            await Repository.Delete(command.MeterMeasurementTypeId);
         }
     }
 }

@@ -13,28 +13,28 @@ namespace MAS.Payments.Notifications
         IResolver resolver
     ) : BaseNotificator(resolver)
     {
-        public override IEnumerable<UserNotification> GetNotifications()
+        public override async IAsyncEnumerable<UserNotification> GetNotificationsAsync()
         {
             var today = DateTime.Today;
 
-            var displayNotificationSetting = QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.DisplayMeasurementsNotification.ToString()));
+            var displayNotificationSetting = await QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.DisplayMeasurementsNotification.ToString()));
             var displayNotificationSettingValue = UserSettingUtilities.GetTypedSettingValue<bool>(displayNotificationSetting);
 
             if (displayNotificationSettingValue && today.Day >= 20)
             {
-                var wasNotificationFormed = CheckWasNotificationFormed($"MeasurementNotificationFor{today.Year}{today.Month}");
+                var wasNotificationFormed = await CheckWasNotificationFormedAsync($"MeasurementNotificationFor{today.Year}{today.Month}");
 
                 if (!wasNotificationFormed)
                 {
                     var measurements =
-                        QueryProcessor.Execute(
+                       (await QueryProcessor.Execute(
                             new GetGroupedMeterMeasurementsQuery((byte?)today.Month, year: today.Year)
-                        )
+                       ))
                         .SelectMany(x => x.Measurements.Select(y => y.MeterMeasurementTypeId))
                         .Distinct();
 
                     var measurementTypes =
-                        QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
+                        await QueryProcessor.Execute(new GetMeterMeasurementTypesQuery());
 
                     if (measurementTypes.Count() != measurements.Count())
                     {
@@ -54,7 +54,7 @@ namespace MAS.Payments.Notifications
                             Type = (short)type,
                             Title = "Measurement not added",
                             Key = $"MeasurementNotificationFor{today.Year}{today.Month}",
-                            Text = $"Measurement for [{today.ToString("MMMM yyyy")}] not added for next types: {string.Join(", ", measurementTypesWithoutMeasurement)}"
+                            Text = $"Measurement for [{today:MMMM yyyy}] not added for next types: {string.Join(", ", measurementTypesWithoutMeasurement)}"
                         };
                     }
                 }

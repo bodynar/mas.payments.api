@@ -1,6 +1,7 @@
 namespace MAS.Payments.Controllers
 {
     using System;
+    using System.Threading.Tasks;
 
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Models;
@@ -14,25 +15,25 @@ namespace MAS.Payments.Controllers
     ) : BaseApiController(resolver)
     {
         [HttpGet("[action]")]
-        public GetPaymentStatisticsResponse GetPaymentsStatistics([FromQuery] GetPaymentsStatisticsRequest request)
+        public async Task<GetPaymentStatisticsResponse> GetPaymentsStatisticsAsync([FromQuery] GetPaymentsStatisticsRequest request)
         {
             if (request == null)
             {
                 throw new ArgumentException("Year and Payment type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.From, request.To, request.PaymentTypeId));
+            return await QueryProcessor.Execute(new GetPaymentStatisticsQuery(request.From, request.To, request.PaymentTypeId));
         }
 
         [HttpGet("[action]")]
-        public GetMeasurementStatisticsQueryResponse GetMeasurementStatistics([FromQuery] GetMeasurementStatisticsRequest request)
+        public async Task<GetMeasurementStatisticsQueryResponse> GetMeasurementStatisticsAsync([FromQuery] GetMeasurementStatisticsRequest request)
         {
             if (request == null)
             {
                 throw new ArgumentException("Year and Measurement type must be specified.");
             }
 
-            return QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.From, request.To, request.MeasurementTypeId));
+            return await QueryProcessor.Execute(new GetMeasurementStatisticsQuery(request.From, request.To, request.MeasurementTypeId));
         }
     }
 }

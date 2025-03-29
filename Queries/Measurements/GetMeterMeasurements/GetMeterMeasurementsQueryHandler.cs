@@ -2,12 +2,15 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IEnumerable<GetMeterMeasurementsQueryResponse>>
     {
@@ -20,7 +23,7 @@
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IEnumerable<GetMeterMeasurementsQueryResponse> Handle(GetMeterMeasurementsQuery query)
+        public override async Task<IEnumerable<GetMeterMeasurementsQueryResponse>> HandleAsync(GetMeterMeasurementsQuery query)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
 
@@ -48,6 +51,7 @@
                        DateYear = x.Date.Year,
                        DateMonth = x.Date.Month,
                        Measurement = x.Measurement,
+                       Diff = x.Diff,
                        Comment = x.Comment,
                        IsSent = x.IsSent,
                        MeterMeasurementTypeId = x.MeterMeasurementTypeId,
@@ -56,9 +60,9 @@
                    })
                    .OrderBy(x => x.DateYear)
                    .ThenBy(x => x.DateMonth)
-                   .ToList();
+                   .ToListAsync();
 
-            return filteredMeasurements;
+            return await filteredMeasurements;
         }
     }
 }

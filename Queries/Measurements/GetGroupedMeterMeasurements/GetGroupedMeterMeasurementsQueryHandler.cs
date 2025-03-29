@@ -2,12 +2,15 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetGroupedMeterMeasurementsQueryHandler : BaseQueryHandler<GetGroupedMeterMeasurementsQuery, IEnumerable<GetGroupedMeterMeasurementsResponse>>
     {
@@ -20,7 +23,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<MeterMeasurement>();
         }
 
-        public override IEnumerable<GetGroupedMeterMeasurementsResponse> Handle(GetGroupedMeterMeasurementsQuery query)
+        public override async Task<IEnumerable<GetGroupedMeterMeasurementsResponse>> HandleAsync(GetGroupedMeterMeasurementsQuery query)
         {
             Specification<MeterMeasurement> filter = new CommonSpecification<MeterMeasurement>(x => true);
 
@@ -40,9 +43,9 @@ namespace MAS.Payments.Queries
             }
 
             var filteredMeasurements =
-                Repository
+                await Repository
                    .Where(filter)
-                   .ToList();
+                   .ToListAsync();
 
             var result = new List<GetGroupedMeterMeasurementsResponse>();
 

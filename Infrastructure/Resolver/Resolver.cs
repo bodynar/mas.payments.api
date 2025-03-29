@@ -4,24 +4,19 @@ namespace MAS.Payments.Infrastructure
 
     using SimpleInjector;
 
-    internal class Resolver : IResolver
+    internal class Resolver(
+        Container container
+    ) : IResolver
     {
-        private Container Container { get; }
-
-        public Resolver(Container container)
-        {
-            Container = container;
-        }
-
         public TService Resolve<TService>()
             where TService : class
         {
-            return Container.GetInstance<TService>();
+            return container.GetInstance<TService>();
         }
 
         public object GetInstance(Type serviceType)
         {
-            return Container.GetInstance(serviceType);
+            return container.GetInstance(serviceType);
         }
     }
 }

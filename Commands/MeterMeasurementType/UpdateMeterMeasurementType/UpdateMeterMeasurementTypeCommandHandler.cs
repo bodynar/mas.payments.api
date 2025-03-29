@@ -22,14 +22,10 @@ namespace MAS.Payments.Commands
 
         public override void Handle(UpdateMeterMeasurementTypeCommand command)
         {
-            var paymentType =
-                PaymentTypeRepository.Get(command.PaymentTypeId);
-
-            if (paymentType == null)
-            {
-                throw new CommandExecutionException(CommandType,
+            _ =
+                PaymentTypeRepository.Get(command.PaymentTypeId)
+                ?? throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
-            }
 
             Repository.Update(command.Id, new
             {

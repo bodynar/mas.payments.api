@@ -2,25 +2,22 @@ namespace MAS.Payments.Commands
 {
     using MAS.Payments.Infrastructure.Command;
 
-    public class UpdatePaymentTypeCommand : ICommand
+    public class UpdatePaymentTypeCommand(
+        long id,
+        string name,
+        string description,
+        string company,
+        string color
+    ) : ICommand
     {
-        public long Id { get; }
+        public long Id { get; } = id;
 
-        public string Name { get; }
+        public string Name { get; } = name;
 
-        public string Description { get; }
+        public string Description { get; } = description;
 
-        public string Company { get; }
+        public string Company { get; } = company;
 
-        public string Color { get; set; }
-
-        public UpdatePaymentTypeCommand(long id, string name, string description, string company, string color)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            Company = company;
-            Color = color;
-        }
+        public string Color { get; set; } = color;
     }
 }

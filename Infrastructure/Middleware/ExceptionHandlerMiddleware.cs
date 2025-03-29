@@ -7,21 +7,17 @@
     using Microsoft.AspNetCore.Http;
 
     using Newtonsoft.Json;
+    using Serilog;
 
-    public class ExceptionHandlerMiddleware
+    public class ExceptionHandlerMiddleware(
+        RequestDelegate next
+    )
     {
-        private readonly RequestDelegate nextHandler;
-
-        public ExceptionHandlerMiddleware(RequestDelegate next)
-        {
-            nextHandler = next;
-        }
-
         public async Task Invoke(HttpContext httpContext)
         {
             try
             {
-                await nextHandler(httpContext).ConfigureAwait(false);
+                await next(httpContext).ConfigureAwait(false);
             }
             catch (Exception e)
             {
@@ -29,15 +25,18 @@
             }
         }
 
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
+            Log.Error(exception, "{0}");
+
             var serializedException = JsonConvert.SerializeObject(new
             {
                 Success = false,
-                Message = exception.Message,
+                exception.Message,
+                Stack = exception.StackTrace,
             });
 
             return context.Response.WriteAsync(serializedException);

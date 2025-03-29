@@ -1,7 +1,5 @@
 namespace MAS.Payments.Models
 {
-    using System;
-
     public class AddMeterMeasurementTypeRequest
     {
         public string Name { get; set; }

@@ -7,7 +7,6 @@
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
-    using MAS.Payments.Projectors;
 
     internal class GetUserSettingsQueryHandler : BaseQueryHandler<GetUserSettingsQuery, IReadOnlyCollection<GetUserSettingsQueryResult>>
     {
@@ -20,9 +19,19 @@
             Repository = GetRepository<UserSettings>();
         }
 
-        public override IReadOnlyCollection<GetUserSettingsQueryResult> Handle(GetUserSettingsQuery query) 
+        public override IReadOnlyCollection<GetUserSettingsQueryResult> Handle(GetUserSettingsQuery query)
         {
-            return Repository.GetAll(new Projector.ToFlat<UserSettings, GetUserSettingsQueryResult>()).ToList();
+            return Repository
+                .GetAll()
+                .Select(x => new GetUserSettingsQueryResult
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    DisplayName = x.DisplayName,
+                    TypeName = x.TypeName,
+                    RawValue = x.RawValue,
+                })
+                .ToList();
         }
     }
 }

@@ -35,7 +35,6 @@
             if (notFoundNotifications.Any())
             {
                 command.NotProcessedIds = notFoundNotifications;
-                Log.Warning($"Trying to hide notifications with ids, but not all of them not found: [{string.Join(", ", notFoundNotifications)}]");
             }
 
             foreach (var userNotification in notificationsToHide)

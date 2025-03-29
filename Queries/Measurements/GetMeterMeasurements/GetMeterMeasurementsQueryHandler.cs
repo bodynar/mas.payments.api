@@ -8,7 +8,6 @@
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
-    using MAS.Payments.Projectors;
 
     internal class GetMeterMeasurementsQueryHandler : BaseQueryHandler<GetMeterMeasurementsQuery, IEnumerable<GetMeterMeasurementsQueryResponse>>
     {
@@ -42,8 +41,19 @@
 
             var filteredMeasurements =
                 Repository
-                   .Where(filter, new Projector.ToFlat<MeterMeasurement, GetMeterMeasurementsQueryResponse>())
-                   .ToList()
+                   .Where(filter)
+                   .Select(x => new GetMeterMeasurementsQueryResponse
+                   {
+                       Id = x.Id,
+                       DateYear = x.Date.Year,
+                       DateMonth = x.Date.Month,
+                       Measurement = x.Measurement,
+                       Comment = x.Comment,
+                       IsSent = x.IsSent,
+                       MeterMeasurementTypeId = x.MeterMeasurementTypeId,
+                       MeasurementTypeColor = x.MeasurementType.Color,
+                       MeasurementTypeName = x.MeasurementType.Name,
+                   })
                    .OrderBy(x => x.DateYear)
                    .ThenBy(x => x.DateMonth)
                    .ToList();

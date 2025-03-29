@@ -4,7 +4,6 @@ namespace MAS.Payments.Queries
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
-    using MAS.Payments.Projectors;
 
     internal class GetPaymentTypeQueryHandler : BaseQueryHandler<GetPaymentTypeQuery, GetPaymentTypeResponse>
     {
@@ -19,9 +18,17 @@ namespace MAS.Payments.Queries
 
         public override GetPaymentTypeResponse Handle(GetPaymentTypeQuery query)
         {
-             return Repository
-                        .Get(query.Id,
-                        new Projector.ToFlat<PaymentType, GetPaymentTypeResponse>());
+            var item = Repository.Get(query.Id);
+
+            return new GetPaymentTypeResponse
+            {
+                Id = item.Id,
+                SystemName = item.SystemName,
+                Name = item.Name,
+                Description = item.Description,
+                Company = item.Company,
+                Color = item.Color,
+            };
         }
     }
 }

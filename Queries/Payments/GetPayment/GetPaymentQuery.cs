@@ -2,13 +2,10 @@ namespace MAS.Payments.Queries
 {
     using MAS.Payments.Infrastructure.Query;
 
-    public class GetPaymentQuery : IQuery<GetPaymentResponse>
+    public class GetPaymentQuery(
+        long id
+    ) : IQuery<GetPaymentResponse>
     {
-        public long Id { get; }
-
-        public GetPaymentQuery(long id)
-        {
-            Id = id;
-        }
+        public long Id { get; } = id;
     }
 }

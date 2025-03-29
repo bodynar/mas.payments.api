@@ -5,6 +5,8 @@ namespace MAS.Payments
 
     public class Program
     {
+        const string url = "http://0.0.0.0:80";
+
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args).Build().Run();
@@ -12,6 +14,7 @@ namespace MAS.Payments
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-                .UseStartup<Startup>();
+                .UseStartup<Startup>()
+                .UseUrls(url);
     }
 }

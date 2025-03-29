@@ -4,19 +4,14 @@ namespace MAS.Payments.DataBase.Access
     using System.Collections.Generic;
     using System.Linq;
 
+    using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Extensions;
-    using MAS.Payments.Infrastructure.Projector;
     using MAS.Payments.Infrastructure.Specification;
 
-    internal class Repository<TEntity> : IRepository<TEntity>
+    internal class Repository<TEntity>(DataBaseContext dataBaseContext) : IRepository<TEntity>
         where TEntity : Entity
     {
-        private DataBaseContext DataBaseContext { get; }
-
-        public Repository(DataBaseContext dataBaseContext)
-        {
-            DataBaseContext = dataBaseContext;
-        }
+        private DataBaseContext DataBaseContext { get; } = dataBaseContext;
 
         public void Add(TEntity entity)
             => DataBaseContext.Set<TEntity>().Add(entity);
@@ -26,28 +21,20 @@ namespace MAS.Payments.DataBase.Access
 
         public void Delete(long id)
         {
-            var entity = Get(id);
-            if (entity == null)
-            {
-                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
-            }
+            var entity = Get(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
 
             DataBaseContext.Remove(entity);
         }
 
-        public void Update(long id, object updatedEntity)
+        public void Update(long id, object updatedModel)
         {
-            var entity = Get(id);
-            if (entity == null)
-            {
-                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
-            }
+            var entity = Get(id) ?? throw new EntityNotFoundException(typeof(TEntity), id);
 
-            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedEntity); 
+            DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedModel); 
         }
 
         public TEntity Get(long id)
-            => (TEntity)DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
+            => DataBaseContext.Set<TEntity>().FirstOrDefault(x => x.Id == id);
 
         public IQueryable<TEntity> GetAll()
             => DataBaseContext.Set<TEntity>().AsQueryable();
@@ -60,26 +47,5 @@ namespace MAS.Payments.DataBase.Access
 
         public int Count(Specification<TEntity> predicate)
             => DataBaseContext.Set<TEntity>().Count(predicate);
-
-        public TDestination Get<TDestination>(long id, IProjector<TEntity, TDestination> projector)
-            where TDestination : class
-        {
-            var entity = Get(id);
-
-            if (entity == null)
-            {
-                throw new Exception($"Entity {typeof(TEntity)} with identifier {id} not found");
-            }
-
-            return projector.Project(entity);
-        }
-
-        public IEnumerable<TDestination> GetAll<TDestination>(IProjector<TEntity, TDestination> projector)
-            where TDestination : class
-            => GetAll().Select(projector.Project);
-
-        public IEnumerable<TDestination> Where<TDestination>(Specification<TEntity> filter, IProjector<TEntity, TDestination> projector)
-            where TDestination : class
-            => Where(filter).Select(projector.Project);
     }
 }

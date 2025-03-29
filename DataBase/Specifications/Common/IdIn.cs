@@ -16,12 +16,12 @@
 
             public IdIn(IEnumerable<long> keys)
             {
-                Ids = new List<long>(keys);
+                Ids = [.. keys];
             }
 
             public IdIn(long key)
             {
-                Ids = new List<long>() { key };
+                Ids = [key];
             }
 
             public override Expression<Func<TEntity, bool>> IsSatisfied()

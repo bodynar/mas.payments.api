@@ -9,34 +9,28 @@ namespace MAS.Payments.Notifications
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Query;
 
-    internal abstract class BaseNotificator : INotificator
+    internal abstract class BaseNotificator(
+        IResolver resolver
+    ) : INotificator
     {
-        protected IResolver Resolver { get; }
 
-        private Lazy<IQueryProcessor> _queryProcessor
-            => new Lazy<IQueryProcessor>(() => Resolver.Resolve<IQueryProcessor>());
+        private Lazy<IQueryProcessor> queryProcessor
+            => new(resolver.Resolve<IQueryProcessor>);
 
-        private Lazy<ICommandProcessor> _commandProcessor
-            => new Lazy<ICommandProcessor>(() => Resolver.Resolve<ICommandProcessor>());
+        private Lazy<ICommandProcessor> commandProcessor
+            => new(resolver.Resolve<ICommandProcessor>);
 
-        private Lazy<IRepository<UserNotification>> _userNotificationRepository
-            => new Lazy<IRepository<UserNotification>>(() => Resolver.Resolve<IRepository<UserNotification>>());
+        private Lazy<IRepository<UserNotification>> userNotificationRepository
+            => new(resolver.Resolve<IRepository<UserNotification>>);
 
         protected IQueryProcessor QueryProcessor
-            => _queryProcessor.Value;
+            => queryProcessor.Value;
 
         protected ICommandProcessor CommandProcessor
-            => _commandProcessor.Value;
+            => commandProcessor.Value;
 
         protected IRepository<UserNotification> Repository
-            => _userNotificationRepository.Value;
-
-        public BaseNotificator(
-            IResolver resolver
-        )
-        {
-            Resolver = resolver;
-        }
+            => userNotificationRepository.Value;
 
         public abstract IEnumerable<UserNotification> GetNotifications();
 

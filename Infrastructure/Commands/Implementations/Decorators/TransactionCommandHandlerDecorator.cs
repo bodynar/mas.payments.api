@@ -13,12 +13,35 @@ namespace MAS.Payments.Infrastructure.Command
     {
         public override async Task HandleAsync(TCommand command)
         {
-            using (var scope = await dbContext.Database.BeginTransactionAsync())
+            var currentTransaction = dbContext.Database.CurrentTransaction;
+
+            var shouldCreateTransaction = currentTransaction == null;
+
+            if (shouldCreateTransaction)
+            {
+                currentTransaction = await dbContext.Database.BeginTransactionAsync();
+            }
+
+            try
             {
                 await decorated.HandleAsync(command);
 
-                await scope.CommitAsync();
-                await dbContext.SaveChangesAsync();
+                if (shouldCreateTransaction)
+                {
+                    await currentTransaction.CommitAsync();
+                    await dbContext.SaveChangesAsync();
+
+                    currentTransaction.Dispose();
+                }
+            }
+            catch
+            {
+                if (shouldCreateTransaction)
+                {
+                    await currentTransaction.RollbackAsync();
+                }
+
+                throw;
             }
         }
     }

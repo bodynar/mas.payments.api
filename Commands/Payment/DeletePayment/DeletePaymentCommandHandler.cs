@@ -29,7 +29,7 @@ namespace MAS.Payments.Commands
 
             if (payment.ReceiptId.HasValue)
             {
-                await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.ReceiptId.Value, command.PaymentId, DeletePdfDocumentTarget.Receipent));
+                await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.ReceiptId.Value, command.PaymentId, DeletePdfDocumentTarget.Receipt));
             }
 
             if (payment.CheckId.HasValue)

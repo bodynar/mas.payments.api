@@ -2,8 +2,6 @@ namespace MAS.Payments.DataBase
 {
     using System;
 
-    using MAS.Payments.DataBase.Models;
-
     public class Payment : Entity
     {
         public double Amount { get; set; }

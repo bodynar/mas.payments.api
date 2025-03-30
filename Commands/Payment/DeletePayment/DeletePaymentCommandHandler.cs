@@ -4,7 +4,6 @@ namespace MAS.Payments.Commands
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
-    using MAS.Payments.DataBase.Models;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Specification;

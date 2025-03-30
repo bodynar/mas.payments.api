@@ -1,7 +1,5 @@
 namespace MAS.Payments.DataBase
 {
-    using MAS.Payments.DataBase.Models;
-
     using Microsoft.EntityFrameworkCore;
 
     public class DataBaseContext(

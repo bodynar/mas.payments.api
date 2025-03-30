@@ -1,4 +1,4 @@
-﻿namespace MAS.Payments.DataBase.Models
+﻿namespace MAS.Payments.DataBase
 {
     using System;
 

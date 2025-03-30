@@ -30,7 +30,7 @@
                 throw new CommandExecutionException(CommandType, "Target cannot be None!");
             }
 
-            var fileSpecificcation = command.Target == DeletePdfDocumentTarget.Receipent
+            var fileSpecificcation = command.Target == DeletePdfDocumentTarget.Receipt
                 ? new CommonSpecification<Payment>(x => x.ReceiptId == command.DocumentId)
                 : new CommonSpecification<Payment>(x => x.CheckId == command.DocumentId);
 

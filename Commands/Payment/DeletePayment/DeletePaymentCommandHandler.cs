@@ -2,24 +2,21 @@ namespace MAS.Payments.Commands
 {
     using System.Threading.Tasks;
 
+    using MAS.Payments.Commands.Common.DeletePdfDocument;
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
-    using MAS.Payments.Infrastructure.Specification;
 
     internal class DeletePaymentCommandHandler : BaseCommandHandler<DeletePaymentCommand>
     {
         private IRepository<Payment> Repository { get; }
-
-        private IRepository<PdfDocument> PdfDocumentRepository { get; }
 
         public DeletePaymentCommandHandler(
             IResolver resolver
         ) : base(resolver)
         {
             Repository = GetRepository<Payment>();
-            PdfDocumentRepository = GetRepository<PdfDocument>();
         }
 
         public override async Task HandleAsync(DeletePaymentCommand command)
@@ -33,34 +30,12 @@ namespace MAS.Payments.Commands
 
             if (payment.ReceiptId.HasValue)
             {
-                var hasOtherLinks = await Repository.Any(
-                    new CommonSpecification<Payment>(
-                        x =>
-                            x.ReceiptId == payment.ReceiptId.Value
-                            && x.Id != command.PaymentId
-                    )
-                );
-
-                if (!hasOtherLinks)
-                {
-                    await PdfDocumentRepository.Delete(payment.ReceiptId.Value);
-                }
+                await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.ReceiptId.Value, command.PaymentId, DeletePdfDocumentTarget.Receipent));
             }
 
             if (payment.CheckId.HasValue)
             {
-                var hasOtherLinks = await Repository.Any(
-                    new CommonSpecification<Payment>(
-                        x =>
-                            x.CheckId == payment.CheckId.Value
-                            && x.Id != command.PaymentId
-                    )
-                );
-
-                if (!hasOtherLinks)
-                {
-                    await PdfDocumentRepository.Delete(payment.CheckId.Value);
-                }
+                await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.CheckId.Value, command.PaymentId, DeletePdfDocumentTarget.Check));
             }
             
             await Repository.Delete(command.PaymentId);

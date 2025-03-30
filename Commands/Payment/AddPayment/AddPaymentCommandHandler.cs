@@ -1,6 +1,5 @@
 namespace MAS.Payments.Commands
 {
-    using System.IO;
     using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
@@ -9,15 +8,11 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
 
-    using Microsoft.AspNetCore.Http;
-
     internal class AddPaymentCommandHandler : BaseCommandHandler<AddPaymentCommand>
     {
         private IRepository<Payment> Repository { get; }
 
         private IRepository<PaymentType> PaymentTypeRepository { get; }
-
-        private IRepository<PdfDocument> PdfDocumentRepository { get; }
 
         public AddPaymentCommandHandler(
             IResolver resolver
@@ -25,7 +20,6 @@ namespace MAS.Payments.Commands
         {
             Repository = GetRepository<Payment>();
             PaymentTypeRepository = GetRepository<PaymentType>();
-            PdfDocumentRepository = GetRepository<PdfDocument>();
         }
 
         public override async Task HandleAsync(AddPaymentCommand command)
@@ -45,35 +39,23 @@ namespace MAS.Payments.Commands
 
             if (command.ReceiptFile?.Length > 0)
             {
-                var file = await AttachFileAsync(command.ReceiptFile);
+                var createCommand = new CreatePdfDocumentCommand(command.ReceiptFile);
 
-                payment.Receipt = file;
+                await CommandProcessor.Execute(createCommand);
+
+                payment.Receipt = createCommand.PdfDocument;
             }
 
             if (command.Check?.Length > 0)
             {
-                var file = await AttachFileAsync(command.Check);
+                var createCommand = new CreatePdfDocumentCommand(command.Check);
 
-                payment.Receipt = file;
+                await CommandProcessor.Execute(createCommand);
+
+                payment.Check = createCommand.PdfDocument;
             }
 
             await Repository.Add(payment);
-        }
-
-        private async Task<PdfDocument> AttachFileAsync(IFormFile file)
-        {
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-
-            var document = new PdfDocument
-            {
-                Name = file.FileName,
-                FileData = memoryStream.ToArray()
-            };
-
-            await PdfDocumentRepository.Add(document);
-
-            return document;
         }
     }
 }

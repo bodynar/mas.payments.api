@@ -1,0 +1,24 @@
+﻿namespace MAS.Payments.Commands.Common.DeletePdfDocument
+{
+    using MAS.Payments.Infrastructure.Command;
+
+    public enum DeletePdfDocumentTarget
+    {
+        Receipent = 1,
+
+        Check = 2,
+    }
+
+    public class DeletePdfDocumentCommand(
+        long documentId,
+        long paymentId,
+        DeletePdfDocumentTarget target = DeletePdfDocumentTarget.Receipent
+    ) : ICommand
+    {
+        public long DocumentId { get; } = documentId;
+
+        public long PaymentId { get; } = paymentId;
+
+        public DeletePdfDocumentTarget Target { get; } = target;
+    }
+}

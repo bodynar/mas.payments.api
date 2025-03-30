@@ -1,6 +1,5 @@
 ﻿namespace MAS.Payments.Commands
 {
-    using System.IO;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -10,22 +9,17 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
 
-    using Microsoft.AspNetCore.Http;
-
     public class AddPaymentGroupCommandHandler : BaseCommandHandler<AddPaymentGroupCommand>
     {
         private IRepository<Payment> Repository { get; }
 
         private IRepository<PaymentType> PaymentTypeRepository { get; }
 
-        private IRepository<PdfDocument> PdfDocumentRepository { get; }
-
         public AddPaymentGroupCommandHandler(IResolver resolver)
             : base(resolver)
         {
             Repository = GetRepository<Payment>();
             PaymentTypeRepository = GetRepository<PaymentType>();
-            PdfDocumentRepository = GetRepository<PdfDocument>();
         }
 
         public override async Task HandleAsync(AddPaymentGroupCommand command)
@@ -50,13 +44,27 @@
                 throw new CommandExecutionException(CommandType, $"Payment types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
-            var receiptFile = command.ReceiptFile?.Length > 0
-                ? await AttachFileAsync(command.ReceiptFile)
-                : null;
+            PdfDocument receiptFile = null;
 
-            var checkFile = command.Check?.Length > 0
-                ? await AttachFileAsync(command.Check)
-                : null;
+            if (command.ReceiptFile?.Length > 0)
+            {
+                var createCommand = new CreatePdfDocumentCommand(command.ReceiptFile);
+
+                await CommandProcessor.Execute(createCommand);
+
+                receiptFile = createCommand.PdfDocument;
+            }
+
+            PdfDocument checkFile = null;
+
+            if (command.Check?.Length > 0)
+            {
+                var createCommand = new CreatePdfDocumentCommand(command.Check);
+
+                await CommandProcessor.Execute(createCommand);
+
+                checkFile = createCommand.PdfDocument;
+            }
 
             var payments =
                 command.Payments
@@ -72,22 +80,6 @@
                     });
 
             await Repository.AddRange(payments);
-        }
-
-        private async Task<PdfDocument> AttachFileAsync(IFormFile file)
-        {
-            using var memoryStream = new MemoryStream();
-            await file.CopyToAsync(memoryStream);
-
-            var document = new PdfDocument
-            {
-                Name = file.FileName,
-                FileData = memoryStream.ToArray()
-            };
-
-            await PdfDocumentRepository.Add(document);
-
-            return document;
         }
     }
 }

@@ -29,13 +29,33 @@ namespace MAS.Payments.Commands
                 ?? throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
 
-            await Repository.Update(command.Id, new
+            dynamic updatedModel = new
             {
                 command.Amount,
                 command.Date,
                 command.Description,
                 command.PaymentTypeId,
-            });
+            };
+
+            if (command.ReceiptFile?.Length > 0)
+            {
+                var createCommand = new CreatePdfDocumentCommand(command.ReceiptFile);
+
+                await CommandProcessor.Execute(createCommand);
+
+                updatedModel.Receipt = createCommand.PdfDocument;
+            }
+
+            if (command.CheckFile?.Length > 0)
+            {
+                var createCommand = new CreatePdfDocumentCommand(command.CheckFile);
+
+                await CommandProcessor.Execute(createCommand);
+
+                updatedModel.Check = createCommand.PdfDocument;
+            }
+
+            await Repository.Update(command.Id, updatedModel);
         }
     }
 }

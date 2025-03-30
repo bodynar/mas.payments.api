@@ -131,14 +131,18 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task UpdatePayment([FromBody] UpdatePaymentRequest request)
+        public async Task UpdatePayment([FromForm] UpdatePaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
             var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
             await CommandProcessor.Execute(
-                new UpdatePaymentCommand(request.Id, request.PaymentTypeId, request.Amount, paymentDate, request.Description)
+                new UpdatePaymentCommand(
+                    request.Id, request.PaymentTypeId, request.Amount,
+                    paymentDate, request.Description,
+                    request.ReceiptFile, request.CheckFile
+                )
             );
         }
 
@@ -150,6 +154,14 @@ namespace MAS.Payments.Controllers
             await CommandProcessor.Execute(
                 new DeletePaymentCommand(request.Id)
             );
+        }
+
+        [HttpPost("[action]")]
+        public async Task DeleteFile([FromBody]DeleteFileRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            await CommandProcessor.Execute(new DeleteRelatedFileCommand(request.PaymentId, request.Mode));
         }
 
         #endregion

@@ -1,5 +1,7 @@
 namespace MAS.Payments.Models
 {
+    using Microsoft.AspNetCore.Http;
+
     public class UpdatePaymentRequest
     {
         public long Id { get; set; }
@@ -13,5 +15,9 @@ namespace MAS.Payments.Models
         public string Description { get; set; }
 
         public long PaymentTypeId { get; set; }
+
+        public IFormFile ReceiptFile { get; set; }
+
+        public IFormFile CheckFile { get; set; }
     }
 }

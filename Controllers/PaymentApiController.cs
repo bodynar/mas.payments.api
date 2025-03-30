@@ -10,8 +10,9 @@ namespace MAS.Payments.Controllers
     using MAS.Payments.Models;
     using MAS.Payments.Queries;
 
-    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
+
+    using Newtonsoft.Json;
 
     [Route("api/payment")]
     public class PaymentApiController(
@@ -107,11 +108,26 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddGroup([FromBody] AddPaymentGroupRequest request)
+        public async Task AddGroup([FromForm] AddPaymentGroupRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            await CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))));
+            var payments = JsonConvert.DeserializeObject<List<PaymentGroupRequestModel>>(request.Payments);
+
+            if (payments?.Count == 0)
+            {
+                return;
+            }
+
+            var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
+
+            await CommandProcessor.Execute(
+                new AddPaymentGroupCommand(
+                    paymentDate,
+                    payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description)),
+                    request.ReceiptFile, request.CheckFile
+                )
+            );
         }
 
         [HttpPost("[action]")]

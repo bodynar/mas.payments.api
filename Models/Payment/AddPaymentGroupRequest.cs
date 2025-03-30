@@ -1,13 +1,18 @@
 ﻿namespace MAS.Payments.Models
 {
-    using System;
-    using System.Collections.Generic;
+    using Microsoft.AspNetCore.Http;
 
     public class AddPaymentGroupRequest
     {
-        public DateTime Date { get; set; }
+        public int Year { get; set; }
 
-        public IEnumerable<PaymentGroupRequestModel> Payments { get; set; }
+        public int Month { get; set; }
+
+        public string Payments { get; set; }
+
+        public IFormFile ReceiptFile { get; set; }
+
+        public IFormFile CheckFile { get; set; }
     }
 
     public class PaymentGroupRequestModel

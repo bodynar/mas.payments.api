@@ -28,33 +28,69 @@
 
             var payment = await Repository.Get(command.PaymentId);
 
-            dynamic updatedModel = new { };
-
-            switch (command.Mode)
+            var updatedModel = new PaymentFileDeleteData
             {
-                case DeleteRelatedFileMode.Receipt:
-                    await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.ReceiptId.Value, payment.Id, DeletePdfDocumentTarget.Receipent));
+                ReceiptId = payment.ReceiptId,
+                CheckId = payment.CheckId,
+            };
 
+            if (command.Mode == DeleteRelatedFileMode.Both
+                || command.Mode == DeleteRelatedFileMode.Receipt
+            )
+            {
+                var isReceiptDeleted = await DeleteFile(
+                    payment.Id, payment.ReceiptId, DeletePdfDocumentTarget.Receipt
+                );
+
+                if (isReceiptDeleted)
+                {
                     updatedModel.ReceiptId = null;
-                    break;
+                }
+            }
 
-                case DeleteRelatedFileMode.Check:
-                    await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.CheckId.Value, payment.Id, DeletePdfDocumentTarget.Check));
+            if (command.Mode == DeleteRelatedFileMode.Both
+                || command.Mode == DeleteRelatedFileMode.Check
+            )
+            {
+                var isCheckDeleted = await DeleteFile(
+                    payment.Id, payment.CheckId, DeletePdfDocumentTarget.Check
+                );
 
+                if (isCheckDeleted)
+                {
                     updatedModel.CheckId = null;
-                    break;
+                }
+            }
 
-                case DeleteRelatedFileMode.Both:
-                    await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.ReceiptId.Value, payment.Id, DeletePdfDocumentTarget.Receipent));
-                    await CommandProcessor.Execute(new DeletePdfDocumentCommand(payment.CheckId.Value, payment.Id, DeletePdfDocumentTarget.Check));
-
-                    updatedModel.ReceiptId = null;
-                    updatedModel.CheckId = null;
-
-                    break;
+            if (updatedModel.ReceiptId != null && updatedModel.CheckId != null)
+            {
+                return;
             }
 
             await Repository.Update(command.PaymentId, updatedModel);
+        }
+
+        private async Task<bool> DeleteFile(long paymentId, long? fileId, DeletePdfDocumentTarget target)
+        {
+            if (!fileId.HasValue)
+            {
+                return false;
+            }
+
+            await CommandProcessor.Execute(
+                new DeletePdfDocumentCommand(
+                    fileId.Value, paymentId, target
+                )
+            );
+
+            return true;
+        }
+
+        private sealed class PaymentFileDeleteData
+        {
+            public long? ReceiptId { get; set; }
+
+            public long? CheckId { get; set; }
         }
     }
 }

@@ -10,6 +10,7 @@ namespace MAS.Payments.Controllers
     using MAS.Payments.Models;
     using MAS.Payments.Queries;
 
+    using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/payment")]
@@ -90,14 +91,19 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddPayment([FromBody] AddPaymentRequest request)
+        public async Task AddPayment([FromForm] AddPaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
             var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
             await CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeId, request.Amount, paymentDate, request.Description));
+                new AddPaymentCommand(
+                    request.PaymentTypeId, request.Amount,
+                    paymentDate, request.Description,
+                    request.ReceiptFile, request.CheckFile
+                )
+            );
         }
 
         [HttpPost("[action]")]

@@ -9,7 +9,7 @@
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
 
-    public class CreatePdfDocumentCommandHandler : BaseCommandHandler<CreatePdfDocumentCommand>
+    internal class CreatePdfDocumentCommandHandler : BaseCommandHandler<CreatePdfDocumentCommand>
     {
         private IRepository<PdfDocument> Repository { get; }
 

@@ -1,4 +1,4 @@
-﻿namespace MAS.Payments.Commands.Common.DeletePdfDocument
+﻿namespace MAS.Payments.Commands
 {
     using MAS.Payments.Infrastructure.Command;
 
@@ -12,7 +12,7 @@
     public class DeletePdfDocumentCommand(
         long documentId,
         long paymentId,
-        DeletePdfDocumentTarget target = DeletePdfDocumentTarget.Receipent
+        DeletePdfDocumentTarget target
     ) : ICommand
     {
         public long DocumentId { get; } = documentId;

@@ -2,7 +2,6 @@ namespace MAS.Payments.Commands
 {
     using System.Threading.Tasks;
 
-    using MAS.Payments.Commands.Common.DeletePdfDocument;
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;

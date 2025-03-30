@@ -2,14 +2,13 @@
 {
     using System.Threading.Tasks;
 
-    using MAS.Payments.Commands.Common.DeletePdfDocument;
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Specification;
 
-    public class DeletePdfDocumentCommandHandler : BaseCommandHandler<DeletePdfDocumentCommand>
+    internal class DeletePdfDocumentCommandHandler : BaseCommandHandler<DeletePdfDocumentCommand>
     {
         private IRepository<Payment> Repository { get; }
 

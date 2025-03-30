@@ -4,6 +4,8 @@
 
     public enum DeletePdfDocumentTarget
     {
+        None = 0,
+
         Receipent = 1,
 
         Check = 2,

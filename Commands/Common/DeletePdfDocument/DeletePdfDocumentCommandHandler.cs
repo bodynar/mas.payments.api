@@ -6,6 +6,7 @@
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
+    using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
 
     internal class DeletePdfDocumentCommandHandler : BaseCommandHandler<DeletePdfDocumentCommand>
@@ -24,6 +25,11 @@
 
         public override async Task HandleAsync(DeletePdfDocumentCommand command)
         {
+            if (command.Target == DeletePdfDocumentTarget.None)
+            {
+                throw new CommandExecutionException(CommandType, "Target cannot be None!");
+            }
+
             var fileSpecificcation = command.Target == DeletePdfDocumentTarget.Receipent
                 ? new CommonSpecification<Payment>(x => x.ReceiptId == command.DocumentId)
                 : new CommonSpecification<Payment>(x => x.CheckId == command.DocumentId);

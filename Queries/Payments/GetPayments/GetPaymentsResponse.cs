@@ -17,5 +17,9 @@ namespace MAS.Payments.Queries
         public string PaymentTypeColor { get; set; }
 
         public long PaymentTypeId { get; set; }
+
+        public bool HasReceipt { get; set; }
+
+        public bool HasCheck { get; set; }
     }
 }

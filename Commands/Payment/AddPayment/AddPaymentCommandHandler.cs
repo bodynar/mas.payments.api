@@ -43,7 +43,7 @@ namespace MAS.Payments.Commands
 
                 await CommandProcessor.Execute(createCommand);
 
-                payment.Receipt = createCommand.PdfDocument;
+                payment.ReceiptId = createCommand.PdfDocument.Id;
             }
 
             if (command.Check?.Length > 0)
@@ -52,7 +52,7 @@ namespace MAS.Payments.Commands
 
                 await CommandProcessor.Execute(createCommand);
 
-                payment.Check = createCommand.PdfDocument;
+                payment.CheckId = createCommand.PdfDocument.Id;
             }
 
             await Repository.Add(payment);

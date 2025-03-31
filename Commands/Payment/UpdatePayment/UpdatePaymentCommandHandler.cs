@@ -1,5 +1,6 @@
 namespace MAS.Payments.Commands
 {
+    using System;
     using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
@@ -24,17 +25,22 @@ namespace MAS.Payments.Commands
 
         public override async Task HandleAsync(UpdatePaymentCommand command)
         {
+            if (command.Id == default)
+            {
+                throw new ArgumentException("Payment id is not set", nameof(command));
+            }
+
             _ =
                 await PaymentTypeRepository.Get(command.PaymentTypeId)
                 ?? throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
 
-            dynamic updatedModel = new
+            var payment = new PaymentModel
             {
-                command.Amount,
-                command.Date,
-                command.Description,
-                command.PaymentTypeId,
+                Amount = command.Amount,
+                Date = command.Date,
+                Description = command.Description,
+                PaymentTypeId = command.PaymentTypeId,
             };
 
             if (command.ReceiptFile?.Length > 0)
@@ -43,7 +49,7 @@ namespace MAS.Payments.Commands
 
                 await CommandProcessor.Execute(createCommand);
 
-                updatedModel.Receipt = createCommand.PdfDocument;
+                payment.ReceiptId = createCommand.PdfDocument.Id;
             }
 
             if (command.CheckFile?.Length > 0)
@@ -52,10 +58,20 @@ namespace MAS.Payments.Commands
 
                 await CommandProcessor.Execute(createCommand);
 
-                updatedModel.Check = createCommand.PdfDocument;
+                payment.CheckId = createCommand.PdfDocument.Id;
             }
 
-            await Repository.Update(command.Id, updatedModel);
+            await Repository.Update(command.Id, payment);
         }
+    }
+
+    internal class PaymentModel
+    {
+        public double Amount { get; set; }
+        public DateTime? Date { get; set; }
+        public string Description { get; set; }
+        public long PaymentTypeId { get; set; }
+        public long? ReceiptId { get; set; }
+        public long? CheckId { get; set; }
     }
 }

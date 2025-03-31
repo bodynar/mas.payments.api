@@ -75,8 +75,8 @@
                         PaymentTypeId = x.PaymentTypeId,
                         Description = x.Description,
 
-                        Receipt = receiptFile,
-                        Check = checkFile,
+                        ReceiptId = receiptFile?.Id,
+                        CheckId = checkFile?.Id,
                     });
 
             await Repository.AddRange(payments);

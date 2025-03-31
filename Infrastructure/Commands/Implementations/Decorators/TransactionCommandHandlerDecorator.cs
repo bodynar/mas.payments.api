@@ -25,11 +25,11 @@ namespace MAS.Payments.Infrastructure.Command
             try
             {
                 await decorated.HandleAsync(command);
+                await dbContext.SaveChangesAsync();
 
                 if (shouldCreateTransaction)
                 {
                     await currentTransaction.CommitAsync();
-                    await dbContext.SaveChangesAsync();
 
                     currentTransaction.Dispose();
                 }

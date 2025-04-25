@@ -92,7 +92,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddPayment([FromForm] AddPaymentRequest request)
+        public async Task AddPayment([FromBody] AddPaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -101,14 +101,13 @@ namespace MAS.Payments.Controllers
             await CommandProcessor.Execute(
                 new AddPaymentCommand(
                     request.PaymentTypeId, request.Amount,
-                    paymentDate, request.Description,
-                    request.ReceiptFile, request.CheckFile
+                    paymentDate, request.Description
                 )
             );
         }
 
         [HttpPost("[action]")]
-        public async Task AddGroup([FromForm] AddPaymentGroupRequest request)
+        public async Task AddGroup([FromBody] AddPaymentGroupRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -124,14 +123,13 @@ namespace MAS.Payments.Controllers
             await CommandProcessor.Execute(
                 new AddPaymentGroupCommand(
                     paymentDate,
-                    payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description)),
-                    request.ReceiptFile, request.CheckFile
+                    payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))
                 )
             );
         }
 
         [HttpPost("[action]")]
-        public async Task UpdatePayment([FromForm] UpdatePaymentRequest request)
+        public async Task UpdatePayment([FromBody] UpdatePaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -140,8 +138,7 @@ namespace MAS.Payments.Controllers
             await CommandProcessor.Execute(
                 new UpdatePaymentCommand(
                     request.Id, request.PaymentTypeId, request.Amount,
-                    paymentDate, request.Description,
-                    request.ReceiptFile, request.CheckFile
+                    paymentDate, request.Description
                 )
             );
         }
@@ -153,6 +150,20 @@ namespace MAS.Payments.Controllers
 
             await CommandProcessor.Execute(
                 new DeletePaymentCommand(request.Id)
+            );
+        }
+
+        [HttpPost("[action]")]
+        public async Task Attach([FromForm] AttachFileApiModel request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            await CommandProcessor.Execute(
+                new AttachFileCommand(
+                    request.File,
+                    request.PaymentId,
+                    request.FieldName
+                )
             );
         }
 

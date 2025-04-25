@@ -11,9 +11,7 @@ namespace MAS.Payments.Commands
         long paymentTypeId,
         double amount,
         DateTime? date,
-        string description,
-        IFormFile receiptFile,
-        IFormFile check
+        string description
     ) : ICommand
     {
         public long Id { get; } = id;
@@ -25,9 +23,5 @@ namespace MAS.Payments.Commands
         public string Description { get; } = description;
 
         public long PaymentTypeId { get; } = paymentTypeId;
-
-        public IFormFile ReceiptFile { get; } = receiptFile;
-
-        public IFormFile CheckFile { get; } = check;
     }
 }

@@ -10,8 +10,8 @@ namespace MAS.Payments.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [ApiController]
-    [Produces("application/json", "multipart/form-data")]
-    [Consumes("application/json", "multipart/form-data")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     public abstract class BaseApiController(
         IResolver resolver
     ) : ControllerBase

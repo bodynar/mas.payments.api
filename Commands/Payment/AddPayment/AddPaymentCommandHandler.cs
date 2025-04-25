@@ -37,24 +37,6 @@ namespace MAS.Payments.Commands
                 PaymentTypeId = command.PaymentTypeId,
             };
 
-            if (command.ReceiptFile?.Length > 0)
-            {
-                var createCommand = new CreatePdfDocumentCommand(command.ReceiptFile);
-
-                await CommandProcessor.Execute(createCommand);
-
-                payment.ReceiptId = createCommand.PdfDocument.Id;
-            }
-
-            if (command.Check?.Length > 0)
-            {
-                var createCommand = new CreatePdfDocumentCommand(command.Check);
-
-                await CommandProcessor.Execute(createCommand);
-
-                payment.CheckId = createCommand.PdfDocument.Id;
-            }
-
             await Repository.Add(payment);
         }
     }

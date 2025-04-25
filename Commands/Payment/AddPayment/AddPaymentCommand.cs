@@ -3,15 +3,12 @@ namespace MAS.Payments.Commands
     using System;
 
     using MAS.Payments.Infrastructure.Command;
-    using Microsoft.AspNetCore.Http;
 
     public class AddPaymentCommand(
         long paymentTypeId,
         double amount,
         DateTime? date,
-        string description,
-        IFormFile receiptFile,
-        IFormFile check
+        string description
     ) : ICommand
     {
         public double Amount { get; } = amount;
@@ -21,9 +18,5 @@ namespace MAS.Payments.Commands
         public string Description { get; } = description;
 
         public long PaymentTypeId { get; } = paymentTypeId;
-
-        public IFormFile ReceiptFile { get; } = receiptFile;
-
-        public IFormFile Check { get; } = check;
     }
 }

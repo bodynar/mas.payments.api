@@ -9,10 +9,6 @@
         public int Month { get; set; }
 
         public string Payments { get; set; }
-
-        public IFormFile ReceiptFile { get; set; }
-
-        public IFormFile CheckFile { get; set; }
     }
 
     public class PaymentGroupRequestModel

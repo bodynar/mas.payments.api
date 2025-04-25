@@ -13,9 +13,5 @@ namespace MAS.Payments.Models
         public string Description { get; set; }
 
         public long PaymentTypeId { get; set; }
-
-        public IFormFile ReceiptFile { get; set; }
-
-        public IFormFile CheckFile { get; set; }
     }
 }

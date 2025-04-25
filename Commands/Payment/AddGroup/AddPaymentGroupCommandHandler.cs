@@ -44,28 +44,6 @@
                 throw new CommandExecutionException(CommandType, $"Payment types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
-            PdfDocument receiptFile = null;
-
-            if (command.ReceiptFile?.Length > 0)
-            {
-                var createCommand = new CreatePdfDocumentCommand(command.ReceiptFile);
-
-                await CommandProcessor.Execute(createCommand);
-
-                receiptFile = createCommand.PdfDocument;
-            }
-
-            PdfDocument checkFile = null;
-
-            if (command.Check?.Length > 0)
-            {
-                var createCommand = new CreatePdfDocumentCommand(command.Check);
-
-                await CommandProcessor.Execute(createCommand);
-
-                checkFile = createCommand.PdfDocument;
-            }
-
             var payments =
                 command.Payments
                     .Select(x => new Payment
@@ -74,9 +52,6 @@
                         Amount = x.Amount,
                         PaymentTypeId = x.PaymentTypeId,
                         Description = x.Description,
-
-                        ReceiptId = receiptFile?.Id,
-                        CheckId = checkFile?.Id,
                     });
 
             await Repository.AddRange(payments);

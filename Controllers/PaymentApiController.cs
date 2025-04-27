@@ -71,17 +71,6 @@ namespace MAS.Payments.Controllers
         #region Payment
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentResponse> GetPayment(long? id)
-        {
-            if (!id.HasValue || id.Value == default)
-            {
-                throw new ArgumentNullException(nameof(id));
-            }
-
-            return await QueryProcessor.Execute(new GetPaymentQuery(id.Value));
-        }
-
-        [HttpGet("[action]")]
         public async Task<IEnumerable<GetPaymentsResponse>> GetPayments([FromQuery] GetPaymentsRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);

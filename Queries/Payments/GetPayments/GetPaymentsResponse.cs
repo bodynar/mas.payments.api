@@ -18,8 +18,8 @@ namespace MAS.Payments.Queries
 
         public long PaymentTypeId { get; set; }
 
-        public bool HasReceipt { get; set; }
+        public string ReceiptFileName { get; set; }
 
-        public bool HasCheck { get; set; }
+        public string CheckFileName { get; set; }
     }
 }

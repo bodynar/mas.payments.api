@@ -72,8 +72,8 @@ namespace MAS.Payments.Queries
                         PaymentTypeName = x.PaymentType.Name,
                         PaymentTypeColor = x.PaymentType.Color,
                         PaymentTypeId = x.PaymentTypeId,
-                        HasReceipt = x.ReceiptId != default,
-                        HasCheck = x.CheckId != default,
+                        ReceiptFileName = x.ReceiptId != default ? x.Receipt.Name : null,
+                        CheckFileName = x.CheckId != default ? x.Check.Name : null,
                     })
                 .ToListAsync();
         }

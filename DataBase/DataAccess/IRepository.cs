@@ -1,5 +1,6 @@
 namespace MAS.Payments.DataBase.Access
 {
+    using System;
     using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace MAS.Payments.DataBase.Access
     public interface IRepository<TEntity>
         where TEntity : Entity
     {
-        Task Add(TEntity entity);
+        Task<Func<long>> Add(TEntity entity);
 
         Task AddRange(IEnumerable<TEntity> entities);
 

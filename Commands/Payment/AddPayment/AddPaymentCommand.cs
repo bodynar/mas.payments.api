@@ -18,5 +18,7 @@ namespace MAS.Payments.Commands
         public string Description { get; } = description;
 
         public long PaymentTypeId { get; } = paymentTypeId;
+
+        public Func<long> CreatedPaymentIdProvider { get; set; }
     }
 }

@@ -2,7 +2,6 @@ namespace MAS.Payments.Controllers
 {
     using System;
     using System.Collections.Generic;
-    using System.Linq;
     using System.Threading.Tasks;
 
     using MAS.Payments.Commands;
@@ -12,9 +11,9 @@ namespace MAS.Payments.Controllers
 
     using Microsoft.AspNetCore.Mvc;
 
-    using Newtonsoft.Json;
-
     [Route("api/payment")]
+    [Produces("application/json", "multipart/form-data")]
+    [Consumes("application/json", "multipart/form-data")]
     public class PaymentApiController(
         IResolver resolver
     ) : BaseApiController(resolver)
@@ -81,41 +80,44 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddPayment([FromBody] AddPaymentRequest request)
+        public async Task<long> AddPayment([FromBody] AddPaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
             var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
-            await CommandProcessor.Execute(
-                new AddPaymentCommand(
-                    request.PaymentTypeId, request.Amount,
-                    paymentDate, request.Description
-                )
+            var createCommand = new AddPaymentCommand(
+                request.PaymentTypeId, request.Amount,
+                paymentDate, request.Description
             );
+
+            await CommandProcessor.Execute(createCommand);
+
+            return createCommand.CreatedPaymentIdProvider();
         }
 
-        [HttpPost("[action]")]
-        public async Task AddGroup([FromBody] AddPaymentGroupRequest request)
-        {
-            ArgumentNullException.ThrowIfNull(request);
+        // TODO: rework later
+        //[HttpPost("[action]")]
+        //public async Task AddGroup([FromBody] AddPaymentGroupRequest request)
+        //{
+        //    ArgumentNullException.ThrowIfNull(request);
 
-            var payments = JsonConvert.DeserializeObject<List<PaymentGroupRequestModel>>(request.Payments);
+        //    var payments = JsonConvert.DeserializeObject<List<PaymentGroupRequestModel>>(request.Payments);
 
-            if (payments?.Count == 0)
-            {
-                return;
-            }
+        //    if (payments?.Count == 0)
+        //    {
+        //        return;
+        //    }
 
-            var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
+        //    var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
-            await CommandProcessor.Execute(
-                new AddPaymentGroupCommand(
-                    paymentDate,
-                    payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))
-                )
-            );
-        }
+        //    await CommandProcessor.Execute(
+        //        new AddPaymentGroupCommand(
+        //            paymentDate,
+        //            payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))
+        //        )
+        //    );
+        //}
 
         [HttpPost("[action]")]
         public async Task UpdatePayment([FromBody] UpdatePaymentRequest request)
@@ -143,7 +145,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task Attach([FromForm] AttachFileApiModel request)
+        public async Task<bool> Attach([FromForm] AttachFileApiModel request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
@@ -154,6 +156,8 @@ namespace MAS.Payments.Controllers
                     request.FieldName
                 )
             );
+
+            return true;
         }
 
         [HttpPost("[action]")]

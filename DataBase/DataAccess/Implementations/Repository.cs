@@ -18,8 +18,12 @@ namespace MAS.Payments.DataBase.Access
     {
         private DataBaseContext DataBaseContext { get; } = dataBaseContext;
 
-        public async Task Add(TEntity entity)
-            => await DataBaseContext.Set<TEntity>().AddAsync(entity);
+        public async Task<Func<long>> Add(TEntity entity)
+        {
+            var entityResult = await DataBaseContext.Set<TEntity>().AddAsync(entity);
+
+            return () => entityResult.Entity.Id;
+        }
 
         public async Task AddRange(IEnumerable<TEntity> entities)
             => await DataBaseContext.Set<TEntity>().AddRangeAsync(entities);

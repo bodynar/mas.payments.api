@@ -37,7 +37,9 @@ namespace MAS.Payments.Commands
                 PaymentTypeId = command.PaymentTypeId,
             };
 
-            await Repository.Add(payment);
+            var idFn = await Repository.Add(payment);
+
+            command.CreatedPaymentIdProvider = idFn;
         }
     }
 }

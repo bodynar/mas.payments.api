@@ -1,7 +1,7 @@
 ﻿namespace MAS.Payments.Commands
 {
     using System;
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -10,6 +10,8 @@
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
     using MAS.Payments.Queries.Measurements;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class UpdateMeterMeasurementCommandHandler : BaseCommandHandler<UpdateMeterMeasurementCommand>
     {
@@ -25,11 +27,11 @@
             MeterMeasurementTypeRepository = GetRepository<MeterMeasurementType>();
         }
 
-        public override void Handle(UpdateMeterMeasurementCommand command)
+        public override async Task HandleAsync(UpdateMeterMeasurementCommand command)
         {
-            var measurement = Repository.Get(command.Id);
+            var measurement = await Repository.Get(command.Id);
 
-            Validate(measurement, command);
+            await ValidateAsync(measurement, command);
 
             var isMeasurementChanged = measurement.Measurement != command.Measurement;
             var isMonthChanged = !measurement.Date.Date.Equals(command.Date);
@@ -40,10 +42,10 @@
             if (isMonthChanged)
             {
                 var itemWithSameType =
-                    Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
+                    await Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                         x.MeterMeasurementTypeId == command.MeterMeasurementTypeId
                         && x.Date.Date == command.Date))
-                    .FirstOrDefault();
+                    .FirstOrDefaultAsync();
 
                 if (itemWithSameType != null)
                 {
@@ -51,7 +53,7 @@
                 }
             }
 
-            Repository.Update(command.Id, new
+            await Repository.Update(command.Id, new
             {
                 command.Comment,
                 command.Date,
@@ -63,11 +65,11 @@
             {
                 var previousNextMonthDate = oldMonthDate.AddMonths(1);
                 var previousNextMonthItem =
-                    Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
+                    await Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                         x.Date.Date.Year == previousNextMonthDate.Year
                         && x.Date.Date.Month == previousNextMonthDate.Month
                         && x.MeterMeasurementTypeId == oldTypeId))
-                        .FirstOrDefault();
+                        .FirstOrDefaultAsync();
 
                 if (previousNextMonthItem != null)
                 {
@@ -79,11 +81,12 @@
             {
                 var nextMeasurementDate = command.Date.AddMonths(1);
                 var nextMeasurementItem =
-                    Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
+                    await Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                         x.Date.Date.Year == nextMeasurementDate.Year
                         && x.Date.Date.Month == nextMeasurementDate.Month
-                        && x.MeterMeasurementTypeId == command.MeterMeasurementTypeId))
-                        .FirstOrDefault();
+                        && x.MeterMeasurementTypeId == command.MeterMeasurementTypeId)
+                    )
+                        .FirstOrDefaultAsync();
 
                 if (nextMeasurementItem != null)
                 {
@@ -92,7 +95,7 @@
             }
         }
 
-        private void Validate(MeterMeasurement measurement, UpdateMeterMeasurementCommand command)
+        private async Task ValidateAsync(MeterMeasurement measurement, UpdateMeterMeasurementCommand command)
         {
             if (measurement == null)
             {
@@ -109,11 +112,11 @@
                 ?? throw new EntityNotFoundException(typeof(MeterMeasurementType), command.MeterMeasurementTypeId);
 
             var measurementOnSpecifiedMonth =
-                Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
+                await Repository.Where(new CommonSpecification<MeterMeasurement>(x =>
                     x.Date.Date == command.Date
                     && x.MeterMeasurementTypeId == command.MeterMeasurementTypeId
                     && x.Id != command.Id))
-                .FirstOrDefault();
+                .FirstOrDefaultAsync();
 
             if (measurementOnSpecifiedMonth != null)
             {
@@ -121,15 +124,15 @@
             }
 
             var previousTypeValue =
-                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Previous));
+                    await QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Previous));
 
             if (previousTypeValue != null && command.Measurement < previousTypeValue.Measurement)
             {
                 throw new ArgumentException($"Measurement value \"{command.Measurement}\" must be greater than previous \"{previousTypeValue.Measurement}\".");
             }
 
-             var closestNextMeasurement =
-                    QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
+            var closestNextMeasurement =
+                  await QueryProcessor.Execute(new GetSiblingMeasurementQuery(command.MeterMeasurementTypeId, command.Date, GetSiblingMeasurementDirection.Next));
 
             if (closestNextMeasurement != null && command.Measurement >= closestNextMeasurement.Measurement)
             {

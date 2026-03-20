@@ -35,8 +35,7 @@
             var serializedException = JsonConvert.SerializeObject(new
             {
                 Success = false,
-                exception.Message,
-                Stack = exception.StackTrace,
+                Message = "An internal server error has occurred.",
             });
 
             return context.Response.WriteAsync(serializedException);

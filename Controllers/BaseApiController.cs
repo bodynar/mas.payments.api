@@ -18,23 +18,23 @@ namespace MAS.Payments.Controllers
     {
         #region Private fields
 
-        private readonly Lazy<ICommandProcessor> commandProcessor = new(resolver.Resolve<ICommandProcessor>());
+        private ICommandProcessor commandProcessor;
 
-        private readonly Lazy<IQueryProcessor> queryProcessor = new(resolver.Resolve<IQueryProcessor>());
+        private IQueryProcessor queryProcessor;
 
-        private readonly Lazy<INotificationProcessor> notificationProcessor = new(resolver.Resolve<INotificationProcessor>());
+        private INotificationProcessor notificationProcessor;
 
         #endregion
 
         protected IResolver Resolver { get; } = resolver ?? throw new ArgumentNullException(nameof(resolver));
 
         protected ICommandProcessor CommandProcessor
-            => commandProcessor.Value;
+            => commandProcessor ??= resolver.Resolve<ICommandProcessor>();
 
         protected IQueryProcessor QueryProcessor
-            => queryProcessor.Value;
+            => queryProcessor ??= resolver.Resolve<IQueryProcessor>();
 
         protected INotificationProcessor NotificationProcessor
-            => notificationProcessor.Value;
+            => notificationProcessor ??= resolver.Resolve<INotificationProcessor>();
     }
 }

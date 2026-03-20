@@ -1,8 +1,10 @@
 namespace MAS.Payments.Infrastructure.Query
 {
-    internal interface IQueryHandler<TQuery, out TResult>
+    using System.Threading.Tasks;
+
+    internal interface IQueryHandler<TQuery, TResult>
         where TQuery : IQuery<TResult>
     {
-        TResult Handle(TQuery query);
+        Task<TResult> HandleAsync(TQuery query);
     }
 }

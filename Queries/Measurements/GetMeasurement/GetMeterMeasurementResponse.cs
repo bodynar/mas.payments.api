@@ -6,6 +6,8 @@ namespace MAS.Payments.Queries
 
         public double Measurement { get; set; }
 
+        public double? Diff { get; set; }
+
         public string Comment { get; set; }
 
         public int DateYear { get; set; }

@@ -1,6 +1,7 @@
 namespace MAS.Payments.Infrastructure.Query
 {
     using System;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -13,11 +14,11 @@ namespace MAS.Payments.Infrastructure.Query
     {
         #region Private fields
 
-        private Lazy<IQueryProcessor> queryProcessor
-            => new(Resolver.Resolve<IQueryProcessor>);
+        private readonly Lazy<IQueryProcessor> queryProcessor
+            = new(resolver.Resolve<IQueryProcessor>);
 
-        private Lazy<ICommandProcessor> commandProcessor
-            => new(Resolver.Resolve<ICommandProcessor>);
+        private readonly Lazy<ICommandProcessor> commandProcessor
+            = new(resolver.Resolve<ICommandProcessor>);
 
         #endregion
 
@@ -29,7 +30,7 @@ namespace MAS.Payments.Infrastructure.Query
         protected ICommandProcessor CommandProcessor
             => commandProcessor.Value;
 
-        public abstract TResult Handle(TQuery query);
+        public abstract Task<TResult> HandleAsync(TQuery query);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity : Entity

@@ -2,11 +2,14 @@
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetUserSettingsQueryHandler : BaseQueryHandler<GetUserSettingsQuery, IReadOnlyCollection<GetUserSettingsQueryResult>>
     {
@@ -19,9 +22,9 @@
             Repository = GetRepository<UserSettings>();
         }
 
-        public override IReadOnlyCollection<GetUserSettingsQueryResult> Handle(GetUserSettingsQuery query)
+        public override async Task<IReadOnlyCollection<GetUserSettingsQueryResult>> HandleAsync(GetUserSettingsQuery query)
         {
-            return Repository
+            return await Repository
                 .GetAll()
                 .Select(x => new GetUserSettingsQueryResult
                 {
@@ -31,7 +34,7 @@
                     TypeName = x.TypeName,
                     RawValue = x.RawValue,
                 })
-                .ToList();
+                .ToListAsync();
         }
     }
 }

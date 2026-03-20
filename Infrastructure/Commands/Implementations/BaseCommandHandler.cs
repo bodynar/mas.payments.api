@@ -1,6 +1,7 @@
 namespace MAS.Payments.Infrastructure.Command
 {
     using System;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -13,23 +14,21 @@ namespace MAS.Payments.Infrastructure.Command
     {
         #region Private fields
 
-        private Lazy<IQueryProcessor> queryProcessor
-            => new(resolver.Resolve<IQueryProcessor>);
+        private IQueryProcessor queryProcessor;
 
-        private Lazy<ICommandProcessor> commandProcessor
-            => new(resolver.Resolve<ICommandProcessor>);
+        private ICommandProcessor commandProcessor;
 
         #endregion
 
         protected IQueryProcessor QueryProcessor
-            => queryProcessor.Value;
+            => queryProcessor ??= resolver.Resolve<IQueryProcessor>();
 
         protected ICommandProcessor CommandProcessor
-            => commandProcessor.Value;
+            => commandProcessor ??= resolver.Resolve<ICommandProcessor>();
 
         protected Type CommandType { get; } = typeof(TCommand);
 
-        public abstract void Handle(TCommand command);
+        public abstract Task HandleAsync(TCommand command);
 
         protected IRepository<TEntity> GetRepository<TEntity>()
             where TEntity : Entity

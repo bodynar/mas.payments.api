@@ -2,11 +2,14 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetPaymentTypesQueryHandler : BaseQueryHandler<GetPaymentTypesQuery, IEnumerable<GetPaymentTypesResponse>>
     {
@@ -19,9 +22,9 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<PaymentType>();
         }
 
-        public override IEnumerable<GetPaymentTypesResponse> Handle(GetPaymentTypesQuery query)
+        public override async Task<IEnumerable<GetPaymentTypesResponse>> HandleAsync(GetPaymentTypesQuery query)
         {
-            return Repository
+            return await Repository
                    .GetAll()
                    .Select(x => new GetPaymentTypesResponse
                    {
@@ -34,7 +37,7 @@ namespace MAS.Payments.Queries
                        HasRelatedPayments = x.Payments.Any(),
                        HasRelatedMeasurementTypes = x.MeasurementTypes.Any(),
                    })
-                   .ToList();
+                   .ToListAsync();
         }
     }
 }

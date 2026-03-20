@@ -2,12 +2,15 @@ namespace MAS.Payments.Queries
 {
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetPaymentsQueryHandler : BaseQueryHandler<GetPaymentsQuery, IEnumerable<GetPaymentsResponse>>
     {
@@ -20,7 +23,7 @@ namespace MAS.Payments.Queries
             Repository = GetRepository<Payment>();
         }
 
-        public override IEnumerable<GetPaymentsResponse> Handle(GetPaymentsQuery query)
+        public override async Task<IEnumerable<GetPaymentsResponse>> HandleAsync(GetPaymentsQuery query)
         {
             Specification<Payment> filter = new CommonSpecification<Payment>(x => true);
 
@@ -49,13 +52,14 @@ namespace MAS.Payments.Queries
                 {
                     filter = filter && new CommonSpecification<Payment>(x => x.Amount >= query.MinAmount.Value);
                 }
+
                 if (query.MaxAmount.HasValue)
                 {
                     filter = filter && new CommonSpecification<Payment>(x => x.Amount <= query.MaxAmount.Value);
                 }
             }
 
-            return Repository
+            return await Repository
                 .Where(filter)
                 .Select(x =>
                     new GetPaymentsResponse
@@ -68,7 +72,8 @@ namespace MAS.Payments.Queries
                         PaymentTypeName = x.PaymentType.Name,
                         PaymentTypeColor = x.PaymentType.Color,
                         PaymentTypeId = x.PaymentTypeId,
-                    });
+                    })
+                .ToListAsync();
         }
     }
 }

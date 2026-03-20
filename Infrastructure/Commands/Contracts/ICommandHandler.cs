@@ -1,8 +1,10 @@
 namespace MAS.Payments.Infrastructure.Command
 {
-    internal interface ICommandHandler<TCommand>
+    using System.Threading.Tasks;
+
+    internal interface ICommandHandler<in TCommand>
         where TCommand : ICommand
     {
-        void Handle(TCommand command);
+        Task HandleAsync(TCommand command);
     }
 }

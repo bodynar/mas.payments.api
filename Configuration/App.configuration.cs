@@ -4,6 +4,7 @@ namespace MAS.Payments.Configuration
     using MAS.Payments.Infrastructure.Middleware;
 
     using Microsoft.AspNetCore.Builder;
+    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.DependencyInjection;
 
     using SimpleInjector;
@@ -30,21 +31,17 @@ namespace MAS.Payments.Configuration
                     routes.MapRoute(
                         name: "default",
                         template: "api/{controller}/{action}/{id?}");
-                })
-                .UseSpaStaticFiles();
-
-            app.UseSpa(spa => {
-                spa.Options.SourcePath = "ClientApp";
-            });
+                });
 
             container
                 .Configure()
                 .Verify();
 
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            if (isDevelopment)
             {
+                using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
                 var context = serviceScope.ServiceProvider.GetRequiredService<DataBaseContext>();
-                context.Database.EnsureCreated();
+                context.Database.Migrate();
             }
         }
     }

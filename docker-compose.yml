@@ -1,26 +1,38 @@
-version: '3.8'
-
 services:
+  frontend:
+    build:
+      context: ${FRONTEND_PATH:-../../frontend/MAS.Payments.Client}
+    ports:
+      - "${FRONTEND_PORT:-5050}:80"
+    depends_on:
+      - mas-payments
+
   mas-payments:
     build: .
-    ports:
-      - "5002:80"
+    expose:
+      - "${BACKEND_PORT:-80}"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     environment:
-      - ConnectionStrings__DefaultConnection=Server=db;Port=5432;Pooling=true; Database=prt; Username=devw; Password=123; Timeout=5;
+      - ConnectionStrings__DefaultConnection=${CONNECTION_STRING:-Host=db;Port=5432;Pooling=true;Database=prt;Username=devw;Password=123;Timeout=5;}
 
   db:
-    image: postgres:15
+    image: ${POSTGRES_IMAGE:-postgres:15}
     restart: always
     environment:
-      POSTGRES_DB: prt
-      POSTGRES_USER: devw
-      POSTGRES_PASSWORD: 123
+      POSTGRES_DB: ${POSTGRES_DB:-prt}
+      POSTGRES_USER: ${POSTGRES_USER:-devw}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-123}
     ports:
-      - "5401:5432"
+      - "${POSTGRES_PORT:-5401}:5432"
     volumes:
       - p_payments:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-devw} -d ${POSTGRES_DB:-prt}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
 volumes:
   p_payments:

@@ -3,6 +3,7 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
@@ -24,7 +25,7 @@
             MeasurementRepository = GetRepository<MeterMeasurement>();
         }
 
-        public override GetMeasurementStatisticsQueryResponse Handle(GetMeasurementStatisticsQuery query)
+        public override Task<GetMeasurementStatisticsQueryResponse> HandleAsync(GetMeasurementStatisticsQuery query)
         {
             if (query.From.HasValue && query.To.HasValue && query.From.Value >= query.To.Value)
             {
@@ -51,9 +52,10 @@
             }
 
             var measurements =
-                MeasurementRepository.Where(filter)
-                .AsEnumerable()
-                .GroupBy(x => x.MeterMeasurementTypeId);
+                MeasurementRepository
+                    .Where(filter)
+                    .AsEnumerable()
+                    .GroupBy(x => x.MeterMeasurementTypeId);
 
             var response = new GetMeasurementStatisticsQueryResponse()
             {
@@ -141,7 +143,7 @@
                 response.TypeStatistics.Add(typeStatisticsItem);
             }
 
-            return response;
+            return Task.FromResult(response);
         }
     }
 }

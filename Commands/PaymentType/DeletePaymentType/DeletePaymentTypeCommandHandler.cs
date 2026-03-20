@@ -1,5 +1,7 @@
 namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -16,9 +18,9 @@ namespace MAS.Payments.Commands
             Repository = GetRepository<PaymentType>();
         }
 
-        public override void Handle(DeletePaymentTypeCommand command)
+        public override async Task HandleAsync(DeletePaymentTypeCommand command)
         {
-            Repository.Delete(command.PaymentTypeId);
+            await Repository.Delete(command.PaymentTypeId);
         }
     }
 }

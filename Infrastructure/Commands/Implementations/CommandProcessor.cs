@@ -1,24 +1,23 @@
 namespace MAS.Payments.Infrastructure.Command
 {
     using System;
+    using System.Threading.Tasks;
 
     public class CommandProcessor(
         IResolver resolver
     ) : ICommandProcessor
     {
-        public void Execute<TCommand>(TCommand command)
+        public async Task Execute<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
+            ArgumentNullException.ThrowIfNull(command);
 
-            var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
+            var commandType = command.GetType();
+            var handlerType = typeof(ICommandHandler<>).MakeGenericType(commandType);
 
             dynamic handler = resolver.GetInstance(handlerType);
 
-            handler.Handle((dynamic)command);
+            await handler.HandleAsync((dynamic)command);
         }
     }
 }

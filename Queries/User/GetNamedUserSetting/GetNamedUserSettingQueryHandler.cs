@@ -1,12 +1,14 @@
 ﻿namespace MAS.Payments.Queries
 {
-    using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
+
+    using Microsoft.EntityFrameworkCore;
 
     internal class GetNamedUserSettingQueryHandler : BaseQueryHandler<GetNamedUserSettingQuery, UserSettings>
     {
@@ -19,9 +21,9 @@
             Repository = GetRepository<UserSettings>();
         }
 
-        public override UserSettings Handle(GetNamedUserSettingQuery query)
+        public override async Task<UserSettings> HandleAsync(GetNamedUserSettingQuery query)
         {
-            return Repository.Where(new CommonSpecification<UserSettings>(userSetting => userSetting.Name == query.SettingName)).FirstOrDefault();
+            return await Repository.Where(new CommonSpecification<UserSettings>(userSetting => userSetting.Name == query.SettingName)).FirstOrDefaultAsync();
         }
     }
 }

@@ -1,5 +1,7 @@
 namespace MAS.Payments.Commands
 {
+    using System.Threading.Tasks;
+
     using MAS.Payments.DataBase;
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
@@ -20,14 +22,14 @@ namespace MAS.Payments.Commands
             PaymentTypeRepository = GetRepository<PaymentType>();
         }
 
-        public override void Handle(UpdatePaymentCommand command)
+        public override async Task HandleAsync(UpdatePaymentCommand command)
         {
-            var paymentType =
-                PaymentTypeRepository.Get(command.PaymentTypeId)
+            _ =
+                await PaymentTypeRepository.Get(command.PaymentTypeId)
                 ?? throw new CommandExecutionException(CommandType,
                     $"Payment type with id {command.PaymentTypeId} doesn't exist");
 
-            Repository.Update(command.Id, new
+            await Repository.Update(command.Id, new
             {
                 command.Amount,
                 command.Date,

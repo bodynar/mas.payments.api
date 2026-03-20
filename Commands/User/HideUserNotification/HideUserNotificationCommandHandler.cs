@@ -38,7 +38,7 @@
             foreach (var userNotification in notificationsToHide)
             {
                 userNotification.IsHidden = true;
-                userNotification.HiddenAt = DateTime.Now;
+                userNotification.HiddenAt = DateTime.UtcNow;
 
                 await Repository.Update(userNotification.Id, userNotification);
             }

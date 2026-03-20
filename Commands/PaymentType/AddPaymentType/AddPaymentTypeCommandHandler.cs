@@ -23,11 +23,11 @@ namespace MAS.Payments.Commands
 
         public override async Task HandleAsync(AddPaymentTypeCommand command)
         {
-            var isUnique =
+            var alreadyExists =
                 await Repository.GetAll().Any(
                     new CommonSpecification<PaymentType>(x => x.Name == command.Name && x.Company == command.Company));
 
-            if (isUnique)
+            if (alreadyExists)
             {
                 throw new CommandExecutionException(CommandType,
                     $"Payment type with name {command.Name} from {command.Company} is already exist");

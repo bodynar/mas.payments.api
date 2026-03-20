@@ -29,15 +29,33 @@ namespace MAS.Payments.Queries.Measurements
                 : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
 
             var measurementItems = await Repository.Where(specification).ToListAsync();
+
+            if (measurementItems.Count == 0)
+            {
+                return [];
+            }
+
+            var previousMonthDates = measurementItems
+                .Select(m => m.Date.AddMonths(-1))
+                .ToList();
+
+            var allPreviousMeasurements = await Repository
+                .Where(new CommonSpecification<MeterMeasurement>(x => true))
+                .ToListAsync();
+
+            var previousLookup = allPreviousMeasurements
+                .ToLookup(x => (x.MeterMeasurementTypeId, x.Date.Year, x.Date.Month));
+
             var warnings = new List<string>();
 
             foreach (var measurementItem in measurementItems)
             {
-                var previousItem = await QueryProcessor.Execute(
-                    new GetSiblingMeasurementQuery(
-                        measurementItem.MeterMeasurementTypeId, measurementItem.Date, GetSiblingMeasurementDirection.Previous
-                    )
-                );
+                var prevDate = measurementItem.Date.AddMonths(-1);
+                var key = (measurementItem.MeterMeasurementTypeId, prevDate.Year, prevDate.Month);
+
+                var previousItem = previousLookup[key]
+                    .OrderByDescending(x => x.Date)
+                    .FirstOrDefault();
 
                 if (previousItem != null)
                 {

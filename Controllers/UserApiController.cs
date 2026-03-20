@@ -31,9 +31,7 @@ namespace MAS.Payments.Controllers
 
             if (userNotifications.Any())
             {
-                await Task.Run(
-                    () => CommandProcessor.Execute(new AddUserNotificationCommand(userNotifications))
-                ).ConfigureAwait(true);
+                await CommandProcessor.Execute(new AddUserNotificationCommand(userNotifications));
             }
 
             return

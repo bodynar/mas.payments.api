@@ -53,7 +53,7 @@ namespace MAS.Payments.Queries
                 filter &= new CommonSpecification<Payment>(x => x.Date <= date.Date);
             }
 
-            var payments = await
+            var paymentItems = await
                 PaymentRepository
                     .Where(filter)
                     .OrderBy(x => x.Date)
@@ -64,8 +64,11 @@ namespace MAS.Payments.Queries
                         x.PaymentTypeId,
                         PaymentTypeName = x.PaymentType.Name
                     })
-                    .GroupBy(x => x.PaymentTypeId)
                     .ToListAsync();
+
+            var payments = paymentItems
+                    .GroupBy(x => x.PaymentTypeId)
+                    .ToList();
 
             var response = new GetPaymentStatisticsResponse
             {

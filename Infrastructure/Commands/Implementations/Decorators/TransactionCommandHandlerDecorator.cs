@@ -13,7 +13,7 @@ namespace MAS.Payments.Infrastructure.Command
     {
         public override async Task HandleAsync(TCommand command)
         {
-            using (var scope = await dbContext.Database.BeginTransactionAsync())
+            await using (var scope = await dbContext.Database.BeginTransactionAsync())
             {
                 await decorated.HandleAsync(command);
 

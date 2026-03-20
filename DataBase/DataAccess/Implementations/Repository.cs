@@ -26,12 +26,8 @@ namespace MAS.Payments.DataBase.Access
 
         public async Task Delete(long id)
         {
-            var entity = await Get(id);
-
-            if (entity == default)
-            {
-                return;
-            }
+            var entity = await Get(id)
+                ?? throw new EntityNotFoundException(typeof(TEntity), id);
 
             DataBaseContext.Remove(entity);
         }

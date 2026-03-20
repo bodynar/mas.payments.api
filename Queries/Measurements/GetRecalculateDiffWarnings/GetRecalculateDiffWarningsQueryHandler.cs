@@ -10,6 +10,8 @@ namespace MAS.Payments.Queries.Measurements
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
 
+    using Microsoft.EntityFrameworkCore;
+
     internal class GetRecalculateDiffWarningsQueryHandler : BaseQueryHandler<GetRecalculateDiffWarningsQuery, IEnumerable<string>>
     {
         private IRepository<MeterMeasurement> Repository { get; }
@@ -26,7 +28,7 @@ namespace MAS.Payments.Queries.Measurements
                 ? new CommonSpecification<MeterMeasurement>(x => true)
                 : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
 
-            var measurementItems = Repository.Where(specification).ToList();
+            var measurementItems = await Repository.Where(specification).ToListAsync();
             var warnings = new List<string>();
 
             foreach (var measurementItem in measurementItems)

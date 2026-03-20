@@ -17,8 +17,8 @@ namespace MAS.Payments.Infrastructure.Command
             {
                 await decorated.HandleAsync(command);
 
-                await scope.CommitAsync();
                 await dbContext.SaveChangesAsync();
+                await scope.CommitAsync();
             }
         }
     }

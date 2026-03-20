@@ -3,6 +3,7 @@ namespace MAS.Payments.Notifications
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
     using MAS.Payments.Infrastructure;
@@ -14,18 +15,21 @@ namespace MAS.Payments.Notifications
         private static Lazy<IEnumerable<Type>> NotificatorsTypesMap
             => new(FillNotificatorsTypesMap);
 
-        public IEnumerable<UserNotification> GetNotifications()
+        public async Task<IEnumerable<UserNotification>> GetNotificationsAsync()
         {
             var notifications = new List<UserNotification>();
 
             foreach (var notificatorType in NotificatorsTypesMap.Value)
             {
-                dynamic notificator = resolver.GetInstance(notificatorType);
+                var notificator = (INotificator)resolver.GetInstance(notificatorType);
 
-                notifications.AddRange(notificator.GetNotifications());
+                await foreach (var notification in notificator.GetNotificationsAsync())
+                {
+                    notifications.Add(notification);
+                }
             }
 
-            notifications.ForEach(x => x.CreatedAt = DateTime.Now);
+            notifications.ForEach(x => x.CreatedAt = DateTime.UtcNow);
 
             return notifications;
         }

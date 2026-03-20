@@ -11,11 +11,15 @@ namespace MAS.Payments.Infrastructure.Query
         {
             ArgumentNullException.ThrowIfNull(query);
 
-            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(query.GetType(), typeof(TResult));
+            var queryType = query.GetType();
+            var handlerType = typeof(IQueryHandler<,>).MakeGenericType(queryType, typeof(TResult));
 
-            dynamic handler = resolver.GetInstance(handlerType);
+            var handler = resolver.GetInstance(handlerType);
 
-            return await handler.HandleAsync((dynamic)query);
+            var method = handlerType.GetMethod(nameof(IQueryHandler<IQuery<TResult>, TResult>.HandleAsync))
+                ?? throw new InvalidOperationException($"HandleAsync method not found on {handlerType}");
+
+            return await (Task<TResult>)method.Invoke(handler, [query]);
         }
     }
 }

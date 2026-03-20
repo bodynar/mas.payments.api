@@ -15,7 +15,7 @@ namespace MAS.Payments.Notifications
     {
         public override async IAsyncEnumerable<UserNotification> GetNotificationsAsync()
         {
-            var today = DateTime.Today;
+            var today = DateTime.UtcNow.Date;
 
             var displayNotificationSetting = await QueryProcessor.Execute(new GetNamedUserSettingQuery(DefaultUserSettings.DisplayMeasurementsNotification.ToString()));
             var displayNotificationSettingValue = UserSettingUtilities.GetTypedSettingValue<bool>(displayNotificationSetting);

@@ -9,6 +9,7 @@ namespace MAS.Payments.Controllers
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Models;
     using MAS.Payments.Queries;
+    using MAS.Payments.Queries.Measurements;
 
     using Microsoft.AspNetCore.Mvc;
 
@@ -143,11 +144,11 @@ namespace MAS.Payments.Controllers
         [HttpPost("[action]")]
         public async Task<IEnumerable<string>> UpdateDiffAsync()
         {
-            var command = new RecalculateDiffCommand(false);
+            var warnings = await QueryProcessor.Execute(new GetRecalculateDiffWarningsQuery(false));
 
-            await CommandProcessor.Execute(command);
+            await CommandProcessor.Execute(new RecalculateDiffCommand(false));
 
-            return command.Warnings;
+            return warnings;
         }
 
         #endregion

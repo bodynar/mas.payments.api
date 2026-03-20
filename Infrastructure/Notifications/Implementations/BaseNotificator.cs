@@ -15,14 +15,14 @@ namespace MAS.Payments.Notifications
     ) : INotificator
     {
 
-        private Lazy<IQueryProcessor> queryProcessor
-            => new(resolver.Resolve<IQueryProcessor>);
+        private readonly Lazy<IQueryProcessor> queryProcessor
+            = new(resolver.Resolve<IQueryProcessor>);
 
-        private Lazy<ICommandProcessor> commandProcessor
-            => new(resolver.Resolve<ICommandProcessor>);
+        private readonly Lazy<ICommandProcessor> commandProcessor
+            = new(resolver.Resolve<ICommandProcessor>);
 
-        private Lazy<IRepository<UserNotification>> userNotificationRepository
-            => new(resolver.Resolve<IRepository<UserNotification>>);
+        private readonly Lazy<IRepository<UserNotification>> userNotificationRepository
+            = new(resolver.Resolve<IRepository<UserNotification>>);
 
         protected IQueryProcessor QueryProcessor
             => queryProcessor.Value;

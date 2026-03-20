@@ -24,7 +24,7 @@ namespace MAS.Payments.Controllers
         [HttpGet("[action]")]
         public async Task<IEnumerable<GetUserNotificationsQueryResult>> GetActiveUserNotifications()
         {
-            var userNotifications = NotificationProcessor.GetNotifications();
+            var userNotifications = await NotificationProcessor.GetNotificationsAsync();
 
             var notHiddenNotifications =
                 await QueryProcessor.Execute(new GetUserNotificationsQuery(GetUserNotificationsType.Visible));

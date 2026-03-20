@@ -19,16 +19,12 @@ namespace MAS.Payments.Configuration
             .Services
                 .AddDbContext<DataBaseContext>(x => x
                     .UseNpgsql(connectionString)
-                    .UseLazyLoadingProxies()
                 )
                 .AddSimpleInjector(container, options => {
                     options.AddAspNetCore()
                         .AddControllerActivation();
                 })
-                .AddOptions()
-                .AddSpaStaticFiles(cfg => {
-                    cfg.RootPath = "ClientApp/dist";
-                });
+                .AddOptions();
         }
     }
 }

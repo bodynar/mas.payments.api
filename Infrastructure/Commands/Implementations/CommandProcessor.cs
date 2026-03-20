@@ -10,16 +10,17 @@ namespace MAS.Payments.Infrastructure.Command
         public async Task Execute<TCommand>(TCommand command)
             where TCommand : ICommand
         {
-            if (command == null)
-            {
-                throw new ArgumentNullException(nameof(command));
-            }
+            ArgumentNullException.ThrowIfNull(command);
 
-            var handlerType = typeof(ICommandHandler<>).MakeGenericType(command.GetType());
+            var commandType = command.GetType();
+            var handlerType = typeof(ICommandHandler<>).MakeGenericType(commandType);
 
-            dynamic handler = resolver.GetInstance(handlerType);
+            var handler = resolver.GetInstance(handlerType);
 
-            await handler.HandleAsync((dynamic)command);
+            var method = handlerType.GetMethod(nameof(ICommandHandler<ICommand>.HandleAsync))
+                ?? throw new InvalidOperationException($"HandleAsync method not found on {handlerType}");
+
+            await (Task)method.Invoke(handler, [command]);
         }
     }
 }

@@ -29,7 +29,6 @@
                 : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
 
             var measurementItems = Repository.Where(specification).ToList();
-            var warnings = new List<string>();
 
             foreach (var measurementItem in measurementItems)
             {
@@ -39,26 +38,10 @@
                     )
                 );
 
-                if (previousItem != null)
+                if (previousItem != null && previousItem.Measurement < measurementItem.Measurement)
                 {
-                    if (previousItem.Measurement >= measurementItem.Measurement)
-                    {
-                        warnings.Add($"[{measurementItem.MeasurementType.Name} - {measurementItem.Date:MMMM yyyy}]: Value is less than previous one");
-                    }
-                    else
-                    {
-                        measurementItem.Diff = Math.Abs(previousItem.Measurement - measurementItem.Measurement);
-                    }
+                    measurementItem.Diff = Math.Abs(previousItem.Measurement - measurementItem.Measurement);
                 }
-                else
-                {
-                    warnings.Add($"[{measurementItem.MeasurementType.Name} - {measurementItem.Date:MMMM yyyy}]: Previous measurement not found");
-                }
-            }
-
-            if (warnings.Count != 0)
-            {
-                command.Warnings = warnings;
             }
         }
     }

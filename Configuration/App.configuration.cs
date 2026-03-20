@@ -37,8 +37,9 @@ namespace MAS.Payments.Configuration
                 .Configure()
                 .Verify();
 
-            using (var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope())
+            if (isDevelopment)
             {
+                using var serviceScope = app.ApplicationServices.GetService<IServiceScopeFactory>().CreateScope();
                 var context = serviceScope.ServiceProvider.GetRequiredService<DataBaseContext>();
                 context.Database.Migrate();
             }

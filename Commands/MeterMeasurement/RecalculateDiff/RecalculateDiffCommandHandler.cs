@@ -12,6 +12,8 @@
     using MAS.Payments.Infrastructure.Specification;
     using MAS.Payments.Queries.Measurements;
 
+    using Microsoft.EntityFrameworkCore;
+
     internal class RecalculateDiffCommandHandler : BaseCommandHandler<RecalculateDiffCommand>
     {
         private IRepository<MeterMeasurement> Repository { get; }
@@ -28,7 +30,7 @@
                 ? new CommonSpecification<MeterMeasurement>(x => true)
                 : new MeterMeasurementSpec.WithoutDiff() as Specification<MeterMeasurement>;
 
-            var measurementItems = Repository.Where(specification).ToList();
+            var measurementItems = await Repository.Where(specification).ToListAsync();
 
             foreach (var measurementItem in measurementItems)
             {

@@ -35,15 +35,19 @@ namespace MAS.Payments.Queries.Measurements
                 return [];
             }
 
-            var previousMonthDates = measurementItems
-                .Select(m => m.Date.AddMonths(-1))
-                .ToList();
+            var typeIds = measurementItems.Select(m => m.MeterMeasurementTypeId).Distinct().ToList();
+            var prevDates = measurementItems.Select(m => m.Date.AddMonths(-1)).ToList();
+            var minDate = new DateTime(prevDates.Min().Year, prevDates.Min().Month, 1);
+            var maxDate = new DateTime(prevDates.Max().Year, prevDates.Max().Month, 1).AddMonths(1);
 
-            var allPreviousMeasurements = await Repository
-                .Where(new CommonSpecification<MeterMeasurement>(x => true))
+            var previousMeasurements = await Repository
+                .Where(new CommonSpecification<MeterMeasurement>(x =>
+                    typeIds.Contains(x.MeterMeasurementTypeId)
+                    && x.Date >= minDate
+                    && x.Date < maxDate))
                 .ToListAsync();
 
-            var previousLookup = allPreviousMeasurements
+            var previousLookup = previousMeasurements
                 .ToLookup(x => (x.MeterMeasurementTypeId, x.Date.Year, x.Date.Month));
 
             var warnings = new List<string>();

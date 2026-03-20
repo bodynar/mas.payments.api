@@ -15,12 +15,9 @@ namespace MAS.Payments.Infrastructure.Command
             var commandType = command.GetType();
             var handlerType = typeof(ICommandHandler<>).MakeGenericType(commandType);
 
-            var handler = resolver.GetInstance(handlerType);
+            dynamic handler = resolver.GetInstance(handlerType);
 
-            var method = handlerType.GetMethod(nameof(ICommandHandler<ICommand>.HandleAsync))
-                ?? throw new InvalidOperationException($"HandleAsync method not found on {handlerType}");
-
-            await (Task)method.Invoke(handler, [command]);
+            await handler.HandleAsync((dynamic)command);
         }
     }
 }

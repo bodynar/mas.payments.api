@@ -1,0 +1,4 @@
+# Dev override: removes persistent volume from DB (data is ephemeral)
+services:
+  db:
+    volumes: []

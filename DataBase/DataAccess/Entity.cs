@@ -6,6 +6,6 @@ namespace MAS.Payments.DataBase
     {
         public long Id { get; set; }
 
-        public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedOn { get; set; }
     }
 }

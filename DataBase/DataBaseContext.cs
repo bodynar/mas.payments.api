@@ -1,5 +1,10 @@
 namespace MAS.Payments.DataBase
 {
+    using System;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
     using Microsoft.EntityFrameworkCore;
 
     public class DataBaseContext(
@@ -33,6 +38,16 @@ namespace MAS.Payments.DataBase
                 .HasIndex(x => new { x.Year, x.Month });
 
             base.OnModelCreating(modelBuilder);
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            foreach (var entry in ChangeTracker.Entries<Entity>().Where(e => e.State == EntityState.Added))
+            {
+                entry.Entity.CreatedOn = DateTime.UtcNow;
+            }
+
+            return base.SaveChangesAsync(cancellationToken);
         }
     }
 }

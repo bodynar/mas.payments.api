@@ -60,34 +60,29 @@ namespace MAS.Payments.Migrations
                 nullable: false,
                 defaultValueSql: "NOW()");
 
-            migrationBuilder.UpdateData(
-                table: "UserSetting",
-                keyColumn: "Id",
-                keyValue: 2L,
-                column: "CreatedOn",
-                value: new DateTime(2026, 3, 21, 12, 9, 34, 17, DateTimeKind.Utc).AddTicks(6275));
+            // Update existing records with meaningful CreatedOn values
 
-            // MeterMeasurement: CreatedOn = 1st day of measurement's month/year
+            // MeterMeasurement: 1st day of measurement's month/year
             migrationBuilder.Sql(
                 """UPDATE "MeterMeasurement" SET "CreatedOn" = DATE_TRUNC('month', "Date")""");
 
-            // Payment: CreatedOn = 1st day of payment date's month/year
+            // Payment: 1st day of payment date's month/year
             migrationBuilder.Sql(
                 """UPDATE "Payment" SET "CreatedOn" = DATE_TRUNC('month', "Date") WHERE "Date" IS NOT NULL""");
 
-            // PaymentGroup: CreatedOn = 1st day of group's month/year
+            // PaymentGroup: 1st day of group's month/year
             migrationBuilder.Sql(
                 """UPDATE "PaymentGroup" SET "CreatedOn" = MAKE_TIMESTAMPTZ("Year", "Month", 1, 0, 0, 0)""");
 
-            // UserNotification: CreatedOn = CreatedAt
+            // UserNotification: copy from CreatedAt
             migrationBuilder.Sql(
                 """UPDATE "UserNotification" SET "CreatedOn" = "CreatedAt" """);
 
-            // PaymentType: CreatedOn = 2 July 2019
+            // PaymentType: 2 July 2019
             migrationBuilder.Sql(
                 """UPDATE "PaymentType" SET "CreatedOn" = '2019-07-02T00:00:00Z'""");
 
-            // MeterMeasurementType: CreatedOn = 2 July 2019
+            // MeterMeasurementType: 2 July 2019
             migrationBuilder.Sql(
                 """UPDATE "MeterMeasurementType" SET "CreatedOn" = '2019-07-02T00:00:00Z'""");
         }

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MAS.Payments.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20260321120934_AddCreatedOnToEntities")]
+    [Migration("20260321134307_AddCreatedOnToEntities")]
     partial class AddCreatedOnToEntities
     {
         /// <inheritdoc />
@@ -258,7 +258,7 @@ namespace MAS.Payments.Migrations
                         new
                         {
                             Id = 2L,
-                            CreatedOn = new DateTime(2026, 3, 21, 12, 9, 34, 17, DateTimeKind.Utc).AddTicks(6275),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Отображать уведомления по показаниям",
                             Name = "DisplayMeasurementsNotification",
                             RawValue = "true",

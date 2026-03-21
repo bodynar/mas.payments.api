@@ -7,7 +7,6 @@ namespace MAS.Payments.Commands
     using MAS.Payments.DataBase.Access;
     using MAS.Payments.Infrastructure;
     using MAS.Payments.Infrastructure.Command;
-    using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
 
     using Microsoft.EntityFrameworkCore;

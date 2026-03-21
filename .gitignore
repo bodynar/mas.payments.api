@@ -4,6 +4,7 @@
 # vscode stuff
 .vscode/
 logs/
+db/
 
 # User-specific files
 *.suo

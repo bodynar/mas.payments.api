@@ -126,6 +126,51 @@ namespace MAS.Payments.Migrations
                     b.ToTable("Payment");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentFile", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("ContentType")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("Data")
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("FileName")
+                        .HasColumnType("text");
+
+                    b.Property<long>("FileSize")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PaymentGroupId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PaymentId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentGroupId")
+                        .IsUnique()
+                        .HasFilter("\"PaymentGroupId\" IS NOT NULL");
+
+                    b.HasIndex("PaymentId")
+                        .IsUnique()
+                        .HasFilter("\"PaymentId\" IS NOT NULL");
+
+                    b.ToTable("PaymentFile", t =>
+                        {
+                            t.HasCheckConstraint("CK_PaymentFile_SingleLink", "(\"PaymentId\" IS NOT NULL AND \"PaymentGroupId\" IS NULL) OR (\"PaymentId\" IS NULL AND \"PaymentGroupId\" IS NOT NULL)");
+                        });
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroup", b =>
                 {
                     b.Property<long>("Id")
@@ -300,6 +345,23 @@ namespace MAS.Payments.Migrations
                     b.Navigation("PaymentGroup");
 
                     b.Navigation("PaymentType");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentFile", b =>
+                {
+                    b.HasOne("MAS.Payments.DataBase.PaymentGroup", "PaymentGroup")
+                        .WithOne()
+                        .HasForeignKey("MAS.Payments.DataBase.PaymentFile", "PaymentGroupId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("MAS.Payments.DataBase.Payment", "Payment")
+                        .WithOne()
+                        .HasForeignKey("MAS.Payments.DataBase.PaymentFile", "PaymentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("PaymentGroup");
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>

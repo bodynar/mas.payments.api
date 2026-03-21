@@ -164,7 +164,16 @@ namespace MAS.Payments.Controllers
 
             var header = new byte[PdfMagicBytes.Length];
             using var stream = file.OpenReadStream();
-            var bytesRead = await stream.ReadAsync(header);
+            var bytesRead = 0;
+            while (bytesRead < header.Length)
+            {
+                var read = await stream.ReadAsync(header, bytesRead, header.Length - bytesRead);
+                if (read == 0)
+                {
+                    break;
+                }
+                bytesRead += read;
+            }
 
             return bytesRead == PdfMagicBytes.Length && header.AsSpan().SequenceEqual(PdfMagicBytes);
         }

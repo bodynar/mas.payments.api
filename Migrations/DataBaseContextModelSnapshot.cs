@@ -18,9 +18,6 @@ namespace MAS.Payments.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "9.0.3")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
@@ -105,14 +102,46 @@ namespace MAS.Payments.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
+                    b.Property<long?>("PaymentGroupId")
+                        .HasColumnType("bigint");
+
                     b.Property<long>("PaymentTypeId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("PaymentGroupId");
+
                     b.HasIndex("PaymentTypeId");
 
                     b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroup", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("Comment")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Month")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Year", "Month");
+
+                    b.ToTable("PaymentGroup");
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentType", b =>
@@ -236,11 +265,17 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
+                    b.HasOne("MAS.Payments.DataBase.PaymentGroup", "PaymentGroup")
+                        .WithMany("Payments")
+                        .HasForeignKey("PaymentGroupId");
+
                     b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
                         .WithMany("Payments")
                         .HasForeignKey("PaymentTypeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("PaymentGroup");
 
                     b.Navigation("PaymentType");
                 });
@@ -248,6 +283,11 @@ namespace MAS.Payments.Migrations
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
                 {
                     b.Navigation("MeterMeasurements");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroup", b =>
+                {
+                    b.Navigation("Payments");
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentType", b =>

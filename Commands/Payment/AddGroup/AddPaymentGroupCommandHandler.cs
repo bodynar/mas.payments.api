@@ -9,17 +9,19 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
 
+    using Microsoft.EntityFrameworkCore;
+
     public class AddPaymentGroupCommandHandler : BaseCommandHandler<AddPaymentGroupCommand>
     {
-        private IRepository<Payment> Repository { get; }
-
         private IRepository<PaymentType> PaymentTypeRepository { get; }
+
+        private IRepository<DataBase.PaymentGroup> PaymentGroupRepository { get; }
 
         public AddPaymentGroupCommandHandler(IResolver resolver)
             : base(resolver)
         {
-            Repository = GetRepository<Payment>();
             PaymentTypeRepository = GetRepository<PaymentType>();
+            PaymentGroupRepository = GetRepository<DataBase.PaymentGroup>();
         }
 
         public override async Task HandleAsync(AddPaymentGroupCommand command)
@@ -27,10 +29,10 @@
             var paymentTypesIds = command.Payments.Select(x => x.PaymentTypeId).ToArray();
 
             var paymentTypes =
-                PaymentTypeRepository
+                await PaymentTypeRepository
                     .Where(new CommonSpecification.IdIn<PaymentType>(paymentTypesIds))
                     .Select(x => x.Id)
-                    .ToArray();
+                    .ToArrayAsync();
 
             var notValidTypes = paymentTypesIds.Except(paymentTypes);
 
@@ -39,17 +41,26 @@
                 throw new CommandExecutionException(CommandType, $"Payment types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
-            var payments =
-                command.Payments
-                    .Select(x => new Payment
-                    {
-                        Date = command.Date,
-                        Amount = x.Amount,
-                        PaymentTypeId = x.PaymentTypeId,
-                        Description = x.Description,
-                    });
+            var paymentGroup = new DataBase.PaymentGroup
+            {
+                PaymentDate = command.PaymentDate,
+                Month = command.Month,
+                Year = command.Year,
+                Comment = command.Comment,
+            };
 
-            await Repository.AddRange(payments);
+            foreach (var item in command.Payments)
+            {
+                paymentGroup.Payments.Add(new Payment
+                {
+                    Date = command.PaymentDate,
+                    Amount = item.Amount,
+                    PaymentTypeId = item.PaymentTypeId,
+                    Description = item.Description,
+                });
+            }
+
+            await PaymentGroupRepository.Add(paymentGroup);
         }
     }
 }

@@ -3,6 +3,7 @@
 
 # vscode stuff
 .vscode/
+logs/
 
 # User-specific files
 *.suo

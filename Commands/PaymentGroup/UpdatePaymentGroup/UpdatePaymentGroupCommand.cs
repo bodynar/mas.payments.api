@@ -1,18 +1,19 @@
-﻿namespace MAS.Payments.Commands
+namespace MAS.Payments.Commands
 {
     using System;
-    using System.Collections.Generic;
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddPaymentGroupCommand(
+    public class UpdatePaymentGroupCommand(
+        long id,
         DateTime paymentDate,
         int month,
         int year,
-        string comment,
-        IEnumerable<PaymentGroupItem> payments
+        string comment
     ) : ICommand
     {
+        public long Id { get; } = id;
+
         public DateTime PaymentDate { get; } = paymentDate;
 
         /// <summary> Billing period month (1-12). May differ from PaymentDate.Month. </summary>
@@ -22,7 +23,5 @@
         public int Year { get; } = year > 0 ? year : throw new ArgumentOutOfRangeException(nameof(year));
 
         public string Comment { get; } = comment;
-
-        public IEnumerable<PaymentGroupItem> Payments { get; } = payments ?? [];
     }
 }

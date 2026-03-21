@@ -105,7 +105,21 @@ namespace MAS.Payments.Controllers
         {
             ArgumentNullException.ThrowIfNull(request);
 
-            await CommandProcessor.Execute(new AddPaymentGroupCommand(request.Date, request.Payments.Select(x => new PaymentGroup(x.Amount, x.PaymentTypeId, x.Description))));
+            var payments = request.Payments ?? [];
+
+            if (!payments.Any())
+            {
+                throw new ArgumentException("Payments list must not be empty.");
+            }
+
+            var paymentDate = DateTime.SpecifyKind(request.PaymentDate, DateTimeKind.Utc);
+
+            await CommandProcessor.Execute(
+                new AddPaymentGroupCommand(
+                    paymentDate, request.Month, request.Year, request.Comment,
+                    payments.Select(x => new PaymentGroupItem(x.Amount, x.PaymentTypeId, x.Description))
+                )
+            );
         }
 
         [HttpPost("[action]")]
@@ -127,6 +141,52 @@ namespace MAS.Payments.Controllers
 
             await CommandProcessor.Execute(
                 new DeletePaymentCommand(request.Id)
+            );
+        }
+
+        #endregion
+
+        #region Payment Group
+
+        [HttpGet("[action]")]
+        public async Task<GetPaymentGroupResponse> GetPaymentGroupAsync(long? id)
+        {
+            if (!id.HasValue || id.Value == default)
+            {
+                throw new ArgumentNullException(nameof(id));
+            }
+
+            return await QueryProcessor.Execute(new GetPaymentGroupQuery(id.Value));
+        }
+
+        [HttpGet("[action]")]
+        public async Task<IEnumerable<GetPaymentGroupsResponse>> GetPaymentGroupsAsync([FromQuery] GetPaymentGroupsRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            return await QueryProcessor.Execute(
+                new GetPaymentGroupsQuery(request.Month, request.Year));
+        }
+
+        [HttpPost("[action]")]
+        public async Task UpdatePaymentGroupAsync([FromBody] UpdatePaymentGroupRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            var paymentDate = DateTime.SpecifyKind(request.PaymentDate, DateTimeKind.Utc);
+
+            await CommandProcessor.Execute(
+                new UpdatePaymentGroupCommand(request.Id, paymentDate, request.Month, request.Year, request.Comment)
+            );
+        }
+
+        [HttpPost("[action]")]
+        public async Task DeletePaymentGroupAsync([FromBody] DeleteRecordRequest request)
+        {
+            ArgumentNullException.ThrowIfNull(request);
+
+            await CommandProcessor.Execute(
+                new DeletePaymentGroupCommand(request.Id)
             );
         }
 

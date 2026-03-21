@@ -1,6 +1,6 @@
 ﻿namespace MAS.Payments.Commands
 {
-    public class PaymentGroup(
+    public class PaymentGroupItem(
         double amount,
         long paymentTypeId,
         string description

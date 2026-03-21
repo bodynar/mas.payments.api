@@ -32,6 +32,12 @@ namespace MAS.Payments.DataBase.Access
             DataBaseContext.Remove(entity);
         }
 
+        public Task DeleteRange(IEnumerable<TEntity> entities)
+        {
+            DataBaseContext.RemoveRange(entities);
+            return Task.CompletedTask;
+        }
+
         public async Task Update(long id, object updatedModel)
         {
             var entity = await Get(id)

@@ -44,7 +44,10 @@ namespace MAS.Payments.DataBase
         {
             foreach (var entry in ChangeTracker.Entries<Entity>().Where(e => e.State == EntityState.Added))
             {
-                entry.Entity.CreatedOn = DateTime.UtcNow;
+                if (entry.Entity.CreatedOn == default)
+                {
+                    entry.Entity.CreatedOn = DateTime.UtcNow;
+                }
             }
 
             return base.SaveChangesAsync(cancellationToken);

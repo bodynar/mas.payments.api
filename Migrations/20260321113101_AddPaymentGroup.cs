@@ -39,6 +39,11 @@ namespace MAS.Payments.Migrations
                 table: "Payment",
                 column: "PaymentGroupId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentGroup_Year_Month",
+                table: "PaymentGroup",
+                columns: new[] { "Year", "Month" });
+
             migrationBuilder.AddForeignKey(
                 name: "FK_Payment_PaymentGroup_PaymentGroupId",
                 table: "Payment",

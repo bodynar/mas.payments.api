@@ -139,6 +139,8 @@ namespace MAS.Payments.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Year", "Month");
+
                     b.ToTable("PaymentGroup");
                 });
 

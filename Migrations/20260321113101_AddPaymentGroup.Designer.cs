@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MAS.Payments.Migrations
 {
     [DbContext(typeof(DataBaseContext))]
-    [Migration("20260321103904_AddPaymentGroup")]
+    [Migration("20260321113101_AddPaymentGroup")]
     partial class AddPaymentGroup
     {
         /// <inheritdoc />
@@ -141,6 +141,8 @@ namespace MAS.Payments.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Year", "Month");
 
                     b.ToTable("PaymentGroup");
                 });

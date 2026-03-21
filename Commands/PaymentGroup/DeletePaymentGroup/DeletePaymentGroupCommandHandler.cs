@@ -10,6 +10,8 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Exceptions;
     using MAS.Payments.Infrastructure.Specification;
 
+    using Microsoft.EntityFrameworkCore;
+
     internal class DeletePaymentGroupCommandHandler : BaseCommandHandler<DeletePaymentGroupCommand>
     {
         private IRepository<DataBase.PaymentGroup> PaymentGroupRepository { get; }
@@ -30,14 +32,11 @@ namespace MAS.Payments.Commands
                     $"Payment group with id {command.PaymentGroupId} doesn't exist");
 
             var linkedPayments =
-                PaymentRepository
+                await PaymentRepository
                     .Where(new CommonSpecification<Payment>(x => x.PaymentGroupId == command.PaymentGroupId))
-                    .ToList();
+                    .ToListAsync();
 
-            foreach (var payment in linkedPayments)
-            {
-                await PaymentRepository.Delete(payment.Id);
-            }
+            await PaymentRepository.DeleteRange(linkedPayments);
 
             await PaymentGroupRepository.Delete(command.PaymentGroupId);
         }

@@ -5,12 +5,12 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Query;
 
     public class GetPaymentGroupsQuery(
-        int? month = null,
-        int? year = null
+        byte? month = null,
+        short? year = null
     ) : IQuery<IEnumerable<GetPaymentGroupsResponse>>
     {
-        public int? Month { get; } = month;
+        public byte? Month { get; } = month;
 
-        public int? Year { get; } = year;
+        public short? Year { get; } = year;
     }
 }

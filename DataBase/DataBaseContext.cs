@@ -29,6 +29,9 @@ namespace MAS.Payments.DataBase
                     new UserSettings { Id = 2, DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() }
                 );
 
+            modelBuilder.Entity<PaymentGroup>()
+                .HasIndex(x => new { x.Year, x.Month });
+
             base.OnModelCreating(modelBuilder);
         }
     }

@@ -105,10 +105,17 @@ namespace MAS.Payments.Controllers
         {
             ArgumentNullException.ThrowIfNull(request);
 
+            var payments = request.Payments ?? [];
+
+            if (!payments.Any())
+            {
+                throw new ArgumentException("Payments list must not be empty.");
+            }
+
             await CommandProcessor.Execute(
                 new AddPaymentGroupCommand(
                     request.PaymentDate, request.Month, request.Year, request.Comment,
-                    request.Payments.Select(x => new PaymentGroupItem(x.Amount, x.PaymentTypeId, x.Description))
+                    payments.Select(x => new PaymentGroupItem(x.Amount, x.PaymentTypeId, x.Description))
                 )
             );
         }

@@ -15,6 +15,8 @@ namespace MAS.Payments.DataBase.Access
 
         Task Delete(long id);
 
+        Task DeleteRange(IEnumerable<TEntity> entities);
+
         Task<TEntity> Get(long id);
 
         Task Update(long id, object updatedModel);

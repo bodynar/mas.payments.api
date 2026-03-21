@@ -15,9 +15,11 @@
     {
         public DateTime PaymentDate { get; } = paymentDate;
 
-        public int Month { get; } = month;
+        /// <summary> Billing period month (1-12). May differ from PaymentDate.Month. </summary>
+        public int Month { get; } = month is >= 1 and <= 12 ? month : throw new ArgumentOutOfRangeException(nameof(month));
 
-        public int Year { get; } = year;
+        /// <summary> Billing period year. May differ from PaymentDate.Year. </summary>
+        public int Year { get; } = year > 0 ? year : throw new ArgumentOutOfRangeException(nameof(year));
 
         public string Comment { get; } = comment;
 

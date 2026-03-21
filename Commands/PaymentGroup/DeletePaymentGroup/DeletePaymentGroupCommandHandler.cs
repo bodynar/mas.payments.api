@@ -27,10 +27,6 @@ namespace MAS.Payments.Commands
 
         public override async Task HandleAsync(DeletePaymentGroupCommand command)
         {
-            _ = await PaymentGroupRepository.Get(command.PaymentGroupId)
-                ?? throw new CommandExecutionException(CommandType,
-                    $"Payment group with id {command.PaymentGroupId} doesn't exist");
-
             var linkedPayments =
                 await PaymentRepository
                     .Where(new CommonSpecification<Payment>(x => x.PaymentGroupId == command.PaymentGroupId))

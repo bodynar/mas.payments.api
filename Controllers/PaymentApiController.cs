@@ -112,9 +112,11 @@ namespace MAS.Payments.Controllers
                 throw new ArgumentException("Payments list must not be empty.");
             }
 
+            var paymentDate = DateTime.SpecifyKind(request.PaymentDate, DateTimeKind.Utc);
+
             await CommandProcessor.Execute(
                 new AddPaymentGroupCommand(
-                    request.PaymentDate, request.Month, request.Year, request.Comment,
+                    paymentDate, request.Month, request.Year, request.Comment,
                     payments.Select(x => new PaymentGroupItem(x.Amount, x.PaymentTypeId, x.Description))
                 )
             );
@@ -171,8 +173,10 @@ namespace MAS.Payments.Controllers
         {
             ArgumentNullException.ThrowIfNull(request);
 
+            var paymentDate = DateTime.SpecifyKind(request.PaymentDate, DateTimeKind.Utc);
+
             await CommandProcessor.Execute(
-                new UpdatePaymentGroupCommand(request.Id, request.PaymentDate, request.Month, request.Year, request.Comment)
+                new UpdatePaymentGroupCommand(request.Id, paymentDate, request.Month, request.Year, request.Comment)
             );
         }
 

@@ -9,6 +9,8 @@
     using MAS.Payments.Infrastructure.Command;
     using MAS.Payments.Infrastructure.Exceptions;
 
+    using Microsoft.EntityFrameworkCore;
+
     public class AddPaymentGroupCommandHandler : BaseCommandHandler<AddPaymentGroupCommand>
     {
         private IRepository<PaymentType> PaymentTypeRepository { get; }
@@ -27,10 +29,10 @@
             var paymentTypesIds = command.Payments.Select(x => x.PaymentTypeId).ToArray();
 
             var paymentTypes =
-                PaymentTypeRepository
+                await PaymentTypeRepository
                     .Where(new CommonSpecification.IdIn<PaymentType>(paymentTypesIds))
                     .Select(x => x.Id)
-                    .ToArray();
+                    .ToArrayAsync();
 
             var notValidTypes = paymentTypesIds.Except(paymentTypes);
 

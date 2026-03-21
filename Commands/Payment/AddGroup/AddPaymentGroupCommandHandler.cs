@@ -11,8 +11,6 @@
 
     public class AddPaymentGroupCommandHandler : BaseCommandHandler<AddPaymentGroupCommand>
     {
-        private IRepository<Payment> PaymentRepository { get; }
-
         private IRepository<PaymentType> PaymentTypeRepository { get; }
 
         private IRepository<DataBase.PaymentGroup> PaymentGroupRepository { get; }
@@ -20,7 +18,6 @@
         public AddPaymentGroupCommandHandler(IResolver resolver)
             : base(resolver)
         {
-            PaymentRepository = GetRepository<Payment>();
             PaymentTypeRepository = GetRepository<PaymentType>();
             PaymentGroupRepository = GetRepository<DataBase.PaymentGroup>();
         }
@@ -50,20 +47,18 @@
                 Comment = command.Comment,
             };
 
+            foreach (var item in command.Payments)
+            {
+                paymentGroup.Payments.Add(new Payment
+                {
+                    Date = command.PaymentDate,
+                    Amount = item.Amount,
+                    PaymentTypeId = item.PaymentTypeId,
+                    Description = item.Description,
+                });
+            }
+
             await PaymentGroupRepository.Add(paymentGroup);
-
-            var payments =
-                command.Payments
-                    .Select(x => new Payment
-                    {
-                        Date = command.PaymentDate,
-                        Amount = x.Amount,
-                        PaymentTypeId = x.PaymentTypeId,
-                        Description = x.Description,
-                        PaymentGroupId = paymentGroup.Id,
-                    });
-
-            await PaymentRepository.AddRange(payments);
         }
     }
 }

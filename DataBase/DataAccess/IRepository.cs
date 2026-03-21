@@ -13,13 +13,13 @@ namespace MAS.Payments.DataBase.Access
 
         Task AddRange(IEnumerable<TEntity> entities);
 
-        Task Delete(long id);
+        Task Delete(Guid id);
 
         Task DeleteRange(IEnumerable<TEntity> entities);
 
-        Task<TEntity> Get(long id);
+        Task<TEntity> Get(Guid id);
 
-        Task Update(long id, object updatedModel);
+        Task Update(Guid id, object updatedModel);
 
         IQueryable<TEntity> GetAll();
 

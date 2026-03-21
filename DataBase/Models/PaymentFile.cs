@@ -10,11 +10,11 @@ namespace MAS.Payments.DataBase
 
         public byte[] Data { get; set; }
 
-        public long? PaymentId { get; set; }
+        public Guid? PaymentId { get; set; }
 
         public virtual Payment Payment { get; set; }
 
-        public long? PaymentGroupId { get; set; }
+        public Guid? PaymentGroupId { get; set; }
 
         public virtual PaymentGroup PaymentGroup { get; set; }
     }

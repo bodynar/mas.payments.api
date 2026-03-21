@@ -10,7 +10,7 @@ namespace MAS.Payments.DataBase
 
         public string Description { get; set; }
 
-        public long PaymentTypeId { get; set; }
+        public Guid PaymentTypeId { get; set; }
 
         public string Color { get; set; }
 

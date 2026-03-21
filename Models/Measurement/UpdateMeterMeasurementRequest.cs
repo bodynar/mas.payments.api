@@ -2,7 +2,7 @@ namespace MAS.Payments.Models
 {
     public class UpdateMeterMeasurementRequest
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public double Value { get; set; }
 
@@ -12,6 +12,6 @@ namespace MAS.Payments.Models
 
         public int Month { get; set; }
 
-        public long TypeId { get; set; }
+        public Guid TypeId { get; set; }
     }
 }

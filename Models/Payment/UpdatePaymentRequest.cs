@@ -2,7 +2,7 @@ namespace MAS.Payments.Models
 {
     public class UpdatePaymentRequest
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public double Amount { get; set; }
 
@@ -12,6 +12,6 @@ namespace MAS.Payments.Models
 
         public string Description { get; set; }
 
-        public long PaymentTypeId { get; set; }
+        public Guid PaymentTypeId { get; set; }
     }
 }

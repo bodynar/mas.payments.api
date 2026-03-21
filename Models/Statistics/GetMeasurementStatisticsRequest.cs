@@ -8,6 +8,6 @@
 
         public DateTime? To { get; set; }
 
-        public long? MeasurementTypeId { get; set; }
+        public Guid? MeasurementTypeId { get; set; }
     }
 }

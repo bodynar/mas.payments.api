@@ -3,6 +3,7 @@ namespace MAS.Payments.Controllers
     using System;
     using System.Collections.Generic;
     using System.IO;
+    using System.Linq;
     using System.Threading.Tasks;
 
     using MAS.Payments.Commands;
@@ -18,6 +19,9 @@ namespace MAS.Payments.Controllers
     ) : BaseApiController(resolver)
     {
         private static readonly string AllowedContentType = "application/pdf";
+        private static readonly byte[] PdfMagicBytes = [0x25, 0x50, 0x44, 0x46]; // %PDF
+        private const long MaxFileSizeBytes = 25 * 1024 * 1024; // 25 MB
+        private const int MaxFileNameLength = 255;
 
         [HttpPost("[action]")]
         [Consumes("multipart/form-data")]
@@ -28,17 +32,33 @@ namespace MAS.Payments.Controllers
         {
             ArgumentNullException.ThrowIfNull(file);
 
+            if (paymentId.HasValue == paymentGroupId.HasValue)
+            {
+                throw new ArgumentException("Exactly one of paymentId or paymentGroupId must be provided.");
+            }
+
+            if (file.Length > MaxFileSizeBytes)
+            {
+                throw new ArgumentException($"File size exceeds the maximum allowed size of {MaxFileSizeBytes / (1024 * 1024)} MB.");
+            }
+
             if (!string.Equals(file.ContentType, AllowedContentType, StringComparison.OrdinalIgnoreCase))
             {
                 throw new ArgumentException("Only PDF files are allowed.");
             }
 
-            using var memoryStream = new MemoryStream();
+            if (!await HasPdfSignatureAsync(file))
+            {
+                throw new ArgumentException("File content is not a valid PDF.");
+            }
+
+            var fileName = SanitizeFileName(file.FileName);
+
+            using var memoryStream = new MemoryStream((int)file.Length);
             await file.CopyToAsync(memoryStream);
-            var data = memoryStream.ToArray();
 
             await CommandProcessor.Execute(
-                new UploadPaymentFileCommand(file.FileName, file.ContentType, data, paymentId, paymentGroupId));
+                new UploadPaymentFileCommand(fileName, AllowedContentType, memoryStream.GetBuffer().AsMemory(0, (int)memoryStream.Length).ToArray(), paymentId, paymentGroupId));
         }
 
         [HttpGet("[action]")]
@@ -95,8 +115,49 @@ namespace MAS.Payments.Controllers
         public async Task DeleteFilesAsync([FromBody] Models.DeleteRecordsRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
+            ArgumentNullException.ThrowIfNull(request.Ids);
+
+            if (!request.Ids.Any())
+            {
+                throw new ArgumentException("Ids must not be empty.");
+            }
 
             await CommandProcessor.Execute(new DeletePaymentFilesCommand(request.Ids));
+        }
+
+        private static string SanitizeFileName(string fileName)
+        {
+            var name = Path.GetFileName(fileName) ?? "file.pdf";
+
+            var invalidChars = Path.GetInvalidFileNameChars();
+            name = string.Concat(name.Where(c => !invalidChars.Contains(c)));
+
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                name = "file.pdf";
+            }
+
+            if (name.Length > MaxFileNameLength)
+            {
+                var ext = Path.GetExtension(name);
+                name = string.Concat(name.AsSpan(0, MaxFileNameLength - ext.Length), ext);
+            }
+
+            return name;
+        }
+
+        private static async Task<bool> HasPdfSignatureAsync(IFormFile file)
+        {
+            if (file.Length < PdfMagicBytes.Length)
+            {
+                return false;
+            }
+
+            var header = new byte[PdfMagicBytes.Length];
+            using var stream = file.OpenReadStream();
+            var bytesRead = await stream.ReadAsync(header);
+
+            return bytesRead == PdfMagicBytes.Length && header.AsSpan().SequenceEqual(PdfMagicBytes);
         }
     }
 }

@@ -1,6 +1,7 @@
 namespace MAS.Payments.Commands
 {
     using System;
+    using System.IO;
     using System.Threading.Tasks;
 
     using MAS.Payments.DataBase;
@@ -71,7 +72,7 @@ namespace MAS.Payments.Commands
 
             var file = new PaymentFile
             {
-                FileName = command.FileName,
+                FileName = Path.GetFileName(command.FileName) ?? command.FileName,
                 FileSize = command.Data.Length,
                 ContentType = command.ContentType,
                 Data = command.Data,

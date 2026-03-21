@@ -4,7 +4,7 @@ namespace MAS.Payments.Queries
 
     public class GetPaymentFilesResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public string FileName { get; set; }
 
@@ -12,9 +12,9 @@ namespace MAS.Payments.Queries
 
         public DateTime UploadedAt { get; set; }
 
-        public long? PaymentId { get; set; }
+        public Guid? PaymentId { get; set; }
 
-        public long? PaymentGroupId { get; set; }
+        public Guid? PaymentGroupId { get; set; }
 
         public string LinkedEntity { get; set; }
     }

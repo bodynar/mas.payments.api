@@ -2,7 +2,7 @@
 {
     public class GetMeterMeasurementsQueryResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public int DateYear { get; set; }
 
@@ -16,7 +16,7 @@
 
         public bool IsSent { get; set; }
 
-        public long MeterMeasurementTypeId { get; set; }
+        public Guid MeterMeasurementTypeId { get; set; }
 
         public string MeasurementTypeColor { get; set; }
 

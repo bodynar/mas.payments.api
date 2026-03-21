@@ -5,7 +5,7 @@ namespace MAS.Payments.Queries
 
     public class GetPaymentGroupsResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime PaymentDate { get; set; }
 

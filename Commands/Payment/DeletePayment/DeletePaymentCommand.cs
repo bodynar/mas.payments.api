@@ -4,9 +4,9 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class DeletePaymentCommand(
-        long paymentId
+        Guid paymentId
     ) : ICommand
     {
-        public long PaymentId { get; set; } = paymentId;
+        public Guid PaymentId { get; set; } = paymentId;
     }
 }

@@ -2,7 +2,7 @@ namespace MAS.Payments.Queries
 {
     public class GetMeterMeasurementTypesResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public string SystemName { get; set; }
         
@@ -10,7 +10,7 @@ namespace MAS.Payments.Queries
 
         public string Description { get; set; }
 
-        public long PaymentTypeId { get; set; }
+        public Guid PaymentTypeId { get; set; }
 
         public string PaymentTypeName { get; set; }
 

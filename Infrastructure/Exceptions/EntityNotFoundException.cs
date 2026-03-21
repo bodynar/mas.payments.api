@@ -5,7 +5,7 @@ namespace MAS.Payments.Infrastructure.Exceptions
     [Serializable]
     public class EntityNotFoundException(
         Type entityType,
-        long entityId
+        Guid entityId
     )
         : Exception($"Entity {entityType.Name} with id {entityId} doesn't exist")
     { }

@@ -5,14 +5,14 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class UpdatePaymentCommand(
-        long id,
-        long paymentTypeId,
+        Guid id,
+        Guid paymentTypeId,
         double amount,
         DateTime? date,
         string description
     ) : ICommand
     {
-        public long Id { get; } = id;
+        public Guid Id { get; } = id;
 
         public double Amount { get; } = amount;
 
@@ -20,6 +20,6 @@ namespace MAS.Payments.Commands
 
         public string Description { get; } = description;
 
-        public long PaymentTypeId { get; } = paymentTypeId;
+        public Guid PaymentTypeId { get; } = paymentTypeId;
     }
 }

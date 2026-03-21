@@ -80,7 +80,7 @@
             }
 
             var hasDuplicateTypes =
-                new HashSet<long>(
+                new HashSet<Guid>(
                     command.Measurements.Select(x => x.MeasurementTypeId)
                 ).Count != command.Measurements.Count();
 

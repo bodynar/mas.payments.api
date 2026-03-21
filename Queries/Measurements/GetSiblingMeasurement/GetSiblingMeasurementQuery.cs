@@ -13,15 +13,15 @@
 
     public class GetSiblingMeasurementQuery : IQuery<MeterMeasurement>
     {
-        public long TypeId { get; }
+        public Guid TypeId { get; }
 
         public DateTime Date { get; }
 
         public GetSiblingMeasurementDirection Direction { get; }
 
-        public GetSiblingMeasurementQuery(long typeId, DateTime date, GetSiblingMeasurementDirection direction)
+        public GetSiblingMeasurementQuery(Guid typeId, DateTime date, GetSiblingMeasurementDirection direction)
         {
-            if (typeId == default || typeId <= 0)
+            if (typeId == default)
             {
                 throw new ArgumentException(null, nameof(typeId));
             }

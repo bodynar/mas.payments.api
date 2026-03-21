@@ -7,13 +7,13 @@
     public class GetMeasurementStatisticsQuery(
         DateTime? from,
         DateTime? to,
-        long? measurementTypeId
+        Guid? measurementTypeId
     ) : IQuery<GetMeasurementStatisticsQueryResponse>
     {
         public DateTime? From { get; set; } = from;
 
         public DateTime? To { get; set; } = to;
 
-        public long? MeasurementTypeId { get; } = measurementTypeId;
+        public Guid? MeasurementTypeId { get; } = measurementTypeId;
     }
 }

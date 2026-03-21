@@ -5,7 +5,7 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class AddMeterMeasurementTypeCommand(
-        long paymentTypeId,
+        Guid paymentTypeId,
         string name,
         string description,
         string color
@@ -15,7 +15,7 @@ namespace MAS.Payments.Commands
 
         public string Description { get; } = description;
 
-        public long PaymentTypeId { get; } = paymentTypeId;
+        public Guid PaymentTypeId { get; } = paymentTypeId;
 
         public string Color { get; } = color;
     }

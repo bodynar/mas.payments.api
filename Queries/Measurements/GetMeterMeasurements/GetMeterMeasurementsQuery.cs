@@ -6,7 +6,7 @@
 
     public class GetMeterMeasurementsQuery(
         byte? month = null,
-        long? meterMeasurementTypeId = null,
+        Guid? meterMeasurementTypeId = null,
         int? year = null
     ) : IQuery<IEnumerable<GetMeterMeasurementsQueryResponse>>
     {
@@ -14,6 +14,6 @@
 
         public int? Year { get; } = year;
 
-        public long? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
+        public Guid? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
     }
 }

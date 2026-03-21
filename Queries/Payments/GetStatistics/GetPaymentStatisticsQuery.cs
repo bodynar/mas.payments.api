@@ -7,13 +7,13 @@ namespace MAS.Payments.Queries
     public class GetPaymentStatisticsQuery(
         DateTime? from,
         DateTime? to,
-        long? paymentTypeId
+        Guid? paymentTypeId
     ) : IQuery<GetPaymentStatisticsResponse>
     {
         public DateTime? From { get; set; } = from;
 
         public DateTime? To { get; set; } = to;
 
-        public long? PaymentTypeId { get; } = paymentTypeId;
+        public Guid? PaymentTypeId { get; } = paymentTypeId;
     }
 }

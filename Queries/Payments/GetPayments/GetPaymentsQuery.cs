@@ -7,7 +7,7 @@ namespace MAS.Payments.Queries
     public class GetPaymentsQuery(
         byte? month,
         short? year,
-        long? paymentTypeId,
+        Guid? paymentTypeId,
         double? exactAmount,
         double? minAmount,
         double? maxAmount
@@ -17,7 +17,7 @@ namespace MAS.Payments.Queries
 
         public short? Year { get; } = year;
 
-        public long? PaymentTypeId { get; } = paymentTypeId;
+        public Guid? PaymentTypeId { get; } = paymentTypeId;
 
         public double? ExactAmount { get; } = exactAmount;
 

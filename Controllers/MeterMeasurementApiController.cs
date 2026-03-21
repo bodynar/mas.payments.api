@@ -22,7 +22,7 @@ namespace MAS.Payments.Controllers
         #region Measurement Type
 
         [HttpGet("[action]")]
-        public async Task<GetMeterMeasurementTypeResponse> GetMeasurementTypeAsync(long? id)
+        public async Task<GetMeterMeasurementTypeResponse> GetMeasurementTypeAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -71,7 +71,7 @@ namespace MAS.Payments.Controllers
         #region Measurement
 
         [HttpGet("[action]")]
-        public async Task<GetMeterMeasurementResponse> GetMeasurementAsync(long? id)
+        public async Task<GetMeterMeasurementResponse> GetMeasurementAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {

@@ -3,9 +3,9 @@ namespace MAS.Payments.Queries
     using MAS.Payments.Infrastructure.Query;
 
     public class GetPaymentGroupQuery(
-        long id
+        Guid id
     ) : IQuery<GetPaymentGroupResponse>
     {
-        public long Id { get; } = id;
+        public Guid Id { get; } = id;
     }
 }

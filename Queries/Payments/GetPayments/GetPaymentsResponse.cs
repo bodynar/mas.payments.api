@@ -2,7 +2,7 @@ namespace MAS.Payments.Queries
 {
     public class GetPaymentsResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public double Amount { get; set; }
 
@@ -16,6 +16,6 @@ namespace MAS.Payments.Queries
         
         public string PaymentTypeColor { get; set; }
 
-        public long PaymentTypeId { get; set; }
+        public Guid PaymentTypeId { get; set; }
     }
 }

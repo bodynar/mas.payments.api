@@ -57,8 +57,9 @@ namespace MAS.Payments.Controllers
             using var memoryStream = new MemoryStream((int)file.Length);
             await file.CopyToAsync(memoryStream);
 
+            var fileBytes = memoryStream.ToArray();
             await CommandProcessor.Execute(
-                new UploadPaymentFileCommand(fileName, AllowedContentType, memoryStream.GetBuffer().AsMemory(0, (int)memoryStream.Length).ToArray(), paymentId, paymentGroupId));
+                new UploadPaymentFileCommand(fileName, AllowedContentType, fileBytes, paymentId, paymentGroupId));
         }
 
         [HttpGet("[action]")]

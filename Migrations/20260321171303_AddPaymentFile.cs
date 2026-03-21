@@ -18,10 +18,10 @@ namespace MAS.Payments.Migrations
                 {
                     Id = table.Column<long>(type: "bigint", nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    FileName = table.Column<string>(type: "text", nullable: true),
+                    FileName = table.Column<string>(type: "text", nullable: false),
                     FileSize = table.Column<long>(type: "bigint", nullable: false),
-                    ContentType = table.Column<string>(type: "text", nullable: true),
-                    Data = table.Column<byte[]>(type: "bytea", nullable: true),
+                    ContentType = table.Column<string>(type: "text", nullable: false),
+                    Data = table.Column<byte[]>(type: "bytea", nullable: false),
                     PaymentId = table.Column<long>(type: "bigint", nullable: true),
                     PaymentGroupId = table.Column<long>(type: "bigint", nullable: true),
                     CreatedOn = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)

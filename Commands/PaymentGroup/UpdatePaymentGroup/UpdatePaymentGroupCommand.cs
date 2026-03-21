@@ -1,18 +1,19 @@
-﻿namespace MAS.Payments.Commands
+namespace MAS.Payments.Commands
 {
     using System;
-    using System.Collections.Generic;
 
     using MAS.Payments.Infrastructure.Command;
 
-    public class AddPaymentGroupCommand(
+    public class UpdatePaymentGroupCommand(
+        long id,
         DateTime paymentDate,
         int month,
         int year,
-        string comment,
-        IEnumerable<PaymentGroupItem> payments
+        string comment
     ) : ICommand
     {
+        public long Id { get; } = id;
+
         public DateTime PaymentDate { get; } = paymentDate;
 
         public int Month { get; } = month;
@@ -20,7 +21,5 @@
         public int Year { get; } = year;
 
         public string Comment { get; } = comment;
-
-        public IEnumerable<PaymentGroupItem> Payments { get; } = payments ?? [];
     }
 }

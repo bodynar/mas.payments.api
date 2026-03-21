@@ -11,15 +11,18 @@
 
     public class AddPaymentGroupCommandHandler : BaseCommandHandler<AddPaymentGroupCommand>
     {
-        private IRepository<Payment> Repository { get; }
+        private IRepository<Payment> PaymentRepository { get; }
 
         private IRepository<PaymentType> PaymentTypeRepository { get; }
+
+        private IRepository<DataBase.PaymentGroup> PaymentGroupRepository { get; }
 
         public AddPaymentGroupCommandHandler(IResolver resolver)
             : base(resolver)
         {
-            Repository = GetRepository<Payment>();
+            PaymentRepository = GetRepository<Payment>();
             PaymentTypeRepository = GetRepository<PaymentType>();
+            PaymentGroupRepository = GetRepository<DataBase.PaymentGroup>();
         }
 
         public override async Task HandleAsync(AddPaymentGroupCommand command)
@@ -39,17 +42,28 @@
                 throw new CommandExecutionException(CommandType, $"Payment types with ids [{string.Join(",", notValidTypes)}] doesn't exists");
             }
 
+            var paymentGroup = new DataBase.PaymentGroup
+            {
+                PaymentDate = command.PaymentDate,
+                Month = command.Month,
+                Year = command.Year,
+                Comment = command.Comment,
+            };
+
+            await PaymentGroupRepository.Add(paymentGroup);
+
             var payments =
                 command.Payments
                     .Select(x => new Payment
                     {
-                        Date = command.Date,
+                        Date = command.PaymentDate,
                         Amount = x.Amount,
                         PaymentTypeId = x.PaymentTypeId,
                         Description = x.Description,
+                        PaymentGroupId = paymentGroup.Id,
                     });
 
-            await Repository.AddRange(payments);
+            await PaymentRepository.AddRange(payments);
         }
     }
 }

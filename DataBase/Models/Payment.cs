@@ -16,8 +16,6 @@ namespace MAS.Payments.DataBase
 
         public long? PaymentGroupId { get; set; }
 
-#nullable enable
-        public virtual PaymentGroup? PaymentGroup { get; set; }
-#nullable restore
+        public virtual PaymentGroup PaymentGroup { get; set; }
     }
 }

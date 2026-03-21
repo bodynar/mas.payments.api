@@ -140,7 +140,15 @@ namespace MAS.Payments.Controllers
             if (name.Length > MaxFileNameLength)
             {
                 var ext = Path.GetExtension(name);
-                name = string.Concat(name.AsSpan(0, MaxFileNameLength - ext.Length), ext);
+
+                if (string.IsNullOrEmpty(ext) || ext.Length >= MaxFileNameLength)
+                {
+                    name = name.Substring(0, MaxFileNameLength);
+                }
+                else
+                {
+                    name = string.Concat(name.AsSpan(0, MaxFileNameLength - ext.Length), ext);
+                }
             }
 
             return name;

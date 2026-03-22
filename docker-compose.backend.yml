@@ -1,0 +1,15 @@
+# Backend-only override: no frontend, backend port exposed to host, DB without persistent volume
+# Auto-applies EF migrations on startup
+services:
+  frontend:
+    profiles:
+      - disabled
+
+  mas-payments:
+    ports:
+      - "${BACKEND_HOST_PORT:-5050}:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  db:
+    volumes: []

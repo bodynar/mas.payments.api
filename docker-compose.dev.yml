@@ -1,4 +1,9 @@
 # Dev override: removes persistent volume from DB (data is ephemeral)
+# Auto-applies EF migrations on startup
 services:
+  mas-payments:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
   db:
     volumes: []

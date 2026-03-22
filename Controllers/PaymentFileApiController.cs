@@ -27,8 +27,8 @@ namespace MAS.Payments.Controllers
         [Consumes("multipart/form-data")]
         public async Task UploadFileAsync(
             IFormFile file,
-            [FromForm] long? paymentId,
-            [FromForm] long? paymentGroupId)
+            [FromForm] Guid? paymentId,
+            [FromForm] Guid? paymentGroupId)
         {
             ArgumentNullException.ThrowIfNull(file);
 
@@ -63,7 +63,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> GetFileAsync(long? id)
+        public async Task<IActionResult> GetFileAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -81,7 +81,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpGet("[action]")]
-        public async Task<IActionResult> ViewFileAsync(long? id)
+        public async Task<IActionResult> ViewFileAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {

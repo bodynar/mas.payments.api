@@ -29,11 +29,21 @@ namespace MAS.Payments.DataBase
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            {
+                if (typeof(Entity).IsAssignableFrom(entityType.ClrType))
+                {
+                    modelBuilder.Entity(entityType.ClrType)
+                        .Property(nameof(Entity.Id))
+                        .ValueGeneratedNever();
+                }
+            }
+
             // todo: use DefaultUserSetting enum and its attribute
             modelBuilder
                 .Entity<UserSettings>()
                 .HasData(
-                    new UserSettings { Id = 2, DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() }
+                    new UserSettings { Id = Guid.Parse("d3f5a7b2-1e4c-4f8a-9b6d-2c7e8f0a1b3d"), DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() }
                 );
 
             modelBuilder.Entity<PaymentGroup>()
@@ -72,6 +82,11 @@ namespace MAS.Payments.DataBase
         {
             foreach (var entry in ChangeTracker.Entries<Entity>().Where(e => e.State == EntityState.Added))
             {
+                if (entry.Entity.Id == default)
+                {
+                    entry.Entity.Id = Guid.NewGuid();
+                }
+
                 if (entry.Entity.CreatedOn == default)
                 {
                     entry.Entity.CreatedOn = DateTime.UtcNow;

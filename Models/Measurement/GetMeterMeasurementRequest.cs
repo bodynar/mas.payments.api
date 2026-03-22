@@ -6,6 +6,6 @@ namespace MAS.Payments.Models
         
         public short? Year { get; set; }
 
-        public long? MeasurementTypeId { get; set; }
+        public Guid? MeasurementTypeId { get; set; }
     }
 }

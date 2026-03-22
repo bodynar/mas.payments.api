@@ -20,7 +20,7 @@ namespace MAS.Payments.Controllers
         #region Payment type
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentTypeResponse> GetPaymentTypeAsync(long? id)
+        public async Task<GetPaymentTypeResponse> GetPaymentTypeAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -69,7 +69,7 @@ namespace MAS.Payments.Controllers
         #region Payment
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentResponse> GetPaymentAsync(long? id)
+        public async Task<GetPaymentResponse> GetPaymentAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {
@@ -149,7 +149,7 @@ namespace MAS.Payments.Controllers
         #region Payment Group
 
         [HttpGet("[action]")]
-        public async Task<GetPaymentGroupResponse> GetPaymentGroupAsync(long? id)
+        public async Task<GetPaymentGroupResponse> GetPaymentGroupAsync(Guid? id)
         {
             if (!id.HasValue || id.Value == default)
             {

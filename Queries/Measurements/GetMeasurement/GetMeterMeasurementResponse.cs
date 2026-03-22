@@ -2,7 +2,7 @@ namespace MAS.Payments.Queries
 {
     public class GetMeterMeasurementResponse
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public double Measurement { get; set; }
 
@@ -16,7 +16,7 @@ namespace MAS.Payments.Queries
 
         public bool IsSent { get; set; }
 
-        public long MeterMeasurementTypeId { get; set; }
+        public Guid MeterMeasurementTypeId { get; set; }
 
         public string MeasurementTypeName { get; set; }
     }

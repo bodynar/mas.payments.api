@@ -37,7 +37,7 @@
             var isMonthChanged = !measurement.Date.Date.Equals(command.Date);
 
             var oldMonthDate = new DateTime(measurement.Date.Date.Ticks, DateTimeKind.Utc);
-            var oldTypeId = measurement.MeterMeasurementTypeId + 0;
+            var oldTypeId = measurement.MeterMeasurementTypeId;
 
             if (isMonthChanged)
             {

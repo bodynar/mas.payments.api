@@ -2,13 +2,13 @@
 {
     public class PaymentGroupItem(
         double amount,
-        long paymentTypeId,
+        Guid paymentTypeId,
         string description
     )
     {
         public double Amount { get; } = amount;
 
-        public long PaymentTypeId { get; } = paymentTypeId;
+        public Guid PaymentTypeId { get; } = paymentTypeId;
 
         public string Description { get; } = description;
     }

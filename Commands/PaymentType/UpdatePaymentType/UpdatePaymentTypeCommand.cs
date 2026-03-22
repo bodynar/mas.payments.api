@@ -3,14 +3,14 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class UpdatePaymentTypeCommand(
-        long id,
+        Guid id,
         string name,
         string description,
         string company,
         string color
     ) : ICommand
     {
-        public long Id { get; } = id;
+        public Guid Id { get; } = id;
 
         public string Name { get; } = name;
 

@@ -6,8 +6,8 @@ namespace MAS.Payments.Commands
         string fileName,
         string contentType,
         byte[] data,
-        long? paymentId,
-        long? paymentGroupId
+        Guid? paymentId,
+        Guid? paymentGroupId
     ) : ICommand
     {
         public string FileName { get; } = fileName;
@@ -16,8 +16,8 @@ namespace MAS.Payments.Commands
 
         public byte[] Data { get; } = data;
 
-        public long? PaymentId { get; } = paymentId;
+        public Guid? PaymentId { get; } = paymentId;
 
-        public long? PaymentGroupId { get; } = paymentGroupId;
+        public Guid? PaymentGroupId { get; } = paymentGroupId;
     }
 }

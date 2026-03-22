@@ -6,6 +6,6 @@ namespace MAS.Payments.Models
     public class DeleteRecordsRequest
     {
         [Required]
-        public IEnumerable<long> Ids { get; set; } = new List<long>();
+        public IEnumerable<Guid> Ids { get; set; } = new List<Guid>();
     }
 }

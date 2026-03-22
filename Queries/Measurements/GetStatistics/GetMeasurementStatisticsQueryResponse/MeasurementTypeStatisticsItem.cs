@@ -4,7 +4,7 @@
 
     public class MeasurementTypeStatisticsItem
     {
-        public long MeasurementTypeId { get; set; }
+        public Guid MeasurementTypeId { get; set; }
 
         public string MeasurementTypeName { get; set; }
 

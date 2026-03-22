@@ -13,7 +13,7 @@
 
     public class MeasurementGroupRequestModel
     {
-        public long TypeId { get; set; }
+        public Guid TypeId { get; set; }
 
         public double Value { get; set; }
 

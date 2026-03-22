@@ -24,7 +24,7 @@ namespace MAS.Payments.DataBase.Access
         public async Task AddRange(IEnumerable<TEntity> entities)
             => await DataBaseContext.Set<TEntity>().AddRangeAsync(entities);
 
-        public async Task Delete(long id)
+        public async Task Delete(Guid id)
         {
             var entity = await Get(id)
                 ?? throw new EntityNotFoundException(typeof(TEntity), id);
@@ -38,7 +38,7 @@ namespace MAS.Payments.DataBase.Access
             return Task.CompletedTask;
         }
 
-        public async Task Update(long id, object updatedModel)
+        public async Task Update(Guid id, object updatedModel)
         {
             var entity = await Get(id)
                 ?? throw new EntityNotFoundException(typeof(TEntity), id);
@@ -46,7 +46,7 @@ namespace MAS.Payments.DataBase.Access
             DataBaseContext.Entry(entity).CurrentValues.SetValues(updatedModel); 
         }
 
-        public async Task<TEntity> Get(long id)
+        public async Task<TEntity> Get(Guid id)
             => await DataBaseContext.Set<TEntity>().FirstOrDefaultAsync(x => x.Id == id);
 
         public IQueryable<TEntity> GetAll()

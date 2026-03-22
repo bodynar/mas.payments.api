@@ -6,7 +6,7 @@ namespace MAS.Payments.Queries
 
     public class GetGroupedMeterMeasurementsQuery(
         byte? month = null,
-        long? meterMeasurementTypeId = null,
+        Guid? meterMeasurementTypeId = null,
         int? year = null
     ) : IQuery<IEnumerable<GetGroupedMeterMeasurementsResponse>>
     {
@@ -14,6 +14,6 @@ namespace MAS.Payments.Queries
 
         public int? Year { get; } = year;
 
-        public long? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
+        public Guid? MeterMeasurementTypeId { get; } = meterMeasurementTypeId;
     }
 }

@@ -3,9 +3,9 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class DeleteMeterMeasurementTypeCommand(
-        long meterMeasurementTypeId
+        Guid meterMeasurementTypeId
     ) : ICommand
     {
-        public long MeterMeasurementTypeId { get; set; } = meterMeasurementTypeId;
+        public Guid MeterMeasurementTypeId { get; set; } = meterMeasurementTypeId;
     }
 }

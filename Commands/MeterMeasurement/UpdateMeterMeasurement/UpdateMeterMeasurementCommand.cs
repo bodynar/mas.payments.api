@@ -6,7 +6,7 @@ namespace MAS.Payments.Commands
 
     public class UpdateMeterMeasurementCommand : ICommand
     {
-        public long Id { get; }
+        public Guid Id { get; }
 
         public double Measurement { get; }
 
@@ -14,11 +14,11 @@ namespace MAS.Payments.Commands
 
         public DateTime Date { get; }
 
-        public long MeterMeasurementTypeId { get; }
+        public Guid MeterMeasurementTypeId { get; }
 
         public UpdateMeterMeasurementCommand(
-            long id,
-            long meterMeasurementTypeId,
+            Guid id,
+            Guid meterMeasurementTypeId,
             DateTime date,
             double measurement,
             string comment = null

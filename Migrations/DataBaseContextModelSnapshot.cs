@@ -24,11 +24,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurement", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
@@ -48,8 +45,8 @@ namespace MAS.Payments.Migrations
                     b.Property<double>("Measurement")
                         .HasColumnType("double precision");
 
-                    b.Property<long>("MeterMeasurementTypeId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("MeterMeasurementTypeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -60,11 +57,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Color")
                         .HasColumnType("text");
@@ -78,8 +72,8 @@ namespace MAS.Payments.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<long>("PaymentTypeId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("PaymentTypeId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("SystemName")
                         .HasColumnType("text");
@@ -93,11 +87,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<double>("Amount")
                         .HasColumnType("double precision");
@@ -111,11 +102,11 @@ namespace MAS.Payments.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("text");
 
-                    b.Property<long?>("PaymentGroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("PaymentGroupId")
+                        .HasColumnType("uuid");
 
-                    b.Property<long>("PaymentTypeId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid>("PaymentTypeId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -128,11 +119,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentFile", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("ContentType")
                         .HasColumnType("text");
@@ -149,11 +137,11 @@ namespace MAS.Payments.Migrations
                     b.Property<long>("FileSize")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("PaymentGroupId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("PaymentGroupId")
+                        .HasColumnType("uuid");
 
-                    b.Property<long?>("PaymentId")
-                        .HasColumnType("bigint");
+                    b.Property<Guid?>("PaymentId")
+                        .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
@@ -173,11 +161,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroup", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Comment")
                         .HasColumnType("text");
@@ -203,11 +188,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentType", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Color")
                         .HasColumnType("text");
@@ -234,11 +216,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.UserNotification", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
@@ -271,11 +250,8 @@ namespace MAS.Payments.Migrations
 
             modelBuilder.Entity("MAS.Payments.DataBase.UserSettings", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<long>("Id"));
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
 
                     b.Property<DateTime>("CreatedOn")
                         .HasColumnType("timestamp with time zone");
@@ -299,7 +275,7 @@ namespace MAS.Payments.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 2L,
+                            Id = new Guid("d3f5a7b2-1e4c-4f8a-9b6d-2c7e8f0a1b3d"),
                             CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             DisplayName = "Отображать уведомления по показаниям",
                             Name = "DisplayMeasurementsNotification",

@@ -4,7 +4,7 @@
 
     public class PaymentTypeStatisticsItem
     {
-        public long PaymentTypeId { get; set; }
+        public Guid PaymentTypeId { get; set; }
 
         public string PaymentTypeName { get; set; }
 

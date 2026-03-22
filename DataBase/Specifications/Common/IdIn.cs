@@ -12,14 +12,14 @@
         public class IdIn<TEntity> : Specification<TEntity>
             where TEntity: Entity
         {
-            public IEnumerable<long> Ids { get; }
+            public IEnumerable<Guid> Ids { get; }
 
-            public IdIn(IEnumerable<long> keys)
+            public IdIn(IEnumerable<Guid> keys)
             {
                 Ids = [.. keys];
             }
 
-            public IdIn(long key)
+            public IdIn(Guid key)
             {
                 Ids = [key];
             }

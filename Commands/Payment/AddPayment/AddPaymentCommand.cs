@@ -5,7 +5,7 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class AddPaymentCommand(
-        long paymentTypeId,
+        Guid paymentTypeId,
         double amount,
         DateTime? date,
         string description
@@ -17,6 +17,6 @@ namespace MAS.Payments.Commands
 
         public string Description { get; } = description;
 
-        public long PaymentTypeId { get; } = paymentTypeId;
+        public Guid PaymentTypeId { get; } = paymentTypeId;
     }
 }

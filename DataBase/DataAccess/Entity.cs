@@ -4,7 +4,7 @@ namespace MAS.Payments.DataBase
 
     public class Entity
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime CreatedOn { get; set; }
     }

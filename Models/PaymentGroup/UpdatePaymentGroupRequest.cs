@@ -4,7 +4,7 @@ namespace MAS.Payments.Models
 
     public class UpdatePaymentGroupRequest
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
 
         public DateTime PaymentDate { get; set; }
 

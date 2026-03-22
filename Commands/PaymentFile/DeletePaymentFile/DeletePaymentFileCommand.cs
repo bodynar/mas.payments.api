@@ -3,9 +3,9 @@ namespace MAS.Payments.Commands
     using MAS.Payments.Infrastructure.Command;
 
     public class DeletePaymentFileCommand(
-        long fileId
+        Guid fileId
     ) : ICommand
     {
-        public long FileId { get; } = fileId;
+        public Guid FileId { get; } = fileId;
     }
 }

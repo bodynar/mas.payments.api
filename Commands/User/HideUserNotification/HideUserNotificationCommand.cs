@@ -6,16 +6,16 @@
 
     public class HideUserNotificationCommand : ICommand
     {
-        public IEnumerable<long> Ids { get; }
+        public IEnumerable<Guid> Ids { get; }
 
-        public IEnumerable<long> NotProcessedIds { get; set; } = [];
+        public IEnumerable<Guid> NotProcessedIds { get; set; } = [];
 
-        public HideUserNotificationCommand(IEnumerable<long> ids)
+        public HideUserNotificationCommand(IEnumerable<Guid> ids)
         {
             Ids = [.. ids];
         }
 
-        public HideUserNotificationCommand(long id)
+        public HideUserNotificationCommand(Guid id)
         {
             Ids = [id];
         }

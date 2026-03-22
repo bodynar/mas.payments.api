@@ -55,7 +55,7 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task<IEnumerable<long>> HideNotificationsAsync([FromBody] IEnumerable<long> userNotificationIds)
+        public async Task<IEnumerable<Guid>> HideNotificationsAsync([FromBody] IEnumerable<Guid> userNotificationIds)
         {
             ArgumentNullException.ThrowIfNull(userNotificationIds);
 

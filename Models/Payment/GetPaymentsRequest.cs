@@ -17,7 +17,7 @@ namespace MAS.Payments.Models
 
         public short? Year { get; set; }
 
-        public long? PaymentTypeId { get; set; }
+        public Guid? PaymentTypeId { get; set; }
 
         [FromQuery]
         public FieldValueFilter Amount { get; set; }

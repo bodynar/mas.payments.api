@@ -3,6 +3,10 @@ namespace MAS.Payments.Infrastructure.Command
     using System;
     using System.Threading.Tasks;
 
+    using MAS.Payments.Infrastructure.Exceptions;
+
+    using Serilog;
+
     public class CommandProcessor(
         IResolver resolver
     ) : ICommandProcessor
@@ -17,7 +21,23 @@ namespace MAS.Payments.Infrastructure.Command
 
             dynamic handler = resolver.GetInstance(handlerType);
 
-            await handler.HandleAsync((dynamic)command);
+            try
+            {
+                await handler.HandleAsync((dynamic)command);
+            }
+            catch (CommandExecutionException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error executing command {CommandName}", commandType.Name);
+
+                throw new CommandExecutionException(
+                    commandType,
+                    $"Error executing command {commandType.Name}: {e.Message}",
+                    e);
+            }
         }
     }
 }

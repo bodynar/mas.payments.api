@@ -5,8 +5,9 @@ namespace MAS.Payments.Infrastructure.Exceptions
     [Serializable]
     public class CommandExecutionException(
         Type commandType,
-        string message
-    ) : Exception(message)
+        string message,
+        Exception innerException = null
+    ) : Exception(message, innerException)
     {
         public string CommandFullTypeName { get; } = commandType.FullName;
 

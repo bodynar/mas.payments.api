@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Text;
 
 using MAS.Payments.Configuration;
@@ -12,22 +13,24 @@ using SimpleInjector;
 
 var container = new Container();
 
+var logPath = Path.Combine("logs", DateTime.Now.ToString("dd-MM-yyyy"), "app.log");
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
-    .WriteTo.File("logs/myapp.txt", rollingInterval: RollingInterval.Day, encoding: Encoding.UTF8)
+    .WriteTo.File(logPath, encoding: Encoding.UTF8)
     .CreateLogger();
 
 var builder = WebApplication.CreateBuilder(args);
 
 try
 {
-    Log.Debug("Configuring services");
+    Log.Information("[INIT] Configuring services");
     ServicesConfiguration.Configure(builder.Services, builder.Configuration, container);
-    Log.Debug("Services configured successfully");
+    Log.Information("[INIT] Services configured successfully");
 }
 catch (Exception e)
 {
-    Log.Error(e, "Service configuration failed");
+    Log.Error(e, "[INIT] Service configuration failed");
     throw;
 }
 
@@ -35,14 +38,16 @@ var app = builder.Build();
 
 try
 {
-    Log.Debug("Configuring application");
+    Log.Information("[INIT] Configuring application");
     app.Configure(container, app.Environment.IsDevelopment());
-    Log.Debug("Application configured successfully");
+    Log.Information("[INIT] Application configured successfully");
 }
 catch (Exception e)
 {
-    Log.Error(e, "Application configuration failed");
+    Log.Error(e, "[INIT] Application configuration failed");
     throw;
 }
+
+Log.Information("[INIT] Successfull");
 
 app.Run();

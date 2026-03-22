@@ -1,6 +1,8 @@
 ﻿namespace MAS.Payments.Infrastructure.Middleware
 {
     using System;
+    using System.IO;
+    using System.Linq;
     using System.Net;
     using System.Threading.Tasks;
 
@@ -15,6 +17,8 @@
     {
         public async Task Invoke(HttpContext httpContext)
         {
+            httpContext.Request.EnableBuffering();
+
             try
             {
                 await next(httpContext).ConfigureAwait(false);
@@ -25,12 +29,38 @@
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exception)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception exception)
         {
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-            Log.Error(exception, "{0}");
+            var endpoint = context.GetEndpoint();
+            var actionName = endpoint?.Metadata?.GetMetadata<Microsoft.AspNetCore.Mvc.Controllers.ControllerActionDescriptor>();
+
+            var controllerFile = actionName != null
+                ? $"{actionName.ControllerTypeInfo.Name}.cs"
+                : "Unknown";
+
+            var methodName = actionName?.ActionName ?? "Unknown";
+
+            var queryParams = context.Request.QueryString.HasValue
+                ? context.Request.QueryString.Value
+                : null;
+
+            string body = null;
+            if (context.Request.Body != null && context.Request.ContentLength > 0)
+            {
+                context.Request.Body.Position = 0;
+                using var reader = new StreamReader(context.Request.Body, leaveOpen: true);
+                body = await reader.ReadToEndAsync().ConfigureAwait(false);
+            }
+
+            var requestParams = new { query = queryParams, body };
+            var requestParamsJson = JsonConvert.SerializeObject(requestParams, Formatting.None);
+
+            Log.Error(
+                "File: {ControllerFile}, Method: {MethodName}, Params: {RequestParams}\n{StackTrace}\n{ErrorMessage}",
+                controllerFile, methodName, requestParamsJson, exception.StackTrace, exception.Message);
 
             var serializedException = JsonConvert.SerializeObject(new
             {
@@ -38,7 +68,7 @@
                 Message = "An internal server error has occurred.",
             });
 
-            return context.Response.WriteAsync(serializedException);
+            await context.Response.WriteAsync(serializedException).ConfigureAwait(false);
         }
     }
 }

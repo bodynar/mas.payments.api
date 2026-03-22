@@ -3,6 +3,10 @@ namespace MAS.Payments.Infrastructure.Query
     using System;
     using System.Threading.Tasks;
 
+    using MAS.Payments.Infrastructure.Exceptions;
+
+    using Serilog;
+
     public class QueryProcessor(
         IResolver resolver
     ) : IQueryProcessor
@@ -16,7 +20,23 @@ namespace MAS.Payments.Infrastructure.Query
 
             dynamic handler = resolver.GetInstance(handlerType);
 
-            return await handler.HandleAsync((dynamic)query);
+            try
+            {
+                return await handler.HandleAsync((dynamic)query);
+            }
+            catch (QueryExecutionException)
+            {
+                throw;
+            }
+            catch (Exception e)
+            {
+                Log.Error(e, "Error executing query {QueryName}", queryType.Name);
+
+                throw new QueryExecutionException(
+                    queryType,
+                    $"Error executing query {queryType.Name}: {e.Message}",
+                    e);
+            }
         }
     }
 }

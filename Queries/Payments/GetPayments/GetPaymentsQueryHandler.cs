@@ -72,6 +72,12 @@ namespace MAS.Payments.Queries
                         PaymentTypeName = x.PaymentType.Name,
                         PaymentTypeColor = x.PaymentType.Color,
                         PaymentTypeId = x.PaymentTypeId,
+                        PaymentGroupId = x.PaymentGroupId,
+                        PaymentFile = x.PaymentFile != null
+                            ? new PaymentFileShortInfo { Id = x.PaymentFile.Id, FileName = x.PaymentFile.FileName }
+                            : x.PaymentGroup != null && x.PaymentGroup.PaymentFile != null
+                                ? new PaymentFileShortInfo { Id = x.PaymentGroup.PaymentFile.Id, FileName = x.PaymentGroup.PaymentFile.FileName }
+                                : null,
                     })
                 .ToListAsync();
         }

@@ -14,5 +14,7 @@ namespace MAS.Payments.DataBase
         public string Comment { get; set; }
 
         public virtual ICollection<Payment> Payments { get; } = [];
+
+        public virtual PaymentFile PaymentFile { get; set; }
     }
 }

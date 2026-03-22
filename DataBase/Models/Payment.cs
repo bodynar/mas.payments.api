@@ -17,5 +17,7 @@ namespace MAS.Payments.DataBase
         public Guid? PaymentGroupId { get; set; }
 
         public virtual PaymentGroup PaymentGroup { get; set; }
+
+        public virtual PaymentFile PaymentFile { get; set; }
     }
 }

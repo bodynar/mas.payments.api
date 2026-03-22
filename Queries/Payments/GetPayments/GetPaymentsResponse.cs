@@ -17,5 +17,16 @@ namespace MAS.Payments.Queries
         public string PaymentTypeColor { get; set; }
 
         public Guid PaymentTypeId { get; set; }
+
+        public Guid? PaymentGroupId { get; set; }
+
+        public PaymentFileShortInfo PaymentFile { get; set; }
+    }
+
+    public class PaymentFileShortInfo
+    {
+        public Guid Id { get; set; }
+
+        public string FileName { get; set; }
     }
 }

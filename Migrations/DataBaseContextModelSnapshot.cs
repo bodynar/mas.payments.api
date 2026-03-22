@@ -326,12 +326,12 @@ namespace MAS.Payments.Migrations
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentFile", b =>
                 {
                     b.HasOne("MAS.Payments.DataBase.PaymentGroup", "PaymentGroup")
-                        .WithOne()
+                        .WithOne("PaymentFile")
                         .HasForeignKey("MAS.Payments.DataBase.PaymentFile", "PaymentGroupId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("MAS.Payments.DataBase.Payment", "Payment")
-                        .WithOne()
+                        .WithOne("PaymentFile")
                         .HasForeignKey("MAS.Payments.DataBase.PaymentFile", "PaymentId")
                         .OnDelete(DeleteBehavior.Cascade);
 
@@ -345,8 +345,15 @@ namespace MAS.Payments.Migrations
                     b.Navigation("MeterMeasurements");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.Payment", b =>
+                {
+                    b.Navigation("PaymentFile");
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroup", b =>
                 {
+                    b.Navigation("PaymentFile");
+
                     b.Navigation("Payments");
                 });
 

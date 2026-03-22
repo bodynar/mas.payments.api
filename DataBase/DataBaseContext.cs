@@ -52,12 +52,12 @@ namespace MAS.Payments.DataBase
             modelBuilder.Entity<PaymentFile>(entity =>
             {
                 entity.HasOne(f => f.Payment)
-                    .WithOne()
+                    .WithOne(p => p.PaymentFile)
                     .HasForeignKey<PaymentFile>(f => f.PaymentId)
                     .OnDelete(DeleteBehavior.Cascade);
 
                 entity.HasOne(f => f.PaymentGroup)
-                    .WithOne()
+                    .WithOne(pg => pg.PaymentFile)
                     .HasForeignKey<PaymentFile>(f => f.PaymentGroupId)
                     .OnDelete(DeleteBehavior.Cascade);
 

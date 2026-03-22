@@ -1,6 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -12,6 +10,11 @@ namespace MAS.Payments.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            // =====================================================================
+            // Ensure gen_random_uuid() is available (PG < 13 needs pgcrypto)
+            // =====================================================================
+            migrationBuilder.Sql("""CREATE EXTENSION IF NOT EXISTS "pgcrypto";""");
+
             // =====================================================================
             // STEP 1: Add temp_new_id (uuid) columns to every table
             // =====================================================================

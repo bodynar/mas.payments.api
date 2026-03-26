@@ -55,7 +55,7 @@ namespace MAS.Payments.Commands
             if (missingIds.Any())
             {
                 throw new CommandExecutionException(CommandType,
-                    $"Payment types with ids [{string.Join(", ", missingIds)}] don't exist");
+                    $"Payment types with ids [{string.Join(", ", missingIds)}] do not exist");
             }
 
             await TemplateRepository.Update(command.Id, new

@@ -72,14 +72,15 @@ namespace MAS.Payments.Commands
 
             await TemplateItemRepository.DeleteRange(existingItems);
 
-            foreach (var paymentTypeId in paymentTypeIds)
-            {
-                await TemplateItemRepository.Add(new PaymentGroupTemplateItem
+            var newItems = paymentTypeIds
+                .Select(paymentTypeId => new PaymentGroupTemplateItem
                 {
                     PaymentGroupTemplateId = command.Id,
                     PaymentTypeId = paymentTypeId,
-                });
-            }
+                })
+                .ToArray();
+
+            await TemplateItemRepository.AddRange(newItems);
         }
     }
 }

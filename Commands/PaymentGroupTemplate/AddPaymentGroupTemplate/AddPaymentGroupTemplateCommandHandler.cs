@@ -35,7 +35,7 @@ namespace MAS.Payments.Commands
             if (alreadyExists)
             {
                 throw new CommandExecutionException(CommandType,
-                    $"Payment group Template with name \"{command.Name}\" already exists");
+                    $"Payment group template with name \"{command.Name}\" already exists");
             }
 
             var paymentTypeIds = command.PaymentTypeIds.ToArray();

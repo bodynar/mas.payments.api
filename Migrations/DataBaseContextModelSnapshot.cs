@@ -186,6 +186,48 @@ namespace MAS.Payments.Migrations
                     b.ToTable("PaymentGroup");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroupTemplate", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PaymentGroupTemplate");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroupTemplateItem", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("PaymentGroupTemplateId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("PaymentTypeId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PaymentGroupTemplateId");
+
+                    b.HasIndex("PaymentTypeId");
+
+                    b.ToTable("PaymentGroupTemplateItem");
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentType", b =>
                 {
                     b.Property<Guid>("Id")
@@ -340,6 +382,25 @@ namespace MAS.Payments.Migrations
                     b.Navigation("PaymentGroup");
                 });
 
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroupTemplateItem", b =>
+                {
+                    b.HasOne("MAS.Payments.DataBase.PaymentGroupTemplate", "PaymentGroupTemplate")
+                        .WithMany("Items")
+                        .HasForeignKey("PaymentGroupTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("MAS.Payments.DataBase.PaymentType", "PaymentType")
+                        .WithMany()
+                        .HasForeignKey("PaymentTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("PaymentGroupTemplate");
+
+                    b.Navigation("PaymentType");
+                });
+
             modelBuilder.Entity("MAS.Payments.DataBase.MeterMeasurementType", b =>
                 {
                     b.Navigation("MeterMeasurements");
@@ -355,6 +416,11 @@ namespace MAS.Payments.Migrations
                     b.Navigation("PaymentFile");
 
                     b.Navigation("Payments");
+                });
+
+            modelBuilder.Entity("MAS.Payments.DataBase.PaymentGroupTemplate", b =>
+                {
+                    b.Navigation("Items");
                 });
 
             modelBuilder.Entity("MAS.Payments.DataBase.PaymentType", b =>

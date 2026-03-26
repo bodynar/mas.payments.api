@@ -27,6 +27,10 @@ namespace MAS.Payments.DataBase
 
         public DbSet<PaymentFile> PaymentFile { get; set; }
 
+        public DbSet<PaymentGroupTemplate> PaymentGroupTemplate { get; set; }
+
+        public DbSet<PaymentGroupTemplateItem> PaymentGroupTemplateItem { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             foreach (var entityType in modelBuilder.Model.GetEntityTypes())

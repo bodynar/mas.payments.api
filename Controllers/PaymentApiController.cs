@@ -90,14 +90,16 @@ namespace MAS.Payments.Controllers
         }
 
         [HttpPost("[action]")]
-        public async Task AddPaymentAsync([FromBody] AddPaymentRequest request)
+        public async Task<Guid> AddPaymentAsync([FromBody] AddPaymentRequest request)
         {
             ArgumentNullException.ThrowIfNull(request);
 
             var paymentDate = new DateTime(request.Year, request.Month, 20, 0, 0, 0, DateTimeKind.Utc);
 
-            await CommandProcessor.Execute(
-                new AddPaymentCommand(request.PaymentTypeId, request.Amount, paymentDate, request.Description));
+            var command = new AddPaymentCommand(request.PaymentTypeId, request.Amount, paymentDate, request.Description);
+            await CommandProcessor.Execute(command);
+
+            return command.PaymentId;
         }
 
         [HttpPost("[action]")]

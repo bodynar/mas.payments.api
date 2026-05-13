@@ -47,7 +47,9 @@ namespace MAS.Payments.DataBase
             modelBuilder
                 .Entity<UserSettings>()
                 .HasData(
-                    new UserSettings { Id = Guid.Parse("d3f5a7b2-1e4c-4f8a-9b6d-2c7e8f0a1b3d"), DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() }
+                    new UserSettings { Id = Guid.Parse("d3f5a7b2-1e4c-4f8a-9b6d-2c7e8f0a1b3d"), DisplayName = "Отображать уведомления по показаниям", Name = "DisplayMeasurementsNotification", TypeName = SettingDataValueType.Boolean.ToString(), RawValue = true.ToString().ToLower() },
+                    new UserSettings { Id = Guid.Parse("a1b2c3d4-e5f6-7890-abcd-ef1234567890"), DisplayName = "Цвет панели навигации", Name = "NavBarColor", TypeName = SettingDataValueType.Color.ToString(), RawValue = "#363636" },
+                    new UserSettings { Id = Guid.Parse("b2c3d4e5-f6a7-8901-bcde-f12345678901"), DisplayName = "Название сайта", Name = "NavBarTitle", TypeName = SettingDataValueType.String.ToString(), RawValue = "Payments" }
                 );
 
             modelBuilder.Entity<PaymentGroup>()

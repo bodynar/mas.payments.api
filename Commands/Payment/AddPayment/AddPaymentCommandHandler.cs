@@ -31,6 +31,7 @@ namespace MAS.Payments.Commands
 
             var payment = new Payment
             {
+                Id = command.PaymentId,
                 Amount = command.Amount,
                 Date = command.Date,
                 Description = command.Description,

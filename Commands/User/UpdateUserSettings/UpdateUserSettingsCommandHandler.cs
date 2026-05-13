@@ -61,6 +61,7 @@
                     break;
                 }
                 case "String":
+                case "Color":
                 {
                     break;
                 }

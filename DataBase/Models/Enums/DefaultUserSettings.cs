@@ -16,5 +16,17 @@
         /// </summary>
         [Description("Отображать уведомления по показаниям")]
         DisplayMeasurementsNotification = 2,
+
+        /// <summary>
+        /// Цвет панели навигации
+        /// </summary>
+        [Description("Цвет панели навигации")]
+        NavBarColor = 3,
+
+        /// <summary>
+        /// Название сайта
+        /// </summary>
+        [Description("Название сайта")]
+        NavBarTitle = 4,
     }
 }

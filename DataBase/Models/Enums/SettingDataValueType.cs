@@ -6,5 +6,6 @@
         Boolean,
         Int32,
         String,
+        Color,
     }
 }

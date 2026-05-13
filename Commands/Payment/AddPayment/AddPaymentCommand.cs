@@ -11,6 +11,8 @@ namespace MAS.Payments.Commands
         string description
     ) : ICommand
     {
+        public Guid PaymentId { get; } = Guid.NewGuid();
+
         public double Amount { get; } = amount;
 
         public DateTime? Date { get; } = date;

@@ -323,6 +323,24 @@ namespace MAS.Payments.Migrations
                             Name = "DisplayMeasurementsNotification",
                             RawValue = "true",
                             TypeName = "Boolean"
+                        },
+                        new
+                        {
+                            Id = new Guid("a1b2c3d4-e5f6-7890-abcd-ef1234567890"),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Цвет панели навигации",
+                            Name = "NavBarColor",
+                            RawValue = "#363636",
+                            TypeName = "Color"
+                        },
+                        new
+                        {
+                            Id = new Guid("b2c3d4e5-f6a7-8901-bcde-f12345678901"),
+                            CreatedOn = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            DisplayName = "Название сайта",
+                            Name = "NavBarTitle",
+                            RawValue = "Payments",
+                            TypeName = "String"
                         });
                 });
 

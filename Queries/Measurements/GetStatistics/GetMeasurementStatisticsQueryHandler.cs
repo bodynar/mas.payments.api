@@ -11,6 +11,8 @@
     using MAS.Payments.Infrastructure.Query;
     using MAS.Payments.Infrastructure.Specification;
 
+    using Microsoft.EntityFrameworkCore;
+
     internal class GetMeasurementStatisticsQueryHandler : BaseQueryHandler<GetMeasurementStatisticsQuery, GetMeasurementStatisticsQueryResponse>
     {
         private static readonly IEnumerable<int> MonthNumbers =
@@ -54,6 +56,7 @@
             var measurements =
                 MeasurementRepository
                     .Where(filter)
+                    .Include(x => x.MeasurementType)
                     .AsEnumerable()
                     .GroupBy(x => x.MeterMeasurementTypeId);
 
